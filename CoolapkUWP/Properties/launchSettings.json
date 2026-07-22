@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CoolapkUWP (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CoolapkUWP (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

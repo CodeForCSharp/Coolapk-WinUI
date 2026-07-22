@@ -1,0 +1,704 @@
+﻿<ResourceDictionary
+    x:Class="CoolapkUWP.Controls.DataTemplates.IndexCardTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="using:CoolapkUWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:models="using:CoolapkUWP.Models"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+    xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
+    mc:Ignorable="d">
+    <ResourceDictionary.MergedDictionaries>
+        <templates:FeedsTemplates />
+        <templates:OtherDataTemplates />
+    </ResourceDictionary.MergedDictionaries>
+
+    <templates:ItemTemplateSelector
+        x:Key="ItemTemplateSelector"
+        Empty="{StaticResource Empty}"
+        Feed="{StaticResource FeedDefaultTemplate}"
+        FeedImageText="{StaticResource FeedImageTextTemplate}"
+        FeedReply="{StaticResource FeedReplyDefaultTemplate}"
+        IconLink="{StaticResource IconLinkTemplate}"
+        ImageText="{StaticResource ImageTextTemplate}"
+        Link="{StaticResource LinkTemplate}"
+        List="{StaticResource ListDefaultTemplate}"
+        MiniIconLink="{StaticResource MiniIconLinkTemplate}"
+        MiniUser="{StaticResource MiniUserTemplate}"
+        SquareLinkCard="{StaticResource SquareLinkCardTemplate}"
+        SubtitleList="{StaticResource SubtitleListDefaultTemplate}"
+        User="{StaticResource ListDefaultTemplate}" />
+
+    <!--  一级卡片  -->
+
+    <DataTemplate x:Key="TitleCardTemplate">
+        <Grid
+            x:Name="TitleGrid"
+            Height="40"
+            Margin="12,0"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                x:Name="TitleText"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="{Binding Title}"
+                TextTrimming="CharacterEllipsis"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+            <TextBlock
+                x:Name="FallbackText"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="查看更多"
+                TextTrimming="CharacterEllipsis"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+            <FontIcon
+                x:Name="ForwardSymbol"
+                Grid.Column="1"
+                Margin="8,0"
+                HorizontalAlignment="Right"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="16"
+                Glyph="&#xE72A;"
+                Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LoginCardTemplate">
+        <Grid
+            Margin="12,0"
+            HorizontalAlignment="Center"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <FontIcon
+                Grid.Column="0"
+                Margin="8,0"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="16"
+                Glyph="&#xE8FA;" />
+            <TextBlock
+                x:Name="TitleText"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="{Binding Title}"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RefreshCardTemplate">
+        <Grid
+            Margin="12,0"
+            HorizontalAlignment="Center"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <FontIcon
+                Grid.Column="0"
+                Margin="8,0"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="16"
+                Glyph="&#xE72C;" />
+            <TextBlock
+                x:Name="TitleText"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="{Binding Title}"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+            <TextBlock
+                x:Name="FallbackText"
+                x:Uid="ClickMeToRefresh"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ImageCardTemplate">
+        <Grid
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                <FontIcon
+                    x:Name="ForwardSymbol"
+                    Grid.Column="1"
+                    Margin="8,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;"
+                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+            </Grid>
+            <Border
+                Grid.Row="1"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid>
+                    <FlipView
+                        x:Name="FlipView"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Background="{ThemeResource SystemControlTransparentBrush}"
+                        ItemsSource="{Binding Entities}"
+                        Loaded="FlipView_Loaded"
+                        SizeChanged="FlipView_SizeChanged">
+                        <FlipView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    x:Name="Picture"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+
+                                    KeyDown="Grid_KeyDown"
+                                    Tag="{Binding}"
+                                    Tapped="Grid_Tapped">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                    </Border.Background>
+                                </Border>
+                            </DataTemplate>
+                        </FlipView.ItemTemplate>
+                    </FlipView>
+                    <Border
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        CornerRadius="6"
+                        Visibility="{Binding Entities, Converter={StaticResource PipsPagerVisibilityConverter}}">
+                            <Border.Background>
+                            <AcrylicBrush
+                               
+                                FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
+                                TintColor="{ThemeResource SystemChromeMediumHighColor}"
+                                TintOpacity="0" />
+                        </Border.Background>
+                        <muxc:PipsPager
+                            Margin="2,0"
+                            NumberOfPages="{Binding Entities, Converter={StaticResource CollectionCountConverter}}"
+                            SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
+                    </Border>
+                </Grid>
+            </Border>
+            <Border
+                Grid.Row="2"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Tag="{Binding}"
+                Tapped="Grid_Tapped"
+                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}">
+                <Image
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    CanDrag="True"
+                    Source="{Binding Pic.Pic, Mode=OneWay}" />
+            </Border>
+            <Border
+                x:Name="SubTitleBorder"
+                Grid.Row="3"
+                Margin="12,8"
+                VerticalAlignment="Stretch"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}">
+                <control:TextBlockEx Text="{Binding Description}" />
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IconLinksTemplate">
+        <Border
+            Margin="8"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            CornerRadius="{ThemeResource OverlayCornerRadius}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <muxc:ItemsRepeater
+                x:Name="EntitiesRepeater"
+                HorizontalAlignment="Center"
+                ItemsSource="{Binding Entities}">
+                <muxc:ItemsRepeater.Layout>
+                    <primitives:ColumnMajorUniformToLargestGridLayout
+                        ColumnSpacing="8"
+                        MaxColumns="2147483647"
+                        RowSpacing="8" />
+                </muxc:ItemsRepeater.Layout>
+                <muxc:ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="models:IndexPageModel">
+                        <Button
+                            x:Name="Root"
+                            MinWidth="64"
+                            Padding="4"
+                            HorizontalAlignment="Stretch"
+                            Background="{ThemeResource SystemControlTransparentBrush}"
+                            Click="Button_Click"
+                            Style="{ThemeResource TransparentButtonStyle}"
+                            Tag="{Binding}">
+                            <control:StackPanel HorizontalAlignment="Stretch" Spacing="2">
+                                <Border
+                                    Width="40"
+                                    Height="40"
+                                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                                    <Image Source="{Binding Pic.Pic, Mode=OneWay}" />
+                                </Border>
+                                <TextBlock
+                                    x:Name="TitleText"
+                                    HorizontalAlignment="Center"
+                                    MaxLines="1"
+                                    Text="{Binding Title}" />
+                            </control:StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </muxc:ItemsRepeater.ItemTemplate>
+            </muxc:ItemsRepeater>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MessageCardTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="12,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Row="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Title}"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                <control:TextBlockEx
+                    x:Name="Description"
+                    Grid.Row="1"
+                    Text="{Binding Description}"
+                    Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+            </Grid>
+            <muxc:ItemsRepeaterScrollHost
+                x:Name="EntitiesHost"
+                Grid.Row="1"
+                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ScrollViewer
+                    Padding="8"
+                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalScrollMode="Auto"
+                    VerticalScrollMode="Disabled">
+                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{Binding Entities}">
+                        <muxc:ItemsRepeater.Layout>
+                            <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
+                        </muxc:ItemsRepeater.Layout>
+                    </muxc:ItemsRepeater>
+                </ScrollViewer>
+            </muxc:ItemsRepeaterScrollHost>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GridScrollCardTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                Tag="{Binding}"
+                Tapped="Grid_Tapped"
+                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                <TextBlock
+                    x:Name="FallbackText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="查看更多"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                <FontIcon
+                    x:Name="ForwardSymbol"
+                    Grid.Column="1"
+                    Margin="8,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;"
+                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+            </Grid>
+            <Border
+                Grid.Row="1"
+                Height="8"
+                HorizontalAlignment="Stretch"
+                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+            <muxc:ItemsRepeater
+                Grid.Row="2"
+                Margin="8,0,8,8"
+                HorizontalAlignment="Left"
+                ItemTemplate="{StaticResource ItemTemplateSelector}"
+                ItemsSource="{Binding Entities}"
+                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                <muxc:ItemsRepeater.Layout>
+                    <primitives:ColumnMajorUniformToLargestGridLayout
+                        ColumnSpacing="8"
+                        MaxColumns="2147483647"
+                        RowSpacing="8" />
+                </muxc:ItemsRepeater.Layout>
+            </muxc:ItemsRepeater>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ImageTextScrollCardTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                Tag="{Binding}"
+                Tapped="Grid_Tapped"
+                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                <TextBlock
+                    x:Name="FallbackText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="查看更多"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                <FontIcon
+                    x:Name="ForwardSymbol"
+                    Grid.Column="1"
+                    Margin="8,0,0,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;"
+                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+            </Grid>
+            <Border
+                Grid.Row="1"
+                Height="8"
+                HorizontalAlignment="Stretch"
+                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+            <muxc:ItemsRepeaterScrollHost
+                x:Name="EntitiesHost"
+                Grid.Row="2"
+                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ScrollViewer
+                    Padding="8,0,8,8"
+                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalScrollMode="Auto"
+                    VerticalScrollMode="Disabled">
+                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{Binding Entities}">
+                        <muxc:ItemsRepeater.Layout>
+                            <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
+                        </muxc:ItemsRepeater.Layout>
+                    </muxc:ItemsRepeater>
+                </ScrollViewer>
+            </muxc:ItemsRepeaterScrollHost>
+        </Grid>
+    </DataTemplate>
+
+    <!--  二级卡片  -->
+
+    <DataTemplate x:Key="SquareLinkCardTemplate">
+        <Border
+            Width="86"
+            Height="86"
+            BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource OverlayCornerRadius}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Border.Background>
+                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+            </Border.Background>
+            <Grid
+                Padding="4"
+                VerticalAlignment="Bottom"
+                CornerRadius="0,0,8,8"
+                Tag="{Binding}"
+                Tapped="Grid_Tapped">
+                    <Grid.Background>
+                    <AcrylicBrush
+                       
+                        FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
+                        TintColor="{ThemeResource SystemChromeMediumHighColor}"
+                        TintOpacity="1" />
+                </Grid.Background>
+                <TextBlock
+                    Margin="2"
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    MaxLines="1"
+                    Text="{Binding Title}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IconLinkTemplate">
+        <Border
+            Width="86"
+            BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource OverlayCornerRadius}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Border.Background>
+                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+            </Border.Background>
+            <StackPanel Padding="4" CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <StackPanel.Background>
+                    <AcrylicBrush
+                       
+                        FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
+                        TintColor="{ThemeResource SystemChromeMediumHighColor}"
+                        TintOpacity="1" />
+                </StackPanel.Background>
+                <Border
+                    Width="36"
+                    Height="36"
+                    Margin="4"
+                    CornerRadius="{ThemeResource ControlCornerRadius}"
+                    Tag="{Binding}"
+                    Tapped="Grid_Tapped">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                    </Border.Background>
+                </Border>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    MaxLines="1"
+                    Text="{Binding Title}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="SubTitle"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    MaxLines="1"
+                    Text="{Binding SubTitle}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap"
+                    Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LinkTemplate">
+        <Grid
+            BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource OverlayCornerRadius}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
+                <Image
+                    MaxWidth="160"
+                    MaxHeight="65"
+                    Source="{Binding Pic.Pic, Mode=OneWay}"
+                    Stretch="UniformToFill" />
+            </Border>
+            <Border
+                Padding="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom">
+                <TextBlock
+                    Margin="8,0"
+                    Text="{Binding Title}"
+                    TextWrapping="Wrap" />
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ImageTextTemplate">
+        <Grid
+            Width="260"
+            Height="118"
+            BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource OverlayCornerRadius}"
+            KeyDown="Grid_KeyDown"
+            Tag="{Binding}"
+            Tapped="Grid_Tapped">
+            <Grid.Background>
+                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" />
+            </Grid.Background>
+            <Border
+                VerticalAlignment="Bottom"
+                Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                CornerRadius="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}">
+                <TextBlock
+                    Margin="8"
+                    FontSize="16"
+                    Text="{Binding Title}"
+                    TextTrimming="WordEllipsis" />
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MiniUserTemplate">
+        <Button
+            Width="86"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            Click="Button_Click"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{Binding}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Ellipse
+                    Grid.Row="0"
+                    Width="36"
+                    Height="36"
+                    Margin="8"
+                    HorizontalAlignment="Center">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock
+                    Grid.Row="1"
+                    Text="{Binding Title}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis" />
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MiniIconLinkTemplate">
+        <Button
+            Width="124"
+            MinHeight="0"
+            Padding="0"
+            HorizontalContentAlignment="Left"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            Click="Button_Click"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{Binding}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Width="16"
+                    Height="16"
+                    Margin="8"
+                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                    </Border.Background>
+                </Border>
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="0,0,0,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding Title}"
+                    TextTrimming="CharacterEllipsis" />
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+</ResourceDictionary>

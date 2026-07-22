@@ -1,0 +1,86 @@
+﻿using CoolapkUWP.Helpers;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media.Animation;
+
+namespace CoolapkUWP.Controls
+{
+    public class Picker : ContentControl
+    {
+        private Popup _popup;
+        private Grid _rootGrid;
+
+        public static readonly DependencyProperty PopupTransitionsProperty =
+            DependencyProperty.Register(
+                nameof(PopupTransitions),
+                typeof(TransitionCollection),
+                typeof(Picker),
+                null);
+
+        public TransitionCollection PopupTransitions
+        {
+            get => (TransitionCollection)GetValue(PopupTransitionsProperty);
+            set => SetValue(PopupTransitionsProperty, value);
+        }
+
+        public Picker()
+        {
+            DefaultStyleKey = typeof(Picker);
+            Unloaded += Picker_Unloaded;
+            App.MainWindow.SizeChanged += Window_SizeChanged;
+        }
+
+        private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+        {
+            if (_rootGrid != null)
+            {
+                _rootGrid.Width = App.MainWindow.Bounds.Width;
+                _rootGrid.Height = App.MainWindow.Bounds.Height;
+            }
+        }
+
+        private void Picker_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= Picker_Unloaded;
+            App.MainWindow.SizeChanged -= Window_SizeChanged;
+        }
+
+        public void Show(UIElement element)
+        {
+            if (Parent is Grid grid)
+            {
+                grid.Children.Remove(this);
+            }
+
+            _rootGrid = new Grid
+            {
+                Width = App.MainWindow.Bounds.Width,
+                Height = App.MainWindow.Bounds.Height
+            };
+
+            _popup = new Popup
+            {
+                Child = _rootGrid
+            };
+            _rootGrid.Children.Add(this);
+
+            _popup.SetXAMLRoot(element);
+
+            _popup.IsOpen = true;
+        }
+
+        public void Hide()
+        {
+            _rootGrid?.Children.Remove(this);
+            _rootGrid = null;
+
+            if (_popup != null)
+            {
+                _popup.IsOpen = false;
+            }
+            _popup = null;
+        }
+    }
+}

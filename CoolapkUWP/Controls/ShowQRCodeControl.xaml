@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="CoolapkUWP.Controls.ShowQRCodeControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:CoolapkUWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0"
+            MaxWidth="200"
+            Margin="0,12"
+            HorizontalAlignment="Center"
+            Text="点按二维码分享链接"
+            TextWrapping="Wrap" />
+        <Button
+            Grid.Row="1"
+            Width="200"
+            Height="200"
+            Margin="4"
+            Padding="0"
+            HorizontalAlignment="Center"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+
+            CornerRadius="{StaticResource OverlayCornerRadius}"
+            Click="ShowUIButton_Click"
+            Style="{StaticResource TransparentButtonStyle}"
+            Tag="ShareFeed"
+            ToolTipService.ToolTip="{x:Bind QRCodeText, Mode=OneWay}">
+            <controls:QRCode
+                Padding="8"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                Content="{x:Bind QRCodeText}"
+                ContentCornerRadius="{StaticResource OverlayCornerRadius}"
+                Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                RequestedTheme="Light" />
+        </Button>
+    </Grid>
+</UserControl>

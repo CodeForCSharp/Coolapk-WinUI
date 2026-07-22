@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ms-appx:///Controls/QRCode/QRCode.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/Picker/Picker.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/Setting/Setting.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/PivotHeader/PivotHeader.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/SettingsGroup/SettingsGroup.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/SettingExpander/SettingExpander.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/ShyHeaderListView/ShyHeaderListView.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/WebViewContentControl/WebViewContentControl.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

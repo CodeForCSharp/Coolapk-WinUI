@@ -1,0 +1,1302 @@
+﻿<Page
+    x:Class="CoolapkUWP.Pages.FeedPages.FeedListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="using:CoolapkUWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:feedpages="using:CoolapkUWP.ViewModels.FeedPages"
+    xmlns:local="using:CoolapkUWP.Pages.FeedPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    d:DataContext="{d:DesignInstance Type=feedpages:FeedListViewModel}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <templates:FeedsTemplates />
+                <templates:IndexCardTemplates />
+                <templates:OtherDataTemplates />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="UserDetailCard">
+                <Border>
+                    <Border.Resources>
+                        <MenuFlyout x:Key="MoreFlyout">
+                            <MenuFlyoutItem
+                                x:Name="PinTileButton"
+                                x:Uid="PinTile"
+                                Click="Button_Click"
+                                Tag="{Binding}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem
+                                x:Name="ReportButton"
+                                x:Uid="Report"
+                                Click="Button_Click"
+                                Tag="{Binding UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=user&amp;m=report&amp;id={0}', Mode=OneWay}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutSubItem x:Uid="CoverMenuSubItem">
+                                <MenuFlyoutSubItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8B9;" />
+                                </MenuFlyoutSubItem.Icon>
+                                <MenuFlyoutItem
+                                    x:Name="RefreshButton"
+                                    x:Uid="RefreshMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="ShowImageButton"
+                                    x:Uid="ShowMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="CopyButton"
+                                    x:Uid="CopyMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="ShareButton"
+                                    x:Uid="ShareMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="SaveButton"
+                                    x:Uid="SaveMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyoutSubItem>
+                        </MenuFlyout>
+                    </Border.Resources>
+                    <Grid
+                        HorizontalAlignment="Stretch"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CanDrag="True"
+                        ContextFlyout="{StaticResource MoreFlyout}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        DragStarting="Image_DragStarting">
+                        <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Cover.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                            </Border.Background>
+                        </Border>
+                        <Grid
+                            Padding="10"
+                            Background="{ThemeResource TextOnAccentFillColorSecondaryBrush}"
+                            ContextFlyout="{StaticResource MoreFlyout}"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}">
+                            <control:StackPanel Spacing="8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <muxc:PersonPicture
+                                        Width="56"
+                                        Height="56"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        DisplayName="{Binding UserName}"
+                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                    <Button
+                                        x:Name="FollowButton"
+                                        Grid.Column="1"
+                                        Height="32"
+                                        HorizontalAlignment="Right"
+                                        Click="Button_Click"
+                                        Style="{StaticResource TransparentButtonStyle}"
+                                        Tag="{Binding}"
+                                        ToolTipService.ToolTip="{Binding FollowStatus}"
+                                        Visibility="{Binding FollowStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon
+                                                VerticalAlignment="Center"
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="15"
+                                                Glyph="{Binding FollowGlyph}" />
+                                            <TextBlock
+                                                x:Name="FollowStatus"
+                                                Margin="8,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FollowStatus}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                                <Grid HorizontalAlignment="Left">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            FontSize="12"
+                                            FontStyle="Italic"
+                                            Foreground="{Binding Foreground, ElementName=NextLevelPercentage, Mode=OneWay}"
+                                            Text="{Binding LevelNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}'}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            FontSize="12"
+                                            Text="{Binding NextLevelNowExperience}" />
+                                    </Grid>
+                                    <muxc:ProgressBar
+                                        x:Name="NextLevelPercentage"
+                                        Grid.Row="1"
+                                        Width="160"
+                                        Margin="0,4"
+                                        Value="{Binding NextLevelPercentage}" />
+                                </Grid>
+                                <TextBlock
+                                    IsTextSelectionEnabled="{Binding IsCopyEnabled}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="{Binding VerifyTitle, Converter={StaticResource StringVisibilityConverter}}">
+                                    <Run
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        Foreground="LightGreen"
+                                        Text="&#xE10B;" />
+                                    <Run Text="{Binding VerifyTitle}" />
+                                </TextBlock>
+                                <TextBlock
+                                    Text="{Binding Bio}"
+                                    TextWrapping="WrapWholeWords"
+                                    Visibility="{Binding Bio, Converter={StaticResource StringVisibilityConverter}}" />
+                                <control:StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock FontSize="16">
+                                        <Run FontWeight="Bold" Text="{Binding LikeNum}" />
+                                        <Run x:Uid="LikeNum" FontWeight="Thin" />
+                                    </TextBlock>
+                                    <Button
+                                        x:Name="FollowsButton"
+                                        Padding="0"
+                                        Click="Button_Click"
+                                        FontSize="16"
+                                        Style="{StaticResource TransparentButtonStyle}">
+                                        <TextBlock>
+                                            <Run FontWeight="Bold" Text="{Binding FollowNum}" />
+                                            <Run x:Uid="FollowNum" FontWeight="Thin" />
+                                        </TextBlock>
+                                    </Button>
+                                    <Button
+                                        x:Name="FansButton"
+                                        Padding="0"
+                                        Click="Button_Click"
+                                        FontSize="16"
+                                        Style="{StaticResource TransparentButtonStyle}">
+                                        <TextBlock>
+                                            <Run FontWeight="Bold" Text="{Binding FansNum}" />
+                                            <Run x:Uid="FansNum" FontWeight="Thin" />
+                                        </TextBlock>
+                                    </Button>
+                                    <TextBlock FontSize="16">
+                                        <Run FontWeight="Bold" Text="{Binding FeedNum}" />
+                                        <Run x:Uid="FeedsNum" FontWeight="Thin" />
+                                    </TextBlock>
+                                </control:StackPanel>
+                                <control:StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Border
+                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                                        Visibility="{Binding Gender, Converter={StaticResource StringVisibilityConverter}}">
+                                        <TextBlock
+                                            Margin="4,2"
+                                            FontSize="12"
+                                            Text="{Binding Gender}" />
+                                    </Border>
+                                    <Border
+                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                                        Visibility="{Binding City, Converter={StaticResource StringVisibilityConverter}}">
+                                        <TextBlock
+                                            Margin="4,2"
+                                            FontSize="12"
+                                            Text="{Binding City}" />
+                                    </Border>
+                                    <Border
+                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                                        Visibility="{Binding Astro, Converter={StaticResource StringVisibilityConverter}}">
+                                        <TextBlock
+                                            Margin="4,2"
+                                            FontSize="12"
+                                            Text="{Binding Astro}" />
+                                    </Border>
+                                    <Border
+                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                                        Visibility="{Binding BlockStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        <TextBlock
+                                            Margin="4,2"
+                                            FontSize="12"
+                                            Text="{Binding BlockStatus}" />
+                                    </Border>
+                                </control:StackPanel>
+                            </control:StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="TopicDetailCard">
+                <Border
+                    Padding="10"
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <Border.Resources>
+                        <MenuFlyout x:Key="MoreFlyout">
+                            <MenuFlyoutItem
+                                x:Name="PinTileButton"
+                                x:Uid="PinTile"
+                                Click="Button_Click"
+                                Tag="{Binding}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Border.Resources>
+                    <control:StackPanel
+                        Background="{ThemeResource SystemControlTransparentBrush}"
+                        ContextFlyout="{StaticResource MoreFlyout}"
+                        Spacing="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="56"
+                                Height="56"
+                                HorizontalAlignment="Left"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                </Border.Background>
+                            </Border>
+                            <control:StackPanel Grid.Column="1" Margin="8,0">
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding Title}" />
+                                <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                    <Run Text="{Binding HotNum}" />
+                                    <Run Text="{Binding CommentNum}" />
+                                </TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <muxc:ItemsRepeater ItemsSource="{Binding FollowUsers}">
+                                        <muxc:ItemsRepeater.Layout>
+                                            <muxc:StackLayout Orientation="Horizontal" Spacing="-6" />
+                                        </muxc:ItemsRepeater.Layout>
+                                        <muxc:ItemsRepeater.ItemTemplate>
+                                            <DataTemplate>
+                                                <muxc:PersonPicture
+                                                    Width="16"
+                                                    Height="16"
+                                                    DisplayName="{Binding UserName}"
+                                                    ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
+                                                    Tag="{Binding Url}"
+                                                    Tapped="On_Tapped"
+                                                    ToolTipService.ToolTip="{Binding UserName}" />
+                                            </DataTemplate>
+                                        </muxc:ItemsRepeater.ItemTemplate>
+                                    </muxc:ItemsRepeater>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        FontSize="12"
+                                        Text="{Binding FollowNum}" />
+                                </Grid>
+                            </control:StackPanel>
+                            <Button
+                                x:Name="FollowButton"
+                                Grid.Column="2"
+                                Height="32"
+                                HorizontalAlignment="Right"
+                                Click="Button_Click"
+                                Style="{StaticResource TransparentButtonStyle}"
+                                Tag="{Binding}"
+                                ToolTipService.ToolTip="{Binding FollowStatus}">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="15"
+                                        Glyph="{Binding FollowGlyph}" />
+                                    <TextBlock
+                                        x:Name="FollowStatus"
+                                        Margin="8,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding FollowStatus}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBlock
+                            Text="{Binding Description}"
+                            TextWrapping="WrapWholeWords"
+                            Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                        <TextBlock
+                            Text="{Binding SubTitle}"
+                            TextWrapping="WrapWholeWords"
+                            Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+                    </control:StackPanel>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="DyhDetailCard">
+                <Border
+                    Padding="10"
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <Border.Resources>
+                        <MenuFlyout x:Key="MoreFlyout">
+                            <MenuFlyoutItem
+                                x:Name="PinTileButton"
+                                x:Uid="PinTile"
+                                Click="Button_Click"
+                                Tag="{Binding}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Border.Resources>
+                    <control:StackPanel
+                        Background="{ThemeResource SystemControlTransparentBrush}"
+                        ContextFlyout="{StaticResource MoreFlyout}"
+                        Spacing="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="56"
+                                Height="56"
+                                HorizontalAlignment="Left"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                </Border.Background>
+                            </Border>
+                            <control:StackPanel Grid.Column="1" Margin="8,0">
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding Title}" />
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="Thin"
+                                    Text="{Binding FollowNum}" />
+                                <Grid
+                                    Background="{ThemeResource SystemControlTransparentBrush}"
+                                    Tag="{Binding Uurl}"
+                                    Tapped="On_Tapped">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <muxc:PersonPicture
+                                        Width="16"
+                                        Height="16"
+                                        DisplayName="{Binding UserName}"
+                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        FontSize="12"
+                                        Text="{Binding UserName}" />
+                                </Grid>
+                            </control:StackPanel>
+                            <Button
+                                x:Name="FollowButton"
+                                Grid.Column="2"
+                                Height="32"
+                                HorizontalAlignment="Right"
+                                Click="Button_Click"
+                                Style="{StaticResource TransparentButtonStyle}"
+                                Tag="{Binding}"
+                                ToolTipService.ToolTip="{Binding FollowStatus}">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="15"
+                                        Glyph="{Binding FollowGlyph}" />
+                                    <TextBlock
+                                        x:Name="FollowStatus"
+                                        Margin="8,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding FollowStatus}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBlock
+                            Text="{Binding Description}"
+                            TextWrapping="WrapWholeWords"
+                            Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                    </control:StackPanel>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="ProductDetailCard">
+                <control:StackPanel Spacing="6">
+                    <Grid
+                        HorizontalAlignment="Stretch"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Visibility="{Binding CoverArr, Converter={StaticResource CollectionVisibilityConverter}}">
+                        <FlipView
+                            x:Name="FlipView"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}"
+                            Background="{ThemeResource SystemControlTransparentBrush}"
+                            ItemsSource="{Binding CoverArr}"
+                            Loaded="FlipView_Loaded"
+                            SizeChanged="FlipView_SizeChanged">
+                            <FlipView.ItemTemplate>
+                                <DataTemplate>
+                                    <Image
+                                        x:Name="Picture"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        CanDrag="True"
+                                        DragStarting="Image_DragStarting"
+                                        Source="{Binding Pic, Mode=OneWay}"
+                                        Stretch="UniformToFill">
+                                        <Image.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem
+                                                    x:Name="RefreshButton"
+                                                    x:Uid="RefreshMenuItem"
+                                                    Click="AppBarButton_Click"
+                                                    Tag="{Binding}">
+                                                    <MenuFlyoutItem.Icon>
+                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
+                                                    </MenuFlyoutItem.Icon>
+                                                </MenuFlyoutItem>
+                                                <MenuFlyoutItem
+                                                    x:Name="CopyButton"
+                                                    x:Uid="CopyMenuItem"
+                                                    Click="AppBarButton_Click"
+                                                    Tag="{Binding}">
+                                                    <MenuFlyoutItem.Icon>
+                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                                                    </MenuFlyoutItem.Icon>
+                                                </MenuFlyoutItem>
+                                                <MenuFlyoutItem
+                                                    x:Name="ShareButton"
+                                                    x:Uid="ShareMenuItem"
+                                                    Click="AppBarButton_Click"
+                                                    Tag="{Binding}">
+                                                    <MenuFlyoutItem.Icon>
+                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
+                                                    </MenuFlyoutItem.Icon>
+                                                </MenuFlyoutItem>
+                                                <MenuFlyoutItem
+                                                    x:Name="SaveButton"
+                                                    x:Uid="SaveMenuItem"
+                                                    Click="AppBarButton_Click"
+                                                    Tag="{Binding}">
+                                                    <MenuFlyoutItem.Icon>
+                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
+                                                    </MenuFlyoutItem.Icon>
+                                                </MenuFlyoutItem>
+                                            </MenuFlyout>
+                                        </Image.ContextFlyout>
+                                    </Image>
+                                </DataTemplate>
+                            </FlipView.ItemTemplate>
+                        </FlipView>
+                        <Border
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            CornerRadius="6">
+                                <Border.Background>
+                                <AcrylicBrush
+                                   
+                                    FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
+                                    TintColor="{ThemeResource SystemChromeMediumHighColor}"
+                                    TintOpacity="0" />
+                            </Border.Background>
+                            <muxc:PipsPager
+                                Margin="2,0"
+                                NumberOfPages="{Binding CoverArr, Converter={StaticResource CollectionCountConverter}}"
+                                SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
+                        </Border>
+                    </Grid>
+                    <Grid
+                        Padding="10"
+                        HorizontalAlignment="Stretch"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}">
+                        <control:StackPanel Spacing="8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    Width="56"
+                                    Height="56"
+                                    HorizontalAlignment="Left"
+                                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                    </Border.Background>
+                                </Border>
+                                <control:StackPanel Grid.Column="1" Margin="8,0">
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Title}" />
+                                    <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                        <Run Text="{Binding HotNum}" />
+                                        <Run Text="{Binding CommentNum}" />
+                                    </TextBlock>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <muxc:ItemsRepeater ItemsSource="{Binding FollowUsers}">
+                                            <muxc:ItemsRepeater.Layout>
+                                                <muxc:StackLayout Orientation="Horizontal" Spacing="-6" />
+                                            </muxc:ItemsRepeater.Layout>
+                                            <muxc:ItemsRepeater.ItemTemplate>
+                                                <DataTemplate>
+                                                    <muxc:PersonPicture
+                                                        Width="16"
+                                                        Height="16"
+                                                        DisplayName="{Binding UserName}"
+                                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
+                                                        Tag="{Binding Url}"
+                                                        Tapped="On_Tapped"
+                                                        ToolTipService.ToolTip="{Binding UserName}" />
+                                                </DataTemplate>
+                                            </muxc:ItemsRepeater.ItemTemplate>
+                                        </muxc:ItemsRepeater>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="4,0"
+                                            FontSize="12"
+                                            Text="{Binding FollowNum}" />
+                                    </Grid>
+                                </control:StackPanel>
+                                <Button
+                                    x:Name="FollowButton"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    HorizontalAlignment="Right"
+                                    Click="Button_Click"
+                                    Style="{StaticResource TransparentButtonStyle}"
+                                    Tag="{Binding}"
+                                    ToolTipService.ToolTip="{Binding FollowStatus}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <FontIcon
+                                            VerticalAlignment="Center"
+                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                            FontSize="15"
+                                            Glyph="{Binding FollowGlyph}" />
+                                        <TextBlock
+                                            x:Name="FollowStatus"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FollowStatus}" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <TextBlock
+                                Text="{Binding Description}"
+                                TextWrapping="WrapWholeWords"
+                                Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                        </control:StackPanel>
+                    </Grid>
+                    <muxc:ItemsRepeaterScrollHost Visibility="{Binding TagArr, Converter={StaticResource CollectionVisibilityConverter}}">
+                        <ScrollViewer
+                            Margin="0,-2"
+                            Padding="0,2"
+                            HorizontalScrollBarVisibility="Hidden"
+                            HorizontalScrollMode="Auto"
+                            VerticalScrollMode="Disabled">
+                            <muxc:ItemsRepeater HorizontalAlignment="Stretch" ItemsSource="{Binding TagArr}">
+                                <muxc:ItemsRepeater.Layout>
+                                    <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
+                                </muxc:ItemsRepeater.Layout>
+                                <muxc:ItemsRepeater.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid
+                                            VerticalAlignment="Center"
+                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="{ThemeResource ControlCornerRadius}">
+                                            <TextBlock
+                                                Margin="4,2"
+                                                FontSize="12"
+                                                Text="{Binding}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </muxc:ItemsRepeater.ItemTemplate>
+                            </muxc:ItemsRepeater>
+                        </ScrollViewer>
+                    </muxc:ItemsRepeaterScrollHost>
+                    <Grid
+                        Padding="10"
+                        HorizontalAlignment="Stretch"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}">
+                        <control:StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    x:Uid="OwnerStar"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                <TextBlock
+                                    x:Uid="AllStar"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                <Grid Grid.Column="1" HorizontalAlignment="Right">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ToggleButton
+                                        x:Name="SeeAllButton"
+                                        x:Uid="SeeAllButton"
+                                        Grid.Column="1"
+                                        Padding="4,2"
+
+                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}"
+                                        BorderThickness="0,1,1,1"
+                                        FontSize="12"
+                                        IsChecked="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
+                                    <ToggleButton
+                                        x:Name="OnlyOwnerButton"
+                                        x:Uid="OnlyOwnerButton"
+                                        Grid.Column="0"
+                                        Padding="4,2"
+
+                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource LeftCornerRadiusFilterConverter}}"
+                                        BorderThickness="1,1,0,1"
+                                        FontSize="12"
+                                        IsChecked="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
+                                </Grid>
+                            </Grid>
+                            <Grid Height="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel HorizontalAlignment="Center" Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="35"
+                                        FontWeight="Bold"
+                                        Text="{Binding OwnerScore}" />
+                                    <muxc:RatingControl
+                                        HorizontalAlignment="Center"
+                                        IsReadOnly="True"
+                                        Value="{Binding OwnerScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5'}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="Thin"
+                                        Text="{Binding RatingCount}" />
+                                </StackPanel>
+                                <StackPanel HorizontalAlignment="Center" Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="35"
+                                        FontWeight="Bold"
+                                        Text="{Binding RatingScore}" />
+                                    <muxc:RatingControl
+                                        HorizontalAlignment="Center"
+                                        IsReadOnly="True"
+                                        Value="{Binding RatingScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5'}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="Thin"
+                                        Text="{Binding StarCount}" />
+                                </StackPanel>
+                                <Grid
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="5星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding OwnerStar5Percent}" />
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding OwnerStar5Count}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="4星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding OwnerStar4Percent}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding OwnerStar4Count}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="3星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding OwnerStar3Percent}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding OwnerStar3Count}" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="2星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding OwnerStar2Percent}" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding OwnerStar2Count}" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="1星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding OwnerStar1Percent}" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding OwnerStar1Count}" />
+                                </Grid>
+                                <Grid
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="5星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding Star5Percent}" />
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding Star5Count}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="4星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding Star4Percent}" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding Star4Count}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="3星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding Star3Percent}" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding Star3Count}" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="2星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding Star2Percent}" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding Star2Count}" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Text="1星" />
+                                    <muxc:ProgressBar
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding Star1Percent}" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        FontWeight="Thin"
+                                        Text="{Binding Star1Count}" />
+                                </Grid>
+                            </Grid>
+                        </control:StackPanel>
+                    </Grid>
+                </control:StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="CollectionDetailCard">
+                <Grid
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <Grid.Resources>
+                        <MenuFlyout x:Key="MoreFlyout">
+                            <MenuFlyoutItem
+                                x:Name="PinTileButton"
+                                x:Uid="PinTile"
+                                Click="Button_Click"
+                                Tag="{Binding}">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutSubItem x:Uid="CoverMenuSubItem">
+                                <MenuFlyoutSubItem.Icon>
+                                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8B9;" />
+                                </MenuFlyoutSubItem.Icon>
+                                <MenuFlyoutItem
+                                    x:Name="RefreshButton"
+                                    x:Uid="RefreshMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="ShowImageButton"
+                                    x:Uid="ShowMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="CopyButton"
+                                    x:Uid="CopyMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="ShareButton"
+                                    x:Uid="ShareMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    x:Name="SaveButton"
+                                    x:Uid="SaveMenuItem"
+                                    Click="AppBarButton_Click"
+                                    Tag="{Binding Cover}">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyoutSubItem>
+                        </MenuFlyout>
+                    </Grid.Resources>
+                    <Border
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        CanDrag="True"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        DragStarting="Image_DragStarting">
+                        <Image
+                            ContextFlyout="{StaticResource MoreFlyout}"
+                            Source="{Binding Cover.Pic, Mode=OneWay}"
+                            Stretch="UniformToFill"
+                            Tag="{Binding Cover}" />
+                    </Border>
+                    <Grid
+                        Padding="8"
+                        VerticalAlignment="Bottom"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                        CornerRadius="0,0,8,8">
+                        <control:StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    FontSize="20"
+                                    Text="{Binding Title}"
+                                    TextWrapping="Wrap" />
+                                <StackPanel
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        x:Name="LikeButton"
+                                        x:Uid="LikeButton"
+                                        Height="32"
+                                        Click="Button_Click"
+                                        Style="{StaticResource TransparentButtonStyle}"
+                                        Tag="{Binding}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                Glyph="&#xE8E1;"
+                                                Visibility="{Binding Liked, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                            <FontIcon
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                Glyph="&#xE8E1;"
+                                                Visibility="{Binding Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+                                            <TextBlock Margin="8,0,0,0" Text="{Binding LikeNum}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        x:Name="FollowButton"
+                                        Height="32"
+                                        Click="Button_Click"
+                                        Style="{StaticResource TransparentButtonStyle}"
+                                        Tag="{Binding}"
+                                        ToolTipService.ToolTip="{Binding FollowStatus}"
+                                        Visibility="{Binding FollowStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <FontIcon
+                                                VerticalAlignment="Center"
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                FontSize="15"
+                                                Glyph="{Binding FollowGlyph}" />
+                                            <TextBlock
+                                                x:Name="FollowStatus"
+                                                Margin="8,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Text="{Binding FollowStatus}" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Ellipse
+                                    Grid.Column="0"
+                                    Width="20"
+                                    Height="20"
+                                    VerticalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="0,0,0,2"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    TextWrapping="Wrap">
+                                    <Run Text="{Binding UserName}" />
+                                    <Run Text="{Binding LastUpdate}" />
+                                    <Run Text="{Binding FollowNum}" />
+                                </TextBlock>
+                            </Grid>
+                            <TextBlock
+                                Text="{Binding Description}"
+                                TextWrapping="Wrap"
+                                Visibility="{Binding Description, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        </control:StackPanel>
+                    </Grid>
+                </Grid>
+            </DataTemplate>
+            <templates:CardTemplateSelector
+                x:Key="CardTemplateSelector"
+                Feed="{StaticResource FeedDefaultTemplate}"
+                FeedReply="{StaticResource FeedReplyDefaultTemplate}"
+                GridScrollCard="{StaticResource GridScrollCardTemplate}"
+                IconLinks="{StaticResource IconLinksTemplate}"
+                ImageTextScrollCard="{StaticResource ImageTextScrollCardTemplate}"
+                Images="{StaticResource ImageCardTemplate}"
+                List="{StaticResource ListDefaultTemplate}"
+                Others="{StaticResource Empty}"
+                User="{StaticResource UserTemplate}" />
+            <local:DetailTemplateSelector
+                x:Name="DetailTemplateSelector"
+                CollectionDetail="{StaticResource CollectionDetailCard}"
+                DyhDetail="{StaticResource DyhDetailCard}"
+                Others="{StaticResource Empty}"
+                ProductDetail="{StaticResource ProductDetailCard}"
+                TopicDetail="{StaticResource TopicDetailCard}"
+                UserDetail="{StaticResource UserDetailCard}" />
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <muxc:TwoPaneView
+            x:Name="TwoPaneView"
+            Loaded="TwoPaneView_Loaded"
+            MinWideModeWidth="804"
+            ModeChanged="TwoPaneView_ModeChanged"
+            Pane1Length="420"
+            PanePriority="Pane2"
+            TallModeConfiguration="SinglePane">
+            <muxc:TwoPaneView.Pane1>
+                <Grid x:Name="LeftGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <control:PageHeader
+                        x:Name="HeaderControl"
+                        Title="{Binding Title}"
+                        Grid.Row="0"
+                        Margin="18,0,0,0"
+                        FontSize="{StaticResource ContentControlFontSize}"
+                        FontWeight="Normal">
+                        <Button
+                            x:Name="HeaderRefreshButton"
+                            x:Uid="RefreshButton"
+                            VerticalAlignment="Center"
+                            Click="RefreshButton_Click"
+                            Content="&#xE72C;"
+                            Style="{StaticResource NavigationIconButtonNormalStyle}">
+                            <Button.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F5" />
+                            </Button.KeyboardAccelerators>
+                        </Button>
+                    </control:PageHeader>
+                    <ScrollViewer
+                        x:Name="DetailScrollViewer"
+                        Grid.Row="1"
+                        Padding="12,4,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Stretch"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+                        <Grid x:Name="Pane1Grid">
+                            <ContentControl
+                                x:Name="DetailControl"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Content="{Binding Detail}"
+                                ContentTemplate="{Binding DetailDataTemplate}" />
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </muxc:TwoPaneView.Pane1>
+            <muxc:TwoPaneView.Pane2>
+                <Grid x:Name="RightGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <control:ShyHeaderListView
+                        x:Name="ListView"
+                        Grid.Row="1"
+                        Padding="7,3,7,4"
+                        ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
+                        HeaderHeight="42"
+                        ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+                        ItemTemplateSelector="{StaticResource CardTemplateSelector}"
+                        ShowsScrollingPlaceholders="False"
+                        ShyHeaderItemSource="{Binding ItemSource}">
+                        <control:ShyHeaderListView.TopHeader>
+                            <Grid x:Name="Pane2Grid" />
+                        </control:ShyHeaderListView.TopHeader>
+                        <control:ShyHeaderListView.RightHeader>
+                            <Button
+                                x:Name="ListRefreshButton"
+                                x:Uid="RefreshButton"
+                                Width="32"
+                                Height="32"
+                                Margin="4"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                Click="RefreshButton_Click"
+                                Content="&#xE72C;"
+                                Style="{StaticResource NavigationIconButtonNormalStyle}">
+                                <Button.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="F5" />
+                                </Button.KeyboardAccelerators>
+                            </Button>
+                        </control:ShyHeaderListView.RightHeader>
+                    </control:ShyHeaderListView>
+                </Grid>
+            </muxc:TwoPaneView.Pane2>
+        </muxc:TwoPaneView>
+    </Grid>
+</Page>
