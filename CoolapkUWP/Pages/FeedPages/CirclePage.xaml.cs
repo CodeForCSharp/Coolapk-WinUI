@@ -33,9 +33,7 @@ namespace CoolapkUWP.Pages.FeedPages
         {
             if (!isLoaded)
             {
-                var items = GetMainItems();
-                Pivot.TabItems.Clear();
-                foreach (var it in items) Pivot.TabItems.Add(it);
+                Pivot.ItemsSource = GetMainItems();
                 Pivot.SelectedIndex = PivotIndex;
                 isLoaded = true;
             }
@@ -43,29 +41,29 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabViewItem MenuItem = Pivot.SelectedItem as TabViewItem;
-            if ((Pivot.SelectedItem as TabViewItem).Content is Frame Frame && Frame.Content is null)
+            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
+            if ((Pivot.SelectedItem as PivotItem).Content is Frame Frame && Frame.Content is null)
             {
                 _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(MenuItem.Tag.ToString().Contains("V") ? $"/page?url={MenuItem.Tag}" : $"/page?url=V9_HOME_TAB_FOLLOW&type={MenuItem.Tag}"));
                 Refresh = (reset) => _ = (Frame.Content as AdaptivePage).Refresh(reset);
             }
-            else if ((Pivot.SelectedItem as TabViewItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
+            else if ((Pivot.SelectedItem as PivotItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
             {
                 Refresh = (reset) => _ = AdaptivePage.Refresh(reset);
             }
         }
 
-        public static ObservableCollection<TabViewItem> GetMainItems()
+        public static ObservableCollection<PivotItem> GetMainItems()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("CirclePage");
-            ObservableCollection<TabViewItem> items = new ObservableCollection<TabViewItem>
+            ObservableCollection<PivotItem> items = new ObservableCollection<PivotItem>
             {
-                new TabViewItem() { Tag = "V9_HOME_TAB_FOLLOW", Header = loader.GetString("V9_HOME_TAB_FOLLOW"), Content = new Frame() },
-                new TabViewItem() { Tag = "circle", Header = loader.GetString("circle"), Content = new Frame() },
-                new TabViewItem() { Tag = "apk", Header = loader.GetString("apk"), Content = new Frame() },
-                new TabViewItem() { Tag = "topic", Header = loader.GetString("topic"), Content = new Frame() },
-                new TabViewItem() { Tag = "question", Header = loader.GetString("question"), Content = new Frame() },
-                new TabViewItem() { Tag = "product", Header = loader.GetString("product"), Content = new Frame() }
+                new PivotItem() { Tag = "V9_HOME_TAB_FOLLOW", Header = loader.GetString("V9_HOME_TAB_FOLLOW"), Content = new Frame() },
+                new PivotItem() { Tag = "circle", Header = loader.GetString("circle"), Content = new Frame() },
+                new PivotItem() { Tag = "apk", Header = loader.GetString("apk"), Content = new Frame() },
+                new PivotItem() { Tag = "topic", Header = loader.GetString("topic"), Content = new Frame() },
+                new PivotItem() { Tag = "question", Header = loader.GetString("question"), Content = new Frame() },
+                new PivotItem() { Tag = "product", Header = loader.GetString("product"), Content = new Frame() }
             };
             return items;
         }

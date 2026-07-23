@@ -128,8 +128,8 @@
                                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
                             </Style>
                         </Flyout.FlyoutPresenterStyle>
-                        <TabView>
-                            <TabViewItem x:Uid="UserPivotItem">
+                        <Pivot>
+                            <PivotItem x:Uid="UserPivotItem">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -187,8 +187,8 @@
                                         Background="{ThemeResource SystemControlTransparentBrush}"
                                         IsIndeterminate="{x:Bind Provider.CreateUserItemSource.IsLoading, Mode=OneWay}" />
                                 </Grid>
-                            </TabViewItem>
-                            <TabViewItem x:Uid="TopicPivotItem">
+                            </PivotItem>
+                            <PivotItem x:Uid="TopicPivotItem">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -249,8 +249,8 @@
                                         Background="{ThemeResource SystemControlTransparentBrush}"
                                         IsIndeterminate="{x:Bind Provider.CreateTopicItemSource.IsLoading, Mode=OneWay}" />
                                 </Grid>
-                            </TabViewItem>
-                        </TabView>
+                            </PivotItem>
+                        </Pivot>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
@@ -308,8 +308,8 @@
                                     </DataTemplate>
                                 </AutoSuggestBox.ItemTemplate>
                             </AutoSuggestBox>
-                            <TabView Grid.Row="1">
-                                <TabViewItem Header="常规">
+                            <Pivot Grid.Row="1">
+                                <PivotItem Header="常规">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -317,8 +317,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.Normal}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                                <TabViewItem Header="酷币">
+                                </PivotItem>
+                                <PivotItem Header="酷币">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -326,8 +326,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.CoolCoins}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                                <TabViewItem Header="滑稽">
+                                </PivotItem>
+                                <PivotItem Header="滑稽">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -335,8 +335,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.Funny}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                                <TabViewItem Header="Doge">
+                                </PivotItem>
+                                <PivotItem Header="Doge">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -344,8 +344,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.Doge}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                                <TabViewItem Header="传统">
+                                </PivotItem>
+                                <PivotItem Header="传统">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -353,8 +353,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.Tradition}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                                <TabViewItem Header="经典">
+                                </PivotItem>
+                                <PivotItem Header="经典">
                                     <GridView
                                         Padding="8,0"
                                         IsItemClickEnabled="True"
@@ -362,8 +362,8 @@
                                         ItemTemplate="{StaticResource EmojiImageTemplate}"
                                         ItemsSource="{x:Bind helpers:EmojiHelper.Classic}"
                                         SelectionChanged="GridView_SelectionChanged" />
-                                </TabViewItem>
-                            </TabView>
+                                </PivotItem>
+                            </Pivot>
                         </Grid>
                     </Flyout>
                 </AppBarButton.Flyout>

@@ -77,7 +77,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         {
             if (reset)
             {
-                List<TabViewItem> ItemSource = new List<TabViewItem>();
+                List<PivotItem> ItemSource = new List<PivotItem>();
                 if (SearchFeedItemSource == null)
                 {
                     SearchFeedItemSource = new SearchFeedItemSource(Title);

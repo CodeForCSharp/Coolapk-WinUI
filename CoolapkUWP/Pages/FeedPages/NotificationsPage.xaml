@@ -7,11 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
-    <TabView
+    <Pivot
         x:Name="Pivot"
         Loaded="Pivot_Loaded"
         SelectionChanged="Pivot_SelectionChanged">
-        <TabView.TabStripFooter>
+        <Pivot.RightHeader>
             <Button
                 x:Name="RefreshButton"
                 x:Uid="RefreshButton"
@@ -23,9 +23,9 @@
                     <KeyboardAccelerator Key="F5" />
                 </Button.KeyboardAccelerators>
             </Button>
-        </TabView.TabStripFooter>
-        <TabViewItem Tag="CommentMe">
-            <TabViewItem.Header>
+        </Pivot.RightHeader>
+        <PivotItem Tag="CommentMe">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="CommentMe" />
                     <muxc:InfoBadge
@@ -33,11 +33,11 @@
                         Visibility="{x:Bind NotificationsModel.CommentMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.CommentMeNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-        <TabViewItem Tag="AtMe">
-            <TabViewItem.Header>
+        </PivotItem>
+        <PivotItem Tag="AtMe">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="AtMe" />
                     <muxc:InfoBadge
@@ -45,11 +45,11 @@
                         Visibility="{x:Bind NotificationsModel.AtMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.AtMeNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-        <TabViewItem Tag="AtCommentMe">
-            <TabViewItem.Header>
+        </PivotItem>
+        <PivotItem Tag="AtCommentMe">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="AtCommentMe" />
                     <muxc:InfoBadge
@@ -57,11 +57,11 @@
                         Visibility="{x:Bind NotificationsModel.AtCommentMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.AtCommentMeNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-        <TabViewItem Tag="FeedLike">
-            <TabViewItem.Header>
+        </PivotItem>
+        <PivotItem Tag="FeedLike">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="FeedLike" />
                     <muxc:InfoBadge
@@ -69,11 +69,11 @@
                         Visibility="{x:Bind NotificationsModel.FeedLikeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.FeedLikeNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-        <TabViewItem Tag="Follow">
-            <TabViewItem.Header>
+        </PivotItem>
+        <PivotItem Tag="Follow">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="Follow" />
                     <muxc:InfoBadge
@@ -81,11 +81,11 @@
                         Visibility="{x:Bind NotificationsModel.FollowNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.FollowNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-        <TabViewItem Tag="Message">
-            <TabViewItem.Header>
+        </PivotItem>
+        <PivotItem Tag="Message">
+            <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock x:Uid="Message" />
                     <muxc:InfoBadge
@@ -93,8 +93,8 @@
                         Visibility="{x:Bind NotificationsModel.MessageNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
                         Value="{x:Bind NotificationsModel.MessageNum, Mode=OneWay}" />
                 </controls:StackPanel>
-            </TabViewItem.Header>
+            </PivotItem.Header>
             <Frame />
-        </TabViewItem>
-    </TabView>
+        </PivotItem>
+    </Pivot>
 </Page>

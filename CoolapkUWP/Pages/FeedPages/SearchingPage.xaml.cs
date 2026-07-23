@@ -49,8 +49,8 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabViewItem MenuItem = Pivot.SelectedItem as TabViewItem;
-            if ((Pivot.SelectedItem as TabViewItem).Content is RefreshContainer RefreshContainer
+            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
+            if ((Pivot.SelectedItem as PivotItem).Content is RefreshContainer RefreshContainer
                 && RefreshContainer.Content is ListView ListView
                 && ListView.ItemsSource is EntityItemSource ItemsSource)
             {
@@ -73,7 +73,7 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 _ = Refresh(true);
             }
-            else if ((Pivot.SelectedItem as TabViewItem).Content is RefreshContainer RefreshContainer
+            else if ((Pivot.SelectedItem as PivotItem).Content is RefreshContainer RefreshContainer
                 && RefreshContainer.Content is ListView ListView
                 && ListView.ItemsSource is EntityItemSource ItemsSource)
             {

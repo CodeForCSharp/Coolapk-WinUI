@@ -66,10 +66,10 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabViewItem MenuItem = Pivot.SelectedItem as TabViewItem;
-            if ((Pivot.SelectedItem as TabViewItem).Content is Frame Frame && Frame.Content is null)
+            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
+            if ((Pivot.SelectedItem as PivotItem).Content is Frame Frame && Frame.Content is null)
             {
-                switch ((Pivot.SelectedItem as TabViewItem).Tag.ToString())
+                switch ((Pivot.SelectedItem as PivotItem).Tag.ToString())
                 {
                     case "CommentMe":
                         _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
@@ -153,7 +153,7 @@ namespace CoolapkUWP.Pages.FeedPages
                 }
                 RefreshTask = (reset) => (Frame.Content as AdaptivePage).Refresh(reset);
             }
-            else if ((Pivot.SelectedItem as TabViewItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
+            else if ((Pivot.SelectedItem as PivotItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
             {
                 RefreshTask = (reset) => AdaptivePage.Refresh(reset);
             }

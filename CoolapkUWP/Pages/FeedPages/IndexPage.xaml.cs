@@ -33,9 +33,7 @@ namespace CoolapkUWP.Pages.FeedPages
         {
             if (!isLoaded)
             {
-                var items = GetMainItems();
-                Pivot.TabItems.Clear();
-                foreach (var it in items) Pivot.TabItems.Add(it);
+                Pivot.ItemsSource = GetMainItems();
                 Pivot.SelectedIndex = PivotIndex;
                 isLoaded = true;
             }
@@ -43,8 +41,8 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabViewItem MenuItem = Pivot.SelectedItem as TabViewItem;
-            if ((Pivot.SelectedItem as TabViewItem).Content is Frame Frame && Frame.Content is null)
+            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
+            if ((Pivot.SelectedItem as PivotItem).Content is Frame Frame && Frame.Content is null)
             {
                 string url = MenuItem.Tag.ToString() == "V9_HOME_TAB_HEADLINE"
                     ? "/main/indexV8"
@@ -54,25 +52,25 @@ namespace CoolapkUWP.Pages.FeedPages
                 _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(url));
                 Refresh = (reset) => _ = (Frame.Content as AdaptivePage).Refresh(reset);
             }
-            else if ((Pivot.SelectedItem as TabViewItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
+            else if ((Pivot.SelectedItem as PivotItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
             {
                 Refresh = (reset) => _ = AdaptivePage.Refresh(reset);
             }
         }
 
-        public static ObservableCollection<TabViewItem> GetMainItems()
+        public static ObservableCollection<PivotItem> GetMainItems()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("IndexPage");
-            ObservableCollection<TabViewItem> items = new ObservableCollection<TabViewItem>
+            ObservableCollection<PivotItem> items = new ObservableCollection<PivotItem>
             {
-                new TabViewItem() { Tag = "V9_HOME_TAB_HEADLINE", Header = loader.GetString("V9_HOME_TAB_HEADLINE"), Content = new Frame() },
-                new TabViewItem() { Tag = "V9_HOME_TAB_WENDA", Header = loader.GetString("V9_HOME_TAB_WENDA"), Content = new Frame() },
-                new TabViewItem() { Tag = "V11_FIND_COOLPIC", Header = loader.GetString("V11_FIND_COOLPIC"), Content = new Frame() },
-                new TabViewItem() { Tag = "V11_FIND_DYH", Header = loader.GetString("V11_FIND_DYH"), Content = new Frame() },
-                new TabViewItem() { Tag = "V9_HOME_TAB_RANKING", Header = loader.GetString("V9_HOME_TAB_RANKING"), Content = new Frame() },
-                new TabViewItem() { Tag = "V11_HOME_TAB_NEWS", Header = loader.GetString("V11_HOME_TAB_NEWS"), Content = new Frame() },
-                new TabViewItem() { Tag = "V11_HOME_TAB_JC", Header = loader.GetString("V11_HOME_TAB_JC"), Content = new Frame() },
-                new TabViewItem() { Tag = "V11_HOME_MEIHUA", Header = loader.GetString("V11_HOME_MEIHUA"), Content = new Frame() },
+                new PivotItem() { Tag = "V9_HOME_TAB_HEADLINE", Header = loader.GetString("V9_HOME_TAB_HEADLINE"), Content = new Frame() },
+                new PivotItem() { Tag = "V9_HOME_TAB_WENDA", Header = loader.GetString("V9_HOME_TAB_WENDA"), Content = new Frame() },
+                new PivotItem() { Tag = "V11_FIND_COOLPIC", Header = loader.GetString("V11_FIND_COOLPIC"), Content = new Frame() },
+                new PivotItem() { Tag = "V11_FIND_DYH", Header = loader.GetString("V11_FIND_DYH"), Content = new Frame() },
+                new PivotItem() { Tag = "V9_HOME_TAB_RANKING", Header = loader.GetString("V9_HOME_TAB_RANKING"), Content = new Frame() },
+                new PivotItem() { Tag = "V11_HOME_TAB_NEWS", Header = loader.GetString("V11_HOME_TAB_NEWS"), Content = new Frame() },
+                new PivotItem() { Tag = "V11_HOME_TAB_JC", Header = loader.GetString("V11_HOME_TAB_JC"), Content = new Frame() },
+                new PivotItem() { Tag = "V11_HOME_MEIHUA", Header = loader.GetString("V11_HOME_MEIHUA"), Content = new Frame() },
             };
             return items;
         }

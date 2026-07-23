@@ -6,11 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <TabView
+    <Pivot
         x:Name="Pivot"
         Loaded="Pivot_Loaded"
         SelectionChanged="Pivot_SelectionChanged">
-        <TabView.TabStripFooter>
+        <Pivot.RightHeader>
             <Button
                 x:Name="RefreshButton"
                 x:Uid="RefreshButton"
@@ -22,6 +22,6 @@
                     <KeyboardAccelerator Key="F5" />
                 </Button.KeyboardAccelerators>
             </Button>
-        </TabView.TabStripFooter>
-    </TabView>
+        </Pivot.RightHeader>
+    </Pivot>
 </Page>

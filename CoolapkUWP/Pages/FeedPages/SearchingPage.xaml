@@ -36,11 +36,11 @@
                 User="{StaticResource UserTemplate}" />
         </ResourceDictionary>
     </Page.Resources>
-    <TabView
+    <Pivot
         x:Name="Pivot"
         Loaded="Pivot_Loaded"
         SelectionChanged="Pivot_SelectionChanged">
-        <TabView.TabStripFooter>
+        <Pivot.RightHeader>
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <StackPanel
                     x:Name="RightHeader"
@@ -84,8 +84,8 @@
                     </Button.KeyboardAccelerators>
                 </Button>
             </StackPanel>
-        </TabView.TabStripFooter>
-        <TabViewItem Header="动态">
+        </Pivot.RightHeader>
+        <PivotItem Header="动态">
             <muxc:RefreshContainer RefreshRequested="RefreshContainer_RefreshRequested">
                 <ListView
                     ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
@@ -95,8 +95,8 @@
                     ShowsScrollingPlaceholders="False"
                     Style="{StaticResource DefaultCardListViewStyle}" />
             </muxc:RefreshContainer>
-        </TabViewItem>
-        <TabViewItem Header="用户">
+        </PivotItem>
+        <PivotItem Header="用户">
             <muxc:RefreshContainer RefreshRequested="RefreshContainer_RefreshRequested">
                 <ListView
                     ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
@@ -106,8 +106,8 @@
                     ShowsScrollingPlaceholders="False"
                     Style="{StaticResource DefaultCardListViewStyle}" />
             </muxc:RefreshContainer>
-        </TabViewItem>
-        <TabViewItem Header="话题">
+        </PivotItem>
+        <PivotItem Header="话题">
             <muxc:RefreshContainer RefreshRequested="RefreshContainer_RefreshRequested">
                 <ListView
                     ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
@@ -117,6 +117,6 @@
                     ShowsScrollingPlaceholders="False"
                     Style="{StaticResource DefaultCardListViewStyle}" />
             </muxc:RefreshContainer>
-        </TabViewItem>
-    </TabView>
+        </PivotItem>
+    </Pivot>
 </Page>
