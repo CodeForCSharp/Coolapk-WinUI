@@ -135,28 +135,6 @@
                     </controls:SettingExpander>
                 </controls:SettingsGroup>
                 <controls:SettingsGroup x:Uid="WindowSettingsHeader">
-                    <controls:Setting x:Uid="CompactOverlaySettings" Icon="&#xE944;">
-                        <controls:StackPanel
-                            Margin="0,2"
-                            Orientation="Horizontal"
-                            Spacing="4">
-                            <Button
-                                x:Uid="EnterPIP"
-                                Click="Button_Click"
-                                Tag="EnterPIP" />
-                            <Button
-                                x:Uid="OutPIP"
-                                Click="Button_Click"
-                                Tag="OutPIP" />
-                        </controls:StackPanel>
-                    </controls:Setting>
-                    <controls:Setting
-                        x:Uid="NewWindowSettings"
-                        ActionIcon="&#xE8A7;"
-                        Click="Button_Click"
-                        Icon="&#xE78B;"
-                        IsClickEnabled="True"
-                        Tag="NewWindow" />
                     <controls:Setting
                         x:Uid="SettingsFlyoutSettings"
                         Click="Button_Click"

@@ -7,9 +7,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Microsoft.UI.Xaml;
@@ -18,12 +18,23 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace CoolapkUWP
 {
+    [ComImport]
+    [Guid("3E68D4BD-7135-4D10-8018-9FB6D9F33FA1")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal interface IInitializeWithWindow
+    {
+        void Initialize(IntPtr hwnd);
+    }
+
     public sealed partial class App : Application
     {
         [DllImport("user32.dll")]
         private static extern bool SetProcessDpiAwarenessContext(int dpiFlag);
 
         private const int DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = -4;
+
+        internal static nint WindowHandle { get; private set; }
+        internal static Window MainWindow { get; private set; }
 
         static App()
         {
@@ -39,10 +50,11 @@ namespace CoolapkUWP
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             MainWindow = new Window();
+            WindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
 
             var rootFrame = new Frame();
 
-            RegisterExceptionHandlingSynchronizationContext();
+            RegisterExceptionHandlingSynchronizationContext(rootFrame);
 
             MainWindow.ExtendsContentIntoTitleBar = true;
 
@@ -67,21 +79,28 @@ namespace CoolapkUWP
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
+        private static void RegisterExceptionHandlingSynchronizationContext(Frame rootFrame)
+        {
+            ExceptionHandlingSynchronizationContext synchronizatioCcontext = ExceptionHandlingSynchronizationContext.RegisterForFrame(rootFrame);
+            synchronizatioCcontext.UnhandledException += OnSynchronizationContextUnhandledException;
+        }
+
+        private static void OnSynchronizationContextUnhandledException(object sender, CoolapkUWP.Helpers.UnhandledExceptionEventArgs args)
+        {
+            args.Handled = true;
+        }
+
         private async void RequestWIFIAccess()
         {
             try
             {
-                if (Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(
-                    "Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "Create"))
+                var WIFIData = Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Create("wifiData");
+                switch (WIFIData.CheckAccess())
                 {
-                    var WIFIData = Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Create("wifiData");
-                    switch (WIFIData.CheckAccess())
-                    {
-                        case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedByUser:
-                        case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedBySystem:
-                            await WIFIData.RequestAccessAsync();
-                            break;
-                    }
+                    case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedByUser:
+                    case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedBySystem:
+                        await WIFIData.RequestAccessAsync();
+                        break;
                 }
             }
             catch { }
@@ -89,51 +108,8 @@ namespace CoolapkUWP
 
         private void Application_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            if (!(!SettingsHelper.Get<bool>(SettingsHelper.ShowOtherException)
-                || e.Exception is TaskCanceledException
-                || e.Exception is OperationCanceledException))
-            {
-                ResourceLoader loader = ResourceLoader.GetForViewIndependentUse();
-                UIHelper.ShowMessage(
-                    $"{(string.IsNullOrEmpty(e.Exception.Message) ? loader.GetString("ExceptionThrown") : e.Exception.Message)} (0x{Convert.ToString(e.Exception.HResult, 16)})");
-            }
-            SettingsHelper.LogManager.GetLogger("Unhandled Exception - Application")
-                .Error(e.Exception.ExceptionToMessage(), e.Exception);
+            SettingsHelper.LogManager.GetLogger(nameof(App)).Fatal(e.Exception.ExceptionToMessage(), e.Exception);
             e.Handled = true;
         }
-
-        private void RegisterExceptionHandlingSynchronizationContext()
-        {
-            ExceptionHandlingSynchronizationContext
-                .Register()
-                .UnhandledException += SynchronizationContext_UnhandledException;
-        }
-
-        private void SynchronizationContext_UnhandledException(object sender, Helpers.UnhandledExceptionEventArgs e)
-        {
-            if (!(e.Exception is TaskCanceledException) && !(e.Exception is OperationCanceledException))
-            {
-                ResourceLoader loader = ResourceLoader.GetForViewIndependentUse();
-                if (e.Exception is HttpRequestException
-                    || (e.Exception.HResult <= -2147012721 && e.Exception.HResult >= -2147012895))
-                {
-                    UIHelper.ShowMessage($"{loader.GetString("NetworkError")}(0x{Convert.ToString(e.Exception.HResult, 16)})");
-                }
-                else if (e.Exception is CoolapkMessageException)
-                {
-                    UIHelper.ShowMessage(e.Exception.Message);
-                }
-                else if (SettingsHelper.Get<bool>(SettingsHelper.ShowOtherException))
-                {
-                    UIHelper.ShowMessage(
-                        $"{(string.IsNullOrEmpty(e.Exception.Message) ? loader.GetString("ExceptionThrown") : e.Exception.Message)} (0x{Convert.ToString(e.Exception.HResult, 16)})");
-                }
-            }
-            SettingsHelper.LogManager.GetLogger("Unhandled Exception - SynchronizationContext")
-                .Error(e.Exception.ExceptionToMessage(), e.Exception);
-            e.Handled = true;
-        }
-
-        public static Window MainWindow { get; private set; }
     }
 }

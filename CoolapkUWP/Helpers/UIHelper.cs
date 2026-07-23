@@ -14,9 +14,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 using Launcher = Windows.System.Launcher;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using Microsoft.UI.Dispatching;
@@ -126,19 +123,7 @@ namespace CoolapkUWP.Helpers
             return DependencyObject.Tag == null && result;
         }
 
-        public static void SetBadgeNumber(string badgeGlyphValue)
-        {
-            try
-            {
-                XmlDocument badgeXml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeNumber);
-                XmlElement badgeElement = badgeXml.SelectSingleNode("/badge") as XmlElement;
-                badgeElement.SetAttribute("value", badgeGlyphValue);
-                BadgeNotification badge = new BadgeNotification(badgeXml);
-                BadgeUpdater badgeUpdater = BadgeUpdateManager.CreateBadgeUpdaterForApplication();
-                badgeUpdater.Update(badge);
-            }
-            catch { }
-        }
+        public static void SetBadgeNumber(string badgeGlyphValue) { }
 
         public static string ExceptionToMessage(this Exception ex)
         {
@@ -386,68 +371,6 @@ namespace CoolapkUWP.Helpers
             }
 
             return true;
-        }
-
-        public static Task<bool> OpenActivatedEventArgs(this MainPage mainPage, IActivatedEventArgs args) =>
-            mainPage.NavigationViewFrame.OpenActivatedEventArgs(args);
-
-        public static async Task<bool> OpenActivatedEventArgs(this Frame frame, IActivatedEventArgs args)
-        {
-            await ThreadSwitcher.ResumeBackgroundAsync();
-            switch (args.Kind)
-            {
-                case ActivationKind.Launch:
-                    var launchArgs = (Windows.ApplicationModel.Activation.LaunchActivatedEventArgs)args;
-                    if (!string.IsNullOrWhiteSpace(launchArgs.Arguments))
-                    {
-                        switch (launchArgs.Arguments)
-                        {
-                            case "settings":
-                                return await frame.NavigateAsync(typeof(SettingsPage));
-                            case "flags":
-                                return await frame.NavigateAsync(typeof(TestPage));
-                            default:
-                                return await frame.OpenLinkAsync(launchArgs.Arguments);
-                        }
-                    }
-                    else if (launchArgs.TileActivatedInfo != null)
-                    {
-                        if (launchArgs.TileActivatedInfo.RecentlyShownNotifications.Any())
-                        {
-                            string TileArguments = launchArgs.TileActivatedInfo.RecentlyShownNotifications.FirstOrDefault().Arguments;
-                            return !string.IsNullOrWhiteSpace(launchArgs.Arguments) && await frame.OpenLinkAsync(TileArguments);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                case ActivationKind.Protocol:
-                    IProtocolActivatedEventArgs protocolArgs = (IProtocolActivatedEventArgs)args;
-                    switch (protocolArgs.Uri.Host)
-                    {
-                        case "www.coolapk.com":
-                        case "coolapk.com":
-                        case "www.coolmarket.com":
-                        case "coolmarket.com":
-                            return await frame.OpenLinkAsync(protocolArgs.Uri.AbsolutePath);
-                        case "http":
-                        case "https":
-                            return await frame.OpenLinkAsync($"{protocolArgs.Uri.Host}:{protocolArgs.Uri.AbsolutePath}");
-                        case "settings":
-                            return await frame.NavigateAsync(typeof(SettingsPage));
-                        case "flags":
-                            return await frame.NavigateAsync(typeof(TestPage));
-                        default:
-                            return await frame.OpenLinkAsync(protocolArgs.Uri.AbsoluteUri);
-                    }
-                default:
-                    return false;
-            }
         }
 
         private static string Substring(this string str, int startIndex, string endString)

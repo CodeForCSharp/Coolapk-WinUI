@@ -9,7 +9,6 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using Windows.Globalization;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -153,9 +152,9 @@ namespace CoolapkUWP.Pages.SettingsPages
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
         {
             if (name != null)
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -167,10 +166,6 @@ namespace CoolapkUWP.Pages.SettingsPages
         {
             switch ((sender as FrameworkElement).Tag.ToString())
             {
-                case "OutPIP":
-                case "EnterPIP":
-                    // WinUI 3: PIP presenter API changed
-                    break;
                 case "OpenURL":
                     _ = this.OpenLinkAsync(URLTextBox.Text);
                     break;
@@ -183,9 +178,6 @@ namespace CoolapkUWP.Pages.SettingsPages
                     var apiVersionDialog = new APIVersionDialog(UserAgent);
                     await apiVersionDialog.ShowAsync();
                     UserAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
-                    break;
-                case "NewWindow":
-                    // WinUI 3: multi-window not supported
                     break;
                 case "OpenBrowser":
                     _ = Frame.Navigate(typeof(BrowserPage), new BrowserViewModel(URLTextBox.Text));

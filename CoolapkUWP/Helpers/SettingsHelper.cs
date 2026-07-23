@@ -29,7 +29,6 @@ namespace CoolapkUWP.Helpers
         public const string TileUpdateTime = nameof(TileUpdateTime);
         public const string IsUseCompositor = nameof(IsUseCompositor);
         public const string CurrentLanguage = nameof(CurrentLanguage);
-        public const string IsUseMultiWindow = nameof(IsUseMultiWindow);
         public const string SelectedAppTheme = nameof(SelectedAppTheme);
         public const string ShowOtherException = nameof(ShowOtherException);
         public const string SemaphoreSlimCount = nameof(SemaphoreSlimCount);
@@ -106,10 +105,6 @@ namespace CoolapkUWP.Helpers
             if (!LocalObject.KeyExists(CurrentLanguage))
             {
                 LocalObject.Save(CurrentLanguage, LanguageHelper.AutoLanguageCode);
-            }
-            if (!LocalObject.KeyExists(IsUseMultiWindow))
-            {
-                LocalObject.Save(IsUseMultiWindow, true);
             }
             if (!LocalObject.KeyExists(SelectedAppTheme))
             {

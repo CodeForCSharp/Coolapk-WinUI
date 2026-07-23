@@ -11,14 +11,14 @@ namespace CoolapkUWP.Common
 {
     public class ScrollProgressProvider : DependencyObject
     {
-        private readonly CompositionPropertySet? propSet;
-        private readonly ExpressionAnimation? progressBind;
-        private readonly ExpressionAnimation? thresholdBind;
+        private readonly CompositionPropertySet propSet;
+        private readonly ExpressionAnimation progressBind;
+        private readonly ExpressionAnimation thresholdBind;
         private double lastOffset;
         private bool readyToScroll;
         private double innerProgress;
-        private CancellationTokenSource? delayCancellationTokenSource;
-        private CompositionPropertySet? scrollPropertySet;
+        private CancellationTokenSource delayCancellationTokenSource;
+        private CompositionPropertySet scrollPropertySet;
 
         public ScrollProgressProvider()
         {
@@ -52,7 +52,7 @@ namespace CoolapkUWP.Common
                 }
             }));
 
-        private async void ScrollViewerChanged(ScrollViewer? oldSv, ScrollViewer? newSv)
+        private async void ScrollViewerChanged(ScrollViewer oldSv, ScrollViewer newSv)
         {
             if (oldSv != null)
             {
@@ -209,7 +209,7 @@ namespace CoolapkUWP.Common
             sv.ChangeView(null, Threshold * Progress, null, true);
             await tcs.Task;
 
-            void Sv_ViewChanged(object? sender, ScrollViewerViewChangedEventArgs e)
+            void Sv_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
             {
                 if (!e.IsIntermediate)
                 {
@@ -219,7 +219,7 @@ namespace CoolapkUWP.Common
             }
         }
 
-        public CompositionPropertySet? GetProgressPropertySet()
+        public CompositionPropertySet GetProgressPropertySet()
         {
             if (propSet == null) return null;
 
@@ -263,7 +263,7 @@ namespace CoolapkUWP.Common
 
         #region Events
 
-        public event TypedEventHandler<object, double>? ProgressChanged;
+        public event TypedEventHandler<object, double> ProgressChanged;
         protected void OnProgressChanged()
         {
             ProgressChanged?.Invoke(this, Progress);

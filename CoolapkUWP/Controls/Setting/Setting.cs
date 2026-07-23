@@ -1,5 +1,4 @@
-﻿using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
@@ -70,10 +69,8 @@ namespace CoolapkUWP.Controls
             PointerExited += Control_PointerExited;
             PointerCaptureLost += Control_PointerCaptureLost;
             PointerCanceled += Control_PointerCanceled;
-            if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDown"))
-            { PreviewKeyDown += Control_PreviewKeyDown; }
-            if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyUp"))
-            { PreviewKeyUp += Control_PreviewKeyUp; }
+            PreviewKeyDown += Control_PreviewKeyDown;
+            PreviewKeyUp += Control_PreviewKeyUp;
         }
 
         private void DisableButtonInteraction()
@@ -82,10 +79,8 @@ namespace CoolapkUWP.Controls
             PointerExited -= Control_PointerExited;
             PointerCaptureLost -= Control_PointerCaptureLost;
             PointerCanceled -= Control_PointerCanceled;
-            if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDown"))
-            { PreviewKeyDown -= Control_PreviewKeyDown; }
-            if (ApiInformation.IsEventPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyUp"))
-            { PreviewKeyUp -= Control_PreviewKeyUp; }
+            PreviewKeyDown -= Control_PreviewKeyDown;
+            PreviewKeyUp -= Control_PreviewKeyUp;
         }
 
         private void Control_PreviewKeyUp(object sender, KeyRoutedEventArgs e)

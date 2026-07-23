@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -51,6 +50,6 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
 
-        private async void RefreshContainer_RefreshRequested(muxc.RefreshContainer sender, muxc.RefreshRequestedEventArgs args) => await Refresh(true);
+        private async void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) => await Refresh(true);
     }
 }

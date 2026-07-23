@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-// // using Windows.Phone.UI.Input; // WinUI 3: not available on desktop
 using Windows.System.Profile;
 using PointerPoint = Microsoft.UI.Input.PointerPoint;
 using Microsoft.UI.Xaml;
@@ -77,10 +76,8 @@ namespace CoolapkUWP.Pages
 
         private void UpdateContentLayout(Microsoft.UI.Windowing.AppWindowTitleBar TitleBar)
         {
-            bool IsVisible = true /* IsVisible removed in WinUI 3 */;
-            CustomTitleBar.Visibility = IsVisible ? Visibility.Visible : Visibility.Collapsed;
-            Thickness Margin = new Thickness(0, IsVisible ? TitleBar.Height : 0, 0, 0);
-            FlipViewGrid.Margin = Margin;
+            CustomTitleBar.Visibility = Visibility.Visible;
+            FlipViewGrid.Margin = new Thickness(0, TitleBar.Height, 0, 0);
         }
 
         private void UpdateTitleBarLayout(Microsoft.UI.Windowing.AppWindowTitleBar TitleBar)

@@ -1,7 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CommunityToolkit.WinUI;
 using System;
-using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -39,27 +38,6 @@ namespace CoolapkUWP.Controls
             }
         }
 
-        private void ShowUIButton_Click(object sender, RoutedEventArgs e)
-        {
-            DataPackage dataPackage = new DataPackage();
-
-            Uri shareLinkString = QRCodeText.ValidateAndGetUri();
-            if (shareLinkString != null)
-            {
-                dataPackage.SetWebLink(shareLinkString);
-                dataPackage.Properties.Title = "动态分享";
-                dataPackage.Properties.Description = QRCodeText;
-            }
-            else
-            {
-                dataPackage.SetText(QRCodeText);
-                dataPackage.Properties.Title = "内容分享";
-                dataPackage.Properties.Description = "内含文本";
-            }
-
-            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
-            dataTransferManager.DataRequested += (obj, args) => { args.Request.Data = dataPackage; };
-            DataTransferManager.ShowShareUI();
-        }
+        private void ShowUIButton_Click(object sender, RoutedEventArgs e) { }
     }
 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -51,7 +50,7 @@ namespace CoolapkUWP.Pages.FeedPages
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TabViewItem MenuItem = Pivot.SelectedItem as TabViewItem;
-            if ((Pivot.SelectedItem as TabViewItem).Content is muxc.RefreshContainer RefreshContainer
+            if ((Pivot.SelectedItem as TabViewItem).Content is RefreshContainer RefreshContainer
                 && RefreshContainer.Content is ListView ListView
                 && ListView.ItemsSource is EntityItemSource ItemsSource)
             {
@@ -60,7 +59,7 @@ namespace CoolapkUWP.Pages.FeedPages
             RightHeader.Visibility = Pivot.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void RefreshContainer_RefreshRequested(muxc.RefreshContainer sender, muxc.RefreshRequestedEventArgs args)
+        private void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
             if (sender.Content is ListView ListView && ListView.ItemsSource is EntityItemSource ItemsSource)
             {
@@ -74,7 +73,7 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 _ = Refresh(true);
             }
-            else if ((Pivot.SelectedItem as TabViewItem).Content is muxc.RefreshContainer RefreshContainer
+            else if ((Pivot.SelectedItem as TabViewItem).Content is RefreshContainer RefreshContainer
                 && RefreshContainer.Content is ListView ListView
                 && ListView.ItemsSource is EntityItemSource ItemsSource)
             {

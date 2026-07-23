@@ -1,5 +1,6 @@
 ﻿using CoolapkUWP.Common;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Win32;
 using Windows.UI.ViewManagement;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
@@ -11,8 +12,6 @@ namespace CoolapkUWP.Helpers
     public static class ThemeHelper
     {
         private static Window CurrentApplicationWindow;
-
-        public static UISettings UISettings;
 
         public static WeakEvent<UISettingChangedType> UISettingChanged { get; } = new WeakEvent<UISettingChangedType>();
 
@@ -77,12 +76,14 @@ namespace CoolapkUWP.Helpers
             CurrentApplicationWindow = App.MainWindow;
             RootTheme = SettingsHelper.Get<ElementTheme>(SettingsHelper.SelectedAppTheme);
 
-            try
+            SystemEvents.UserPreferenceChanged += (_, e) =>
             {
-                UISettings = new UISettings();
-                UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
-            }
-            catch { }
+                if (e.Category == UserPreferenceCategory.Color)
+                {
+                    UpdateSystemCaptionButtonColors();
+                    UISettingChanged.Invoke(IsDarkTheme() ? UISettingChangedType.DarkMode : UISettingChangedType.LightMode);
+                }
+            };
         }
 
         public static void Initialize(Window window)
@@ -92,12 +93,6 @@ namespace CoolapkUWP.Helpers
                 rootElement.RequestedTheme = ActualTheme;
             }
             UpdateSystemCaptionButtonColors(window);
-        }
-
-        private static void UISettings_ColorValuesChanged(UISettings sender, object args)
-        {
-            UpdateSystemCaptionButtonColors();
-            UISettingChanged.Invoke(IsDarkTheme() ? UISettingChangedType.DarkMode : UISettingChangedType.LightMode);
         }
 
         public static bool IsDarkTheme()

@@ -37,9 +37,6 @@
             <local:Setting x:Uid="NoPicsModeSettings" Icon="&#xEB9F;">
                 <ToggleSwitch IsOn="{Binding IsNoPicsMode, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
             </local:Setting>
-            <local:Setting x:Uid="UseMultiWindowSettings" Icon="&#xE78B;">
-                <ToggleSwitch IsOn="{Binding IsUseMultiWindow, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
-            </local:Setting>
             <local:Setting x:Uid="DisplayOriginPictureSettings" Icon="&#xE8B9;">
                 <ToggleSwitch IsOn="{Binding IsDisplayOriginPicture, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
             </local:Setting>

@@ -19,19 +19,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources;
-// // using Windows.Phone.UI.Input; // WinUI 3: not available on desktop
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -110,7 +106,7 @@ namespace CoolapkUWP.Pages
             _ = (NotificationsModel.Instance?.Update());
             NotificationsModel = NotificationsModel.Instance;
             SearchBoxHolder.RegisterPropertyChangedCallback(Slot.IsStretchProperty, new DependencyPropertyChangedCallback(OnIsStretchProperty));
-            NavigationView.RegisterPropertyChangedCallback(muxc.NavigationView.IsBackButtonVisibleProperty, new DependencyPropertyChangedCallback(OnIsBackButtonVisibleChanged));
+            NavigationView.RegisterPropertyChangedCallback(NavigationView.IsBackButtonVisibleProperty, new DependencyPropertyChangedCallback(OnIsBackButtonVisibleChanged));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -121,14 +117,7 @@ namespace CoolapkUWP.Pages
                         AppTitleText.Text = ResourceLoader.GetForViewIndependentUse().GetString("AppName") ?? "酷安";
             if (!isLoaded)
             {
-                if (e.Parameter is IActivatedEventArgs ActivatedEventArgs)
-                {
-                    OpenActivatedEventArgs(ActivatedEventArgs);
-                }
-                else
-                {
-                    NavigationView_Navigate("Home", new EntranceNavigationTransitionInfo());
-                }
+                NavigationView_Navigate("Home", new EntranceNavigationTransitionInfo());
                 isLoaded = true;
             }
         }
@@ -142,14 +131,7 @@ namespace CoolapkUWP.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.IsAppWindow())
-            {
-                            }
-            {
-                App.MainWindow?.SetTitleBar(DragRegion);
-                if (true /* WinUI 3 */)
-                { /* BackdropMaterial not available */ }
-            }
+            App.MainWindow?.SetTitleBar(DragRegion);
         }
 
         private void AppWindow_Changed(object sender, object args) { }
@@ -157,14 +139,6 @@ namespace CoolapkUWP.Pages
         private void TitleBar_LayoutMetricsChanged(Microsoft.UI.Windowing.AppWindowTitleBar sender, object args) => UpdateAppTitle(sender);
 
         public string GetAppTitleFromSystem => Package.Current.DisplayName;
-
-        private async void OpenActivatedEventArgs(IActivatedEventArgs args)
-        {
-            if (!await NavigationViewFrame.OpenActivatedEventArgs(args))
-            {
-                NavigationView_Navigate("Home", new EntranceNavigationTransitionInfo());
-            }
-        }
 
         private void OnIsStretchProperty(DependencyObject sender, DependencyProperty dp)
         {
@@ -197,9 +171,9 @@ namespace CoolapkUWP.Pages
             }
         }
 
-        private void NavigationView_BackRequested(muxc.NavigationView sender, muxc.NavigationViewBackRequestedEventArgs args) => _ = TryGoBack();
+        private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) => _ = TryGoBack();
 
-        private void NavigationView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)
+        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             if (args.InvokedItemContainer != null)
             {
@@ -218,8 +192,8 @@ namespace CoolapkUWP.Pages
 
             // Don't go back if the nav pane is overlayed.
             if (NavigationView.IsPaneOpen &&
-                (NavigationView.DisplayMode == muxc.NavigationViewDisplayMode.Compact ||
-                 NavigationView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal))
+                (NavigationView.DisplayMode == NavigationViewDisplayMode.Compact ||
+                 NavigationView.DisplayMode == NavigationViewDisplayMode.Minimal))
             { return false; }
 
             NavigationViewFrame.GoBack();
@@ -230,18 +204,18 @@ namespace CoolapkUWP.Pages
         {
             NavigationView.IsBackEnabled = NavigationViewFrame.CanGoBack;
             NavigationView.IsBackButtonVisible = NavigationViewFrame.CanGoBack
-                ? muxc.NavigationViewBackButtonVisible.Visible
-                : muxc.NavigationViewBackButtonVisible.Collapsed;
+                ? NavigationViewBackButtonVisible.Visible
+                : NavigationViewBackButtonVisible.Collapsed;
             if (NavigationViewFrame.SourcePageType != null)
             {
                 (string Tag, Type Page) item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
                 if (item.Tag != null)
                 {
-                    muxc.NavigationViewItem SelectedItem = NavigationView.MenuItems
-                        .OfType<muxc.NavigationViewItem>()
+                    NavigationViewItem SelectedItem = NavigationView.MenuItems
+                        .OfType<NavigationViewItem>()
                         .FirstOrDefault(n => n.Tag.Equals(item.Tag))
                             ?? NavigationView.FooterMenuItems
-                                .OfType<muxc.NavigationViewItem>()
+                                .OfType<NavigationViewItem>()
                                 .FirstOrDefault(n => n.Tag.Equals(item.Tag));
                     NavigationView.SelectedItem = SelectedItem;
                 }
@@ -249,33 +223,33 @@ namespace CoolapkUWP.Pages
             UIHelper.HideProgressBar();
         }
 
-        private void NavigationViewControl_PaneClosing(muxc.NavigationView sender, muxc.NavigationViewPaneClosingEventArgs args)
+        private void NavigationViewControl_PaneClosing(NavigationView sender, NavigationViewPaneClosingEventArgs args)
         {
             UpdateLeftPaddingColumn();
         }
 
-        private void NavigationViewControl_PaneOpening(muxc.NavigationView sender, object args)
+        private void NavigationViewControl_PaneOpening(NavigationView sender, object args)
         {
             UpdateLeftPaddingColumn();
         }
 
         private void UpdateLeftPaddingColumn()
         {
-            LeftPaddingColumn.Width = NavigationView.PaneDisplayMode == muxc.NavigationViewPaneDisplayMode.Top
-                ? NavigationView.IsBackButtonVisible != muxc.NavigationViewBackButtonVisible.Collapsed
+            LeftPaddingColumn.Width = NavigationView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top
+                ? NavigationView.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed
                     ? new GridLength(48) : new GridLength(0)
-                    : NavigationView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal
+                    : NavigationView.DisplayMode == NavigationViewDisplayMode.Minimal
                         ? NavigationView.IsPaneOpen ? new GridLength(72)
                         : NavigationView.IsPaneToggleButtonVisible
-                            ? NavigationView.IsBackButtonVisible != muxc.NavigationViewBackButtonVisible.Collapsed
+                            ? NavigationView.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed
                             ? new GridLength(88) : new GridLength(48)
-                                : NavigationView.IsBackButtonVisible != muxc.NavigationViewBackButtonVisible.Collapsed
+                                : NavigationView.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed
                                 ? new GridLength(48) : new GridLength(0)
-                                    : NavigationView.IsBackButtonVisible != muxc.NavigationViewBackButtonVisible.Collapsed
+                                    : NavigationView.IsBackButtonVisible != NavigationViewBackButtonVisible.Collapsed
                                     ? new GridLength(48) : new GridLength(0);
         }
 
-        private void NavigationViewControl_DisplayModeChanged(muxc.NavigationView sender, muxc.NavigationViewDisplayModeChangedEventArgs args)
+        private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
         {
             UpdateLeftPaddingColumn();
             UpdateAppTitleIcon();
@@ -284,14 +258,14 @@ namespace CoolapkUWP.Pages
         private void UpdateAppTitleIcon()
         {
             AppTitleIcon.Margin = SearchBoxHolder.IsStretch
-                && NavigationView.PaneDisplayMode != muxc.NavigationViewPaneDisplayMode.Top
-                && NavigationView.DisplayMode != muxc.NavigationViewDisplayMode.Minimal
-                    ? NavigationView.IsBackButtonVisible == muxc.NavigationViewBackButtonVisible.Visible
+                && NavigationView.PaneDisplayMode != NavigationViewPaneDisplayMode.Top
+                && NavigationView.DisplayMode != NavigationViewDisplayMode.Minimal
+                    ? NavigationView.IsBackButtonVisible == NavigationViewBackButtonVisible.Visible
                         ? new Thickness(0, 0, 16, 0)
                         : new Thickness(28.5, 0, 28, 0)
-                    : NavigationView.IsBackButtonVisible == muxc.NavigationViewBackButtonVisible.Visible
-                        || (NavigationView.DisplayMode == muxc.NavigationViewDisplayMode.Minimal
-                            && NavigationView.PaneDisplayMode != muxc.NavigationViewPaneDisplayMode.Top
+                    : NavigationView.IsBackButtonVisible == NavigationViewBackButtonVisible.Visible
+                        || (NavigationView.DisplayMode == NavigationViewDisplayMode.Minimal
+                            && NavigationView.PaneDisplayMode != NavigationViewPaneDisplayMode.Top
                             && NavigationView.IsPaneToggleButtonVisible)
                         ? new Thickness(0, 0, 16, 0)
                         : new Thickness(16, 0, 16, 0);

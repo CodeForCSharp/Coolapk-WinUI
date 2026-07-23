@@ -2,7 +2,6 @@
 using CommunityToolkit.WinUI.Helpers;
 using System;
 using Windows.ApplicationModel;
-using Windows.Security.ExchangeActiveSyncProvisioning;
 
 namespace CoolapkUWP.Common
 {
@@ -11,8 +10,8 @@ namespace CoolapkUWP.Common
         private static readonly string guid = Guid.NewGuid().ToString();
         private static readonly string aid = RandHexString(16);
         private static readonly string mac = RandMacAdress();
-        private static readonly string SystemManufacturer;
-        private static readonly string SystemProductName;
+        private static readonly string SystemManufacturer = string.Empty;
+        private static readonly string SystemProductName = string.Empty;
 
         public static string DeviceCode;
 
@@ -20,9 +19,6 @@ namespace CoolapkUWP.Common
 
         static TokenCreator()
         {
-            EasClientDeviceInformation deviceInfo = new EasClientDeviceInformation();
-            SystemManufacturer = deviceInfo.SystemManufacturer;
-            SystemProductName = deviceInfo.SystemProductName;
             DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"CoolapkUWP {Package.Current.Id.Version.ToFormattedString()}");
         }
 

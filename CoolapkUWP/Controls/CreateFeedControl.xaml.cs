@@ -16,7 +16,6 @@ using UnicodeStyle;
 using UnicodeStyle.Models;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
@@ -25,7 +24,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了“用户控件”项模板
 
@@ -265,22 +263,16 @@ namespace CoolapkUWP.Controls
 
         private void InputBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.CommandBarFlyout"))
-            {
-                InputBox.ContextFlyout.Opening += Menu_Opening;
-                InputBox.ContextFlyout.Closing += Menu_Closing;
-            }
+            InputBox.ContextFlyout.Opening += Menu_Opening;
+            InputBox.ContextFlyout.Closing += Menu_Closing;
 
-            if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.RichEditBox", "SelectionFlyout"))
-            {
-                InputBox.SelectionFlyout.Opening += Menu_Opening;
-                InputBox.SelectionFlyout.Closing += Menu_Closing;
-            }
+            InputBox.SelectionFlyout.Opening += Menu_Opening;
+            InputBox.SelectionFlyout.Closing += Menu_Closing;
         }
 
         private void Menu_Opening(object sender, object e)
         {
-            if (sender is muxc.CommandBarFlyout Flyout && Flyout.Target == InputBox)
+            if (sender is CommandBarFlyout Flyout && Flyout.Target == InputBox)
             {
                 Flyout.PrimaryCommands.Clear();
 

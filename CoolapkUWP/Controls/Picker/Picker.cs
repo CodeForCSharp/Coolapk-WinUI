@@ -1,5 +1,4 @@
-﻿using CoolapkUWP.Helpers;
-using Microsoft.UI.Dispatching;
+﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -65,8 +64,6 @@ namespace CoolapkUWP.Controls
                 Child = _rootGrid
             };
             _rootGrid.Children.Add(this);
-
-            _popup.SetXAMLRoot(element);
 
             _popup.IsOpen = true;
         }

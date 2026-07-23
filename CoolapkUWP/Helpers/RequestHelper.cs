@@ -3,8 +3,6 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System.Collections.Generic;
 using CoolapkUWP.Models.Upload;
 using Newtonsoft.Json;
@@ -16,9 +14,6 @@ namespace CoolapkUWP.Helpers
 {
     public static class RequestHelper
     {
-        private static bool IsInternetAvailable => System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
-        private static readonly object locker = new object();
-
         public static async Task<(bool isSucceed, JToken result)> GetDataAsync(Uri uri, bool isBackground = false)
         {
             string results = await NetworkHelper.GetStringAsync(uri, NetworkHelper.GetCoolapkCookies(uri), "XMLHttpRequest", isBackground);
@@ -99,23 +94,6 @@ namespace CoolapkUWP.Helpers
                             ? v2.ToString()
                             : throw new ArgumentException(nameof(_idName));
         }
-
-#pragma warning disable 0612
-        public static async Task<BitmapImage> GetImageAsync(string uri, bool isBackground = false)
-        {
-            StorageFolder folder = await ImageCacheHelper.GetFolderAsync(ImageType.Captcha);
-            StorageFile file = await folder.CreateFileAsync(DataHelper.GetMD5(uri));
-
-            Stream s = await NetworkHelper.GetStreamAsync(new Uri(uri), NetworkHelper.GetCoolapkCookies(new Uri(uri)), "XMLHttpRequest", isBackground);
-
-            using (Stream ss = await file.OpenStreamForWriteAsync())
-            {
-                await s.CopyToAsync(ss);
-            }
-
-            return new BitmapImage(new Uri(file.Path));
-        }
-#pragma warning restore 0612
 
         public static async Task<List<string>> UploadImages(IEnumerable<UploadFileFragment> images)
         {

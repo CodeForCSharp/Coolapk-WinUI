@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace CoolapkUWP.Models.Feeds
@@ -472,12 +473,12 @@ namespace CoolapkUWP.Models.Feeds
                     }
                     catch
                     {
-                        Color = Microsoft.UI.Colors.Transparent;
+                        Color = Colors.Transparent;
                     }
                 }
                 else
                 {
-                    Color = Microsoft.UI.Colors.Transparent;
+                    Color = Colors.Transparent;
                 }
             }
         }

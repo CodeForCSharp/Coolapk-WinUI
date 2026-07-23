@@ -12,7 +12,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using HttpClient = System.Net.Http.HttpClient;
@@ -72,7 +71,6 @@ namespace CoolapkUWP.Helpers
 
         public static void SetRequestHeaders()
         {
-            EasClientDeviceInformation deviceInfo = new EasClientDeviceInformation();
             APIVersions APIVersion = SettingsHelper.Get<APIVersions>(SettingsHelper.APIVersion);
             TokenVersions TokenVersion = SettingsHelper.Get<TokenVersions>(SettingsHelper.TokenVersion);
             string Culture = LanguageHelper.GetPrimaryLanguage();
@@ -95,7 +93,7 @@ namespace CoolapkUWP.Helpers
             {
                 var os = Environment.OSVersion.Version;
                 var arch = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture;
-                Client.DefaultRequestHeaders.UserAgent.ParseAdd($"Dalvik/2.1.0 (Windows NT {os.Major}.{os.Minor}; Win{(arch.ToString().Contains("64") ? "64" : "32")}; {arch.ToString().ToLower()}; WebView/3.0) (#Build; {deviceInfo.SystemManufacturer}; {deviceInfo.SystemProductName}; {deviceInfo.SystemProductName}_{deviceInfo.SystemSku}; {os})");
+                Client.DefaultRequestHeaders.UserAgent.ParseAdd($"Dalvik/2.1.0 (Windows NT {os.Major}.{os.Minor}; Win{(arch.ToString().Contains("64") ? "64" : "32")}; {arch.ToString().ToLower()}; WebView/3.0) (#Build; ; ; _{os})");
             }
 
             switch (APIVersion)
@@ -357,16 +355,19 @@ namespace CoolapkUWP.Helpers
 
         public static string ExpandShortUrl(this Uri ShortUrl)
         {
-            string NativeUrl = null;
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(ShortUrl);
-            try { _ = req.HaveResponse; }
-            catch (WebException ex)
+            try
             {
-                HttpWebResponse res = ex.Response as HttpWebResponse;
-                if (res.StatusCode == HttpStatusCode.Found)
-                { NativeUrl = res.Headers["Location"]; }
+                using var handler = new HttpClientHandler { AllowAutoRedirect = false };
+                using var client = new HttpClient(handler);
+                using var response = client.GetAsync(ShortUrl).GetAwaiter().GetResult();
+                if (response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.MovedPermanently)
+                {
+                    var location = response.Headers.Location;
+                    return location?.ToString() ?? ShortUrl.ToString();
+                }
             }
-            return NativeUrl ?? ShortUrl.ToString();
+            catch { }
+            return ShortUrl.ToString();
         }
 
         public static Uri ValidateAndGetUri(this string url)

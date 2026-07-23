@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -32,8 +31,7 @@ namespace CoolapkUWP.Controls
         private CompositionPropertySet _propSet;
         private ScrollProgressProvider _progressProvider;
         private readonly bool HasGetElementVisual =
-            SettingsHelper.Get<bool>(SettingsHelper.IsUseCompositor)
-            && ApiInformation.IsMethodPresent("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "GetElementVisual");
+            SettingsHelper.Get<bool>(SettingsHelper.IsUseCompositor);
 
         public static readonly DependencyProperty TopHeaderProperty =
             DependencyProperty.Register(

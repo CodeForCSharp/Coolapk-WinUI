@@ -174,13 +174,7 @@ namespace CoolapkUWP.ViewModels
 
         public async void SharePic()
         {
-            DataPackage dataPackage = await GetImageDataPackage("分享图片");
-            if (dataPackage != null)
-            {
-                DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
-                dataTransferManager.DataRequested += (sender, args) => { args.Request.Data = dataPackage; };
-                DataTransferManager.ShowShareUI();
-            }
+            await GetImageDataPackage("分享图片");
         }
 
         public async Task<DataPackage> GetImageDataPackage(string title)
@@ -236,6 +230,7 @@ namespace CoolapkUWP.ViewModels
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
                 SuggestedFileName = fileName.Replace(fileName.Substring(fileName.LastIndexOf('.')), string.Empty)
             };
+            ((IInitializeWithWindow)(object)fileSavePicker).Initialize(App.WindowHandle);
 
             string fileex = fileName.Substring(fileName.LastIndexOf('.') + 1);
             int index = fileex.IndexOfAny(new char[] { '?', '%', '&' });

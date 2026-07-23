@@ -138,6 +138,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         public async void PickImage()
         {
             FileOpenPicker FileOpen = new FileOpenPicker();
+            ((IInitializeWithWindow)(object)FileOpen).Initialize(App.WindowHandle);
             FileOpen.FileTypeFilter.Add(".jpg");
             FileOpen.FileTypeFilter.Add(".jpeg");
             FileOpen.FileTypeFilter.Add(".png");

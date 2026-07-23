@@ -115,7 +115,7 @@ namespace CoolapkUWP.Controls
             shadowVisual.Shadow = dropShadow;
 
             // Add the shadow as a child of the host in the visual tree
-            // TODO WinUI3: SetElementChildVisual removedshadowHost, shadowVisual);
+            ElementCompositionPreview.SetElementChildVisual(shadowHost, shadowVisual);
 
             // Make sure size of shadow host and shadow visual always stay in sync
             ExpressionAnimation bindSizeAnimation = compositor.CreateExpressionAnimation("hostVisual.Size");

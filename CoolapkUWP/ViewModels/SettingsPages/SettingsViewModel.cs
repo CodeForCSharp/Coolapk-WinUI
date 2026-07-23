@@ -76,19 +76,6 @@ namespace CoolapkUWP.ViewModels.SettingsPages
             }
         }
 
-        public bool IsUseMultiWindow
-        {
-            get => SettingsHelper.Get<bool>(SettingsHelper.IsUseMultiWindow);
-            set
-            {
-                if (IsUseMultiWindow != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.IsUseMultiWindow, value);
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
         public bool IsDisplayOriginPicture
         {
             get => SettingsHelper.Get<bool>(SettingsHelper.IsDisplayOriginPicture);
