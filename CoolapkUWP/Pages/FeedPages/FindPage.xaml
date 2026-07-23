@@ -12,7 +12,7 @@
         <Pivot.RightHeader>
             <Button
                 x:Name="RefreshButton"
-                x:Uid="RefreshButton"
+                x:Uid="/FindPage/RefreshButton"
                 VerticalAlignment="Center"
                 Click="RefreshButton_Click"
                 Content="&#xE72C;"

@@ -126,31 +126,31 @@
   <data name="FullProductNameTextBox.Header" xml:space="preserve">
     <value>完整設備型號</value>
   </data>
-  <data name="FullProductNameTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="FullProductNameTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>用於酷安的設備識別，如 GM1910_21_220617</value>
   </data>
   <data name="HeaderTextBox.Header" xml:space="preserve">
     <value>UserAgent 頭</value>
   </data>
-  <data name="HeaderTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="HeaderTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>UserAgent 的開始部分，填入瀏覽器的 UserAgent</value>
   </data>
   <data name="ManufacturerTextBox.Header" xml:space="preserve">
     <value>設備廠商</value>
   </data>
-  <data name="ManufacturerTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ManufacturerTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>用於酷安的設備識別，如 OnePlus</value>
   </data>
   <data name="OSVersionTextBox.Header" xml:space="preserve">
     <value>系統版本號</value>
   </data>
-  <data name="OSVersionTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="OSVersionTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>用於酷安的設備識別，如 11</value>
   </data>
   <data name="ProductNameTextBox.Header" xml:space="preserve">
     <value>設備型號</value>
   </data>
-  <data name="ProductNameTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ProductNameTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>用於酷安的設備識別，如 GM1910</value>
   </data>
   <data name="UserAgentDialog.PrimaryButtonText" xml:space="preserve">
@@ -162,7 +162,7 @@
   <data name="APIVersionCodeTextBox.Header" xml:space="preserve">
     <value>酷安版本代號</value>
   </data>
-  <data name="APIVersionCodeTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="APIVersionCodeTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>酷安應用的版本代號，如 1905301</value>
   </data>
   <data name="APIVersionDialog.PrimaryButtonText" xml:space="preserve">
@@ -174,7 +174,7 @@
   <data name="APIVersionTextBox.Header" xml:space="preserve">
     <value>酷安版本號</value>
   </data>
-  <data name="APIVersionTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="APIVersionTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>酷安應用的版本號，如 9.2.2</value>
   </data>
   <data name="APIVersionDialog.CloseButtonText" xml:space="preserve">

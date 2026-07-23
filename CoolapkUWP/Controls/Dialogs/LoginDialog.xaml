@@ -5,7 +5,7 @@
     xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Uid="LoginDialog"
+    x:Uid="/ContentDialog/LoginDialog"
     Closing="OnClosing"
     DefaultButton="Primary"
     Style="{StaticResource DefaultContentDialogStyle}"

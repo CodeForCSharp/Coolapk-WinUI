@@ -120,31 +120,31 @@
   <data name="FullProductNameTextBox.Header" xml:space="preserve">
     <value>Full Device Model</value>
   </data>
-  <data name="FullProductNameTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="FullProductNameTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Device identification for Cooapk, e.g. GM1910_21_220617</value>
   </data>
   <data name="HeaderTextBox.Header" xml:space="preserve">
     <value>UserAgent Header</value>
   </data>
-  <data name="HeaderTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="HeaderTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>The beginning of the UserAgent, fill in the browser UserAgent</value>
   </data>
   <data name="ManufacturerTextBox.Header" xml:space="preserve">
     <value>Device Manufacturer</value>
   </data>
-  <data name="ManufacturerTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ManufacturerTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Device identification for Coolapk, e.g. OnePlus</value>
   </data>
   <data name="OSVersionTextBox.Header" xml:space="preserve">
     <value>System Version</value>
   </data>
-  <data name="OSVersionTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="OSVersionTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Device identification for Coolapk, e.g. 11</value>
   </data>
   <data name="ProductNameTextBox.Header" xml:space="preserve">
     <value>Device Model</value>
   </data>
-  <data name="ProductNameTextBox.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ProductNameTextBox.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Device identification for Coolapk, e.g. GM1910</value>
   </data>
   <data name="UserAgentDialog.CloseButtonText" xml:space="preserve">

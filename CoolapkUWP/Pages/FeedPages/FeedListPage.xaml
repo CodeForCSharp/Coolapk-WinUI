@@ -26,7 +26,7 @@
                         <MenuFlyout x:Key="MoreFlyout">
                             <MenuFlyoutItem
                                 x:Name="PinTileButton"
-                                x:Uid="PinTile"
+                                x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
                                 Tag="{Binding}">
                                 <MenuFlyoutItem.Icon>
@@ -35,20 +35,20 @@
                             </MenuFlyoutItem>
                             <MenuFlyoutItem
                                 x:Name="ReportButton"
-                                x:Uid="Report"
+                                x:Uid="/FeedListPage/Report"
                                 Click="Button_Click"
                                 Tag="{Binding UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=user&amp;m=report&amp;id={0}', Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
-                            <MenuFlyoutSubItem x:Uid="CoverMenuSubItem">
+                            <MenuFlyoutSubItem x:Uid="/FeedListPage/CoverMenuSubItem">
                                 <MenuFlyoutSubItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8B9;" />
                                 </MenuFlyoutSubItem.Icon>
                                 <MenuFlyoutItem
                                     x:Name="RefreshButton"
-                                    x:Uid="RefreshMenuItem"
+                                    x:Uid="/FeedListPage/RefreshMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -57,7 +57,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="ShowImageButton"
-                                    x:Uid="ShowMenuItem"
+                                    x:Uid="/FeedListPage/ShowMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -66,7 +66,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="CopyButton"
-                                    x:Uid="CopyMenuItem"
+                                    x:Uid="/FeedListPage/CopyMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -75,7 +75,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="ShareButton"
-                                    x:Uid="ShareMenuItem"
+                                    x:Uid="/FeedListPage/ShareMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -84,7 +84,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="SaveButton"
-                                    x:Uid="SaveMenuItem"
+                                    x:Uid="/FeedListPage/SaveMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -196,7 +196,7 @@
                                 <control:StackPanel Orientation="Horizontal" Spacing="12">
                                     <TextBlock FontSize="16">
                                         <Run FontWeight="Bold" Text="{Binding LikeNum}" />
-                                        <Run x:Uid="LikeNum" FontWeight="Thin" />
+                                        <Run x:Uid="/FeedListPage/LikeNum" FontWeight="Thin" />
                                     </TextBlock>
                                     <Button
                                         x:Name="FollowsButton"
@@ -206,7 +206,7 @@
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
                                             <Run FontWeight="Bold" Text="{Binding FollowNum}" />
-                                            <Run x:Uid="FollowNum" FontWeight="Thin" />
+                                            <Run x:Uid="/FeedListPage/FollowNum" FontWeight="Thin" />
                                         </TextBlock>
                                     </Button>
                                     <Button
@@ -217,12 +217,12 @@
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
                                             <Run FontWeight="Bold" Text="{Binding FansNum}" />
-                                            <Run x:Uid="FansNum" FontWeight="Thin" />
+                                            <Run x:Uid="/FeedListPage/FansNum" FontWeight="Thin" />
                                         </TextBlock>
                                     </Button>
                                     <TextBlock FontSize="16">
                                         <Run FontWeight="Bold" Text="{Binding FeedNum}" />
-                                        <Run x:Uid="FeedsNum" FontWeight="Thin" />
+                                        <Run x:Uid="/FeedListPage/FeedsNum" FontWeight="Thin" />
                                     </TextBlock>
                                 </control:StackPanel>
                                 <control:StackPanel Orientation="Horizontal" Spacing="4">
@@ -288,7 +288,7 @@
                         <MenuFlyout x:Key="MoreFlyout">
                             <MenuFlyoutItem
                                 x:Name="PinTileButton"
-                                x:Uid="PinTile"
+                                x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
                                 Tag="{Binding}">
                                 <MenuFlyoutItem.Icon>
@@ -400,7 +400,7 @@
                         <MenuFlyout x:Key="MoreFlyout">
                             <MenuFlyoutItem
                                 x:Name="PinTileButton"
-                                x:Uid="PinTile"
+                                x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
                                 Tag="{Binding}">
                                 <MenuFlyoutItem.Icon>
@@ -517,7 +517,7 @@
                                             <MenuFlyout>
                                                 <MenuFlyoutItem
                                                     x:Name="RefreshButton"
-                                                    x:Uid="RefreshMenuItem"
+                                                    x:Uid="/FeedListPage/RefreshMenuItem"
                                                     Click="AppBarButton_Click"
                                                     Tag="{Binding}">
                                                     <MenuFlyoutItem.Icon>
@@ -526,7 +526,7 @@
                                                 </MenuFlyoutItem>
                                                 <MenuFlyoutItem
                                                     x:Name="CopyButton"
-                                                    x:Uid="CopyMenuItem"
+                                                    x:Uid="/FeedListPage/CopyMenuItem"
                                                     Click="AppBarButton_Click"
                                                     Tag="{Binding}">
                                                     <MenuFlyoutItem.Icon>
@@ -535,7 +535,7 @@
                                                 </MenuFlyoutItem>
                                                 <MenuFlyoutItem
                                                     x:Name="ShareButton"
-                                                    x:Uid="ShareMenuItem"
+                                                    x:Uid="/FeedListPage/ShareMenuItem"
                                                     Click="AppBarButton_Click"
                                                     Tag="{Binding}">
                                                     <MenuFlyoutItem.Icon>
@@ -544,7 +544,7 @@
                                                 </MenuFlyoutItem>
                                                 <MenuFlyoutItem
                                                     x:Name="SaveButton"
-                                                    x:Uid="SaveMenuItem"
+                                                    x:Uid="/FeedListPage/SaveMenuItem"
                                                     Click="AppBarButton_Click"
                                                     Tag="{Binding}">
                                                     <MenuFlyoutItem.Icon>
@@ -708,13 +708,13 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    x:Uid="OwnerStar"
+                                    x:Uid="/FeedListPage/OwnerStar"
                                     VerticalAlignment="Center"
                                     FontSize="16"
                                     FontWeight="Bold"
                                     Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 <TextBlock
-                                    x:Uid="AllStar"
+                                    x:Uid="/FeedListPage/AllStar"
                                     VerticalAlignment="Center"
                                     FontSize="16"
                                     FontWeight="Bold"
@@ -726,7 +726,7 @@
                                     </Grid.ColumnDefinitions>
                                     <ToggleButton
                                         x:Name="SeeAllButton"
-                                        x:Uid="SeeAllButton"
+                                        x:Uid="/FeedListPage/SeeAllButton"
                                         Grid.Column="1"
                                         Padding="4,2"
 
@@ -736,7 +736,7 @@
                                         IsChecked="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
                                     <ToggleButton
                                         x:Name="OnlyOwnerButton"
-                                        x:Uid="OnlyOwnerButton"
+                                        x:Uid="/FeedListPage/OnlyOwnerButton"
                                         Grid.Column="0"
                                         Padding="4,2"
 
@@ -1013,20 +1013,20 @@
                         <MenuFlyout x:Key="MoreFlyout">
                             <MenuFlyoutItem
                                 x:Name="PinTileButton"
-                                x:Uid="PinTile"
+                                x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
                                 Tag="{Binding}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
-                            <MenuFlyoutSubItem x:Uid="CoverMenuSubItem">
+                            <MenuFlyoutSubItem x:Uid="/FeedListPage/CoverMenuSubItem">
                                 <MenuFlyoutSubItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8B9;" />
                                 </MenuFlyoutSubItem.Icon>
                                 <MenuFlyoutItem
                                     x:Name="RefreshButton"
-                                    x:Uid="RefreshMenuItem"
+                                    x:Uid="/FeedListPage/RefreshMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -1035,7 +1035,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="ShowImageButton"
-                                    x:Uid="ShowMenuItem"
+                                    x:Uid="/FeedListPage/ShowMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -1044,7 +1044,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="CopyButton"
-                                    x:Uid="CopyMenuItem"
+                                    x:Uid="/FeedListPage/CopyMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -1053,7 +1053,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="ShareButton"
-                                    x:Uid="ShareMenuItem"
+                                    x:Uid="/FeedListPage/ShareMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -1062,7 +1062,7 @@
                                 </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     x:Name="SaveButton"
-                                    x:Uid="SaveMenuItem"
+                                    x:Uid="/FeedListPage/SaveMenuItem"
                                     Click="AppBarButton_Click"
                                     Tag="{Binding Cover}">
                                     <MenuFlyoutItem.Icon>
@@ -1107,7 +1107,7 @@
                                     Orientation="Horizontal">
                                     <Button
                                         x:Name="LikeButton"
-                                        x:Uid="LikeButton"
+                                        x:Uid="/FeedListPage/LikeButton"
                                         Height="32"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
@@ -1228,7 +1228,7 @@
                         FontWeight="Normal">
                         <Button
                             x:Name="HeaderRefreshButton"
-                            x:Uid="RefreshButton"
+                            x:Uid="/FeedListPage/RefreshButton"
                             VerticalAlignment="Center"
                             Click="RefreshButton_Click"
                             Content="&#xE72C;"
@@ -1280,7 +1280,7 @@
                         <control:ShyHeaderListView.RightHeader>
                             <Button
                                 x:Name="ListRefreshButton"
-                                x:Uid="RefreshButton"
+                                x:Uid="/FeedListPage/RefreshButton"
                                 Width="32"
                                 Height="32"
                                 Margin="4"

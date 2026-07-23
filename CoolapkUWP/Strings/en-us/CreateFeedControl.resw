@@ -139,7 +139,7 @@
     <value>Paste</value>
   </data>
   <data name="SendButton.Label" xml:space="preserve">
-    <value>Seed</value>
+    <value>Send</value>
   </data>
   <data name="SendSuccessed" xml:space="preserve">
     <value>Sent successfully</value>

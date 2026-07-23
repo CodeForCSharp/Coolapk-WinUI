@@ -50,7 +50,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{Binding FollowNum}" />
                     <TextBlock
-                        x:Uid="FollowNum"
+                        x:Uid="/FeedListPage/FollowNum"
                         Margin="0,0,5,0"
                         HorizontalAlignment="Left"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -59,7 +59,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{Binding DownloadNum}" />
                     <TextBlock
-                        x:Uid="DownloadNum"
+                        x:Uid="/FeedListPage/DownloadNum"
                         Margin="0,0,5,0"
                         HorizontalAlignment="Left"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}" />

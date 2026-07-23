@@ -141,7 +141,7 @@
   <data name="GIF" xml:space="preserve">
     <value>GIF</value>
   </data>
-  <data name="LikeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="LikeButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Like</value>
   </data>
   <data name="LongPic.Text" xml:space="preserve">
@@ -153,7 +153,7 @@
   <data name="MediaShare.Text" xml:space="preserve">
     <value>Video Sharing</value>
   </data>
-  <data name="MoreButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="MoreButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>More</value>
   </data>
   <data name="PinTile.Text" xml:space="preserve">
@@ -174,7 +174,7 @@
   <data name="ReadNum.Text" xml:space="preserve">
     <value>Views</value>
   </data>
-  <data name="ReplyButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ReplyButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Reply</value>
   </data>
   <data name="Report.Text" xml:space="preserve">
@@ -189,16 +189,16 @@
   <data name="Share.Text" xml:space="preserve">
     <value>Share</value>
   </data>
-  <data name="ShareButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="ShareButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Share</value>
   </data>
   <data name="ShareFeed.Text" xml:space="preserve">
     <value>Tap QR code to share link</value>
   </data>
-  <data name="SourceFeedNotFount.Text" xml:space="preserve">
+  <data name="SourceFeedNotFound.Text" xml:space="preserve">
     <value>Sorry, this feed has been deleted.</value>
   </data>
-  <data name="StarButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="StarButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Star</value>
   </data>
   <data name="StickUp.Text" xml:space="preserve">

@@ -120,7 +120,7 @@
   <data name="BackButton.Content" xml:space="preserve">
     <value>尝试获取token</value>
   </data>
-  <data name="BackButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="BackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>如果登录成功后没有自动返回上一页，请点这里。如果获取token失败，请右击尝试手动登录。</value>
   </data>
   <data name="CannotGetToken" xml:space="preserve">

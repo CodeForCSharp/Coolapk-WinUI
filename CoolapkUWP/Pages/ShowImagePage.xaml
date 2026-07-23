@@ -14,7 +14,7 @@
         <converters:ZoomToolTipValueConverter x:Key="ZoomToolTipValueConverter" />
         <MenuFlyout x:Key="FlipViewContextFlyout">
             <MenuFlyoutItem
-                x:Uid="RefreshMenuItem"
+                x:Uid="/ShowImagePage/RefreshMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Refresh">
                 <MenuFlyoutItem.Icon>
@@ -25,7 +25,7 @@
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
-                x:Uid="CopyMenuItem"
+                x:Uid="/ShowImagePage/CopyMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Copy">
                 <MenuFlyoutItem.Icon>
@@ -39,7 +39,7 @@
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
-                x:Uid="ShareMenuItem"
+                x:Uid="/ShowImagePage/ShareMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Share">
                 <MenuFlyoutItem.Icon>
@@ -53,7 +53,7 @@
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
-                x:Uid="SaveMenuItem"
+                x:Uid="/ShowImagePage/SaveMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Save">
                 <MenuFlyoutItem.Icon>
@@ -67,7 +67,7 @@
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
-                x:Uid="OriginMenuItem"
+                x:Uid="/ShowImagePage/OriginMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Origin"
                 Visibility="{Binding ShowOrigin, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -252,7 +252,7 @@
             Visibility="{Binding IsShowHub, Converter={StaticResource BoolToVisibilityConverter}}">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
-                    x:Uid="RefreshButton"
+                    x:Uid="/ShowImagePage/RefreshButton"
                     Click="AppBarButton_Click"
                     Tag="Refresh">
                     <AppBarButton.Icon>
@@ -263,7 +263,7 @@
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
                 <AppBarButton
-                    x:Uid="ShareButton"
+                    x:Uid="/ShowImagePage/ShareButton"
                     Click="AppBarButton_Click"
                     Tag="Share">
                     <AppBarButton.Icon>
@@ -274,7 +274,7 @@
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
                 <AppBarButton
-                    x:Uid="SaveButton"
+                    x:Uid="/ShowImagePage/SaveButton"
                     Click="AppBarButton_Click"
                     Tag="Save">
                     <AppBarButton.Icon>
@@ -287,7 +287,7 @@
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
                 <AppBarButton
-                    x:Uid="OriginButton"
+                    x:Uid="/ShowImagePage/OriginButton"
                     Click="AppBarButton_Click"
                     Tag="Origin"
                     Visibility="{Binding ShowOrigin, Converter={StaticResource BoolToVisibilityConverter}}">

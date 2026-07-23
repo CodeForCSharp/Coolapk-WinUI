@@ -27,27 +27,27 @@
                         <ReorderThemeTransition />
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
-                <controls:SettingsGroup x:Uid="DisplaySettingsHeader">
-                    <controls:Setting x:Uid="ThemeSettings" Icon="&#xE790;">
+                <controls:SettingsGroup x:Uid="/SettingsPage/DisplaySettingsHeader">
+                    <controls:Setting x:Uid="/SettingsPage/ThemeSettings" Icon="&#xE790;">
                         <controls:Setting.Description>
                             <HyperlinkButton
-                                x:Uid="WindowsColorButton"
+                                x:Uid="/SettingsPage/WindowsColorButton"
                                 Click="HyperlinkButton_Click"
                                 Tag="WindowsColor" />
                         </controls:Setting.Description>
                         <ComboBox SelectedIndex="{Binding SelectedTheme, Mode=TwoWay}">
-                            <ComboBoxItem x:Uid="RadioThemeDark" />
-                            <ComboBoxItem x:Uid="RadioThemeLight" />
-                            <ComboBoxItem x:Uid="RadioThemeDefault" />
+                            <ComboBoxItem x:Uid="/SettingsPage/RadioThemeDark" />
+                            <ComboBoxItem x:Uid="/SettingsPage/RadioThemeLight" />
+                            <ComboBoxItem x:Uid="/SettingsPage/RadioThemeDefault" />
                         </ComboBox>
                     </controls:Setting>
-                    <controls:Setting x:Uid="NoPicsModeSettings" Icon="&#xEB9F;">
+                    <controls:Setting x:Uid="/SettingsPage/NoPicsModeSettings" Icon="&#xEB9F;">
                         <ToggleSwitch IsOn="{Binding IsNoPicsMode, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
-                    <controls:Setting x:Uid="DisplayOriginPictureSettings" Icon="&#xE8B9;">
+                    <controls:Setting x:Uid="/SettingsPage/DisplayOriginPictureSettings" Icon="&#xE8B9;">
                         <ToggleSwitch IsOn="{Binding IsDisplayOriginPicture, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
-                    <controls:Setting x:Uid="TileUpdateTimeSettings" Icon="&#xEA79;">
+                    <controls:Setting x:Uid="/SettingsPage/TileUpdateTimeSettings" Icon="&#xEA79;">
                         <Slider
                             Width="{StaticResource SettingCardContentMinWidth}"
                             Maximum="1440"
@@ -60,31 +60,31 @@
                 </controls:SettingsGroup>
                 <controls:SettingsGroup
                     x:Name="AccountSettingsHeader"
-                    x:Uid="AccountSettingsHeader"
+                    x:Uid="/SettingsPage/AccountSettingsHeader"
                     Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}}">
                     <controls:Setting
-                        x:Uid="AccountSettings"
+                        x:Uid="/SettingsPage/AccountSettings"
                         Click="Button_Click"
                         Icon="&#xEF58;"
                         IsClickEnabled="True"
                         Tag="AccountSetting" />
-                    <controls:Setting x:Uid="LogoutSettings">
+                    <controls:Setting x:Uid="/SettingsPage/LogoutSettings">
                         <controls:Setting.Icon>
                             <FontIcon
 
                                 Glyph="&#xF3B1;"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </controls:Setting.Icon>
-                        <Button x:Name="AccountLogout" x:Uid="LogoutSettingsButton">
+                        <Button x:Name="AccountLogout" x:Uid="/SettingsPage/LogoutSettingsButton">
                             <Button.Flyout>
                                 <Flyout ShouldConstrainToRootBounds="False">
                                     <StackPanel>
                                         <TextBlock
-                                            x:Uid="AccountLogoutTitle"
+                                            x:Uid="/SettingsPage/AccountLogoutTitle"
                                             Margin="0,0,0,12"
                                             Style="{ThemeResource BaseTextBlockStyle}" />
                                         <Button
-                                            x:Uid="AccountLogoutConfirm"
+                                            x:Uid="/SettingsPage/AccountLogoutConfirm"
                                             Click="Button_Click"
                                             Tag="AccountLogout" />
                                     </StackPanel>
@@ -93,12 +93,12 @@
                         </Button>
                     </controls:Setting>
                 </controls:SettingsGroup>
-                <controls:SettingsGroup x:Uid="AboutSettingsHeader">
+                <controls:SettingsGroup x:Uid="/SettingsPage/AboutSettingsHeader">
                     <controls:SettingExpander Header="{Binding VersionTextBlockText}" Icon="&#xE117;">
                         <controls:SettingExpander.Description>
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Style="{StaticResource SecondaryTextStyle}" TextWrapping="WrapWholeWords">
-                                    <Run x:Uid="LastChecked" />
+                                    <Run x:Uid="/SettingsPage/LastChecked" />
                                     <Run Text="{Binding UpdateDate, Mode=OneWay}" />
                                 </TextBlock>
                                 <ScrollViewer
@@ -107,12 +107,12 @@
                                     VerticalScrollBarVisibility="Disabled">
                                     <StackPanel Orientation="Horizontal">
                                         <HyperlinkButton
-                                            x:Uid="FeedbackLink"
+                                            x:Uid="/SettingsPage/FeedbackLink"
                                             Margin="0,0,2,0"
                                             NavigateUri="https://github.com/Coolapk-UWP/Coolapk-UWP/issues"
                                             ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
                                         <HyperlinkButton
-                                            x:Uid="LogFolderLink"
+                                            x:Uid="/SettingsPage/LogFolderLink"
                                             Margin="2,0"
                                             Click="HyperlinkButton_Click"
                                             Tag="LogFolder">
@@ -130,12 +130,12 @@
                                             </HyperlinkButton.ContextFlyout>
                                         </HyperlinkButton>
                                         <HyperlinkButton
-                                            x:Uid="TranslateLink"
+                                            x:Uid="/SettingsPage/TranslateLink"
                                             Margin="2,0"
                                             NavigateUri="https://crowdin.com/project/CoolapkUWP"
                                             ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
                                         <HyperlinkButton
-                                            x:Uid="ReleaseNotes"
+                                            x:Uid="/SettingsPage/ReleaseNotes"
                                             Margin="2,0"
                                             NavigateUri="https://github.com/Coolapk-UWP/Coolapk-UWP/releases/latest"
                                             ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
@@ -158,14 +158,14 @@
                                 </Border>
                                 <TextBlock
                                     x:Name="CheckingUpdateText"
-                                    x:Uid="CheckingUpdates"
+                                    x:Uid="/SettingsPage/CheckingUpdates"
                                     VerticalAlignment="Center"
                                     FontWeight="SemiBold"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Visibility="{Binding CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 <Button
                                     x:Name="UpdateButton"
-                                    x:Uid="CheckUpdates"
+                                    x:Uid="/SettingsPage/CheckUpdates"
                                     HorizontalAlignment="Right"
                                     Click="Button_Click"
                                     Tag="CheckUpdate"
@@ -189,7 +189,7 @@
                         Visibility="{Binding UpdateStateIsOpen, Converter={StaticResource BoolToVisibilityConverter}}">
                         <muxc:InfoBar.ActionButton>
                             <Button
-                                x:Uid="GoToUpdate"
+                                x:Uid="/SettingsPage/GoToUpdate"
                                 HorizontalAlignment="Right"
                                 Click="GotoUpdate_Click"
                                 Tag="{Binding GotoUpdateTag}"
@@ -197,7 +197,7 @@
                                 Visibility="{Binding GotoUpdateVisibility}" />
                         </muxc:InfoBar.ActionButton>
                     </muxc:InfoBar>
-                    <controls:SettingExpander x:Uid="FrameworkSettings" Icon="&#xE950;">
+                    <controls:SettingExpander x:Uid="/SettingsPage/FrameworkSettings" Icon="&#xE950;">
                         <Grid Style="{StaticResource SettingExpanderContentGridStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -212,7 +212,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock
-                                x:Uid="FrameworkTextBlock"
+                                x:Uid="/SettingsPage/FrameworkTextBlock"
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Padding="0,0,0,8"
@@ -240,7 +240,7 @@
                                 TextWrapping="WrapWholeWords" />
 
                             <TextBlock
-                                x:Uid="DeviceFamilyTextBlock"
+                                x:Uid="/SettingsPage/DeviceFamilyTextBlock"
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Padding="0,0,0,8"
@@ -254,7 +254,7 @@
                                 TextWrapping="WrapWholeWords" />
 
                             <TextBlock
-                                x:Uid="OSPlatformTextBlock"
+                                x:Uid="/SettingsPage/OSPlatformTextBlock"
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Padding="0,0,0,8"
@@ -268,7 +268,7 @@
                                 TextWrapping="WrapWholeWords" />
 
                             <TextBlock
-                                x:Uid="OSArchitectureTextBlock"
+                                x:Uid="/SettingsPage/OSArchitectureTextBlock"
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Padding="0,0,0,8"
@@ -282,7 +282,7 @@
                                 TextWrapping="WrapWholeWords" />
                         </Grid>
                     </controls:SettingExpander>
-                    <controls:Setting x:Uid="CleanCacheSettings" Icon="&#xEA99;">
+                    <controls:Setting x:Uid="/SettingsPage/CleanCacheSettings" Icon="&#xEA99;">
                         <controls:StackPanel Orientation="Horizontal" Spacing="18">
                             <Border Visibility="{Binding IsCleanCache, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Border.Child>
@@ -293,23 +293,23 @@
                                 </Border.Child>
                             </Border>
                             <Button
-                                x:Uid="CleanCacheButton"
+                                x:Uid="/SettingsPage/CleanCacheButton"
                                 Click="Button_Click"
                                 IsEnabled="{Binding IsCleanCache, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                                 Tag="CleanCache" />
                         </controls:StackPanel>
                     </controls:Setting>
-                    <controls:Setting x:Uid="ResetSettings" Icon="&#xE777;">
-                        <Button x:Name="Reset" x:Uid="ResetSettingsButton">
+                    <controls:Setting x:Uid="/SettingsPage/ResetSettings" Icon="&#xE777;">
+                        <Button x:Name="Reset" x:Uid="/SettingsPage/ResetSettingsButton">
                             <Button.Flyout>
                                 <Flyout ShouldConstrainToRootBounds="False">
                                     <StackPanel>
                                         <TextBlock
-                                            x:Uid="ResetSettingsTitle"
+                                            x:Uid="/SettingsPage/ResetSettingsTitle"
                                             Margin="0,0,0,12"
                                             Style="{ThemeResource BaseTextBlockStyle}" />
                                         <Button
-                                            x:Uid="ResetSettingsConfirm"
+                                            x:Uid="/SettingsPage/ResetSettingsConfirm"
                                             Click="Button_Click"
                                             Tag="Reset" />
                                     </StackPanel>
@@ -318,13 +318,13 @@
                         </Button>
                     </controls:Setting>
                 </controls:SettingsGroup>
-                <controls:SettingsGroup x:Uid="OthersSettingsHeader">
-                    <controls:Setting x:Uid="ShowOtherExceptionSettings" Icon="&#xE90F;">
+                <controls:SettingsGroup x:Uid="/SettingsPage/OthersSettingsHeader">
+                    <controls:Setting x:Uid="/SettingsPage/ShowOtherExceptionSettings" Icon="&#xE90F;">
                         <ToggleSwitch IsOn="{Binding ShowOtherException, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
                     <controls:Setting
                         x:Name="GoToTestPage"
-                        x:Uid="GoToTestPage"
+                        x:Uid="/SettingsPage/GoToTestPage"
                         Click="Button_Click"
                         Icon="&#xEC7A;"
                         IsClickEnabled="True"

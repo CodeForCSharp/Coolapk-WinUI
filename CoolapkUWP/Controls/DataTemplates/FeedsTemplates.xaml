@@ -39,20 +39,20 @@
                     <controls:ShowQRCodeControl QRCodeText="{Binding ShareUrl}" />
                 </Flyout>
                 <MenuFlyout x:Key="MoreFlyout">
-                    <MenuFlyoutSubItem x:Uid="Copy">
+                    <MenuFlyoutSubItem x:Uid="/Feed/Copy">
                         <MenuFlyoutSubItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                         </MenuFlyoutSubItem.Icon>
                         <ToggleMenuFlyoutItem
                             x:Name="CopyButton"
-                            x:Uid="CopyFree"
+                            x:Uid="/Feed/CopyFree"
                             IsChecked="{Binding IsCopyEnabled, Mode=TwoWay}" />
                         <MenuFlyoutItem
-                            x:Uid="CopyLink"
+                            x:Uid="/Feed/CopyLink"
                             Click="CopyMenuItem_Click"
                             Tag="{Binding ShareUrl}" />
                         <MenuFlyoutItem
-                            x:Uid="CopyAll"
+                            x:Uid="/Feed/CopyAll"
                             Click="CopyMenuItem_Click"
                             Tag="{Binding Message, Converter={StaticResource HTMLToTextConverter}}" />
                         <MenuFlyoutItem
@@ -62,7 +62,7 @@
                     </MenuFlyoutSubItem>
                     <MenuFlyoutItem
                         x:Name="PinTileButton"
-                        x:Uid="PinTile"
+                        x:Uid="/Feed/PinTile"
                         Click="FeedButton_Click"
                         Tag="{Binding}">
                         <MenuFlyoutItem.Icon>
@@ -71,7 +71,7 @@
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
                         x:Name="ReportButton"
-                        x:Uid="Report"
+                        x:Uid="/Feed/Report"
                         Click="FeedButton_Click"
                         Tag="{Binding ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
                         <MenuFlyoutItem.Icon>
@@ -114,7 +114,7 @@
                         Foreground="Red"
                         Glyph="&#xE840;" />
                     <TextBlock
-                        x:Uid="StickUp"
+                        x:Uid="/Feed/StickUp"
                         Margin="5,4,5,5"
                         HorizontalAlignment="Left"
                         Foreground="Red"
@@ -194,7 +194,7 @@
                     Visibility="{Binding ShowButtons, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Button
                         x:Name="LikeButton"
-                        x:Uid="LikeButton"
+                        x:Uid="/Feed/LikeButton"
                         Height="32"
                         Click="FeedButton_Click"
                         Style="{StaticResource TransparentButtonStyle}"
@@ -215,7 +215,7 @@
                     </Button>
                     <Button
                         x:Name="ReplyButton"
-                        x:Uid="ReplyButton"
+                        x:Uid="/Feed/ReplyButton"
                         Height="32"
                         Click="FeedButton_Click"
                         Style="{StaticResource TransparentButtonStyle}"
@@ -231,7 +231,7 @@
                     </Button>
                     <Button
                         x:Name="ShareButton"
-                        x:Uid="ShareButton"
+                        x:Uid="/Feed/ShareButton"
                         Height="32"
                         Click="FeedButton_Click"
                         Flyout="{StaticResource QRCodeFlyout}"
@@ -248,7 +248,7 @@
                     </Button>
                     <Button
                         x:Name="MoreButton"
-                        x:Uid="MoreButton"
+                        x:Uid="/Feed/MoreButton"
                         Height="32"
                         Flyout="{StaticResource MoreFlyout}"
                         Style="{StaticResource TransparentButtonStyle}">
@@ -284,7 +284,7 @@
                             BorderThickness="1"
                             CornerRadius="{ThemeResource ControlCornerRadius}">
                             <TextBlock
-                                x:Uid="Rating"
+                                x:Uid="/Feed/Rating"
                                 HorizontalAlignment="Left"
                                 FontSize="12"
                                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
@@ -385,7 +385,7 @@
                         BorderThickness="1"
                         CornerRadius="{ThemeResource OverlayCornerRadius}">
                         <TextBlock
-                            x:Uid="SourceFeedNotFount"
+                            x:Uid="/Feed/SourceFeedNotFound"
                             Margin="12,8"
                             HorizontalAlignment="Left"
                             Visibility="{Binding EmptySourceFeed, Converter={StaticResource BoolToVisibilityConverter}}" />
@@ -543,7 +543,7 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center">
                             <TextBlock
-                                x:Uid="MediaShare"
+                                x:Uid="/Feed/MediaShare"
                                 HorizontalAlignment="Left"
                                 MaxLines="2"
                                 TextTrimming="WordEllipsis"
@@ -598,7 +598,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                        <Run x:Uid="SeeAll" />
+                        <Run x:Uid="/Feed/SeeAll" />
                         <Run Text="(" />
                         <Run Text="{Binding ReplyNum}" />
                         <Run Text=")" />
@@ -638,7 +638,7 @@
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         IsTextSelectionEnabled="True"
                         Visibility="{Binding IPLocation, Converter={StaticResource StringVisibilityConverter}}">
-                        <Run x:Uid="PublishFrom" />
+                        <Run x:Uid="/Feed/PublishFrom" />
                         <Run FontWeight="Bold" Text="{Binding IPLocation}" />
                     </TextBlock>
                 </StackPanel>
@@ -655,20 +655,20 @@
             Tapped="OnRootTapped">
             <UserControl.Resources>
                 <MenuFlyout x:Key="MoreFlyout">
-                    <MenuFlyoutSubItem x:Uid="Copy">
+                    <MenuFlyoutSubItem x:Uid="/Feed/Copy">
                         <MenuFlyoutSubItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                         </MenuFlyoutSubItem.Icon>
                         <ToggleMenuFlyoutItem
                             x:Name="CopyButton"
-                            x:Uid="CopyFree"
+                            x:Uid="/Feed/CopyFree"
                             IsChecked="{Binding IsCopyEnabled, Mode=TwoWay}" />
                         <MenuFlyoutItem
-                            x:Uid="CopyLink"
+                            x:Uid="/Feed/CopyLink"
                             Click="CopyMenuItem_Click"
                             Tag="{Binding ShareUrl}" />
                         <MenuFlyoutItem
-                            x:Uid="CopyAll"
+                            x:Uid="/Feed/CopyAll"
                             Click="CopyMenuItem_Click"
                             Tag="{Binding Message, Converter={StaticResource HTMLToTextConverter}}" />
                         <MenuFlyoutItem
@@ -678,7 +678,7 @@
                     </MenuFlyoutSubItem>
                     <MenuFlyoutItem
                         x:Name="ReportButton"
-                        x:Uid="Report"
+                        x:Uid="/Feed/Report"
                         Click="FeedButton_Click"
                         Tag="{Binding ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
                         <MenuFlyoutItem.Icon>
@@ -752,16 +752,16 @@
             SizeChanged="UserControl_SizeChanged">
             <UserControl.Resources>
                 <MenuFlyout x:Key="MoreFlyout">
-                    <MenuFlyoutSubItem x:Uid="Copy">
+                    <MenuFlyoutSubItem x:Uid="/Feed/Copy">
                         <MenuFlyoutSubItem.Icon>
                             <FontIcon Glyph="&#xE8C8;" />
                         </MenuFlyoutSubItem.Icon>
                         <ToggleMenuFlyoutItem
                             x:Name="CopyButton"
-                            x:Uid="CopyFree"
+                            x:Uid="/Feed/CopyFree"
                             IsChecked="{Binding IsCopyEnabled, Mode=TwoWay}" />
                         <MenuFlyoutItem
-                            x:Uid="CopyAll"
+                            x:Uid="/Feed/CopyAll"
                             Click="CopyMenuItem_Click"
                             Tag="{Binding Message, Converter={StaticResource HTMLToTextConverter}}" />
                         <MenuFlyoutItem
@@ -771,7 +771,7 @@
                     </MenuFlyoutSubItem>
                     <MenuFlyoutItem
                         x:Name="ReportButton"
-                        x:Uid="Report"
+                        x:Uid="/Feed/Report"
                         Click="FeedButton_Click"
                         Tag="{Binding ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed_reply&amp;id={0}', Mode=OneWay}">
                         <MenuFlyoutItem.Icon>
@@ -830,7 +830,7 @@
                                 CornerRadius="{ThemeResource ControlCornerRadius}"
                                 Visibility="{Binding IsFeedAuthor, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <TextBlock
-                                    x:Uid="FeedAuthor"
+                                    x:Uid="/Feed/FeedAuthor"
                                     Margin="1"
                                     HorizontalAlignment="Left"
                                     FontSize="12"
@@ -873,7 +873,7 @@
                     Spacing="2">
                     <Button
                         x:Name="LikeButton"
-                        x:Uid="LikeButton"
+                        x:Uid="/Feed/LikeButton"
                         Height="32"
                         Click="FeedButton_Click"
                         Style="{StaticResource TransparentButtonStyle}"
@@ -893,7 +893,7 @@
                     </Button>
                     <Button
                         x:Name="ReplyButton"
-                        x:Uid="ReplyButton"
+                        x:Uid="/Feed/ReplyButton"
                         Height="32"
                         Click="FeedButton_Click"
                         Style="{StaticResource TransparentButtonStyle}"
@@ -908,7 +908,7 @@
                     </Button>
                     <Button
                         x:Name="MoreButton"
-                        x:Uid="MoreButton"
+                        x:Uid="/Feed/MoreButton"
                         Height="32"
                         Flyout="{StaticResource MoreFlyout}"
                         Style="{StaticResource TransparentButtonStyle}">
@@ -969,7 +969,7 @@
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                            <Run x:Uid="SeeAll" />
+                            <Run x:Uid="/Feed/SeeAll" />
                             <Run Text="(" />
                             <Run Text="{Binding ReplyNum}" />
                             <Run Text=")" />

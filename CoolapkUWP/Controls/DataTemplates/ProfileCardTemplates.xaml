@@ -41,7 +41,7 @@
                     TextTrimming="CharacterEllipsis"
                     Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
                 <Button
-                    x:Uid="ReadMoreButton"
+                    x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                     Grid.Column="1"
                     Padding="4,2"
                     HorizontalAlignment="Right"
@@ -90,7 +90,7 @@
                     TextTrimming="CharacterEllipsis"
                     Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
                 <Button
-                    x:Uid="ReadMoreButton"
+                    x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                     Grid.Column="1"
                     Padding="4,2"
                     HorizontalAlignment="Right"
@@ -136,7 +136,7 @@
                 TextTrimming="CharacterEllipsis"
                 Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
             <Button
-                x:Uid="ReadMoreButton"
+                x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                 Grid.Column="1"
                 Padding="4,2"
                 HorizontalAlignment="Right"

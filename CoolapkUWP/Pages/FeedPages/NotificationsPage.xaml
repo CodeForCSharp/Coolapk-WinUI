@@ -14,7 +14,7 @@
         <Pivot.RightHeader>
             <Button
                 x:Name="RefreshButton"
-                x:Uid="RefreshButton"
+                x:Uid="/NotificationsPage/RefreshButton"
                 VerticalAlignment="Center"
                 Click="RefreshButton_Click"
                 Content="&#xE72C;"
@@ -27,7 +27,7 @@
         <PivotItem Tag="CommentMe">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="CommentMe" />
+                    <TextBlock x:Uid="/NotificationsPage/CommentMe" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.CommentMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
@@ -39,7 +39,7 @@
         <PivotItem Tag="AtMe">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="AtMe" />
+                    <TextBlock x:Uid="/NotificationsPage/AtMe" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.AtMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
@@ -51,7 +51,7 @@
         <PivotItem Tag="AtCommentMe">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="AtCommentMe" />
+                    <TextBlock x:Uid="/NotificationsPage/AtCommentMe" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.AtCommentMeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
@@ -63,7 +63,7 @@
         <PivotItem Tag="FeedLike">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="FeedLike" />
+                    <TextBlock x:Uid="/NotificationsPage/FeedLike" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.FeedLikeNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
@@ -75,7 +75,7 @@
         <PivotItem Tag="Follow">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="Follow" />
+                    <TextBlock x:Uid="/NotificationsPage/Follow" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.FollowNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"
@@ -87,7 +87,7 @@
         <PivotItem Tag="Message">
             <PivotItem.Header>
                 <controls:StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock x:Uid="Message" />
+                    <TextBlock x:Uid="/NotificationsPage/Message" />
                     <muxc:InfoBadge
                         VerticalAlignment="Center"
                         Visibility="{x:Bind NotificationsModel.MessageNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay}"

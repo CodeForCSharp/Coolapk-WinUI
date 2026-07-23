@@ -21,16 +21,16 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
             <MenuFlyout x:Key="MoreFlyout">
-                <MenuFlyoutSubItem x:Uid="Copy">
+                <MenuFlyoutSubItem x:Uid="/Feed/Copy">
                     <MenuFlyoutSubItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                     </MenuFlyoutSubItem.Icon>
                     <MenuFlyoutItem
-                        x:Uid="CopyLink"
+                        x:Uid="/Feed/CopyLink"
                         Click="CopyMenuItem_Click"
                         Tag="{Binding ShareUrl}" />
                     <MenuFlyoutItem
-                        x:Uid="CopyAll"
+                        x:Uid="/Feed/CopyAll"
                         Click="CopyMenuItem_Click"
                         Tag="{Binding Message, Converter={StaticResource HTMLToTextConverter}}" />
                     <MenuFlyoutItem
@@ -40,7 +40,7 @@
                 </MenuFlyoutSubItem>
                 <MenuFlyoutItem
                     x:Name="PinTileButton"
-                    x:Uid="PinTile"
+                    x:Uid="/Feed/PinTile"
                     Click="Button_Click"
                     Tag="{Binding}">
                     <MenuFlyoutItem.Icon>
@@ -49,7 +49,7 @@
                 </MenuFlyoutItem>
                 <MenuFlyoutItem
                     x:Name="ReportButton"
-                    x:Uid="Report"
+                    x:Uid="/Feed/Report"
                     Click="Button_Click"
                     Tag="{Binding ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
                     <MenuFlyoutItem.Icon>
@@ -354,7 +354,7 @@
                         BorderThickness="1"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
                         <TextBlock
-                            x:Uid="Rating"
+                            x:Uid="/Feed/Rating"
                             HorizontalAlignment="Left"
                             FontSize="12"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
@@ -487,7 +487,7 @@
                     BorderThickness="1"
                     CornerRadius="{ThemeResource OverlayCornerRadius}">
                     <TextBlock
-                        x:Uid="SourceFeedNotFount"
+                        x:Uid="/Feed/SourceFeedNotFound"
                         Margin="12,8"
                         HorizontalAlignment="Left"
                         Visibility="{Binding EmptySourceFeed, Converter={StaticResource BoolToVisibilityConverter}}" />
@@ -645,7 +645,7 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
                         <TextBlock
-                            x:Uid="MediaShare"
+                            x:Uid="/Feed/MediaShare"
                             HorizontalAlignment="Left"
                             MaxLines="2"
                             TextTrimming="WordEllipsis"
@@ -712,7 +712,7 @@
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     IsTextSelectionEnabled="True"
                     Visibility="{Binding IPLocation, Converter={StaticResource StringVisibilityConverter}, FallbackValue='Collapsed'}">
-                    <Run x:Uid="PublishFrom" />
+                    <Run x:Uid="/Feed/PublishFrom" />
                     <Run FontWeight="Bold" Text="{Binding IPLocation}" />
                 </TextBlock>
                 <Border
@@ -733,7 +733,7 @@
                     IsTextSelectionEnabled="True"
                     Visibility="{Binding ReadNum, Converter={StaticResource DoubleToVisibilityConverter}, FallbackValue='Collapsed'}">
                     <Run FontWeight="Bold" Text="{Binding ReadNum}" />
-                    <Run x:Uid="ReadNum" />
+                    <Run x:Uid="/Feed/ReadNum" />
                 </TextBlock>
             </StackPanel>
         </Grid>

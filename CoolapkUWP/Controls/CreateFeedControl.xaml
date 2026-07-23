@@ -57,7 +57,7 @@
         </local:PageHeader>
         <RichEditBox
             x:Name="InputBox"
-            x:Uid="EditBox"
+            x:Uid="/CreateFeedControl/EditBox"
             Grid.Row="1"
             Margin="6,0"
             AcceptsReturn="True"
@@ -89,7 +89,7 @@
                             <MenuFlyout>
                                 <MenuFlyoutItem
                                     x:Name="DeletePic"
-                                    x:Uid="DeletePicItem"
+                                    x:Uid="/CreateFeedControl/DeletePicItem"
                                     Click="MenuFlyoutItem_Click"
                                     Tag="{Binding}">
                                     <MenuFlyoutItem.Icon>
@@ -107,7 +107,7 @@
         </GridView>
         <CommandBar Grid.Row="3" OverflowButtonVisibility="Collapsed">
             <AppBarButton
-                x:Uid="LinkButton"
+                x:Uid="/CreateFeedControl/LinkButton"
                 AllowFocusOnInteraction="True"
                 Tag="Link">
                 <AppBarButton.KeyboardAccelerators>
@@ -129,14 +129,14 @@
                             </Style>
                         </Flyout.FlyoutPresenterStyle>
                         <Pivot>
-                            <PivotItem x:Uid="UserPivotItem">
+                            <PivotItem x:Uid="/CreateFeedControl/UserPivotItem">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <AutoSuggestBox
-                                        x:Uid="UserSearchBox"
+                                        x:Uid="/CreateFeedControl/UserSearchBox"
                                         Margin="8,4"
                                         IsTabStop="True"
                                         QuerySubmitted="UserAutoSuggestBox_QuerySubmitted">
@@ -188,14 +188,14 @@
                                         IsIndeterminate="{x:Bind Provider.CreateUserItemSource.IsLoading, Mode=OneWay}" />
                                 </Grid>
                             </PivotItem>
-                            <PivotItem x:Uid="TopicPivotItem">
+                            <PivotItem x:Uid="/CreateFeedControl/TopicPivotItem">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <AutoSuggestBox
-                                        x:Uid="TopicSearchBox"
+                                        x:Uid="/CreateFeedControl/TopicSearchBox"
                                         Margin="8,4"
                                         IsTabStop="True"
                                         QuerySubmitted="TopicAutoSuggestBox_QuerySubmitted">
@@ -255,7 +255,7 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
             <AppBarButton
-                x:Uid="EmojiButton"
+                x:Uid="/CreateFeedControl/EmojiButton"
                 AllowFocusOnInteraction="True"
                 Tag="Emoji">
                 <AppBarButton.KeyboardAccelerators>
@@ -282,7 +282,7 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <AutoSuggestBox
-                                x:Uid="EmojiSearchBox"
+                                x:Uid="/CreateFeedControl/EmojiSearchBox"
                                 Margin="8,8,8,-8"
                                 IsTabStop="True"
                                 SuggestionChosen="EmojiAutoSuggestBox_SuggestionChosen"
@@ -369,7 +369,7 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
             <AppBarButton
-                x:Uid="AddPicButton"
+                x:Uid="/CreateFeedControl/AddPicButton"
                 Click="AppBarButton_Click"
                 Tag="AddPic">
                 <AppBarButton.KeyboardAccelerators>
@@ -382,7 +382,7 @@
                     <MenuFlyout>
                         <MenuFlyoutItem
                             x:Name="PastePic"
-                            x:Uid="PastePicItem"
+                            x:Uid="/CreateFeedControl/PastePicItem"
                             Click="MenuFlyoutItem_Click"
                             Tag="PastePic">
                             <MenuFlyoutItem.KeyboardAccelerators>
@@ -399,7 +399,7 @@
                 </AppBarButton.ContextFlyout>
             </AppBarButton>
             <AppBarButton
-                x:Uid="SendButton"
+                x:Uid="/CreateFeedControl/SendButton"
                 Click="AppBarButton_Click"
                 Tag="Send"
                 ToolTipService.ToolTip="{Binding Label, RelativeSource={RelativeSource Mode=Self}}">

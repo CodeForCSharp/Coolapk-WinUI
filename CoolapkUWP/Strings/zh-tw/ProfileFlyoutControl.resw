@@ -120,10 +120,10 @@
   <data name="CreateFeed.Text" xml:space="preserve">
     <value>寫動態</value>
   </data>
-  <data name="LoginButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="LoginButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>登入</value>
   </data>
-  <data name="QRCodeButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="QRCodeButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>分享</value>
   </data>
   <data name="ReadMoreButton.Content" xml:space="preserve">

@@ -48,7 +48,7 @@
                         FontWeight="Normal">
                         <Button
                             x:Name="RefreshButton"
-                            x:Uid="RefreshButton"
+                            x:Uid="/FeedShellPage/RefreshButton"
                             VerticalAlignment="Center"
                             Content="&#xE72C;"
                             Style="{StaticResource NavigationIconButtonNormalStyle}">

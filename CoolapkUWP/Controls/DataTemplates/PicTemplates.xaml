@@ -19,7 +19,7 @@
                 <MenuFlyout>
                     <MenuFlyoutItem
                         x:Name="RefreshButton"
-                        x:Uid="RefreshMenuItem"
+                        x:Uid="/ShowImagePage/RefreshMenuItem"
                         Click="AppBarButton_Click"
                         Tag="{Binding}">
                         <MenuFlyoutItem.Icon>
@@ -28,7 +28,7 @@
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
                         x:Name="CopyButton"
-                        x:Uid="CopyMenuItem"
+                        x:Uid="/ShowImagePage/CopyMenuItem"
                         Click="AppBarButton_Click"
                         Tag="{Binding}">
                         <MenuFlyoutItem.Icon>
@@ -37,7 +37,7 @@
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
                         x:Name="ShareButton"
-                        x:Uid="ShareMenuItem"
+                        x:Uid="/ShowImagePage/ShareMenuItem"
                         Click="AppBarButton_Click"
                         Tag="{Binding}">
                         <MenuFlyoutItem.Icon>
@@ -46,7 +46,7 @@
                     </MenuFlyoutItem>
                     <MenuFlyoutItem
                         x:Name="SaveButton"
-                        x:Uid="SaveMenuItem"
+                        x:Uid="/ShowImagePage/SaveMenuItem"
                         Click="AppBarButton_Click"
                         Tag="{Binding}">
                         <MenuFlyoutItem.Icon>
@@ -91,7 +91,7 @@
                         CornerRadius="8,0,8,0"
                         Visibility="{Binding IsLongPic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
-                            x:Uid="LongPic"
+                            x:Uid="/Feed/LongPic"
                             FontSize="12"
                             Foreground="White" />
                     </Border>
@@ -102,7 +102,7 @@
                         CornerRadius="8,0,8,0"
                         Visibility="{Binding IsWidePic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
-                            x:Uid="WidePic"
+                            x:Uid="/Feed/WidePic"
                             FontSize="12"
                             Foreground="White" />
                     </Border>

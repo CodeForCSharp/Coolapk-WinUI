@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <controls:PageHeader x:Name="HeaderControl" x:Uid="TitleBar" />
+        <controls:PageHeader x:Name="HeaderControl" x:Uid="/TestPage/TitleBar" />
         <ScrollViewer
             Grid.Row="1"
             HorizontalScrollBarVisibility="Disabled"
@@ -27,11 +27,11 @@
                         <ReorderThemeTransition />
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
-                <controls:SettingsGroup x:Uid="UITestSettingsHeader">
-                    <controls:Setting x:Uid="TitleBarSettings" Icon="&#xE737;">
+                <controls:SettingsGroup x:Uid="/TestPage/UITestSettingsHeader">
+                    <controls:Setting x:Uid="/TestPage/TitleBarSettings" Icon="&#xE737;">
                         <ToggleSwitch IsOn="{x:Bind IsExtendsTitleBar, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
-                    <controls:SettingExpander x:Uid="ProgressSettings">
+                    <controls:SettingExpander x:Uid="/TestPage/ProgressSettings">
                         <controls:SettingExpander.Icon>
                             <FontIcon
 
@@ -41,7 +41,7 @@
                         <controls:SettingExpander.ActionContent>
                             <ToggleSwitch IsOn="{x:Bind IsShowProgressRing, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                         </controls:SettingExpander.ActionContent>
-                        <controls:Setting x:Uid="SetProgressValue" Style="{StaticResource DefaultSettingExpanderItemStyle}">
+                        <controls:Setting x:Uid="/TestPage/SetProgressValue" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <Slider
                                 Width="{StaticResource SettingCardContentMinWidth}"
                                 HorizontalAlignment="Stretch"
@@ -50,7 +50,7 @@
                                 Value="{x:Bind ProgressValue, Mode=TwoWay}" />
                         </controls:Setting>
                     </controls:SettingExpander>
-                    <controls:Setting x:Uid="LanguageSettings">
+                    <controls:Setting x:Uid="/TestPage/LanguageSettings">
                         <controls:Setting.Icon>
                             <FontIcon
 
@@ -71,10 +71,10 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </controls:Setting>
-                    <controls:Setting x:Uid="UseCompositorSettings" Icon="&#xED56;">
+                    <controls:Setting x:Uid="/TestPage/UseCompositorSettings" Icon="&#xED56;">
                         <ToggleSwitch IsOn="{x:Bind IsUseCompositor, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
-                    <controls:SettingExpander x:Uid="AccentColorSettings" Icon="&#xE790;">
+                    <controls:SettingExpander x:Uid="/TestPage/AccentColorSettings" Icon="&#xE790;">
                         <controls:Setting
                             Foreground="White"
                             Header="SystemAccentColor"
@@ -134,9 +134,9 @@
                         </controls:Setting>
                     </controls:SettingExpander>
                 </controls:SettingsGroup>
-                <controls:SettingsGroup x:Uid="WindowSettingsHeader">
+                <controls:SettingsGroup x:Uid="/TestPage/WindowSettingsHeader">
                     <controls:Setting
-                        x:Uid="SettingsFlyoutSettings"
+                        x:Uid="/TestPage/SettingsFlyoutSettings"
                         Click="Button_Click"
                         IsClickEnabled="True"
                         Tag="SettingsFlyout">
@@ -152,7 +152,7 @@
                         </controls:Setting.Icon>
                     </controls:Setting>
                     <controls:Setting
-                        x:Uid="SearchFlyoutSettings"
+                        x:Uid="/TestPage/SearchFlyoutSettings"
                         Click="Button_Click"
                         IsClickEnabled="True"
                         Tag="SearchFlyout">
@@ -169,22 +169,22 @@
                     </controls:Setting>
                     <controls:Setting
                         x:Name="ExtensionSettings"
-                        x:Uid="ExtensionSettings"
+                        x:Uid="/TestPage/ExtensionSettings"
                         x:Load="{x:Bind local:TestPage.IsFeature2}"
                         Click="Button_Click"
                         Icon="&#xE7B8;"
                         IsClickEnabled="True"
                         Tag="Extension" />
                 </controls:SettingsGroup>
-                <controls:SettingsGroup x:Uid="WebTestSettingsHeader">
-                    <controls:SettingExpander x:Uid="APISettings">
+                <controls:SettingsGroup x:Uid="/TestPage/WebTestSettingsHeader">
+                    <controls:SettingExpander x:Uid="/TestPage/APISettings">
                         <controls:SettingExpander.Icon>
                             <FontIcon
 
                                 Glyph="&#xEB77;"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </controls:SettingExpander.Icon>
-                        <controls:Setting x:Uid="APIVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
+                        <controls:Setting x:Uid="/TestPage/APIVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <ComboBox SelectedIndex="{x:Bind APIVersion, Mode=TwoWay}">
                                 <ComboBoxItem>Custom</ComboBoxItem>
                                 <ComboBoxItem>小程序</ComboBoxItem>
@@ -199,29 +199,29 @@
                             </ComboBox>
                         </controls:Setting>
                         <controls:Setting
-                            x:Uid="CustomAPISettings"
+                            x:Uid="/TestPage/CustomAPISettings"
                             ActionIcon="&#xE8A7;"
                             Click="Button_Click"
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
                             Tag="CustomAPI" />
-                        <controls:Setting x:Uid="TokenVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
+                        <controls:Setting x:Uid="/TestPage/TokenVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <ComboBox SelectedIndex="{x:Bind TokenVersion, Mode=TwoWay}">
                                 <ComboBoxItem>Token V1</ComboBoxItem>
                                 <ComboBoxItem>Token V2</ComboBoxItem>
                             </ComboBox>
                         </controls:Setting>
-                        <controls:Setting x:Uid="UseAPI2Settings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
+                        <controls:Setting x:Uid="/TestPage/UseAPI2Settings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <ToggleSwitch IsOn="{x:Bind IsUseAPI2, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                         </controls:Setting>
-                        <controls:Setting x:Uid="IsCustomUASettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
+                        <controls:Setting x:Uid="/TestPage/IsCustomUASettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <ToggleSwitch
                                 x:Name="IsCustomUAToggle"
                                 IsOn="{x:Bind IsCustomUA, Mode=TwoWay}"
                                 Style="{StaticResource ToggleSwitchSettingStyle}" />
                         </controls:Setting>
                         <controls:Setting
-                            x:Uid="CustomUASettings"
+                            x:Uid="/TestPage/CustomUASettings"
                             ActionIcon="&#xE8A7;"
                             Click="Button_Click"
                             ContentCornerRadius="{Binding Source={StaticResource ControlCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
@@ -231,7 +231,7 @@
                             Tag="CustomUA"
                             Visibility="{Binding IsOn, ElementName=IsCustomUAToggle, Converter={StaticResource BoolToVisibilityConverter}}" />
                     </controls:SettingExpander>
-                    <controls:Setting x:Uid="SlimCountSettings" Icon="&#xEA79;">
+                    <controls:Setting x:Uid="/TestPage/SlimCountSettings" Icon="&#xEA79;">
                         <Slider
                             Width="{StaticResource SettingCardContentMinWidth}"
                             Maximum="256"
@@ -240,7 +240,7 @@
                             TickPlacement="Outside"
                             Value="{x:Bind SemaphoreSlimCount, Mode=TwoWay}" />
                     </controls:Setting>
-                    <controls:SettingExpander x:Uid="WebTestSettings" Icon="&#xE909;">
+                    <controls:SettingExpander x:Uid="/TestPage/WebTestSettings" Icon="&#xE909;">
                         <controls:SettingExpander.ActionContent>
                             <TextBox
                                 x:Name="URLTextBox"
@@ -248,19 +248,19 @@
                                 Text="https://api2.coolapk.com/v6/account/checkLoginInfo" />
                         </controls:SettingExpander.ActionContent>
                         <controls:Setting
-                            x:Uid="OpenURL"
+                            x:Uid="/TestPage/OpenURL"
                             Click="Button_Click"
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
                             Tag="OpenURL" />
                         <controls:Setting
-                            x:Uid="GetURLContent"
+                            x:Uid="/TestPage/GetURLContent"
                             Click="Button_Click"
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
                             Tag="GetURLContent" />
                         <controls:Setting
-                            x:Uid="OpenBrowser"
+                            x:Uid="/TestPage/OpenBrowser"
                             Click="Button_Click"
                             ContentCornerRadius="{Binding Source={StaticResource ControlCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
                             IsClickEnabled="True"

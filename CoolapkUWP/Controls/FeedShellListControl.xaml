@@ -41,7 +41,7 @@
                     HorizontalAlignment="Right"
                     Visibility="Collapsed">
                     <ToggleSwitch
-                        x:Name="ToggleSwitch" x:Uid="IsFromAuthorToggle"
+                        x:Name="ToggleSwitch" x:Uid="/FeedShellPage/IsFromAuthorToggle"
                         Margin="4,0"
                         HorizontalAlignment="Right"
                         Style="{StaticResource ToggleSwitchSettingStyle}"
@@ -52,7 +52,7 @@
                     HorizontalAlignment="Right"
                     Visibility="Collapsed">
                     <CheckBox
-                        x:Name="CheckBox" x:Uid="IsFromAuthorBox"
+                        x:Name="CheckBox" x:Uid="/FeedShellPage/IsFromAuthorBox"
                         MinWidth="0"
                         HorizontalAlignment="Right"
                         Visibility="Collapsed" />

@@ -5,7 +5,7 @@
     xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Uid="APIVersionDialog"
+    x:Uid="/ContentDialog/APIVersionDialog"
     Closing="OnClosing"
     DefaultButton="Primary"
     Style="{StaticResource DefaultContentDialogStyle}"
@@ -24,11 +24,11 @@
     </ContentDialog.ContextFlyout>
     <controls:StackPanel Spacing="4">
         <TextBox
-            x:Uid="APIVersionTextBox"
+            x:Uid="/ContentDialog/APIVersionTextBox"
             PlaceholderText="9.2.2"
             Text="{x:Bind APIVersion.Version, Mode=TwoWay}" />
         <TextBox
-            x:Uid="APIVersionCodeTextBox"
+            x:Uid="/ContentDialog/APIVersionCodeTextBox"
             PlaceholderText="1905301"
             Text="{x:Bind APIVersion.VersionCode, Mode=TwoWay}" />
     </controls:StackPanel>

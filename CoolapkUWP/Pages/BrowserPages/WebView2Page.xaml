@@ -22,14 +22,14 @@
             FontWeight="Normal">
             <StackPanel Orientation="Horizontal" Spacing="2">
                 <Button
-                    x:Name="GotoSystemBrowserButton" x:Uid="OpenInBrowserButton"
+                    x:Name="GotoSystemBrowserButton" x:Uid="/BrowserPage/OpenInBrowserButton"
                     Height="32"
                     VerticalAlignment="Center"
                     Click="GotoSystemBrowserButton_Click"
                     Style="{StaticResource TransparentButtonStyle}"
                     Visibility="{Binding IsLoginPage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
                 <Button
-                    x:Name="TryLoginButton" x:Uid="BackButton"
+                    x:Name="TryLoginButton" x:Uid="/BrowserPage/BackButton"
                     Height="32"
                     VerticalAlignment="Center"
                     Click="TryLoginButton_Click"
@@ -38,7 +38,7 @@
                     <UIElement.ContextFlyout>
                         <MenuFlyout>
                             <MenuFlyoutItem
-                                x:Name="ManualLoginButton" x:Uid="ManualLoginButton"
+                                x:Name="ManualLoginButton" x:Uid="/BrowserPage/ManualLoginButton"
                                 Click="ManualLoginButton_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEC87;" />

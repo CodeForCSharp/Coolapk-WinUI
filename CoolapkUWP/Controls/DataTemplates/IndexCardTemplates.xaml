@@ -133,7 +133,7 @@
                 Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
             <TextBlock
                 x:Name="FallbackText"
-                x:Uid="ClickMeToRefresh"
+                x:Uid="/Feed/ClickMeToRefresh"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="16"
