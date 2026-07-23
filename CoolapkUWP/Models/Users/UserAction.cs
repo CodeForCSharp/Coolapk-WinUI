@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CoolapkUWP.Helpers;
+using System.Text.Json.Nodes;
 using System.ComponentModel;
 using Windows.ApplicationModel.Resources;
 
@@ -127,38 +128,38 @@ namespace CoolapkUWP.Models.Users
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
 
-        public UserAction(JObject token) : base(token)
+        public UserAction(JsonObject token) : base(token)
         {
             if (token == null) { return; }
 
-            if (token.TryGetValue("like", out JToken like))
+            if (token.TryGetPropertyValue("like", out JsonNode like))
             {
-                Like = like.ToObject<int>() != 0;
+                Like = like.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("favorite", out JToken favorite))
+            if (token.TryGetPropertyValue("favorite", out JsonNode favorite))
             {
-                Favorite = favorite.ToObject<int>() != 0;
+                Favorite = favorite.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("follow", out JsonNode follow))
             {
-                Follow = follow.ToObject<int>() != 0;
+                Follow = follow.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("collect", out JToken collect))
+            if (token.TryGetPropertyValue("collect", out JsonNode collect))
             {
-                Collect = collect.ToObject<int>() != 0;
+                Collect = collect.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("followAuthor", out JToken followAuthor))
+            if (token.TryGetPropertyValue("followAuthor", out JsonNode followAuthor))
             {
-                FollowAuthor = followAuthor.ToObject<int>() != 0;
+                FollowAuthor = followAuthor.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("authorFollowYou", out JToken authorFollowYou))
+            if (token.TryGetPropertyValue("authorFollowYou", out JsonNode authorFollowYou))
             {
-                AuthorFollowYou = authorFollowYou.ToObject<int>() != 0;
+                AuthorFollowYou = authorFollowYou.ToInt32Safe() != 0;
             }
 
             OnFollowChanged();

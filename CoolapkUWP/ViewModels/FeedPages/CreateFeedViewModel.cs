@@ -5,7 +5,7 @@ using CoolapkUWP.Models.Upload;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -241,12 +241,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { new UserModel((JObject)o["fUserInfo"]) },
+                    (o) => new Entity[] { new UserModel(o["fUserInfo"].AsObject()) },
                     "fuid");
             }
         }
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return new UserModel(jo);
         }
@@ -286,7 +286,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return new TopicModel(jo);
         }

@@ -1,35 +1,35 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Models.Update
 {
     public class UpdateInfo
     {
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public string ApiUrl { get; set; }
-        [JsonProperty("html_url")]
+        [JsonPropertyName("html_url")]
         public string ReleaseUrl { get; set; }
-        [JsonProperty("tag_name")]
+        [JsonPropertyName("tag_name")]
         public string TagName { get; set; }
-        [JsonProperty("prerelease")]
+        [JsonPropertyName("prerelease")]
         public bool IsPreRelease { get; set; }
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
-        [JsonProperty("published_at")]
+        [JsonPropertyName("published_at")]
         public DateTime PublishedAt { get; set; }
-        [JsonProperty("assets")]
+        [JsonPropertyName("assets")]
         public List<Asset> Assets { get; set; }
-        [JsonProperty("body")]
+        [JsonPropertyName("body")]
         public string Changelog { get; set; }
         public bool IsExistNewVersion { get; set; }
     }
 
     public class Asset
     {
-        [JsonProperty("size")]
+        [JsonPropertyName("size")]
         public int Size { get; set; }
-        [JsonProperty("browser_download_url")]
+        [JsonPropertyName("browser_download_url")]
         public string Url { get; set; }
     }
 }

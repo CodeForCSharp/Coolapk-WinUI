@@ -1,10 +1,10 @@
 ﻿using CoolapkUWP.Common;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Windows.Storage.Streams;
 
@@ -14,10 +14,8 @@ namespace CoolapkUWP.Helpers
     {
         public static string GetMD5(this string input)
         {
-            // Create a new instance of the MD5CryptoServiceProvider object.
             using (MD5 md5Hasher = MD5.Create())
             {
-                // Convert the input string to a byte array and compute the hash.
                 byte[] data = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(input));
 
                 string results = BitConverter.ToString(data).ToLowerInvariant();
@@ -110,9 +108,7 @@ namespace CoolapkUWP.Helpers
             catch (Exception ex)
             {
                 SettingsHelper.LogManager.GetLogger(nameof(DataHelper)).Warn(ex.ExceptionToMessage(), ex);
-                //换行和段落
                 string s = str.Replace("<br>", "\n").Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<br/>", "\n").Replace("<p>", "").Replace("</p>", "\n").Replace("&nbsp;", " ").Replace("<br />", "").Replace("<br />", "");
-                //链接彻底删除！
                 while (s.IndexOf("<a", StringComparison.Ordinal) > 0)
                 {
                     s = s.Replace(@"<a href=""" + Regex.Split(Regex.Split(s, @"<a href=""")[1], @""">")[0] + @""">", "");
@@ -124,24 +120,11 @@ namespace CoolapkUWP.Helpers
 
         public static string ConvertJsonString(this string str)
         {
-            //格式化json字符串
-            JsonSerializer serializer = new JsonSerializer();
-            TextReader tr = new StringReader(str);
-            JsonTextReader jtr = new JsonTextReader(tr);
             try
             {
-                object obj = serializer.Deserialize(jtr);
-                if (obj != null)
+                using (JsonDocument doc = JsonDocument.Parse(str))
                 {
-                    StringWriter textWriter = new StringWriter();
-                    JsonTextWriter jsonWriter = new JsonTextWriter(textWriter)
-                    {
-                        Formatting = Formatting.Indented,
-                        Indentation = 4,
-                        IndentChar = ' '
-                    };
-                    serializer.Serialize(jsonWriter, obj);
-                    return textWriter.ToString();
+                    return JsonSerializer.Serialize(doc.RootElement, new JsonSerializerOptions { WriteIndented = true });
                 }
             }
             catch (Exception ex)
@@ -179,16 +162,16 @@ namespace CoolapkUWP.Helpers
 
         public static byte[] GetBytes(this Stream stream)
         {
-            if (stream.CanSeek) // stream.Length 已确定
+            if (stream.CanSeek)
             {
                 byte[] bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
                 stream.Seek(0, SeekOrigin.Begin);
                 return bytes;
             }
-            else // stream.Length 不确定
+            else
             {
-                int initialLength = 32768; // 32k
+                int initialLength = 32768;
 
                 byte[] buffer = new byte[initialLength];
                 int read = 0;

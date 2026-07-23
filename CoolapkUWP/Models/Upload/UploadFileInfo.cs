@@ -1,22 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Models.Upload
 {
     public class UploadFileInfo
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("resolution")]
+        [JsonPropertyName("resolution")]
         public string Resolution { get; set; }
 
-        [JsonProperty("md5")]
+        [JsonPropertyName("md5")]
         public string MD5 { get; set; }
 
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public string Url { get; set; }
 
-        [JsonProperty("uploadFileName")]
+        [JsonPropertyName("uploadFileName")]
         public string UploadFileName { get; set; }
     }
 }

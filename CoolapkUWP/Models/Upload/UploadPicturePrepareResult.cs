@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Models.Upload
 {
     public class UploadPicturePrepareResult
     {
-        [JsonProperty("fileInfo")]
+        [JsonPropertyName("fileInfo")]
         public IList<UploadFileInfo> FileInfo { get; set; }
 
-        [JsonProperty(PropertyName = "uploadPrepareInfo", Required = Required.Default)]
+        [JsonPropertyName("uploadPrepareInfo")]
         public UploadPrepareInfo UploadPrepareInfo { get; set; }
     }
 }

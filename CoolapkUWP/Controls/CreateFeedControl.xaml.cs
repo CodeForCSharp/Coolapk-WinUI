@@ -5,7 +5,7 @@ using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI.Helpers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using CoolapkUWP.Common;
 using System;
 using System.Collections.Generic;
@@ -235,7 +235,7 @@ namespace CoolapkUWP.Controls
                 {
                     arg = new object[] { ReplyID };
                 }
-                (bool isSucceed, JToken _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, arg), content);
+                (bool isSucceed, JsonNode _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, arg), content);
                 if (isSucceed)
                 {
                     SendSuccessful();
@@ -462,7 +462,7 @@ namespace CoolapkUWP.Controls
         #endregion
     }
 
-    public class StringToEmojiConverter : IValueConverter
+    public partial class StringToEmojiConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -478,7 +478,7 @@ namespace CoolapkUWP.Controls
         public object ConvertBack(object value, Type targetType, object parameter, string language) => ConverterTools.Convert(value, targetType);
     }
 
-    public class EmojiNameConverter : IValueConverter
+    public partial class EmojiNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

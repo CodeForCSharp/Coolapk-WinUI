@@ -1,5 +1,5 @@
 ﻿using CoolapkUWP.Helpers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 
 namespace CoolapkUWP.Models
@@ -12,15 +12,15 @@ namespace CoolapkUWP.Models
         public string EntityType { get; private set; }
         public string EntityForward { get; private set; }
 
-        public Entity(JObject token)
+        public Entity(JsonObject token)
         {
             if (token == null) { return; }
 
-            if (token.TryGetValue("entityId", out JToken entityId))
+            if (token.TryGetPropertyValue("entityId", out JsonNode entityId))
             {
                 try
                 {
-                    EntityID = entityId.ToObject<int>();
+                    EntityID = entityId.ToInt32Safe();
                 }
                 catch (Exception ex)
                 {
@@ -29,17 +29,17 @@ namespace CoolapkUWP.Models
                 }
             }
 
-            if (token.TryGetValue("entityType", out JToken entityType))
+            if (token.TryGetPropertyValue("entityType", out JsonNode entityType))
             {
                 EntityType = entityType.ToString();
             }
 
-            if (token.TryGetValue("entityFixed", out JToken entityFixed))
+            if (token.TryGetPropertyValue("entityFixed", out JsonNode entityFixed))
             {
-                EntityFixed = Convert.ToBoolean(entityFixed.ToObject<int>());
+                EntityFixed = Convert.ToBoolean(entityFixed.ToInt32Safe());
             }
 
-            if (token.TryGetValue("entityForward", out JToken entityForward))
+            if (token.TryGetPropertyValue("entityForward", out JsonNode entityForward))
             {
                 EntityForward = entityForward.ToString();
             }
@@ -50,6 +50,6 @@ namespace CoolapkUWP.Models
 
     public class NullEntity : Entity
     {
-        public NullEntity(JObject token = null) : base(token) { }
+        public NullEntity(JsonObject token = null) : base(token) { }
     }
 }

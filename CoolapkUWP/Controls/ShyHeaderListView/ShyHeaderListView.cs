@@ -20,7 +20,7 @@ namespace CoolapkUWP.Controls
     [TemplatePart(Name = "ListViewHeader", Type = typeof(Grid))]
     [TemplatePart(Name = "PivotHeader", Type = typeof(PivotHeader))]
     [TemplatePart(Name = "ScrollViewer", Type = typeof(ScrollViewer))]
-    public sealed class ShyHeaderListView : ListView, IShyHeader
+    public sealed partial class ShyHeaderListView : ListView, IShyHeader
     {
         private Grid _topHeader;
         private Grid _listViewHeader;
@@ -369,7 +369,7 @@ namespace CoolapkUWP.Controls
             }
         }
 
-        public class VerticalOffsetConverter : IValueConverter
+        public partial class VerticalOffsetConverter : IValueConverter
         {
             public ShyHeaderListView ShyHeaderListView { get; private set; }
 
@@ -399,7 +399,7 @@ namespace CoolapkUWP.Controls
         }
     }
 
-    public class ShyHeaderItem : DependencyObject
+    public partial class ShyHeaderItem : DependencyObject
     {
         public static readonly DependencyProperty TagProperty =
             DependencyProperty.Register(

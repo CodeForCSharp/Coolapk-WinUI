@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
 {
@@ -7,16 +7,16 @@ namespace CoolapkUWP.Models
         public string Glyph { get; set; }
         public string Title { get; set; }
 
-        public SearchWord(JObject keys) : base(keys)
+        public SearchWord(JsonObject keys) : base(keys)
         {
-            if (keys.TryGetValue("logo", out JToken logo))
+            if (keys.TryGetPropertyValue("logo", out JsonNode logo))
             {
                 Glyph = logo.ToString().Contains("app") || logo.ToString().Contains("cube")
                     ? "\uE719"
                     : logo.ToString().Contains("xitongguanli") ? "\uE77B" : "\uE721";
             }
 
-            if (keys.TryGetValue("title", out JToken title))
+            if (keys.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }

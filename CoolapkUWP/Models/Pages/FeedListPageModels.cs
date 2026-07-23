@@ -1,7 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -35,7 +35,7 @@ namespace CoolapkUWP.Models.Pages
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
 
-        protected FeedListDetailBase(JObject token) : base(token)
+        protected FeedListDetailBase(JsonObject token) : base(token)
         {
             EntityFixed = true;
         }
@@ -116,117 +116,117 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/u/{UID}";
 
-        internal UserDetail(JObject token) : base(token)
+        internal UserDetail(JsonObject token) : base(token)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("uid", out JToken uid))
+            if (token.TryGetPropertyValue("uid", out JsonNode uid))
             {
-                UID = uid.ToObject<int>();
+                UID = uid.ToInt32Safe();
             }
 
-            if (token.TryGetValue("feed", out JToken feed))
+            if (token.TryGetPropertyValue("feed", out JsonNode feed))
             {
-                FeedNum = feed.ToObject<int>();
+                FeedNum = feed.ToInt32Safe();
             }
 
-            if (token.TryGetValue("be_like_num", out JToken be_like_num))
+            if (token.TryGetPropertyValue("be_like_num", out JsonNode be_like_num))
             {
-                LikeNum = be_like_num.ToObject<int>();
+                LikeNum = be_like_num.ToInt32Safe();
             }
 
-            if (token.TryGetValue("fans", out JToken fans))
+            if (token.TryGetPropertyValue("fans", out JsonNode fans))
             {
-                FansNum = fans.ToObject<int>();
+                FansNum = fans.ToInt32Safe();
             }
 
-            if (token.TryGetValue("level", out JToken level))
+            if (token.TryGetPropertyValue("level", out JsonNode level))
             {
-                LevelNum = level.ToObject<int>();
+                LevelNum = level.ToInt32Safe();
             }
 
-            if (token.TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("follow", out JsonNode follow))
             {
-                FollowNum = follow.ToObject<int>();
+                FollowNum = follow.ToInt32Safe();
             }
 
-            if (token.TryGetValue("isFans", out JToken isFans))
+            if (token.TryGetPropertyValue("isFans", out JsonNode isFans))
             {
-                IsFans = isFans.ToObject<int>() != 0;
+                IsFans = isFans.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("isBlackList", out JToken isBlackList))
+            if (token.TryGetPropertyValue("isBlackList", out JsonNode isBlackList))
             {
-                IsBlackList = isBlackList.ToObject<int>() == 1;
+                IsBlackList = isBlackList.ToInt32Safe() == 1;
             }
 
-            if (token.TryGetValue("isFollow", out JToken isFollow))
+            if (token.TryGetPropertyValue("isFollow", out JsonNode isFollow))
             {
-                Followed = isFollow.ToObject<int>() != 0;
+                Followed = isFollow.ToInt32Safe() != 0;
             }
 
-            if (token.TryGetValue("bio", out JToken bio))
+            if (token.TryGetPropertyValue("bio", out JsonNode bio))
             {
                 Bio = bio.ToString();
             }
 
-            if (token.TryGetValue("province", out JToken province) && token.TryGetValue("city", out JToken city))
+            if (token.TryGetPropertyValue("province", out JsonNode province) && token.TryGetPropertyValue("city", out JsonNode city))
             {
                 City = province.ToString() == city.ToString() ? city.ToString() : $"{province} {city}";
             }
 
-            if (token.TryGetValue("astro", out JToken astro))
+            if (token.TryGetPropertyValue("astro", out JsonNode astro))
             {
                 Astro = astro.ToString();
             }
 
-            if (token.TryGetValue("gender", out JToken gender))
+            if (token.TryGetPropertyValue("gender", out JsonNode gender))
             {
-                Gender = gender.ToObject<int>() == 1 ? "♂"
-                    : gender.ToObject<int>() == 0 ? "♀"
+                Gender = gender.ToInt32Safe() == 1 ? "♂"
+                    : gender.ToInt32Safe() == 0 ? "♀"
                     : string.Empty;
             }
 
-            if (token.TryGetValue("displayUsername", out JToken displayUsername))
+            if (token.TryGetPropertyValue("displayUsername", out JsonNode displayUsername))
             {
                 UserName = displayUsername.ToString();
             }
 
-            if (token.TryGetValue("logintime", out JToken logintime))
+            if (token.TryGetPropertyValue("logintime", out JsonNode logintime))
             {
-                LoginTime = $"{logintime.ToObject<long>().ConvertUnixTimeStampToReadable()}活跃";
+                LoginTime = $"{logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
             }
 
-            if (token.TryGetValue("block_status", out JToken block_status))
+            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
             {
-                BlockStatus = block_status.ToObject<int>() == -1 ? loader.GetString("BlockStatus-1")
-                    : block_status.ToObject<int>() == 2 ? loader.GetString("BlockStatus2") : "\0\0";
+                BlockStatus = block_status.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
+                    : block_status.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : "\0\0";
                 BlockStatus = BlockStatus.Substring(1, BlockStatus.Length - 2);
             }
 
-            if (token.TryGetValue("verify_title", out JToken verify_title))
+            if (token.TryGetPropertyValue("verify_title", out JsonNode verify_title))
             {
                 VerifyTitle = verify_title.ToString();
             }
 
-            if (token.TryGetValue("next_level_experience", out JToken next_level_experience))
+            if (token.TryGetPropertyValue("next_level_experience", out JsonNode next_level_experience))
             {
-                NextLevelExperience = next_level_experience.ToObject<double>();
+                NextLevelExperience = next_level_experience.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("next_level_percentage", out JToken next_level_percentage))
+            if (token.TryGetPropertyValue("next_level_percentage", out JsonNode next_level_percentage))
             {
-                NextLevelPercentage = next_level_percentage.ToObject<double>();
+                NextLevelPercentage = next_level_percentage.ToDoubleSafe();
             }
 
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";
 
-            if (token.TryGetValue("cover", out JToken cover))
+            if (token.TryGetPropertyValue("cover", out JsonNode cover))
             {
                 Cover = new ImageModel(cover.ToString(), ImageType.OriginImage);
             }
 
-            if (token.TryGetValue("userAvatar", out JToken userAvatar))
+            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
                 UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
             }
@@ -322,65 +322,65 @@ namespace CoolapkUWP.Models.Pages
 
         public ImmutableArray<UserModel> FollowUsers { get; private set; } = ImmutableArray<UserModel>.Empty;
 
-        internal TopicDetail(JObject token) : base(token)
+        internal TopicDetail(JsonObject token) : base(token)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
-            if (token.TryGetValue("url", out JToken url))
+            if (token.TryGetPropertyValue("url", out JsonNode url))
             {
                 Url = url.ToString();
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("userAction", out JToken userAction) && ((JObject)userAction).TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
             {
-                Followed = follow.ToObject<int>() == 1;
+                Followed = follow.ToInt32Safe() == 1;
             }
 
-            if (token.TryGetValue("hot_num_txt", out JToken hot_num_text))
+            if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_text))
             {
                 HotNum = $"{hot_num_text}{loader.GetString("HotNum")}";
             }
 
-            if (token.TryGetValue("follownum_txt", out JToken follownum_text))
+            if (token.TryGetPropertyValue("follownum_txt", out JsonNode follownum_text))
             {
                 FollowNum = $"{follownum_text}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetValue("commentnum_txt", out JToken commentnum_text))
+            if (token.TryGetPropertyValue("commentnum_txt", out JsonNode commentnum_text))
             {
                 CommentNum = $"{commentnum_text}{loader.GetString("CommentNum")}";
             }
 
-            if (token.TryGetValue("description", out JToken description) && !string.IsNullOrEmpty(description.ToString()))
+            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
             {
                 Description = description.ToString();
             }
 
-            if (token.TryGetValue("intro", out JToken intro) && Description != intro.ToString())
+            if (token.TryGetPropertyValue("intro", out JsonNode intro) && Description != intro.ToString())
             {
                 SubTitle = intro.ToString();
             }
 
-            if (token.TryGetValue("logo", out JToken logo))
+            if (token.TryGetPropertyValue("logo", out JsonNode logo))
             {
                 Logo = new ImageModel(logo.ToString(), ImageType.Icon);
             }
 
-            if (token.TryGetValue("recent_follow_list", out JToken recent_follow_list) && (recent_follow_list as JArray).Count > 0)
+            if (token.TryGetPropertyValue("recent_follow_list", out JsonNode recent_follow_list) && (recent_follow_list as JsonArray).Count > 0)
             {
-                FollowUsers = recent_follow_list.Select(
-                    x => ((JObject)x).TryGetValue("userInfo", out JToken userInfo)
-                        ? new UserModel((JObject)userInfo) : null)
+                FollowUsers = recent_follow_list.AsArray().Select(
+                    x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
+                        ? new UserModel(userInfo.AsObject()) : null)
                     .Where(x => x != null)
                     .ToImmutableArray();
             }
@@ -481,51 +481,51 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/dyh/{ID}";
 
-        internal DyhDetail(JObject token) : base(token)
+        internal DyhDetail(JsonObject token) : base(token)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
-            if (token.TryGetValue("userAction", out JToken userAction) && ((JObject)userAction).TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
             {
-                Followed = follow.ToObject<int>() == 1;
+                Followed = follow.ToInt32Safe() == 1;
             }
 
-            if (token.TryGetValue("uid", out JToken uid))
+            if (token.TryGetPropertyValue("uid", out JsonNode uid))
             {
                 Uurl = $"/u/{uid}";
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("author", out JToken author))
+            if (token.TryGetPropertyValue("author", out JsonNode author))
             {
                 UserName = author.ToString();
             }
 
-            if (token.TryGetValue("follownum", out JToken follownum))
+            if (token.TryGetPropertyValue("follownum", out JsonNode follownum))
             {
                 FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
             }
 
-            if (token.TryGetValue("description", out JToken description))
+            if (token.TryGetPropertyValue("description", out JsonNode description))
             {
                 Description = description.ToString();
             }
 
-            if (token.TryGetValue("logo", out JToken logo))
+            if (token.TryGetPropertyValue("logo", out JsonNode logo))
             {
                 Logo = new ImageModel(logo.ToString(), ImageType.Icon);
             }
 
-            if (token.TryGetValue("userAvatar", out JToken userAvatar))
+            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
                 UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
             }
@@ -544,11 +544,11 @@ namespace CoolapkUWP.Models.Pages
         {
             UriType type = Followed ? UriType.PostDyhUnfollow : UriType.PostDyhFollow;
 
-            (bool isSucceed, JToken result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, ID), null, true);
+            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, ID), null, true);
             if (!isSucceed) { return; }
 
             Followed = !Followed;
-            if (result.ToObject<int>() is int follownum && follownum >= 0)
+            if (result.ToInt32Safe() is int follownum && follownum >= 0)
             {
                 ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
                 FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
@@ -644,74 +644,74 @@ namespace CoolapkUWP.Models.Pages
 
         public ImmutableArray<ImageModel> CoverArr { get; private set; } = ImmutableArray<ImageModel>.Empty;
 
-        internal ProductDetail(JObject token) : base(token)
+        internal ProductDetail(JsonObject token) : base(token)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
             double MaxStarCount = 0, MaxOwnerStarCount = 0;
 
-            if (token.TryGetValue("star_1_count", out JToken star_1_count))
+            if (token.TryGetPropertyValue("star_1_count", out JsonNode star_1_count))
             {
-                Star1Count = star_1_count.ToObject<int>();
+                Star1Count = star_1_count.ToInt32Safe();
                 MaxStarCount = Math.Max(Star1Count, MaxStarCount);
             }
 
-            if (token.TryGetValue("star_2_count", out JToken star_2_count))
+            if (token.TryGetPropertyValue("star_2_count", out JsonNode star_2_count))
             {
-                Star2Count = star_2_count.ToObject<int>();
+                Star2Count = star_2_count.ToInt32Safe();
                 MaxStarCount = Math.Max(Star2Count, MaxStarCount);
             }
 
-            if (token.TryGetValue("star_3_count", out JToken star_3_count))
+            if (token.TryGetPropertyValue("star_3_count", out JsonNode star_3_count))
             {
-                Star3Count = star_3_count.ToObject<int>();
+                Star3Count = star_3_count.ToInt32Safe();
                 MaxStarCount = Math.Max(Star3Count, MaxStarCount);
             }
 
-            if (token.TryGetValue("star_4_count", out JToken star_4_count))
+            if (token.TryGetPropertyValue("star_4_count", out JsonNode star_4_count))
             {
-                Star4Count = star_4_count.ToObject<int>();
+                Star4Count = star_4_count.ToInt32Safe();
                 MaxStarCount = Math.Max(Star4Count, MaxStarCount);
             }
 
-            if (token.TryGetValue("star_5_count", out JToken star_5_count))
+            if (token.TryGetPropertyValue("star_5_count", out JsonNode star_5_count))
             {
-                Star5Count = star_5_count.ToObject<int>();
+                Star5Count = star_5_count.ToInt32Safe();
                 MaxStarCount = Math.Max(Star5Count, MaxStarCount);
             }
 
-            if (token.TryGetValue("owner_star_1_count", out JToken owner_star_1_count))
+            if (token.TryGetPropertyValue("owner_star_1_count", out JsonNode owner_star_1_count))
             {
-                OwnerStar1Count = owner_star_1_count.ToObject<int>();
+                OwnerStar1Count = owner_star_1_count.ToInt32Safe();
                 MaxOwnerStarCount = Math.Max(OwnerStar1Count, MaxOwnerStarCount);
             }
 
-            if (token.TryGetValue("owner_star_2_count", out JToken owner_star_2_count))
+            if (token.TryGetPropertyValue("owner_star_2_count", out JsonNode owner_star_2_count))
             {
-                OwnerStar2Count = owner_star_2_count.ToObject<int>();
+                OwnerStar2Count = owner_star_2_count.ToInt32Safe();
                 MaxOwnerStarCount = Math.Max(OwnerStar2Count, MaxOwnerStarCount);
             }
 
-            if (token.TryGetValue("owner_star_3_count", out JToken owner_star_3_count))
+            if (token.TryGetPropertyValue("owner_star_3_count", out JsonNode owner_star_3_count))
             {
-                OwnerStar3Count = owner_star_3_count.ToObject<int>();
+                OwnerStar3Count = owner_star_3_count.ToInt32Safe();
                 MaxOwnerStarCount = Math.Max(OwnerStar3Count, MaxOwnerStarCount);
             }
 
-            if (token.TryGetValue("owner_star_4_count", out JToken owner_star_4_count))
+            if (token.TryGetPropertyValue("owner_star_4_count", out JsonNode owner_star_4_count))
             {
-                OwnerStar4Count = owner_star_4_count.ToObject<int>();
+                OwnerStar4Count = owner_star_4_count.ToInt32Safe();
                 MaxOwnerStarCount = Math.Max(OwnerStar4Count, MaxOwnerStarCount);
             }
 
-            if (token.TryGetValue("owner_star_5_count", out JToken owner_star_5_count))
+            if (token.TryGetPropertyValue("owner_star_5_count", out JsonNode owner_star_5_count))
             {
-                OwnerStar5Count = owner_star_5_count.ToObject<int>();
+                OwnerStar5Count = owner_star_5_count.ToInt32Safe();
                 MaxOwnerStarCount = Math.Max(OwnerStar5Count, MaxOwnerStarCount);
             }
 
@@ -730,78 +730,78 @@ namespace CoolapkUWP.Models.Pages
             OwnerStar4Percent = OwnerStar4Count * 100 / MaxOwnerStarCount;
             OwnerStar5Percent = OwnerStar5Count * 100 / MaxOwnerStarCount;
 
-            if (token.TryGetValue("userAction", out JToken userAction) && ((JObject)userAction).TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
             {
-                Followed = follow.ToObject<int>() == 1;
+                Followed = follow.ToInt32Safe() == 1;
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("hot_num_txt", out JToken hot_num_text))
+            if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_text))
             {
                 HotNum = $"{hot_num_text}{loader.GetString("HotNum")}";
             }
 
-            if (token.TryGetValue("star_total_count", out JToken star_total_count))
+            if (token.TryGetPropertyValue("star_total_count", out JsonNode star_total_count))
             {
                 StarCount = $"{star_total_count}位酷友打分";
             }
 
-            if (token.TryGetValue("follow_num_txt", out JToken follownum_text))
+            if (token.TryGetPropertyValue("follow_num_txt", out JsonNode follownum_text))
             {
                 FollowNum = $"{follownum_text}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetValue("feed_comment_num_txt", out JToken commentnum_text))
+            if (token.TryGetPropertyValue("feed_comment_num_txt", out JsonNode commentnum_text))
             {
                 CommentNum = $"{commentnum_text}{loader.GetString("CommentNum")}";
             }
 
-            if (token.TryGetValue("rating_total_num", out JToken rating_total_num))
+            if (token.TryGetPropertyValue("rating_total_num", out JsonNode rating_total_num))
             {
                 RatingCount = $"{rating_total_num}位机主打分";
             }
 
-            if (token.TryGetValue("description", out JToken description))
+            if (token.TryGetPropertyValue("description", out JsonNode description))
             {
                 Description = description.ToString();
             }
 
-            if (token.TryGetValue("owner_star_average_score", out JToken owner_star_average_score))
+            if (token.TryGetPropertyValue("owner_star_average_score", out JsonNode owner_star_average_score))
             {
-                OwnerScore = owner_star_average_score.ToObject<double>();
+                OwnerScore = owner_star_average_score.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("rating_average_score", out JToken rating_average_score))
+            if (token.TryGetPropertyValue("rating_average_score", out JsonNode rating_average_score))
             {
-                RatingScore = rating_average_score.ToObject<double>();
+                RatingScore = rating_average_score.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("logo", out JToken logo))
+            if (token.TryGetPropertyValue("logo", out JsonNode logo))
             {
                 Logo = new ImageModel(logo.ToString(), ImageType.Icon);
             }
 
-            if (token.TryGetValue("tagArr", out JToken tagArr) && (tagArr as JArray).Count > 0)
+            if (token.TryGetPropertyValue("tagArr", out JsonNode tagArr) && (tagArr as JsonArray).Count > 0)
             {
-                TagArr = tagArr.Select(x => x.ToString()).ToImmutableArray();
+                TagArr = tagArr.AsArray().Select(x => x.ToString()).ToImmutableArray();
             }
 
-            if (token.TryGetValue("recent_follow_list", out JToken recent_follow_list) && (recent_follow_list as JArray).Count > 0)
+            if (token.TryGetPropertyValue("recent_follow_list", out JsonNode recent_follow_list) && (recent_follow_list as JsonArray).Count > 0)
             {
-                FollowUsers = recent_follow_list.Select(
-                    x => ((JObject)x).TryGetValue("userInfo", out JToken userInfo)
-                        ? new UserModel((JObject)userInfo) : null)
+                FollowUsers = recent_follow_list.AsArray().Select(
+                    x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
+                        ? new UserModel(userInfo.AsObject()) : null)
                     .Where(x => x != null)
                     .ToImmutableArray();
             }
 
-            if (token.TryGetValue("coverArr", out JToken coverArr) && (coverArr as JArray).Count > 0)
+            if (token.TryGetPropertyValue("coverArr", out JsonNode coverArr) && (coverArr as JsonArray).Count > 0)
             {
-                CoverArr = coverArr.Select(
+                CoverArr = coverArr.AsArray().Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
                     .Where(x => x != null)
@@ -942,74 +942,74 @@ namespace CoolapkUWP.Models.Pages
         public ImageModel Cover { get; private set; }
         public ImageModel UserAvatar { get; private set; }
 
-        public CollectionDetail(JObject token) : base(token)
+        public CollectionDetail(JsonObject token) : base(token)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
-            if (token.TryGetValue("userAction", out JToken userAction))
+            if (token.TryGetPropertyValue("userAction", out JsonNode userAction))
             {
-                if (((JObject)userAction).TryGetValue("follow", out JToken follow))
+                if (userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
                 {
-                    Followed = follow.ToObject<int>() == 1;
+                    Followed = follow.ToInt32Safe() == 1;
                 }
 
-                if (((JObject)userAction).TryGetValue("like", out JToken like))
+                if (userAction.AsObject().TryGetPropertyValue("like", out JsonNode like))
                 {
-                    Liked = like.ToObject<int>() == 1;
+                    Liked = like.ToInt32Safe() == 1;
                 }
             }
 
-            if (token.TryGetValue("item_num", out JToken item_num))
+            if (token.TryGetPropertyValue("item_num", out JsonNode item_num))
             {
-                ItemNum = item_num.ToObject<int>();
+                ItemNum = item_num.ToInt32Safe();
             }
 
-            if (token.TryGetValue("like_num", out JToken like_num))
+            if (token.TryGetPropertyValue("like_num", out JsonNode like_num))
             {
-                LikeNum = like_num.ToObject<int>();
+                LikeNum = like_num.ToInt32Safe();
             }
 
-            if (token.TryGetValue("url", out JToken url))
+            if (token.TryGetPropertyValue("url", out JsonNode url))
             {
                 Url = url.ToString();
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("username", out JToken username))
+            if (token.TryGetPropertyValue("username", out JsonNode username))
             {
                 UserName = username.ToString();
             }
 
-            if (token.TryGetValue("follow_num", out JToken follownum))
+            if (token.TryGetPropertyValue("follow_num", out JsonNode follownum))
             {
                 FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
             }
 
-            if (token.TryGetValue("lastupdate", out JToken lastupdate))
+            if (token.TryGetPropertyValue("lastupdate", out JsonNode lastupdate))
             {
-                LastUpdate = $"{lastupdate.ToObject<long>().ConvertUnixTimeStampToReadable()}活跃";
+                LastUpdate = $"{lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
             }
 
-            if (token.TryGetValue("description", out JToken description))
+            if (token.TryGetPropertyValue("description", out JsonNode description))
             {
                 Description = description.ToString();
             }
 
-            if (token.TryGetValue("cover_pic", out JToken cover_pic))
+            if (token.TryGetPropertyValue("cover_pic", out JsonNode cover_pic))
             {
                 Cover = new ImageModel(cover_pic.ToString(), ImageType.OriginImage);
             }
 
-            if (token.TryGetValue("userAvatar", out JToken userAvatar))
+            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
                 UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
             }
@@ -1032,10 +1032,10 @@ namespace CoolapkUWP.Models.Pages
             using (StringContent id = new StringContent(ID.ToString()))
             {
                 content.Add(id, "id");
-                (bool isSucceed, JToken result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
                 if (!isSucceed) { return; }
                 Liked = !Liked;
-                if (result.ToObject<int>() is int follownum && follownum >= 0)
+                if (result.ToInt32Safe() is int follownum && follownum >= 0)
                 {
                     LikeNum = follownum;
                 }
@@ -1050,10 +1050,10 @@ namespace CoolapkUWP.Models.Pages
             using (StringContent id = new StringContent(ID.ToString()))
             {
                 content.Add(id, "id");
-                (bool isSucceed, JToken result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
                 if (!isSucceed) { return; }
                 Followed = !Followed;
-                if (result.ToObject<int>() is int follownum && follownum >= 0)
+                if (result.ToInt32Safe() is int follownum && follownum >= 0)
                 {
                     ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
                     FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";

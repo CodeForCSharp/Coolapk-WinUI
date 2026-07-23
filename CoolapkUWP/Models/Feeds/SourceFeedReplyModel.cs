@@ -2,7 +2,7 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.Collections.Immutable;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
@@ -26,16 +26,16 @@ namespace CoolapkUWP.Models.Feeds
 
         public ImmutableArray<ImageModel> PicArr { get; private set; } = ImmutableArray<ImageModel>.Empty;
 
-        public SourceFeedReplyModel(JObject token) : base(token)
+        public SourceFeedReplyModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
-            if (token.TryGetValue("userInfo", out JToken v1))
+            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
             {
-                JObject userInfo = (JObject)v1;
+                JsonObject userInfo = v1.AsObject();
                 UserInfo = new UserModel(userInfo);
             }
             else
@@ -43,9 +43,9 @@ namespace CoolapkUWP.Models.Feeds
                 UserInfo = new UserModel(null);
             }
 
-            if (token.TryGetValue("userAction", out JToken v2))
+            if (token.TryGetPropertyValue("userAction", out JsonNode v2))
             {
-                JObject userAction = (JObject)v2;
+                JsonObject userAction = v2.AsObject();
                 UserAction = new UserAction(userAction);
             }
             else
@@ -53,24 +53,24 @@ namespace CoolapkUWP.Models.Feeds
                 UserAction = new UserAction(null);
             }
 
-            if (token.TryGetValue("isFeedAuthor", out JToken isFeedAuthor))
+            if (token.TryGetPropertyValue("isFeedAuthor", out JsonNode isFeedAuthor))
             {
-                IsFeedAuthor = isFeedAuthor.ToObject<int>() == 1;
+                IsFeedAuthor = isFeedAuthor.ToInt32Safe() == 1;
             }
 
-            if (token.TryGetValue("ruid", out JToken ruid))
+            if (token.TryGetPropertyValue("ruid", out JsonNode ruid))
             {
                 Rurl = $"/u/{ruid}";
             }
 
-            if (token.TryGetValue("rusername", out JToken rusername))
+            if (token.TryGetPropertyValue("rusername", out JsonNode rusername))
             {
                 Rusername = rusername.ToString();
             }
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
 
-            if (token.TryGetValue("message", out JToken message))
+            if (token.TryGetPropertyValue("message", out JsonNode message))
             {
                 Message =
                 string.IsNullOrEmpty(Rusername)
@@ -78,15 +78,15 @@ namespace CoolapkUWP.Models.Feeds
                 : $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}@{GetUserLink(Rurl, Rusername)}: {message}";
             }
 
-            if (token.TryGetValue("pic", out JToken pic) && !string.IsNullOrEmpty(pic.ToString()))
+            if (token.TryGetPropertyValue("pic", out JsonNode pic) && !string.IsNullOrEmpty(pic.ToString()))
             {
                 PicUri = pic.ToString();
                 Message += $" <a href=\"{PicUri}\">{loader.GetString("SeePic")}</a>";
             }
 
-            if (token.TryGetValue("picArr", out JToken picArr) && (picArr as JArray).Count > 0 && !string.IsNullOrEmpty((picArr as JArray)[0].ToString()))
+            if (token.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0 && !string.IsNullOrEmpty(picArr.AsArray()[0].ToString()))
             {
-                PicArr = picArr.Select(
+                PicArr = picArr.AsArray().Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
                     .Where(x => x != null)
@@ -98,9 +98,9 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            if (token.TryGetValue("block_status", out JToken block_status))
+            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
             {
-                BlockStatus = block_status.ToObject<int>();
+                BlockStatus = block_status.ToInt32Safe();
             }
         }
 

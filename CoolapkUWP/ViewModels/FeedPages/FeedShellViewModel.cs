@@ -5,7 +5,7 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,10 +76,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected virtual async Task<FeedDetailModel> GetFeedDetailAsync(string id)
         {
-            (bool isSucceed, JToken result) = id.Contains("changeHistoryDetail") ? await RequestHelper.GetDataAsync(new Uri(UriHelper.BaseUri.ToString() + "v6/feed/" + id), true) : await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetFeedDetail, id), true);
+            (bool isSucceed, JsonNode result) = id.Contains("changeHistoryDetail") ? await RequestHelper.GetDataAsync(new Uri(UriHelper.BaseUri.ToString() + "v6/feed/" + id), true) : await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetFeedDetail, id), true);
             if (!isSucceed) { return null; }
 
-            JObject detail = (JObject)result;
+            JsonObject detail = result.AsObject();
             return detail != null ? new FeedDetailModel(detail) : null;
         }
 
@@ -331,9 +331,9 @@ namespace CoolapkUWP.ViewModels.FeedPages
             await Refresh(true);
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
-            yield return json.Value<string>("entityType") == "feed_reply" ? new FeedReplyModel(json) : (Entity)new NullEntity();
+            yield return (string)json["entityType"] == "feed_reply" ? new FeedReplyModel(json) : (Entity)new NullEntity();
         }
 
         public void SetComboBoxSelectedIndex(int value)
@@ -374,7 +374,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "uid");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return new UserModel(json);
         }
@@ -398,7 +398,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return new FeedModel(json);
         }
@@ -424,7 +424,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return new FeedModel(json);
         }
@@ -450,7 +450,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return new FeedModel(json);
         }
@@ -476,7 +476,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return new FeedModel(json);
         }

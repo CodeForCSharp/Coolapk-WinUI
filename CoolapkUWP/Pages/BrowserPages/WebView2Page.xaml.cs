@@ -3,7 +3,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.BrowserPages;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;

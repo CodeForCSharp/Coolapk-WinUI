@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Users
@@ -36,77 +36,77 @@ namespace CoolapkUWP.Models.Users
 
         public ImageModel Pic => UserAvatar;
 
-        public UserModel(JObject token) : base(token)
+        public UserModel(JsonObject token) : base(token)
         {
             if (token == null) { return; }
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetValue("uid", out JToken uid))
+            if (token.TryGetPropertyValue("uid", out JsonNode uid))
             {
-                UID = uid.ToObject<int>();
+                UID = uid.ToInt32Safe();
             }
 
-            if (token.TryGetValue("bio", out JToken bio))
+            if (token.TryGetPropertyValue("bio", out JsonNode bio))
             {
                 Bio = bio.ToString();
             }
 
-            if (token.TryGetValue("fans", out JToken fans))
+            if (token.TryGetPropertyValue("fans", out JsonNode fans))
             {
-                fansNum = fans.ToObject<int>();
+                fansNum = fans.ToInt32Safe();
                 FansNum = $"{fansNum}{loader.GetString("Fan")}";
             }
 
-            if (token.TryGetValue("level", out JToken level))
+            if (token.TryGetPropertyValue("level", out JsonNode level))
             {
-                Level = level.ToObject<int>();
+                Level = level.ToInt32Safe();
             }
 
-            if (token.TryGetValue("cover", out JToken cover))
+            if (token.TryGetPropertyValue("cover", out JsonNode cover))
             {
                 Cover = new ImageModel(cover.ToString(), ImageType.OriginImage);
             }
 
-            if (token.TryGetValue("status", out JToken status))
+            if (token.TryGetPropertyValue("status", out JsonNode status))
             {
-                Status = status.ToObject<int>();
+                Status = status.ToInt32Safe();
             }
 
-            if (token.TryGetValue("regdate", out JToken regdate))
+            if (token.TryGetPropertyValue("regdate", out JsonNode regdate))
             {
-                RegDate = regdate.ToObject<int>();
+                RegDate = regdate.ToInt32Safe();
             }
 
-            if (token.TryGetValue("username", out JToken username))
+            if (token.TryGetPropertyValue("username", out JsonNode username))
             {
                 UserName = username.ToString();
             }
 
-            if (token.TryGetValue("logintime", out JToken logintime))
+            if (token.TryGetPropertyValue("logintime", out JsonNode logintime))
             {
-                LoginTime = $"{logintime.ToObject<long>().ConvertUnixTimeStampToReadable()}活跃";
+                LoginTime = $"{logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
             }
 
-            if (token.TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("follow", out JsonNode follow))
             {
-                followNum = follow.ToObject<int>();
+                followNum = follow.ToInt32Safe();
                 FollowNum = $"{followNum}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetValue("experience", out JToken experience))
+            if (token.TryGetPropertyValue("experience", out JsonNode experience))
             {
-                Experience = experience.ToObject<int>();
+                Experience = experience.ToInt32Safe();
             }
 
-            if (token.TryGetValue("userAvatar", out JToken userAvatar))
+            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
                 UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.OriginImage);
             }
 
-            if (token.TryGetValue("block_status", out JToken block_status))
+            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
             {
-                BlockStatus = block_status.ToObject<int>();
+                BlockStatus = block_status.ToInt32Safe();
             }
         }
 

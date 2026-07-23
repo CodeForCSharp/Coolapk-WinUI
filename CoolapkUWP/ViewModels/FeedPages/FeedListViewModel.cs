@@ -7,7 +7,7 @@ using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -210,7 +210,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected abstract string GetTitleBarText(FeedListDetailBase detail);
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return EntityTemplateSelector.GetEntity(jo);
         }
@@ -293,10 +293,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
             public override async Task<FeedListDetailBase> GetDetail()
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetUserSpace, ID), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetUserSpace, ID), true);
                 if (!isSucceed) { return null; }
 
-                JObject token = (JObject)result;
+                JsonObject token = result.AsObject();
                 FeedListDetailBase detail = null;
 
                 if (token != null)
@@ -372,10 +372,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
             public override async Task<FeedListDetailBase> GetDetail()
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetTagDetail, ID), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetTagDetail, ID), true);
                 if (!isSucceed) { return null; }
 
-                JObject token = (JObject)result;
+                JsonObject token = result.AsObject();
                 FeedListDetailBase detail = null;
 
                 if (token != null)
@@ -437,10 +437,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
             public override async Task<FeedListDetailBase> GetDetail()
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetDyhDetail, ID), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetDyhDetail, ID), true);
                 if (!isSucceed) { return null; }
 
-                JObject token = (JObject)result;
+                JsonObject token = result.AsObject();
                 FeedListDetailBase detail = null;
 
                 if (token != null)
@@ -544,10 +544,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
             public override async Task<FeedListDetailBase> GetDetail()
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetail, ID), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetail, ID), true);
                 if (!isSucceed) { return null; }
 
-                JObject token = (JObject)result;
+                JsonObject token = result.AsObject();
                 FeedListDetailBase detail = null;
 
                 if (token != null)
@@ -571,21 +571,21 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 }
                 if (ItemSource == null)
                 {
-                    (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionContents, ID, "1", ""), true);
+                    (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionContents, ID, "1", ""), true);
                     if (isSucceed)
                     {
-                        JArray array = (JArray)result;
-                        foreach (JObject item in array)
+                        JsonArray array = result.AsArray();
+                        foreach (JsonNode item in array)
                         {
-                            if (item.TryGetValue("entityTemplate", out JToken entityTemplate) && entityTemplate.ToString() == "selectorLinkCard")
+                            if (item.AsObject().TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && entityTemplate.ToString() == "selectorLinkCard")
                             {
-                                if (item.TryGetValue("entities", out JToken v1))
+                                if (item.AsObject().TryGetPropertyValue("entities", out JsonNode v1))
                                 {
-                                    JArray entities = (JArray)v1;
+                                    JsonArray entities = v1.AsArray();
                                     List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
-                                    foreach (JObject entity in entities)
+                                    foreach (JsonNode entity in entities)
                                     {
-                                        if (entity.TryGetValue("url", out JToken url) && !string.IsNullOrEmpty(url.ToString()))
+                                        if (entity.AsObject().TryGetPropertyValue("url", out JsonNode url) && !string.IsNullOrEmpty(url.ToString()))
                                         {
                                             CoolapkListProvider Provider = new CoolapkListProvider(
                                                 (p, firstItem, lastItem) => UriHelper.GetUri(UriType.DataList, url.ToString().Replace("#", "%23").Replace("/", "%2F").Replace("?", "%3F").Replace("=", "%3D").Replace("&", "%26"), $"&page={p}" + (string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}") + (string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}")),
@@ -593,7 +593,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                                                 "id");
                                             FeedListItemSource FeedListItemSource = new FeedListItemSource(ID, Provider);
                                             ShyHeaderItem ShyHeaderItem = new ShyHeaderItem { ItemSource = FeedListItemSource };
-                                            if (entity.TryGetValue("title", out JToken title) && !string.IsNullOrEmpty(title.ToString()))
+                                            if (entity.AsObject().TryGetPropertyValue("title", out JsonNode title) && !string.IsNullOrEmpty(title.ToString()))
                                             {
                                                 ShyHeaderItem.Header = title.ToString();
                                             }
@@ -628,10 +628,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
             public override async Task<FeedListDetailBase> GetDetail()
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionDetail, ID), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionDetail, ID), true);
                 if (!isSucceed) { return null; }
 
-                JObject token = (JObject)result;
+                JsonObject token = result.AsObject();
                 FeedListDetailBase detail = null;
 
                 if (token != null)
@@ -667,4 +667,3 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 }
-

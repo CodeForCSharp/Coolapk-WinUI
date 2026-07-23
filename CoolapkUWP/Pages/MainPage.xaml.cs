@@ -11,7 +11,7 @@ using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Xaml.Controls;
 
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -345,19 +345,19 @@ namespace CoolapkUWP.Pages
                 await semaphoreSlim.WaitAsync();
                 try
                 {
-                    (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.SearchWords, keyWord), true);
-                    if (isSucceed && result != null && result is JArray array && array.Count > 0)
+                    (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.SearchWords, keyWord), true);
+                    if (isSucceed && result != null && result is JsonArray array && array.Count > 0)
                     {
-                        foreach (JToken token in array)
+                        foreach (JsonNode token in array)
                         {
-                            switch (token.Value<string>("entityType"))
+                            switch ((string)token["entityType"])
                             {
                                 case "apk":
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new AppModel(token as JObject)));
+                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new AppModel(token as JsonObject)));
                                     break;
                                 case "searchWord":
                                 default:
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new SearchWord(token as JObject)));
+                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new SearchWord(token as JsonObject)));
                                     break;
                             }
                         }

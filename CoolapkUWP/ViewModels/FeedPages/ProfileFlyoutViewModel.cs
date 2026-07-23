@@ -3,7 +3,7 @@ using CoolapkUWP.Models;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -71,27 +71,27 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private static async Task<ProfileDetailModel> GetFeedDetailAsync(string id)
         {
-            (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetUserProfile, id), true);
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetUserProfile, id), true);
             if (!isSucceed) { return null; }
 
-            JObject detail = (JObject)result;
+            JsonObject detail = result.AsObject();
             return detail != null ? new ProfileDetailModel(detail) : null;
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             yield return GetEntity(json);
         }
 
-        private static Entity GetEntity(JObject json)
+        private static Entity GetEntity(JsonObject json)
         {
-            switch (json.Value<string>("entityType"))
+            switch ((string)json["entityType"])
             {
                 case "entity_type_user_card_manager": return null;
                 default:
-                    if (json.TryGetValue("entityTemplate", out JToken entityTemplate))
+                    if (json.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate))
                     {
-                        switch (entityTemplate.Value<string>())
+                        switch ((string)entityTemplate)
                         {
                             case "imageTextGridCard":
                             case "imageSquareScrollCard":

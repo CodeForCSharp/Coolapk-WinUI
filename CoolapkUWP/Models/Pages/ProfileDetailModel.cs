@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models.Pages
 {
@@ -18,56 +18,56 @@ namespace CoolapkUWP.Models.Pages
         public double NextLevelPercentage { get; private set; }
         public string NextLevelNowExperience { get; private set; }
 
-        public ProfileDetailModel(JObject token) : base(token)
+        public ProfileDetailModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("userAvatar", out JToken userAvatar))
+            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
                 UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
             }
 
-            if (token.TryGetValue("url", out JToken url))
+            if (token.TryGetPropertyValue("url", out JsonNode url))
             {
                 Url = $"https://www.coolapk.com{url}";
             }
 
-            if (token.TryGetValue("fans", out JToken fans))
+            if (token.TryGetPropertyValue("fans", out JsonNode fans))
             {
-                FansNum = fans.ToObject<double>();
+                FansNum = fans.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("feed", out JToken feed))
+            if (token.TryGetPropertyValue("feed", out JsonNode feed))
             {
-                FeedNum = feed.ToObject<double>();
+                FeedNum = feed.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("level", out JToken level))
+            if (token.TryGetPropertyValue("level", out JsonNode level))
             {
-                LevelNum = level.ToObject<double>();
+                LevelNum = level.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("username", out JToken username))
+            if (token.TryGetPropertyValue("username", out JsonNode username))
             {
                 UserName = username.ToString();
             }
 
-            if (token.TryGetValue("follow", out JToken follow))
+            if (token.TryGetPropertyValue("follow", out JsonNode follow))
             {
-                FollowNum = follow.ToObject<double>();
+                FollowNum = follow.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("level_today_message", out JToken level_today_message))
+            if (token.TryGetPropertyValue("level_today_message", out JsonNode level_today_message))
             {
                 LevelTodayMessage = level_today_message.ToString();
             }
 
-            if (token.TryGetValue("next_level_experience", out JToken next_level_experience))
+            if (token.TryGetPropertyValue("next_level_experience", out JsonNode next_level_experience))
             {
-                NextLevelExperience = next_level_experience.ToObject<double>();
+                NextLevelExperience = next_level_experience.ToDoubleSafe();
             }
 
-            if (token.TryGetValue("next_level_percentage", out JToken next_level_percentage))
+            if (token.TryGetPropertyValue("next_level_percentage", out JsonNode next_level_percentage))
             {
-                NextLevelPercentage = next_level_percentage.ToObject<double>();
+                NextLevelPercentage = next_level_percentage.ToDoubleSafe();
             }
 
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";

@@ -2,7 +2,6 @@
 using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Update;
 using CommunityToolkit.WinUI.Helpers;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -290,12 +290,6 @@ namespace CoolapkUWP.Helpers
 
     public static partial class NetworkHelper
     {
-        /// <summary>
-        /// 通过用户名或 UID 获取用户信息。
-        /// </summary>
-        /// <param name="name">要获取信息的用户名或 UID 。</param>
-        /// <param name="isBackground">是否通知错误。</param>
-        /// <returns>用户信息</returns>
         public static async Task<(string UID, string UserName, string UserAvatar)> GetUserInfoByNameAsync(string name, bool isBackground = false)
         {
             (string UID, string UserName, string UserAvatar) result = (string.Empty, string.Empty, string.Empty);
@@ -310,22 +304,22 @@ namespace CoolapkUWP.Helpers
             {
                 str = await Client.GetStringAsync(new Uri($"https://www.coolapk.com/n/{name}"));
 
-                JObject token = JObject.Parse(str);
-                if (token.TryGetValue("dataRow", out JToken v1))
+                JsonObject token = JsonNode.Parse(str).AsObject();
+                if (token.TryGetPropertyValue("dataRow", out JsonNode v1))
                 {
-                    JObject dataRow = (JObject)v1;
+                    JsonObject dataRow = v1.AsObject();
 
-                    if (dataRow.TryGetValue("uid", out JToken uid))
+                    if (dataRow.TryGetPropertyValue("uid", out JsonNode uid))
                     {
                         result.UID = uid.ToString();
                     }
 
-                    if (dataRow.TryGetValue("username", out JToken username))
+                    if (dataRow.TryGetPropertyValue("username", out JsonNode username))
                     {
                         result.UserName = username.ToString();
                     }
 
-                    if (dataRow.TryGetValue("userAvatar", out JToken userAvatar))
+                    if (dataRow.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
                     {
                         result.UserAvatar = userAvatar.ToString();
                     }
@@ -345,7 +339,7 @@ namespace CoolapkUWP.Helpers
             {
                 SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(ex.ExceptionToMessage(), ex);
                 if (string.IsNullOrWhiteSpace(str)) { throw ex; }
-                JObject o = JObject.Parse(str);
+                JsonObject o = JsonNode.Parse(str).AsObject();
                 if (o == null) { throw ex; }
                 else { throw new CoolapkMessageException(o); }
             }

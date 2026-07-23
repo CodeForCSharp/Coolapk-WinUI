@@ -2,14 +2,14 @@
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using static CoolapkUWP.Models.Feeds.FeedModel;
 
 namespace CoolapkUWP.Controls.DataTemplates
 {
-    public sealed class CardTemplateSelector : DataTemplateSelector
+    public sealed partial class CardTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Feed { get; set; }
         public DataTemplate User { get; set; }
@@ -67,7 +67,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         }
     }
 
-    public sealed class ItemTemplateSelector : DataTemplateSelector
+    public sealed partial class ItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Feed { get; set; }
         public DataTemplate User { get; set; }
@@ -135,7 +135,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         }
     }
 
-    public sealed class ProfileCardTemplateSelector : DataTemplateSelector
+    public sealed partial class ProfileCardTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Others { get; set; }
         public DataTemplate TitleCard { get; set; }
@@ -166,7 +166,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
     }
 
-    public sealed class ProfileItemTemplateSelector : DataTemplateSelector
+    public sealed partial class ProfileItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Empty { get; set; }
         public DataTemplate History { get; set; }
@@ -197,7 +197,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
     }
 
-    public sealed class SearchTemplateSelector : DataTemplateSelector
+    public sealed partial class SearchTemplateSelector : DataTemplateSelector
     {
         public DataTemplate App { get; set; }
         public DataTemplate SearchWord { get; set; }
@@ -212,9 +212,9 @@ namespace CoolapkUWP.Controls.DataTemplates
 
     public static class EntityTemplateSelector
     {
-        public static Entity GetEntity(JObject json, bool isHotFeedPage = false)
+        public static Entity GetEntity(JsonObject json, bool isHotFeedPage = false)
         {
-            switch (json.Value<string>("entityType"))
+            switch ((string)json["entityType"])
             {
                 case "feed":
                 case "discovery": return new FeedModel(json, isHotFeedPage ? FeedDisplayMode.IsFirstPageFeed : FeedDisplayMode.Normal);
@@ -224,7 +224,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                 case "collection": return new CollectionModel(json);
                 case "entity_type_user_card_manager": return new IndexPageOperationCardModel(json, OperationType.ShowTitle);
                 default:
-                    if (json.TryGetValue("entityTemplate", out JToken entityTemplate) && !string.IsNullOrEmpty(entityTemplate.ToString()))
+                    if (json.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && !string.IsNullOrEmpty(entityTemplate.ToString()))
                     {
                         switch (entityTemplate.ToString())
                         {
@@ -253,7 +253,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "imageCard": return new IndexPageHasEntitiesModel(json, EntityType.Image);
                             //case "apkImageCard":
                             case "configCard":
-                                return json.TryGetValue("url", out JToken url) && url.ToString().Length >= 5
+                                return json.TryGetPropertyValue("url", out JsonNode url) && url.ToString().Length >= 5
                                     ? new IndexPageHasEntitiesModel(json, EntityType.IconLink)
                                     : null;
                             case "iconLinkGridCard": return new IndexPageHasEntitiesModel(json, EntityType.IconLink);

@@ -6,7 +6,7 @@ using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,13 +46,13 @@ namespace CoolapkUWP.Controls
         {
             UIHelper.ShowProgressBar();
             string device = (sender.Inlines.FirstOrDefault().ElementStart.VisualParent.DataContext as FeedModelBase).DeviceTitle;
-            (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetailByName, device), true);
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetailByName, device), true);
             UIHelper.HideProgressBar();
             if (!isSucceed) { return; }
 
-            JObject token = (JObject)result;
+            JsonObject token = result.AsObject();
 
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
                 FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, id.ToString());
 

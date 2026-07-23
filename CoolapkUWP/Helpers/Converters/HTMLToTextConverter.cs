@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace CoolapkUWP.Helpers.Converters
 {
-    public class HTMLToTextConverter : IValueConverter
+    public partial class HTMLToTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

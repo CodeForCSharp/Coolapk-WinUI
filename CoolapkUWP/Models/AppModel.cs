@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
 {
@@ -18,67 +18,67 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Logo;
 
-        public AppModel(JObject token) : base(token)
+        public AppModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("url", out JToken url))
+            if (token.TryGetPropertyValue("url", out JsonNode url))
             {
                 Url = url.ToString();
             }
 
-            if (token.TryGetValue("followCount", out JToken followCount))
+            if (token.TryGetPropertyValue("followCount", out JsonNode followCount))
             {
                 FollowNum = followCount.ToString();
             }
 
-            if (token.TryGetValue("downCount", out JToken downCount))
+            if (token.TryGetPropertyValue("downCount", out JsonNode downCount))
             {
                 DownloadNum = downCount.ToString();
             }
 
-            if (token.TryGetValue("apkversioncode", out JToken apkversioncode))
+            if (token.TryGetPropertyValue("apkversioncode", out JsonNode apkversioncode))
             {
                 VersionCode = apkversioncode.ToString();
             }
 
-            if (token.TryGetValue("apkversionname", out JToken apkversionname))
+            if (token.TryGetPropertyValue("apkversionname", out JsonNode apkversionname))
             {
                 VersionName = apkversionname.ToString();
             }
 
-            if (token.TryGetValue("title", out JToken title) && !string.IsNullOrEmpty(title.ToString()))
+            if (token.TryGetPropertyValue("title", out JsonNode title) && !string.IsNullOrEmpty(title.ToString()))
             {
                 Title = title.ToString();
             }
-            else if (token.TryGetValue("navTitle", out JToken navTitle) && !string.IsNullOrEmpty(navTitle.ToString()))
+            else if (token.TryGetPropertyValue("navTitle", out JsonNode navTitle) && !string.IsNullOrEmpty(navTitle.ToString()))
             {
                 Title = navTitle.ToString();
             }
 
-            if (token.TryGetValue("description", out JToken description) && !string.IsNullOrEmpty(description.ToString()))
+            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
             {
                 Description = description.ToString();
             }
-            else if (token.TryGetValue("keywords", out JToken keywords) && !string.IsNullOrEmpty(keywords.ToString()))
+            else if (token.TryGetPropertyValue("keywords", out JsonNode keywords) && !string.IsNullOrEmpty(keywords.ToString()))
             {
                 Description = keywords.ToString();
             }
-            else if (token.TryGetValue("catName", out JToken catName) && !string.IsNullOrEmpty(catName.ToString()))
+            else if (token.TryGetPropertyValue("catName", out JsonNode catName) && !string.IsNullOrEmpty(catName.ToString()))
             {
                 Description = catName.ToString();
             }
-            else if (token.TryGetValue("apkTypeName", out JToken apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
+            else if (token.TryGetPropertyValue("apkTypeName", out JsonNode apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
             {
                 Description = apkTypeName.ToString();
             }
 
-            if (token.TryGetValue("logo", out JToken logo) && !string.IsNullOrEmpty(logo.ToString()))
+            if (token.TryGetPropertyValue("logo", out JsonNode logo) && !string.IsNullOrEmpty(logo.ToString()))
             {
                 Logo = new ImageModel(logo.ToString(), ImageType.Icon);
             }
 
-            if (token.TryGetValue("lastupdate", out JToken lastupdate))
+            if (token.TryGetPropertyValue("lastupdate", out JsonNode lastupdate))
             {
-                LastUpdate = lastupdate.ToObject<long>().ConvertUnixTimeStampToReadable();
+                LastUpdate = lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
         }
 

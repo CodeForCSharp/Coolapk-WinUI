@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.Text;
 
 namespace CoolapkUWP.Models.Feeds
@@ -27,57 +27,57 @@ namespace CoolapkUWP.Models.Feeds
         public ImageModel TopicLogo { get; private set; }
         public ImageModel MessageCover { get; private set; }
 
-        public FeedDetailModel(JObject token) : base(token)
+        public FeedDetailModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("readNum", out JToken readNum))
+            if (token.TryGetPropertyValue("readNum", out JsonNode readNum))
             {
-                ReadNum = readNum.ToObject<int>();
+                ReadNum = readNum.ToInt32Safe();
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("targetRow", out JToken v))
+            if (token.TryGetPropertyValue("targetRow", out JsonNode v))
             {
                 ShowDyhName = true;
 
-                JObject targetRow = (JObject)v;
+                JsonObject targetRow = v.AsObject();
 
-                if (targetRow.TryGetValue("logo", out JToken logo))
+                if (targetRow.TryGetPropertyValue("logo", out JsonNode logo))
                 {
                     DyhLogo = new ImageModel(logo.ToString(), ImageType.Icon);
                 }
 
-                if (targetRow.TryGetValue("title", out JToken dtitle))
+                if (targetRow.TryGetPropertyValue("title", out JsonNode dtitle))
                 {
                     DyhName = dtitle.ToString();
                 }
 
-                if (targetRow.TryGetValue("url", out JToken url))
+                if (targetRow.TryGetPropertyValue("url", out JsonNode url))
                 {
                     DyhUrl = url.ToString();
                 }
 
-                if (targetRow.TryGetValue("subTitle", out JToken subTitle))
+                if (targetRow.TryGetPropertyValue("subTitle", out JsonNode subTitle))
                 {
                     DyhSubTitle = subTitle.ToString();
                 }
             }
 
-            if (token.TryGetValue("ttitle", out JToken ttitle) && !ShowDyhName && !string.IsNullOrEmpty(ttitle.ToString()))
+            if (token.TryGetPropertyValue("ttitle", out JsonNode ttitle) && !ShowDyhName && !string.IsNullOrEmpty(ttitle.ToString()))
             {
                 ShowTopicTitle = true;
 
                 TopicTitle = ttitle.ToString();
 
-                if (token.TryGetValue("turl", out JToken turl))
+                if (token.TryGetPropertyValue("turl", out JsonNode turl))
                 {
                     TopicUrl = turl.ToString();
                 }
 
-                if (token.TryGetValue("tpic", out JToken tpic))
+                if (token.TryGetPropertyValue("tpic", out JsonNode tpic))
                 {
                     TopicLogo = new ImageModel(tpic.ToString(), ImageType.Icon);
                 }
@@ -89,10 +89,10 @@ namespace CoolapkUWP.Models.Feeds
                 {
                     case "answer":
                         IsAnswerFeed = true;
-                        if (token.TryGetValue("extraData", out JToken extraData))
+                        if (token.TryGetPropertyValue("extraData", out JsonNode extraData))
                         {
-                            JObject j = JObject.Parse(extraData.ToString());
-                            if (j.TryGetValue("questionUrl", out JToken questionUrl))
+                            JsonObject j = JsonNode.Parse(extraData.ToString()).AsObject();
+                            if (j.TryGetPropertyValue("questionUrl", out JsonNode questionUrl))
                             {
                                 QuestionUrl = questionUrl.ToString();
                             }
@@ -100,25 +100,26 @@ namespace CoolapkUWP.Models.Feeds
 
                         MessageRawOutput = string.Empty;
                         StringBuilder builder = new StringBuilder();
-                        if (token.TryGetValue("message_raw_output", out JToken message_raw_output))
+                        if (token.TryGetPropertyValue("message_raw_output", out JsonNode message_raw_output))
                         {
-                            foreach (JObject item in JArray.Parse(message_raw_output.ToString()))
+                            foreach (JsonNode item in JsonNode.Parse(message_raw_output.ToString()).AsArray())
                             {
-                                if (item.TryGetValue("type", out JToken type))
+                                JsonObject itemObj = item.AsObject();
+                                if (itemObj.TryGetPropertyValue("type", out JsonNode type))
                                 {
                                     switch (type.ToString())
                                     {
                                         case "text":
-                                            if (item.TryGetValue("message", out JToken message))
+                                            if (itemObj.TryGetPropertyValue("message", out JsonNode message))
                                             {
                                                 builder.Append(message.ToString());
                                             }
                                             break;
 
                                         case "image":
-                                            if (item.TryGetValue("uri", out JToken uri))
+                                            if (itemObj.TryGetPropertyValue("uri", out JsonNode uri))
                                             {
-                                                item.TryGetValue("description", out JToken description);
+                                                itemObj.TryGetPropertyValue("description", out JsonNode description);
                                                 builder.Append($"\n<img src=\"{uri}\" alt=\"{description}\">{description}</a>\n");
                                             }
                                             break;
@@ -131,32 +132,33 @@ namespace CoolapkUWP.Models.Feeds
 
                     case "feedArticle":
                         IsFeedArticle = true;
-                        if (token.TryGetValue("message_cover", out JToken message_cover) && !string.IsNullOrEmpty(message_cover.ToString()))
+                        if (token.TryGetPropertyValue("message_cover", out JsonNode message_cover) && !string.IsNullOrEmpty(message_cover.ToString()))
                         {
                             MessageCover = new ImageModel(message_cover.ToString(), ImageType.SmallImage);
                         }
 
                         MessageRawOutput = string.Empty;
                         builder = new StringBuilder();
-                        if (token.TryGetValue("message_raw_output", out message_raw_output))
+                        if (token.TryGetPropertyValue("message_raw_output", out message_raw_output))
                         {
-                            foreach (JObject item in JArray.Parse(message_raw_output.ToString()))
+                            foreach (JsonNode item in JsonNode.Parse(message_raw_output.ToString()).AsArray())
                             {
-                                if (item.TryGetValue("type", out JToken type))
+                                JsonObject itemObj = item.AsObject();
+                                if (itemObj.TryGetPropertyValue("type", out JsonNode type))
                                 {
                                     switch (type.ToString())
                                     {
                                         case "text":
-                                            if (item.TryGetValue("message", out JToken message))
+                                            if (itemObj.TryGetPropertyValue("message", out JsonNode message))
                                             {
                                                 builder.Append(message.ToString());
                                             }
                                             break;
 
                                         case "image":
-                                            if (item.TryGetValue("url", out JToken uri))
+                                            if (itemObj.TryGetPropertyValue("url", out JsonNode uri))
                                             {
-                                                item.TryGetValue("description", out JToken description);
+                                                itemObj.TryGetPropertyValue("description", out JsonNode description);
                                                 builder.Append($"\n<img src=\"{uri}\" alt=\"{description}\"/>\n");
                                             }
                                             break;

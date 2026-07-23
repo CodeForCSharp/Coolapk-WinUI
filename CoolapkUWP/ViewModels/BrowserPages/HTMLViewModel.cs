@@ -1,7 +1,7 @@
 ﻿using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -116,18 +116,18 @@ namespace CoolapkUWP.ViewModels.BrowserPages
             (bool isSucceed, string result) = await RequestHelper.GetStringAsync(uri, "XMLHttpRequest");
             if (isSucceed)
             {
-                JObject json = JObject.Parse(result);
+                JsonObject json = JsonNode.Parse(result).AsObject();
 
-                if (json.TryGetValue("title", out JToken title))
+                if (json.TryGetPropertyValue("title", out JsonNode title))
                 {
                     Title = title.ToString();
                 }
 
-                if (json.TryGetValue("html", out JToken html) && !string.IsNullOrEmpty(html.ToString()))
+                if (json.TryGetPropertyValue("html", out JsonNode html) && !string.IsNullOrEmpty(html.ToString()))
                 {
                     RawHTML = html.ToString();
                 }
-                else if (json.TryGetValue("description", out JToken description) && !string.IsNullOrEmpty(description.ToString()))
+                else if (json.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
                 {
                     RawHTML = description.ToString();
                 }

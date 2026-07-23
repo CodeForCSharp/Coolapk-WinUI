@@ -1,8 +1,8 @@
 ﻿using CoolapkUWP.Helpers;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Security.Cryptography;
@@ -14,13 +14,13 @@ namespace CoolapkUWP.Models.Upload
 {
     public class UploadFileFragment
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("resolution")]
+        [JsonPropertyName("resolution")]
         public string Resolution { get; set; }
 
-        [JsonProperty("md5")]
+        [JsonPropertyName("md5")]
         public string MD5 { get; set; }
 
         [JsonIgnore]

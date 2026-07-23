@@ -1,7 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
@@ -82,41 +82,41 @@ namespace CoolapkUWP.Models.Feeds
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
 
-        public FeedReplyModel(JObject token, bool ShowReplyRow = true) : base(token)
+        public FeedReplyModel(JsonObject token, bool ShowReplyRow = true) : base(token)
         {
-            if (token.TryGetValue("dateline", out JToken dateline))
+            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
             {
-                Dateline = dateline.ToObject<long>().ConvertUnixTimeStampToReadable();
+                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
 
-            if (token.TryGetValue("message", out JToken message))
+            if (token.TryGetPropertyValue("message", out JsonNode message))
             {
                 Message = message.ToString();
             }
 
-            if (token.TryGetValue("likenum", out JToken likenum))
+            if (token.TryGetPropertyValue("likenum", out JsonNode likenum))
             {
-                LikeNum = likenum.ToObject<int>();
+                LikeNum = likenum.ToInt32Safe();
             }
 
-            if (token.TryGetValue("replynum", out JToken replynum))
+            if (token.TryGetPropertyValue("replynum", out JsonNode replynum))
             {
-                ReplyNum = replynum.ToObject<int>();
+                ReplyNum = replynum.ToInt32Safe();
             }
 
-            if (token.TryGetValue("replyRowsMore", out JToken replyRowsMore))
+            if (token.TryGetPropertyValue("replyRowsMore", out JsonNode replyRowsMore))
             {
-                ReplyRowsMore = replyRowsMore.ToObject<int>();
+                ReplyRowsMore = replyRowsMore.ToInt32Safe();
             }
 
-            if (token.TryGetValue("replyRowsCount", out JToken replyRowsCount))
+            if (token.TryGetPropertyValue("replyRowsCount", out JsonNode replyRowsCount))
             {
-                ReplyRowsCount = replyRowsCount.ToObject<int>();
+                ReplyRowsCount = replyRowsCount.ToInt32Safe();
             }
 
-            if (token.TryGetValue("replyRows", out JToken replyRows))
+            if (token.TryGetPropertyValue("replyRows", out JsonNode replyRows))
             {
-                ReplyRows = replyRows.Select(item => new SourceFeedReplyModel((JObject)item)).ToImmutableArray();
+                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToImmutableArray();
             }
 
             if (!string.IsNullOrEmpty(PicUri))
@@ -128,10 +128,10 @@ namespace CoolapkUWP.Models.Feeds
         public async Task ChangeLike()
         {
             UriType type = Liked ? UriType.PostFeedUnlike : UriType.PostFeedLike;
-            (bool isSucceed, JToken result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, "Reply", ID), null, true);
+            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, "Reply", ID), null, true);
             if (!isSucceed) { return; }
             Liked = !Liked;
-            if (result.ToObject<int>() is int likenum && likenum >= 0)
+            if (result.ToInt32Safe() is int likenum && likenum >= 0)
             {
                 LikeNum = likenum;
             }

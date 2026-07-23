@@ -4,7 +4,7 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -186,7 +186,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return new FeedModel(jo);
         }
@@ -246,7 +246,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "uid");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return new UserModel(jo);
         }
@@ -270,7 +270,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject jo)
+        private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return new TopicModel(jo);
         }

@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace CoolapkUWP.Helpers.Converters
 {
-    public class CollectionCountConverter : IValueConverter
+    public partial class CollectionCountConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

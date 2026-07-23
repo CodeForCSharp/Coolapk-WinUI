@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace CoolapkUWP.Controls
 {
-    public class Picker : ContentControl
+    public partial class Picker : ContentControl
     {
         private Popup _popup;
         private Grid _rootGrid;

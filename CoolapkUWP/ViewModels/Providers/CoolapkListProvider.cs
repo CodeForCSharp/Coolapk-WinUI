@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,9 +15,9 @@ namespace CoolapkUWP.ViewModels.Providers
         private string _firstItem, _lastItem;
         private readonly Func<int, string, string, Uri> _getUri;
 
-        public Func<JObject, IEnumerable<Entity>> GetEntities { get; }
+        public Func<JsonObject, IEnumerable<Entity>> GetEntities { get; }
 
-        public CoolapkListProvider(Func<int, string, string, Uri> getUri, Func<JObject, IEnumerable<Entity>> getEntities, string idName)
+        public CoolapkListProvider(Func<int, string, string, Uri> getUri, Func<JsonObject, IEnumerable<Entity>> getEntities, string idName)
         {
             _getUri = getUri ?? throw new ArgumentNullException(nameof(getUri));
             GetEntities = getEntities ?? throw new ArgumentNullException(nameof(getEntities));
@@ -29,19 +29,19 @@ namespace CoolapkUWP.ViewModels.Providers
         public async Task GetEntity(List<Entity> Models, int p = 1)
         {
             if (p == 1) { Clear(); }
-            (bool isSucceed, JToken result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
+            (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
             if (result.isSucceed)
             {
-                JArray array = (JArray)result.result;
+                JsonArray array = result.result.AsArray();
                 if (array.Count < 1) { return; }
                 if (string.IsNullOrEmpty(_firstItem))
                 {
-                    _firstItem = RequestHelper.GetId(array.First, _idName);
+                    _firstItem = RequestHelper.GetId(array[0], _idName);
                 }
-                _lastItem = RequestHelper.GetId(array.Last, _idName);
-                foreach (JToken item in array)
+                _lastItem = RequestHelper.GetId(array[^1], _idName);
+                foreach (JsonNode item in array)
                 {
-                    IEnumerable<Entity> entities = GetEntities((JObject)item);
+                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
                     if (entities == null) { continue; }
 
                     foreach (Entity i in entities)
@@ -56,19 +56,19 @@ namespace CoolapkUWP.ViewModels.Providers
         public async Task GetEntity(Collection<Entity> Models, int p = 1)
         {
             if (p == 1) { Clear(); }
-            (bool isSucceed, JToken result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
+            (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
             if (result.isSucceed)
             {
-                JArray array = (JArray)result.result;
+                JsonArray array = result.result.AsArray();
                 if (array.Count < 1) { return; }
                 if (string.IsNullOrEmpty(_firstItem))
                 {
-                    _firstItem = RequestHelper.GetId(array.First, _idName);
+                    _firstItem = RequestHelper.GetId(array[0], _idName);
                 }
-                _lastItem = RequestHelper.GetId(array.Last, _idName);
-                foreach (JToken item in array)
+                _lastItem = RequestHelper.GetId(array[^1], _idName);
+                foreach (JsonNode item in array)
                 {
-                    IEnumerable<Entity> entities = GetEntities((JObject)item);
+                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
                     if (entities == null) { continue; }
 
                     foreach (Entity i in entities)
@@ -83,19 +83,19 @@ namespace CoolapkUWP.ViewModels.Providers
         public async Task GetEntity(IEnumerable<Entity> Models, int p = 1)
         {
             if (p == 1) { Clear(); }
-            (bool isSucceed, JToken result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
+            (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
             if (result.isSucceed)
             {
-                JArray array = (JArray)result.result;
+                JsonArray array = result.result.AsArray();
                 if (array.Count < 1) { return; }
                 if (string.IsNullOrEmpty(_firstItem))
                 {
-                    _firstItem = RequestHelper.GetId(array.First, _idName);
+                    _firstItem = RequestHelper.GetId(array[0], _idName);
                 }
-                _lastItem = RequestHelper.GetId(array.Last, _idName);
-                foreach (JToken item in array)
+                _lastItem = RequestHelper.GetId(array[^1], _idName);
+                foreach (JsonNode item in array)
                 {
-                    IEnumerable<Entity> entities = GetEntities((JObject)item);
+                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
                     if (entities == null) { continue; }
 
                     foreach (Entity i in entities)

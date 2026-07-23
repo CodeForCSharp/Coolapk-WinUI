@@ -1,6 +1,6 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
 {
@@ -16,39 +16,39 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Cover;
 
-        public CollectionModel(JObject token) : base(token)
+        public CollectionModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("id", out JToken id))
+            if (token.TryGetPropertyValue("id", out JsonNode id))
             {
-                ID = id.ToObject<int>();
+                ID = id.ToInt32Safe();
             }
 
-            if (token.TryGetValue("item_num", out JToken item_num))
+            if (token.TryGetPropertyValue("item_num", out JsonNode item_num))
             {
-                ItemNum = item_num.ToObject<int>();
+                ItemNum = item_num.ToInt32Safe();
             }
 
-            if (token.TryGetValue("title", out JToken title))
+            if (token.TryGetPropertyValue("title", out JsonNode title))
             {
                 Title = title.ToString();
             }
 
-            if (token.TryGetValue("subTitle", out JToken subTitle))
+            if (token.TryGetPropertyValue("subTitle", out JsonNode subTitle))
             {
                 SubTitle = subTitle.ToString();
             }
 
-            if (token.TryGetValue("url", out JToken url))
+            if (token.TryGetPropertyValue("url", out JsonNode url))
             {
                 Url = url.ToString();
             }
 
-            if (token.TryGetValue("description", out JToken description))
+            if (token.TryGetPropertyValue("description", out JsonNode description))
             {
                 Description = description.ToString();
             }
 
-            if (token.TryGetValue("cover_pic", out JToken cover_pic))
+            if (token.TryGetPropertyValue("cover_pic", out JsonNode cover_pic))
             {
                 Cover = new ImageModel(cover_pic.ToString(), ImageType.OriginImage);
             }

@@ -1,9 +1,9 @@
 ﻿using CoolapkUWP.Models.Update;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 
@@ -13,6 +13,8 @@ namespace CoolapkUWP.Helpers
     {
         private const string KKPP_API = "https://v2.kkpp.cc/repos/{0}/{1}/releases/latest";
         private const string GITHUB_API = "https://api.github.com/repos/{0}/{1}/releases/latest";
+
+        private static readonly JsonContext _jsonContext = JsonContext.Default;
 
         public static Task<UpdateInfo> CheckUpdateAsync(string username, string repository)
         {
@@ -38,7 +40,7 @@ namespace CoolapkUWP.Helpers
             HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            UpdateInfo result = JsonConvert.DeserializeObject<UpdateInfo>(responseBody);
+            UpdateInfo result = JsonSerializer.Deserialize(responseBody, _jsonContext.UpdateInfo);
 
             if (result != null)
             {

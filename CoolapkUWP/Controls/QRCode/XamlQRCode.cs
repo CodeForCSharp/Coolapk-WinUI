@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace CoolapkUWP.Controls
 {
-    public class XamlQRCode : AbstractQRCode, IDisposable
+    public partial class XamlQRCode : AbstractQRCode, IDisposable
     {
         private readonly bool _disposed;
 

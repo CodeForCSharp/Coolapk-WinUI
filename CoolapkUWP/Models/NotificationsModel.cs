@@ -1,5 +1,5 @@
 ﻿using CoolapkUWP.Helpers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -14,9 +14,6 @@ namespace CoolapkUWP.Models
         private readonly DispatcherTimer timer;
         private int badgeNum, followNum, messageNum, atMeNum, atCommentMeNum, commentMeNum, feedLikeNum, cloudInstall, notification;
 
-        /// <summary>
-        /// 新的消息总数。
-        /// </summary>
         public int BadgeNum
         {
             get => badgeNum;
@@ -30,9 +27,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新增粉丝数。
-        /// </summary>
         public int FollowNum
         {
             get => followNum;
@@ -46,9 +40,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新私信数。
-        /// </summary>
         public int MessageNum
         {
             get => messageNum;
@@ -62,9 +53,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新“@我的动态”数。
-        /// </summary>
         public int AtMeNum
         {
             get => atMeNum;
@@ -78,9 +66,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新“@我的回复”数。
-        /// </summary>
         public int AtCommentMeNum
         {
             get => atCommentMeNum;
@@ -94,9 +79,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新回复数。
-        /// </summary>
         public int CommentMeNum
         {
             get => commentMeNum;
@@ -110,9 +92,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新“收到的赞”数。
-        /// </summary>
         public int FeedLikeNum
         {
             get => feedLikeNum;
@@ -126,9 +105,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新“云安装”数。
-        /// </summary>
         public int CloudInstall
         {
             get => cloudInstall;
@@ -142,9 +118,6 @@ namespace CoolapkUWP.Models
             }
         }
 
-        /// <summary>
-        /// 新“通知”数。
-        /// </summary>
         public int Notification
         {
             get => notification;
@@ -188,62 +161,59 @@ namespace CoolapkUWP.Models
             timer.Stop();
         }
 
-        /// <summary>
-        /// 将数字归零。
-        /// </summary>
         public void Clear() => BadgeNum = FollowNum = MessageNum = AtMeNum = AtCommentMeNum = CommentMeNum = FeedLikeNum = CloudInstall = Notification = 0;
 
         public async Task Update()
         {
             try
             {
-                (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetNotificationNumbers), true);
+                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetNotificationNumbers), true);
                 if (!isSucceed) { return; }
-                ChangeNumber((JObject)result);
+                ChangeNumber(result.AsObject());
             }
             catch { Clear(); }
         }
 
-        private void ChangeNumber(JObject token)
+        private void ChangeNumber(JsonObject token)
         {
             if (token != null)
             {
-                if (token.TryGetValue("cloudInstall", out JToken cloudInstall) && cloudInstall != null)
+                if (token.TryGetPropertyValue("cloudInstall", out JsonNode cloudInstall) && cloudInstall != null)
                 {
-                    CloudInstall = token.Value<int>("cloudInstall");
+                    CloudInstall = token["cloudInstall"].ToInt32Safe();
                 }
-                if (token.TryGetValue("notification", out JToken notification) && notification != null)
+                if (token.TryGetPropertyValue("notification", out JsonNode notification) && notification != null)
                 {
-                    Notification = token.Value<int>("notification");
+                    Notification = token["notification"].ToInt32Safe();
                 }
-                if (token.TryGetValue("badge", out JToken badge) && badge != null)
+                if (token.TryGetPropertyValue("badge", out JsonNode badge) && badge != null)
                 {
-                    BadgeNum = token.Value<int>("badge");
+                    BadgeNum = token["badge"].ToInt32Safe();
                     UIHelper.SetBadgeNumber(BadgeNum.ToString());
                 }
-                if (token.TryGetValue("contacts_follow", out JToken contacts_follow) && contacts_follow != null)
+                if (token.TryGetPropertyValue("contacts_follow", out JsonNode contacts_follow) && contacts_follow != null)
                 {
-                    FollowNum = token.Value<int>("contacts_follow");
+                    FollowNum = token["contacts_follow"].ToInt32Safe();
                 }
-                if (token.TryGetValue("message", out JToken message) && message != null)
+                if (token.TryGetPropertyValue("message", out JsonNode message) && message != null)
                 {
-                    MessageNum = token.Value<int>("message");
+                    MessageNum = token["message"].ToInt32Safe();
                 }
-                if (token.TryGetValue("atme", out JToken atme) && atme != null)
+                if (token.TryGetPropertyValue("atme", out JsonNode atme) && atme != null)
                 {
-                    AtMeNum = token.Value<int>("atme");
+                    AtMeNum = token["atme"].ToInt32Safe();
                 }
-                if (token.TryGetValue("atcommentme", out JToken atcommentme) && atcommentme != null)
+                if (token.TryGetPropertyValue("atcommentme", out JsonNode atcommentme) && atcommentme != null)
                 {
-                    AtCommentMeNum = token.Value<int>("atcommentme");
+                    AtCommentMeNum = token["atcommentme"].ToInt32Safe();
                 }
-                if (token.TryGetValue("commentme", out JToken commentme) && commentme != null)
+                if (token.TryGetPropertyValue("commentme", out JsonNode commentme) && commentme != null)
                 {
-                    CommentMeNum = token.Value<int>("commentme");
+                    CommentMeNum = token["commentme"].ToInt32Safe();
                 }
-                if (token.TryGetValue("feedlike", out JToken feedlike) && feedlike != null)
+                if (token.TryGetPropertyValue("feedlike", out JsonNode feedlike) && feedlike != null)
                 {
-                    FeedLikeNum = token.Value<int>("feedlike");
+                    FeedLikeNum = token["feedlike"].ToInt32Safe();
                 }
             }
         }

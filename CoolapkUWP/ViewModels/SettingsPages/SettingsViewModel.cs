@@ -4,7 +4,7 @@ using CoolapkUWP.Models.Update;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.ComponentModel;
-using System.Reflection;
+using CommunityToolkit.WinUI.Helpers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -28,7 +28,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
 
         public static string DeviceFamily => AnalyticsInfo.VersionInfo.DeviceFamily.Replace('.', ' ');
 
-        public static string ToolkitVersion => Assembly.Load(new AssemblyName("CommunityToolkit.WinUI")).GetName().Version.ToString();
+        public static string ToolkitVersion => typeof(ThemeHelper).Assembly.GetName().Version.ToString();
 
         public bool IsLogin
         {

@@ -2,35 +2,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace CoolapkUWP.Common
 {
-    public class WeakEvent<TEventArgs> : IList<Action<TEventArgs>>
+    public partial class WeakEvent<TEventArgs> : IList<Action<TEventArgs>>
     {
         private class Method
         {
-            private readonly bool _isStatic;
-            private readonly WeakReference _reference;
-            private readonly MethodInfo _method;
+            private readonly WeakReference<Action<TEventArgs>> _weakDelegate;
 
-            public bool IsDead => !(_isStatic || _reference.IsAlive);
+            public bool IsDead => !_weakDelegate.TryGetTarget(out _);
 
             public Method(Action<TEventArgs> callback)
             {
-                _isStatic = callback.Target == null;
-                _reference = new WeakReference(callback.Target);
-                _method = callback.GetMethodInfo();
+                _weakDelegate = new WeakReference<Action<TEventArgs>>(callback);
             }
 
             public bool Equals(Action<TEventArgs> callback)
             {
-                return _reference.Target == callback.Target && _method == callback.GetMethodInfo();
+                if (_weakDelegate.TryGetTarget(out Action<TEventArgs> stored))
+                {
+                    return stored == callback;
+                }
+                return false;
             }
 
             public void Invoke(TEventArgs arg)
             {
-                _method.Invoke(_reference.Target, new object[] { arg });
+                if (_weakDelegate.TryGetTarget(out Action<TEventArgs> callback))
+                {
+                    callback(arg);
+                }
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using CoolapkUWP.Models.Update;
 using MetroLog;
 using CommunityToolkit.WinUI.Helpers;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -317,11 +319,16 @@ namespace CoolapkUWP.Helpers
 
     public class SystemTextJsonObjectSerializer : IObjectSerializer
     {
-        // Specify your serialization settings
-        private readonly JsonSerializerSettings settings = new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore };
+        private readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() },
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
+        };
 
-        string IObjectSerializer.Serialize<T>(T value) => JsonConvert.SerializeObject(value, typeof(T), Formatting.Indented, settings);
+        string IObjectSerializer.Serialize<T>(T value) => JsonSerializer.Serialize(value, _options);
 
-        public T Deserialize<T>(string value) => JsonConvert.DeserializeObject<T>(value, settings);
+        public T Deserialize<T>(string value) => JsonSerializer.Deserialize<T>(value, _options);
     }
 }

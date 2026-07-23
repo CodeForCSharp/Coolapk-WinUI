@@ -1,31 +1,31 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Models.Upload
 {
     public class UploadPrepareInfo
     {
-        [JsonProperty("accessKeySecret")]
+        [JsonPropertyName("accessKeySecret")]
         public string AccessKeySecret { get; set; }
 
-        [JsonProperty("accessKeyId")]
+        [JsonPropertyName("accessKeyId")]
         public string AccessKeyID { get; set; }
 
-        [JsonProperty("securityToken")]
+        [JsonPropertyName("securityToken")]
         public string SecurityToken { get; set; }
 
-        [JsonProperty("expiration")]
+        [JsonPropertyName("expiration")]
         public string Expiration { get; set; }
 
-        [JsonProperty("uploadImagePrefix")]
+        [JsonPropertyName("uploadImagePrefix")]
         public string UploadImagePrefix { get; set; }
 
-        [JsonProperty("endPoint")]
+        [JsonPropertyName("endPoint")]
         public string EndPoint { get; set; }
 
-        [JsonProperty("bucket")]
+        [JsonPropertyName("bucket")]
         public string Bucket { get; set; }
 
-        [JsonProperty("callbackUrl")]
+        [JsonPropertyName("callbackUrl")]
         public string CallbackUrl { get; set; }
     }
 }

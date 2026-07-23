@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CoolapkUWP.Helpers;
+using System.Text.Json.Nodes;
 using System;
 
 namespace CoolapkUWP.Models.Users
@@ -9,21 +10,21 @@ namespace CoolapkUWP.Models.Users
         public bool IsFriend { get; private set; }
         public UserModel UserInfo { get; private set; }
 
-        public ContactModel(JObject token) : base(token)
+        public ContactModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("dateline", out JToken dateline))
+            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
             {
-                DateLine = dateline.ToObject<int>();
+                DateLine = dateline.ToInt32Safe();
             }
 
-            if (token.TryGetValue("isfriend", out JToken isfriend))
+            if (token.TryGetPropertyValue("isfriend", out JsonNode isfriend))
             {
-                IsFriend = Convert.ToBoolean(isfriend.ToObject<int>());
+                IsFriend = Convert.ToBoolean(isfriend.ToInt32Safe());
             }
 
-            if (token.TryGetValue("userInfo", out JToken v1))
+            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
             {
-                JObject userInfo = (JObject)v1;
+                JsonObject userInfo = v1.AsObject();
                 UserInfo = new UserModel(userInfo);
             }
         }

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System;
 
 namespace CoolapkUWP.Models.Exceptions
@@ -13,17 +13,17 @@ namespace CoolapkUWP.Models.Exceptions
 
         public CoolapkMessageException(string message, Exception innerException) : base(message, innerException) { }
 
-        public CoolapkMessageException(JObject o) : base(o?.Value<string>("message") ?? string.Empty)
+        public CoolapkMessageException(JsonObject o) : base(o?["message"]?.ToString() ?? string.Empty)
         {
-            if (o != null && o.TryGetValue("messageStatus", out JToken token))
+            if (o != null && o.TryGetPropertyValue("messageStatus", out JsonNode token))
             {
                 MessageStatus = token.ToString();
             }
         }
 
-        public CoolapkMessageException(JObject o, Exception innerException) : base(o?.Value<string>("message") ?? string.Empty, innerException)
+        public CoolapkMessageException(JsonObject o, Exception innerException) : base(o?["message"]?.ToString() ?? string.Empty, innerException)
         {
-            if (o != null && o.TryGetValue("messageStatus", out JToken token))
+            if (o != null && o.TryGetPropertyValue("messageStatus", out JsonNode token))
             {
                 MessageStatus = token.ToString();
             }

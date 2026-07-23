@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models.Feeds
 {
@@ -16,11 +16,11 @@ namespace CoolapkUWP.Models.Feeds
             NotShowMessageTitle = 0x04
         }
 
-        public FeedModel(JObject token, FeedDisplayMode mode = FeedDisplayMode.Normal) : base(token)
+        public FeedModel(JsonObject token, FeedDisplayMode mode = FeedDisplayMode.Normal) : base(token)
         {
             ShowLikes = !(EntityType == "forwardFeed");
             ShowDateline = mode != FeedDisplayMode.IsFirstPageFeed;
-            IsStickTop = token.TryGetValue("isStickTop", out JToken j) && int.Parse(j.ToString()) == 1;
+            IsStickTop = token.TryGetPropertyValue("isStickTop", out JsonNode j) && int.Parse(j.ToString()) == 1;
         }
     }
 }

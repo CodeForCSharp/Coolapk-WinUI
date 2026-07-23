@@ -5,7 +5,7 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -78,7 +78,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { new UserModel((JObject)(isFollowList ? o["fUserInfo"] : o["userInfo"])) },
+                    (o) => new Entity[] { new UserModel((isFollowList ? o["fUserInfo"] : o["userInfo"]).AsObject()) },
                     "fuid"))
                 { Title = $"{name}的{(isFollowList ? "关注" : "粉丝")}" };
         }
@@ -188,20 +188,20 @@ namespace CoolapkUWP.ViewModels.FeedPages
             return uri.Replace("#", "%23");
         }
 
-        private IEnumerable<Entity> GetEntities(JObject json)
+        private IEnumerable<Entity> GetEntities(JsonObject json)
         {
-            if (json.TryGetValue("entityTemplate", out JToken t) && t?.ToString() == "configCard")
+            if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
             {
-                JObject j = JObject.Parse(json.Value<string>("extraData"));
-                Title = j.Value<string>("pageTitle");
+                JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
+                Title = (string)j["pageTitle"];
                 yield return null;
             }
-            else if (json.TryGetValue("entityTemplate", out JToken tt) && tt?.ToString() == "fabCard") { yield return null; }
+            else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }
             else if (tt?.ToString() == "feedCoolPictureGridCard")
             {
-                foreach (JToken item in json.Value<JArray>("entities"))
+                foreach (JsonNode item in json["entities"]?.AsArray())
                 {
-                    Entity entity = EntityTemplateSelector.GetEntity((JObject)item, IsHotFeedPage);
+                    Entity entity = EntityTemplateSelector.GetEntity(item.AsObject(), IsHotFeedPage);
                     if (entity != null)
                     {
                         yield return entity;

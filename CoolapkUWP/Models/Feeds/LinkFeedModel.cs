@@ -1,7 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -150,42 +150,42 @@ namespace CoolapkUWP.Models.Feeds
             else { (isSucceed, result) = await RequestHelper.GetStringAsync(uri, "XMLHttpRequest"); }
             if (isSucceed && !string.IsNullOrEmpty(result))
             {
-                JObject json = JObject.Parse(result);
+                JsonObject json = JsonNode.Parse(result).AsObject();
                 ReadJson(json, type);
             }
         }
 
-        private void ReadJson(JObject json, LinkType type)
+        private void ReadJson(JsonObject json, LinkType type)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
             switch (type)
             {
                 case LinkType.Coolapk:
                     {
-                        if (json.TryGetValue("data", out JToken v1))
+                        if (json.TryGetPropertyValue("data", out JsonNode v1))
                         {
-                            JObject data = (JObject)v1;
-                            if (data.TryGetValue("userInfo", out JToken v2))
+                            JsonObject data = v1.AsObject();
+                            if (data.TryGetPropertyValue("userInfo", out JsonNode v2))
                             {
-                                JObject userInfo = (JObject)v2;
+                                JsonObject userInfo = v2.AsObject();
                                 LinkUserModel UserModel = new LinkUserModel();
-                                if (userInfo.TryGetValue("url", out JToken uurl))
+                                if (userInfo.TryGetPropertyValue("url", out JsonNode uurl))
                                 {
                                     UserModel.Url = uurl.ToString();
                                 }
-                                if (userInfo.TryGetValue("username", out JToken username))
+                                if (userInfo.TryGetPropertyValue("username", out JsonNode username))
                                 {
                                     UserModel.UserName = username.ToString();
                                 }
                                 UserInfo = UserModel;
                             }
-                            if (data.TryGetValue("url", out JToken url))
+                            if (data.TryGetPropertyValue("url", out JsonNode url))
                             {
                                 Url = url.ToString();
                             }
-                            if (data.TryGetValue("feedType", out JToken feedType) && feedType.ToString() == "feedArticle")
+                            if (data.TryGetPropertyValue("feedType", out JsonNode feedType) && feedType.ToString() == "feedArticle")
                             {
-                                if (data.TryGetValue("message", out JToken message))
+                                if (data.TryGetPropertyValue("message", out JsonNode message))
                                 {
                                     Message = message.ToString();
                                     if (Message.Contains("</a>") ? Message.Length - 200 >= 7 : Message.Length - 120 >= 7)
@@ -197,23 +197,23 @@ namespace CoolapkUWP.Models.Feeds
                             }
                             else
                             {
-                                if (data.TryGetValue("message", out JToken message))
+                                if (data.TryGetPropertyValue("message", out JsonNode message))
                                 {
                                     Message = message.ToString();
                                 }
                             }
-                            if (data.TryGetValue("dateline", out JToken dateline))
+                            if (data.TryGetPropertyValue("dateline", out JsonNode dateline))
                             {
-                                Dateline = dateline.ToObject<long>().ConvertUnixTimeStampToReadable();
+                                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
                             }
-                            if (data.TryGetValue("message_title", out JToken message_title))
+                            if (data.TryGetPropertyValue("message_title", out JsonNode message_title))
                             {
                                 MessageTitle = message_title.ToString();
                             }
-                            ShowPicArr = data.TryGetValue("picArr", out JToken picArr) && (picArr as JArray).Count > 0 && picArr != null;
+                            ShowPicArr = data.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0 && picArr != null;
                             if (ShowPicArr)
                             {
-                                PicArr = (from item in picArr
+                                PicArr = (from item in picArr.AsArray()
                                           select new ImageModel(item.ToString(), ImageType.Icon)).ToImmutableArray();
 
                                 foreach (ImageModel item in PicArr)
@@ -226,50 +226,50 @@ namespace CoolapkUWP.Models.Feeds
                     break;
                 case LinkType.Bilibili:
                     {
-                        if (json.TryGetValue("data", out JToken v1))
+                        if (json.TryGetPropertyValue("data", out JsonNode v1))
                         {
-                            JObject data = (JObject)v1;
-                            if (data.TryGetValue("card", out JToken v2))
+                            JsonObject data = v1.AsObject();
+                            if (data.TryGetPropertyValue("card", out JsonNode v2))
                             {
-                                JObject card = (JObject)v2;
-                                if (card.TryGetValue("card", out JToken v3))
+                                JsonObject card = v2.AsObject();
+                                if (card.TryGetPropertyValue("card", out JsonNode v3))
                                 {
-                                    JObject card1 = JObject.Parse(v3.ToString());
-                                    if (card1.TryGetValue("item", out JToken v4))
+                                    JsonObject card1 = JsonNode.Parse(v3.ToString()).AsObject();
+                                    if (card1.TryGetPropertyValue("item", out JsonNode v4))
                                     {
-                                        JObject item = (JObject)v4;
-                                        if (item.TryGetValue("description", out JToken description))
+                                        JsonObject item = v4.AsObject();
+                                        if (item.TryGetPropertyValue("description", out JsonNode description))
                                         {
                                             Message = description.ToString();
                                         }
-                                        if (item.TryGetValue("title", out JToken title))
+                                        if (item.TryGetPropertyValue("title", out JsonNode title))
                                         {
                                             MessageTitle = title.ToString();
                                         }
-                                        if (item.TryGetValue("upload_time", out JToken upload_time))
+                                        if (item.TryGetPropertyValue("upload_time", out JsonNode upload_time))
                                         {
-                                            Dateline = upload_time.ToObject<long>().ConvertUnixTimeStampToReadable();
+                                            Dateline = upload_time.ToInt64Safe().ConvertUnixTimeStampToReadable();
                                         }
-                                        if (item.TryGetValue("pictures", out JToken pictures))
+                                        if (item.TryGetPropertyValue("pictures", out JsonNode pictures))
                                         {
-                                            ShowPicArr = ((JArray)pictures).Any();
-                                            PicArr = (from items in pictures as JArray
-                                                      select new ImageModel((items as JObject).Value<string>("img_src").Replace("\"", string.Empty), ImageType.OriginImage)).ToImmutableArray();
+                                            ShowPicArr = pictures.AsArray().Count > 0;
+                                            PicArr = (from items in pictures.AsArray()
+                                                      select new ImageModel(items.AsObject()["img_src"]?.GetValue<string>().Replace("\"", string.Empty), ImageType.OriginImage)).ToImmutableArray();
                                             foreach (ImageModel items in PicArr)
                                             {
                                                 items.ContextArray = PicArr;
                                             }
                                         }
                                     }
-                                    if (card1.TryGetValue("user", out JToken v5))
+                                    if (card1.TryGetPropertyValue("user", out JsonNode v5))
                                     {
-                                        JObject user = (JObject)v5;
+                                        JsonObject user = v5.AsObject();
                                         LinkUserModel UserModel = new LinkUserModel();
-                                        if (user.TryGetValue("name", out JToken name))
+                                        if (user.TryGetPropertyValue("name", out JsonNode name))
                                         {
                                             UserModel.UserName = name.ToString();
                                         }
-                                        if (user.TryGetValue("uid", out JToken uid))
+                                        if (user.TryGetPropertyValue("uid", out JsonNode uid))
                                         {
                                             UserModel.Url = "https://space.bilibili.com/" + uid.ToString();
                                         }
@@ -277,15 +277,15 @@ namespace CoolapkUWP.Models.Feeds
                                     }
                                 }
                             }
-                            if (data.TryGetValue("desc", out JToken v6))
+                            if (data.TryGetPropertyValue("desc", out JsonNode v6))
                             {
-                                JObject desc = (JObject)v6;
-                                if (data.TryGetValue("dynamic_id_str", out JToken dynamic_id_str))
+                                JsonObject desc = v6.AsObject();
+                                if (data.TryGetPropertyValue("dynamic_id_str", out JsonNode dynamic_id_str))
                                 {
                                     Url = "https://t.bilibili.com/" + dynamic_id_str;
                                 }
                             }
-                            if (Message.Length - 120 >= 7)
+                            if (Message != null && Message.Length - 120 >= 7)
                             {
                                 Message = message.ToString().Substring(0, 120) + "...<a href=\"" + Url + "\">";
                             }
@@ -294,18 +294,19 @@ namespace CoolapkUWP.Models.Feeds
                     break;
                 case LinkType.ITHome:
                     {
-                        if (json.TryGetValue("data", out JToken v1))
+                        if (json.TryGetPropertyValue("data", out JsonNode v1))
                         {
-                            JObject data = (JObject)v1;
-                            if (data.TryGetValue("id", out JToken id))
+                            JsonObject data = v1.AsObject();
+                            if (data.TryGetPropertyValue("id", out JsonNode id))
                             {
                                 Url = $"ithome://qcontent?id={id.ToString().Replace("\"", string.Empty)}";
                             }
-                            if (data.TryGetValue("contents", out JToken contents))
+                            if (data.TryGetPropertyValue("contents", out JsonNode contents))
                             {
-                                foreach (JObject v in contents as JArray)
+                                foreach (JsonNode v in contents.AsArray())
                                 {
-                                    if (v.TryGetValue("content", out JToken content) && v.TryGetValue("type", out JToken type2))
+                                    JsonObject vObj = v.AsObject();
+                                    if (vObj.TryGetPropertyValue("content", out JsonNode content) && vObj.TryGetPropertyValue("type", out JsonNode type2))
                                     {
                                         switch (type2.ToString())
                                         {
@@ -313,12 +314,12 @@ namespace CoolapkUWP.Models.Feeds
                                                 Message += content.ToString();
                                                 break;
                                             case "2":
-                                                if (v.TryGetValue("link", out JToken link) && !string.IsNullOrEmpty(link.ToString()))
+                                                if (vObj.TryGetPropertyValue("link", out JsonNode link) && !string.IsNullOrEmpty(link.ToString()))
                                                 { Message += "<a class=\"feed-link-url\" href=\"" + link.ToString() + "\" target=\"_blank\" rel=\"nofollow\">查看链接</a>"; }
                                                 else { Message += content.ToString(); }
                                                 break;
                                             case "3":
-                                                if (v.TryGetValue("topicId", out JToken topicId) && !string.IsNullOrEmpty(topicId.ToString()))
+                                                if (vObj.TryGetPropertyValue("topicId", out JsonNode topicId) && !string.IsNullOrEmpty(topicId.ToString()))
                                                 { Message += "<a class=\"feed-link-tag\" href=\"" + "ithome://qtopic?id=" + topicId.ToString() + "\">" + content.ToString() + "</a>"; }
                                                 else { Message += content.ToString(); }
                                                 break;
@@ -328,32 +329,32 @@ namespace CoolapkUWP.Models.Feeds
                                         }
                                     }
                                 }
-                                if (Message.Length - 120 >= 7)
+                                if (Message != null && Message.Length - 120 >= 7)
                                 {
                                     Message = message.ToString().Substring(0, 120) + "...<a href=\"" + Url + "\">";
                                 }
                             }
-                            if (data.TryGetValue("user", out JToken v2))
+                            if (data.TryGetPropertyValue("user", out JsonNode v2))
                             {
-                                JObject user = (JObject)v2;
+                                JsonObject user = v2.AsObject();
                                 LinkUserModel UserModel = new LinkUserModel();
-                                if (user.TryGetValue("userNick", out JToken userNick))
+                                if (user.TryGetPropertyValue("userNick", out JsonNode userNick))
                                 {
                                     UserModel.UserName = userNick.ToString();
                                 }
                                 UserInfo = UserModel;
                             }
-                            if (data.TryGetValue("pictures", out JToken pictures))
+                            if (data.TryGetPropertyValue("pictures", out JsonNode pictures))
                             {
-                                ShowPicArr = ((JArray)pictures).Any();
-                                PicArr = (from item in pictures as JArray
-                                          select new ImageModel((item as JObject).Value<string>("src"), ImageType.OriginImage)).ToImmutableArray();
+                                ShowPicArr = pictures.AsArray().Count > 0;
+                                PicArr = (from item in pictures.AsArray()
+                                          select new ImageModel(item.AsObject()["src"]?.GetValue<string>(), ImageType.OriginImage)).ToImmutableArray();
                                 foreach (ImageModel item in PicArr)
                                 {
                                     item.ContextArray = PicArr;
                                 }
                             }
-                            if (data.TryGetValue("createTime", out JToken createTime))
+                            if (data.TryGetPropertyValue("createTime", out JsonNode createTime))
                             {
                                 Dateline = Convert.ToInt64(Convert.ToDateTime(createTime.ToString()).ConvertDateTimeToUnixTimeStamp()).ConvertUnixTimeStampToReadable();
                             }

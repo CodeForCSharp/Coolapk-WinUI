@@ -2,13 +2,13 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Update;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
+// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了"内容对话框"项模板
 
 namespace CoolapkUWP.Controls.Dialogs
 {
@@ -45,10 +45,10 @@ namespace CoolapkUWP.Controls.Dialogs
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             UIHelper.ShowProgressBar();
-            (bool isSucceed, JToken result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetAppDetail, "com.coolapk.market"));
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetAppDetail, "com.coolapk.market"));
             if (isSucceed)
             {
-                AppModel model = new AppModel((JObject)result);
+                AppModel model = new AppModel(result.AsObject());
                 if (!string.IsNullOrEmpty(model.VersionCode) && !string.IsNullOrEmpty(model.VersionName))
                 {
                     APIVersion = new APIVersion(model.VersionName, model.VersionCode);

@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace CoolapkUWP.Helpers.Converters
 {
-    public class PipsPagerVisibilityConverter : IValueConverter
+    public partial class PipsPagerVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

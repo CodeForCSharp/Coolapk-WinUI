@@ -1,7 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
@@ -66,20 +66,20 @@ namespace CoolapkUWP.Models.Feeds
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
 
-        public SourceFeedModel(JObject token) : base(token)
+        public SourceFeedModel(JsonObject token) : base(token)
         {
-            if (token.TryGetValue("url", out JToken uri) && !string.IsNullOrEmpty(uri.ToString()))
+            if (token.TryGetPropertyValue("url", out JsonNode uri) && !string.IsNullOrEmpty(uri.ToString()))
             {
                 Url = uri.ToString();
             }
-            else if (token.TryGetValue("id", out JToken id))
+            else if (token.TryGetPropertyValue("id", out JsonNode id))
             {
                 Url = $"/feed/{id.ToString().Replace("\"", string.Empty)}";
             }
 
-            if (token.TryGetValue("userInfo", out JToken v1))
+            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
             {
-                JObject userInfo = (JObject)v1;
+                JsonObject userInfo = v1.AsObject();
                 UserInfo = new UserModel(userInfo);
             }
             else
@@ -87,9 +87,9 @@ namespace CoolapkUWP.Models.Feeds
                 UserInfo = new UserModel(null);
             }
 
-            if (token.TryGetValue("userAction", out JToken v2))
+            if (token.TryGetPropertyValue("userAction", out JsonNode v2))
             {
-                JObject userAction = (JObject)v2;
+                JsonObject userAction = v2.AsObject();
                 UserAction = new UserAction(userAction);
             }
             else
@@ -97,22 +97,22 @@ namespace CoolapkUWP.Models.Feeds
                 UserAction = new UserAction(null);
             }
 
-            ShareUrl = token.TryGetValue("shareUrl", out JToken shareUrl) && !string.IsNullOrEmpty(shareUrl.ToString())
+            ShareUrl = token.TryGetPropertyValue("shareUrl", out JsonNode shareUrl) && !string.IsNullOrEmpty(shareUrl.ToString())
                 ? shareUrl.ToString()
                 : $"https://www.coolapk.com{(Url != null ? Url.Replace("/question/", "/feed/") : string.Empty)}";
 
-            if (token.TryGetValue("message", out JToken message))
+            if (token.TryGetPropertyValue("message", out JsonNode message))
             {
                 ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
                 Message = message.ToString().Replace("<a href=\"\">查看更多</a>", $"<a href=\"{Url}\">{loader.GetString("ReadMore")}</a>");
             }
 
-            if (token.TryGetValue("message_title", out JToken message_title))
+            if (token.TryGetPropertyValue("message_title", out JsonNode message_title))
             {
                 MessageTitle = message_title.ToString();
             }
 
-            if (token.TryGetValue("feedType", out JToken feedType))
+            if (token.TryGetPropertyValue("feedType", out JsonNode feedType))
             {
                 FeedType = feedType.ToString();
                 switch (FeedType)
@@ -123,9 +123,9 @@ namespace CoolapkUWP.Models.Feeds
                         break;
                     case "rating":
                         IsRatingFeed = true;
-                        if (token.TryGetValue("star", out JToken star))
+                        if (token.TryGetPropertyValue("star", out JsonNode star))
                         {
-                            RatingStar = star.ToObject<int>();
+                            RatingStar = star.ToInt32Safe();
                         }
                         break;
                     case "question":
@@ -135,14 +135,14 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            if (token.TryGetValue("dateline", out JToken dateline))
+            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
             {
-                Dateline = dateline.ToObject<long>().ConvertUnixTimeStampToReadable();
+                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
 
-            if (token.TryGetValue("picArr", out JToken picArr) && (picArr as JArray).Count > 0)
+            if (token.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0)
             {
-                PicArr = picArr.Select(
+                PicArr = picArr.AsArray().Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
                     .Where(x => x != null)
@@ -154,7 +154,7 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            if (token.TryGetValue("pic", out JToken pic) && !string.IsNullOrEmpty(pic.ToString()))
+            if (token.TryGetPropertyValue("pic", out JsonNode pic) && !string.IsNullOrEmpty(pic.ToString()))
             {
                 Pic = new ImageModel(pic.ToString(), ImageType.SmallImage);
             }
