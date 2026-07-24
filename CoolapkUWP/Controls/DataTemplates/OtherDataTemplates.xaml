@@ -5,16 +5,18 @@
     xmlns:ctrl="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:CoolapkUWP.Models"
+    xmlns:users="using:CoolapkUWP.Models.Users"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <DataTemplate x:Key="Empty" />
 
-    <DataTemplate x:Key="UserTemplate">
+    <DataTemplate x:Key="UserTemplate" x:DataType="users:UserModel">
         <Grid
             Padding="8"
             KeyDown="OnKeyDown"
-            Tag="{Binding Url}"
+            Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -32,14 +34,14 @@
                 Margin="0,0,8,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                DisplayName="{Binding UserName}"
-                ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                DisplayName="{x:Bind UserName, Mode=OneWay}"
+                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="{Binding UserName}" />
+                Text="{x:Bind UserName, Mode=OneWay}" />
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="1"
@@ -48,26 +50,26 @@
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 MaxLines="1"
                 TextTrimming="CharacterEllipsis">
-                <Run Text="{Binding FollowNum}" />
-                <Run Text="{Binding FansNum}" />
-                <Run Text="{Binding LoginTime}" />
+                <Run Text="{x:Bind FollowNum, Mode=OneWay}" />
+                <Run Text="{x:Bind FansNum, Mode=OneWay}" />
+                <Run Text="{x:Bind LoginTime, Mode=OneWay}" />
             </TextBlock>
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="1"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 MaxLines="2"
-                Text="{Binding Bio}"
+                Text="{x:Bind Bio, Mode=OneWay}"
                 TextWrapping="Wrap"
-                Visibility="{Binding Bio, Converter={StaticResource StringVisibilityConverter}}" />
+                Visibility="{x:Bind Bio, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ListDefaultTemplate">
+    <DataTemplate x:Key="ListDefaultTemplate" x:DataType="models:IHasDescription">
         <Grid
             Padding="0,8"
             KeyDown="OnKeyDown"
-            Tag="{Binding Url}"
+            Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="56" />
@@ -80,7 +82,7 @@
                 VerticalAlignment="Top"
                 CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <Border.Background>
-                    <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                    <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                 </Border.Background>
             </Border>
             <Grid
@@ -95,24 +97,24 @@
                 <TextBlock
                     Grid.Row="0"
                     VerticalAlignment="Center"
-                    Text="{Binding Title}"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <ctrl:TextBlockEx
                     Grid.Row="1"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     MaxLines="1"
-                    Text="{Binding Description}"
-                    Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Description, Mode=OneWay}"
+                    Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="SubtitleListDefaultTemplate">
+    <DataTemplate x:Key="SubtitleListDefaultTemplate" x:DataType="models:IHasSubtitle">
         <Grid
             Padding="0,8"
             KeyDown="OnKeyDown"
-            Tag="{Binding Url}"
+            Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="56" />
@@ -124,7 +126,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
                 <Ellipse.Fill>
-                    <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                    <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                 </Ellipse.Fill>
             </Ellipse>
             <Grid
@@ -140,20 +142,20 @@
                 <TextBlock
                     Grid.Row="0"
                     VerticalAlignment="Center"
-                    Text="{Binding Title}"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <TextBlock
                     Grid.Row="1"
                     VerticalAlignment="Center"
-                    Text="{Binding SubTitle}"
-                    Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind SubTitle, Mode=OneWay}"
+                    Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <ctrl:TextBlockEx
                     Grid.Row="2"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     MaxLines="1"
-                    Text="{Binding Description}"
-                    Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Description, Mode=OneWay}"
+                    Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
         </Grid>
     </DataTemplate>

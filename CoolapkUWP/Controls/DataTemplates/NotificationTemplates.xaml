@@ -5,6 +5,7 @@
     xmlns:control="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:CoolapkUWP.Models.Pages"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
     mc:Ignorable="d">
@@ -12,12 +13,12 @@
         <templates:FeedsTemplates />
     </ResourceDictionary.MergedDictionaries>
 
-    <DataTemplate x:Key="SimpleNotificationCardTemplate">
+    <DataTemplate x:Key="SimpleNotificationCardTemplate" x:DataType="pages:SimpleNotificationModel">
         <Grid
             Padding="8"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
-            Tag="{Binding Url}"
+            Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="48" />
@@ -33,30 +34,30 @@
                 Height="40"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                DisplayName="{Binding UserName}"
-                ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
-                Tag="{Binding UserUrl}"
+                DisplayName="{x:Bind UserName, Mode=OneWay}"
+                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                Tag="{x:Bind UserUrl, Mode=OneWay}"
                 Tapped="OnTapped" />
             <TextBlock Grid.Row="0" Grid.Column="1">
-                <Run Text="{Binding UserName}" />
-                <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{Binding Dateline}" />
+                <Run Text="{x:Bind UserName, Mode=OneWay}" />
+                <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />
             </TextBlock>
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="1"
                 Padding="0,0,0,4"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Text="{Binding Note}"
+                Text="{x:Bind Note, Mode=OneWay}"
                 TextWrapping="Wrap" />
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="AtCommentMeCardTemplate">
+    <DataTemplate x:Key="AtCommentMeCardTemplate" x:DataType="pages:AtCommentMeNotificationModel">
         <Grid
             Padding="8"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
-            Tag="{Binding Url}"
+            Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -70,37 +71,37 @@
                     VerticalAlignment="Top"
                     Click="Button_Click"
                     Style="{StaticResource TransparentButtonStyle}"
-                    Tag="{Binding UserUrl}">
+                    Tag="{x:Bind UserUrl, Mode=OneWay}">
                     <StackPanel Orientation="Horizontal">
                         <muxc:PersonPicture
                             Width="20"
                             Height="20"
-                            DisplayName="{Binding UserName}"
-                            ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                            DisplayName="{x:Bind UserName, Mode=OneWay}"
+                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
-                            Text="{Binding UserName}" />
+                            Text="{x:Bind UserName, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
                 <TextBlock
                     Margin="0,5"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="{Binding Dateline}" />
+                    Text="{x:Bind Dateline, Mode=OneWay}" />
             </StackPanel>
             <StackPanel Grid.Row="1" Padding="6,0,6,8">
-                <control:TextBlockEx Text="{Binding Message}" />
-                <control:TextBlockEx Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{Binding FeedMessage}" />
+                <control:TextBlockEx Text="{x:Bind Message, Mode=OneWay}" />
+                <control:TextBlockEx Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind FeedMessage, Mode=OneWay}" />
             </StackPanel>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="LikeNotificationCardTemplate">
+    <DataTemplate x:Key="LikeNotificationCardTemplate" x:DataType="pages:LikeNotificationModel">
         <Grid
             Padding="8"
             Background="{ThemeResource SystemControlTransparentBrush}"
-            Tag="{Binding Url}">
+            Tag="{x:Bind Url, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -113,49 +114,49 @@
                     VerticalAlignment="Top"
                     Click="Button_Click"
                     Style="{StaticResource TransparentButtonStyle}"
-                    Tag="{Binding UserUrl}">
+                    Tag="{x:Bind UserUrl, Mode=OneWay}">
                     <StackPanel Orientation="Horizontal">
                         <muxc:PersonPicture
                             Width="20"
                             Height="20"
-                            DisplayName="{Binding UserName}"
-                            ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                            DisplayName="{x:Bind UserName, Mode=OneWay}"
+                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
-                            Text="{Binding UserName}" />
+                            Text="{x:Bind UserName, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
                 <TextBlock
                     Margin="0,5"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    IsTextSelectionEnabled="{Binding FeedDetail.IsCopyEnabled, Mode=OneWay}"
-                    Text="{Binding Dateline}" />
+                    IsTextSelectionEnabled="{x:Bind FeedDetail.IsCopyEnabled, Mode=OneWay}"
+                    Text="{x:Bind Dateline, Mode=OneWay}" />
             </StackPanel>
             <control:StackPanel Grid.Row="1" Spacing="4">
                 <TextBlock
                     Margin="4,0"
                     FontSize="16"
                     FontWeight="SemiLight"
-                    IsTextSelectionEnabled="{Binding FeedDetail.IsCopyEnabled, Mode=OneWay}"
-                    Text="{Binding Title}" />
+                    IsTextSelectionEnabled="{x:Bind FeedDetail.IsCopyEnabled, Mode=OneWay}"
+                    Text="{x:Bind Title, Mode=OneWay}" />
                 <control:WebViewContentControl
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     ContentCornerRadius="{ThemeResource OverlayCornerRadius}"
                     ContentTemplate="{StaticResource SourceFeedDefaultTemplate}"
-                    DataContext="{Binding FeedDetail}" />
+                    DataContext="{x:Bind FeedDetail, Mode=OneWay}" />
             </control:StackPanel>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="MessageNotificationCardTemplate">
+    <DataTemplate x:Key="MessageNotificationCardTemplate" x:DataType="pages:MessageNotificationModel">
         <Grid
             Padding="8"
             Background="{ThemeResource SystemControlTransparentBrush}"
-            Tag="{Binding Url}">
+            Tag="{x:Bind Url, Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="48" />
                 <ColumnDefinition />
@@ -170,20 +171,20 @@
                 Height="40"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                DisplayName="{Binding UserName}"
-                ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
-                Tag="{Binding UserUrl}"
+                DisplayName="{x:Bind UserName, Mode=OneWay}"
+                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                Tag="{x:Bind UserUrl, Mode=OneWay}"
                 Tapped="OnTapped" />
             <TextBlock Grid.Row="0" Grid.Column="1">
-                <Run Text="{Binding UserName}" />
-                <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{Binding Dateline}" />
+                <Run Text="{x:Bind UserName, Mode=OneWay}" />
+                <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />
             </TextBlock>
             <control:TextBlockEx
                 Grid.Row="2"
                 Grid.Column="1"
                 Padding="0,0,0,4"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Text="{Binding FeedMessage}" />
+                Text="{x:Bind FeedMessage, Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 

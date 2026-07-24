@@ -7,6 +7,8 @@
     xmlns:helpers="using:CoolapkUWP.Helpers"
     xmlns:local="using:CoolapkUWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:CoolapkUWP.Models"
+    xmlns:users="using:CoolapkUWP.Models.Users"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     Padding="25"
     Loaded="Picker_Loaded"
@@ -16,12 +18,12 @@
         <ResourceDictionary>
             <local:EmojiNameConverter x:Key="EmojiNameConverter" />
             <local:StringToEmojiConverter x:Key="StringToEmojiConverter" />
-            <DataTemplate x:Key="EmojiImageTemplate">
+            <DataTemplate x:Key="EmojiImageTemplate" x:DataType="x:String">
                 <Image
                     Width="36"
                     Height="36"
-                    Source="{Binding Converter={StaticResource StringToEmojiConverter}}"
-                    ToolTipService.ToolTip="{Binding Converter={StaticResource EmojiNameConverter}}" />
+                    Source="{x:Bind Converter={StaticResource StringToEmojiConverter}, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind Converter={StaticResource EmojiNameConverter}, Mode=OneWay}" />
             </DataTemplate>
         </ResourceDictionary>
     </local:Picker.Resources>
@@ -77,7 +79,7 @@
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
             <GridView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="x:String">
                     <Border
                         Width="102"
                         Height="102"
@@ -91,7 +93,7 @@
                                     x:Name="DeletePic"
                                     x:Uid="/CreateFeedControl/DeletePicItem"
                                     Click="MenuFlyoutItem_Click"
-                                    Tag="{Binding}">
+                                    Tag="{x:Bind Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74D;" />
                                     </MenuFlyoutItem.Icon>
@@ -99,7 +101,7 @@
                             </MenuFlyout>
                         </Border.ContextFlyout>
                         <Border.Background>
-                            <ImageBrush ImageSource="{Binding}" Stretch="UniformToFill" />
+                            <ImageBrush ImageSource="{x:Bind Mode=OneWay}" Stretch="UniformToFill" />
                         </Border.Background>
                     </Border>
                 </DataTemplate>
@@ -161,7 +163,7 @@
                                             SelectionChanged="ListView_SelectionChanged"
                                             Tag="UserList">
                                             <ListView.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="users:UserModel">
                                                     <Grid Padding="0,4">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
@@ -170,13 +172,13 @@
                                                         <muxc:PersonPicture
                                                             Width="24"
                                                             Height="24"
-                                                            DisplayName="{Binding UserName}"
-                                                            ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                                            DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                                                         <TextBlock
                                                             Grid.Column="1"
                                                             Margin="10,0,0,2"
                                                             VerticalAlignment="Center"
-                                                            Text="{Binding UserName}" />
+                                                            Text="{x:Bind UserName, Mode=OneWay}" />
                                                     </Grid>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
@@ -220,7 +222,7 @@
                                             SelectionChanged="ListView_SelectionChanged"
                                             Tag="TopicList">
                                             <ListView.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="models:IndexPageModel">
                                                     <Grid Padding="0,4">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
@@ -231,14 +233,14 @@
                                                             Height="24"
                                                             CornerRadius="{ThemeResource ControlCornerRadius}">
                                                             <Border.Background>
-                                                                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                                                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                                                             </Border.Background>
                                                         </Border>
                                                         <TextBlock
                                                             Grid.Column="1"
                                                             Margin="10,0,0,2"
                                                             VerticalAlignment="Center"
-                                                            Text="{Binding Title}" />
+                                                            Text="{x:Bind Title, Mode=OneWay}" />
                                                     </Grid>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
@@ -288,7 +290,7 @@
                                 SuggestionChosen="EmojiAutoSuggestBox_SuggestionChosen"
                                 TextChanged="EmojiAutoSuggestBox_TextChanged">
                                 <AutoSuggestBox.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="x:String">
                                         <Grid Padding="0,4">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -297,13 +299,13 @@
                                             <Image
                                                 Width="24"
                                                 Height="24"
-                                                Source="{Binding Converter={StaticResource StringToEmojiConverter}}"
-                                                ToolTipService.ToolTip="{Binding Converter={StaticResource EmojiNameConverter}}" />
+                                                Source="{x:Bind Converter={StaticResource StringToEmojiConverter}, Mode=OneWay}"
+                                                ToolTipService.ToolTip="{x:Bind Converter={StaticResource EmojiNameConverter}, Mode=OneWay}" />
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Margin="10,0,0,2"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding Converter={StaticResource EmojiNameConverter}}" />
+                                                Text="{x:Bind Converter={StaticResource EmojiNameConverter}, Mode=OneWay}" />
                                         </Grid>
                                     </DataTemplate>
                                 </AutoSuggestBox.ItemTemplate>
