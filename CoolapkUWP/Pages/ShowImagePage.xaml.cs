@@ -3,6 +3,7 @@ using CoolapkUWP.Models.Images;
 using CoolapkUWP.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 
+using System.ComponentModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System.Profile;
@@ -18,10 +19,22 @@ namespace CoolapkUWP.Pages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class ShowImagePage : Page
+    public sealed partial class ShowImagePage : Page, INotifyPropertyChanged
     {
         private Point _clickPoint = new Point(0, 0);
-        private ShowImageViewModel Provider;
+        private ShowImageViewModel _provider;
+        public ShowImageViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public ShowImagePage() => InitializeComponent();
 
@@ -31,12 +44,10 @@ namespace CoolapkUWP.Pages
             if (e.Parameter is ImageModel Model)
             {
                 Provider = new ShowImageViewModel(Model, DispatcherQueue);
-                DataContext = Provider;
             }
             else if (e.Parameter is ShowImageViewModel ViewModel)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
             }
         }
 
@@ -178,5 +189,12 @@ namespace CoolapkUWP.Pages
         private void TitleBar_IsVisibleChanged(Microsoft.UI.Windowing.AppWindowTitleBar sender, object args) => UpdateContentLayout(sender);
 
         private void TitleBar_LayoutMetricsChanged(Microsoft.UI.Windowing.AppWindowTitleBar sender, object args) => UpdateTitleBarLayout(sender);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 }

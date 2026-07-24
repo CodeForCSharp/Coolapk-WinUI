@@ -5,6 +5,7 @@ using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI.Helpers;
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 using CoolapkUWP.Common;
 using System;
@@ -29,14 +30,26 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoolapkUWP.Controls
 {
-    public sealed partial class CreateFeedControl : Picker
+    public sealed partial class CreateFeedControl : Picker, INotifyPropertyChanged
     {
         private AppBarToggleButton BoldButton;
         private AppBarToggleButton ItalicButton;
         private AppBarToggleButton UnderLineButton;
         private AppBarToggleButton StrikethroughButton;
 
-        public CreateFeedViewModel Provider;
+        private CreateFeedViewModel _provider;
+        public CreateFeedViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public static readonly DependencyProperty FeedTypeProperty =
             DependencyProperty.Register(
@@ -460,6 +473,13 @@ namespace CoolapkUWP.Controls
         }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 
     public partial class StringToEmojiConverter : IValueConverter

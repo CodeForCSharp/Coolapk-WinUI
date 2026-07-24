@@ -28,17 +28,17 @@
                         Click="HyperlinkButton_Click"
                         Tag="WindowsColor" />
                 </local:Setting.Description>
-                <ComboBox SelectedIndex="{Binding SelectedTheme, Mode=TwoWay}">
+                <ComboBox SelectedIndex="{x:Bind Provider.SelectedTheme, Mode=TwoWay}">
                     <ComboBoxItem x:Uid="/SettingsPage/RadioThemeDark" />
                     <ComboBoxItem x:Uid="/SettingsPage/RadioThemeLight" />
                     <ComboBoxItem x:Uid="/SettingsPage/RadioThemeDefault" />
                 </ComboBox>
             </local:Setting>
             <local:Setting x:Uid="/SettingsPage/NoPicsModeSettings" Icon="&#xEB9F;">
-                <ToggleSwitch IsOn="{Binding IsNoPicsMode, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
+                <ToggleSwitch IsOn="{x:Bind Provider.IsNoPicsMode, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
             </local:Setting>
             <local:Setting x:Uid="/SettingsPage/DisplayOriginPictureSettings" Icon="&#xE8B9;">
-                <ToggleSwitch IsOn="{Binding IsDisplayOriginPicture, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
+                <ToggleSwitch IsOn="{x:Bind Provider.IsDisplayOriginPicture, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
             </local:Setting>
             <local:Setting x:Uid="/SettingsPage/TileUpdateTimeSettings" Icon="&#xEA79;">
                 <Slider
@@ -48,13 +48,13 @@
                     StepFrequency="15"
                     TickFrequency="15"
                     TickPlacement="Outside"
-                    Value="{Binding TileUpdateTime, Mode=TwoWay}" />
+                    Value="{x:Bind Provider.TileUpdateTime, Mode=TwoWay}" />
             </local:Setting>
         </local:SettingsGroup>
         <local:SettingsGroup
             x:Name="AccountSettingsHeader"
             x:Uid="/SettingsPage/AccountSettingsHeader"
-            Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}}">
+            Visibility="{x:Bind Provider.IsLogin, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <local:Setting
                 x:Uid="/SettingsPage/AccountSettings"
                 Click="Button_Click"
@@ -87,12 +87,12 @@
             </local:Setting>
         </local:SettingsGroup>
         <local:SettingsGroup x:Uid="/SettingsPage/AboutSettingsHeader">
-            <local:SettingExpander Header="{Binding VersionTextBlockText}" Icon="&#xE117;">
+            <local:SettingExpander Header="{x:Bind Provider.VersionTextBlockText, Mode=OneWay}" Icon="&#xE117;">
                 <local:SettingExpander.Description>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Style="{StaticResource SecondaryTextStyle}" TextWrapping="WrapWholeWords">
                             <Run x:Uid="/SettingsPage/LastChecked" />
-                            <Run Text="{Binding UpdateDate, Mode=OneWay}" />
+                            <Run Text="{x:Bind Provider.UpdateDate, Mode=OneWay}" />
                         </TextBlock>
                         <ScrollViewer
                             Margin="0,2,0,0"
@@ -100,10 +100,11 @@
                             VerticalScrollBarVisibility="Disabled">
                             <StackPanel Orientation="Horizontal">
                                 <HyperlinkButton
+                                    x:Name="FeedbackLinkButton"
                                     x:Uid="/SettingsPage/FeedbackLink"
                                     Margin="0,0,2,0"
                                     NavigateUri="https://github.com/Coolapk-UWP/Coolapk-UWP/issues"
-                                    ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
+                                    ToolTipService.ToolTip="{x:Bind FeedbackLinkButton.NavigateUri}" />
                                 <HyperlinkButton
                                     x:Uid="/SettingsPage/LogFolderLink"
                                     Margin="2,0"
@@ -123,15 +124,17 @@
                                     </HyperlinkButton.ContextFlyout>
                                 </HyperlinkButton>
                                 <HyperlinkButton
+                                    x:Name="TranslateLinkButton"
                                     x:Uid="/SettingsPage/TranslateLink"
                                     Margin="2,0"
                                     NavigateUri="https://crowdin.com/project/CoolapkUWP"
-                                    ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
+                                    ToolTipService.ToolTip="{x:Bind FeedbackLinkButton.NavigateUri}" />
                                 <HyperlinkButton
+                                    x:Name="ReleaseNotesButton"
                                     x:Uid="/SettingsPage/ReleaseNotes"
                                     Margin="2,0"
                                     NavigateUri="https://github.com/Coolapk-UWP/Coolapk-UWP/releases/latest"
-                                    ToolTipService.ToolTip="{Binding NavigateUri, RelativeSource={RelativeSource Mode=Self}}" />
+                                    ToolTipService.ToolTip="{x:Bind FeedbackLinkButton.NavigateUri}" />
                             </StackPanel>
                         </ScrollViewer>
                     </StackPanel>
@@ -141,12 +144,12 @@
                         VerticalAlignment="Center"
                         Orientation="Horizontal"
                         Spacing="18">
-                        <Border Visibility="{Binding CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Border Visibility="{x:Bind Provider.CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                 <Border.Child>
                                 <muxc:ProgressRing
                                     Width="24"
                                     Height="24"
-                                    IsActive="{Binding CheckingUpdate}" />
+                                    IsActive="{x:Bind Provider.CheckingUpdate, Mode=OneWay}" />
                             </Border.Child>
                         </Border>
                         <TextBlock
@@ -155,38 +158,38 @@
                             VerticalAlignment="Center"
                             FontWeight="SemiBold"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            Visibility="{Binding CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            Visibility="{x:Bind Provider.CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                         <Button
                             x:Name="UpdateButton"
                             x:Uid="/SettingsPage/CheckUpdates"
                             HorizontalAlignment="Right"
                             Click="Button_Click"
                             Tag="CheckUpdate"
-                            Visibility="{Binding CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+                            Visibility="{x:Bind Provider.CheckingUpdate, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
                     </local:StackPanel>
                 </local:SettingExpander.ActionContent>
                 <Grid Style="{StaticResource SettingExpanderContentGridStyle}">
                     <TextBlock TextWrapping="Wrap"
                         HorizontalAlignment="Left"
                         
-                        Text="{Binding AboutTextBlockText}" />
+                        Text="{x:Bind Provider.AboutTextBlockText, Mode=OneWay}" />
                 </Grid>
             </local:SettingExpander>
             <muxc:InfoBar
                 x:Name="UpdateState"
-                Title="{Binding UpdateStateTitle}"
+                Title="{x:Bind Provider.UpdateStateTitle, Mode=OneWay}"
                 IsClosable="True"
-                IsOpen="{Binding UpdateStateIsOpen}"
-                Message="{Binding UpdateStateMessage}"
-                Severity="{Binding UpdateStateSeverity}">
+                IsOpen="{x:Bind Provider.UpdateStateIsOpen, Mode=OneWay}"
+                Message="{x:Bind Provider.UpdateStateMessage, Mode=OneWay}"
+                Severity="{x:Bind Provider.UpdateStateSeverity, Mode=OneWay}">
                 <muxc:InfoBar.ActionButton>
                     <Button
                         x:Uid="/SettingsPage/GoToUpdate"
                         HorizontalAlignment="Right"
                         Click="GotoUpdate_Click"
-                        Tag="{Binding GotoUpdateTag}"
-                        ToolTipService.ToolTip="{Binding GotoUpdateTag}"
-                        Visibility="{Binding GotoUpdateVisibility}" />
+                        Tag="{x:Bind Provider.GotoUpdateTag, Mode=OneWay}"
+                        ToolTipService.ToolTip="{x:Bind Provider.GotoUpdateTag, Mode=OneWay}"
+                        Visibility="{x:Bind Provider.GotoUpdateVisibility, Mode=OneWay}" />
                 </muxc:InfoBar.ActionButton>
             </muxc:InfoBar>
             <local:SettingExpander x:Uid="/SettingsPage/FrameworkSettings" Icon="&#xE950;">
@@ -228,7 +231,7 @@
                         Grid.Column="1"
                         Padding="32,0,0,8"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{Binding ToolkitVersion}"
+                        Text="{x:Bind settingspages:SettingsViewModel.ToolkitVersion}"
                         TextWrapping="WrapWholeWords" />
 
                     <TextBlock
@@ -242,7 +245,7 @@
                         Grid.Column="1"
                         Padding="32,0,0,8"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{Binding DeviceFamily}"
+                        Text="{x:Bind settingspages:SettingsViewModel.DeviceFamily}"
                         TextWrapping="WrapWholeWords" />
 
                     <TextBlock
@@ -277,22 +280,22 @@
         </local:SettingsGroup>
         <local:SettingsGroup x:Uid="/SettingsPage/OthersSettingsHeader">
             <local:Setting x:Uid="/SettingsPage/ShowOtherExceptionSettings" Icon="&#xE90F;">
-                <ToggleSwitch IsOn="{Binding ShowOtherException, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
+                <ToggleSwitch IsOn="{x:Bind Provider.ShowOtherException, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
             </local:Setting>
             <local:Setting x:Uid="/SettingsPage/CleanCacheSettings" Icon="&#xEA99;">
                 <local:StackPanel Orientation="Horizontal" Spacing="18">
-                    <Border Visibility="{Binding IsCleanCache, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Border Visibility="{x:Bind Provider.IsCleanCache, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                             <Border.Child>
                             <muxc:ProgressRing
                                 Width="24"
                                 Height="24"
-                                IsActive="{Binding IsCleanCache}" />
+                                IsActive="{x:Bind Provider.IsCleanCache, Mode=OneWay}" />
                         </Border.Child>
                     </Border>
                     <Button
                         x:Uid="/SettingsPage/CleanCacheButton"
                         Click="Button_Click"
-                        IsEnabled="{Binding IsCleanCache, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                        IsEnabled="{x:Bind Provider.IsCleanCache, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                         Tag="CleanCache" />
                 </local:StackPanel>
             </local:Setting>

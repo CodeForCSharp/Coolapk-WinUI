@@ -389,7 +389,7 @@
                                 <KeyboardAccelerator
                                     Key="V"
                                     Modifiers="Control"
-                                    ScopeOwner="{Binding ElementName=RootGrid}" />
+                                    ScopeOwner="{x:Bind RootGrid}" />
                             </MenuFlyoutItem.KeyboardAccelerators>
                             <MenuFlyoutItem.Icon>
                                 <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE77F;" />
@@ -399,10 +399,11 @@
                 </AppBarButton.ContextFlyout>
             </AppBarButton>
             <AppBarButton
+                x:Name="SendButton"
                 x:Uid="/CreateFeedControl/SendButton"
                 Click="AppBarButton_Click"
                 Tag="Send"
-                ToolTipService.ToolTip="{Binding Label, RelativeSource={RelativeSource Mode=Self}}">
+                ToolTipService.ToolTip="{x:Bind SendButton.Label}">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE724;" />
                 </AppBarButton.Icon>

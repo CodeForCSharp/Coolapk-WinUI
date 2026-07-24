@@ -46,17 +46,17 @@
                 <muxc:PersonPicture
                     Width="49"
                     Height="49"
-                    DisplayName="{Binding ProfileDetail.UserName}"
+                    DisplayName="{x:Bind Provider.ProfileDetail.UserName, Mode=OneWay}"
                     DoubleTapped="Grid_DoubleTapped"
                     IsDoubleTapEnabled="True"
-                    ProfilePicture="{Binding ProfileDetail.UserAvatar.Pic, Mode=OneWay}" />
+                    ProfilePicture="{x:Bind Provider.ProfileDetail.UserAvatar.Pic, Mode=OneWay}" />
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock FontWeight="SemiBold" Text="{Binding ProfileDetail.UserName, FallbackValue='登录'}" />
+                    <TextBlock FontWeight="SemiBold" Text="{x:Bind Provider.ProfileDetail.UserName, Mode=OneWay, FallbackValue=登录}" />
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -68,19 +68,19 @@
                             FontSize="12"
                             FontStyle="Italic"
                             Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                            Text="{Binding ProfileDetail.LevelNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}', FallbackValue='Lv.0'}" />
+                            Text="{x:Bind Provider.ProfileDetail.LevelNum, Mode=OneWay, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}', FallbackValue=Lv.0}" />
                         <TextBlock
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             FontSize="12"
-                            Text="{Binding ProfileDetail.NextLevelNowExperience}" />
+                            Text="{x:Bind Provider.ProfileDetail.NextLevelNowExperience, Mode=OneWay}" />
                     </Grid>
                     <muxc:ProgressBar
                         x:Name="NextLevelPercentage"
                         Grid.Row="2"
                         MinWidth="160"
                         Margin="0,4"
-                        Value="{Binding ProfileDetail.NextLevelPercentage}" />
+                        Value="{x:Bind Provider.ProfileDetail.NextLevelPercentage, Mode=OneWay}" />
                 </Grid>
                 <Button
                     x:Name="QRCodeButton"
@@ -90,7 +90,7 @@
 
                     Content="&#xED14;"
                     Style="{StaticResource NavigationIconButtonNormalStyle}"
-                    Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind Provider.IsLogin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="S" Modifiers="Control" />
                     </Button.KeyboardAccelerators>
@@ -105,7 +105,7 @@
                                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
                                 </Style>
                             </Flyout.FlyoutPresenterStyle>
-                            <controls:ShowQRCodeControl QRCodeText="{Binding ProfileDetail.Url}" />
+                            <controls:ShowQRCodeControl QRCodeText="{x:Bind Provider.ProfileDetail.Url, Mode=OneWay}" />
                         </Flyout>
                     </Button.Flyout>
                 </Button>
@@ -118,13 +118,13 @@
                     Content="&#xE78B;"
                     Style="{StaticResource NavigationIconButtonNormalStyle}"
                     Tag="LoginButton"
-                    Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}">
+                    Visibility="{x:Bind Provider.IsLogin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
                     <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="L" Modifiers="Control" />
                     </Button.KeyboardAccelerators>
                 </Button>
             </Grid>
-            <Grid x:Name="ButtonGrid" Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid x:Name="ButtonGrid"                 Visibility="{x:Bind Provider.IsLogin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -135,7 +135,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
 
-                    CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource LeftCornerRadiusFilterConverter}}"
+                    CornerRadius="{x:Bind LeftButtonCornerRadius}"
                     Click="Button_Click"
                     Tag="FeedsButton">
                     <StackPanel>
@@ -143,7 +143,7 @@
                             HorizontalAlignment="Center"
                             FontSize="20"
                             FontWeight="Bold"
-                            Text="{Binding ProfileDetail.FeedNum, FallbackValue='0'}" />
+                            Text="{x:Bind Provider.ProfileDetail.FeedNum, Mode=OneWay, FallbackValue=0}" />
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontSize="12"
@@ -165,7 +165,7 @@
                             HorizontalAlignment="Center"
                             FontSize="20"
                             FontWeight="Bold"
-                            Text="{Binding ProfileDetail.FollowNum, FallbackValue='0'}" />
+                            Text="{x:Bind Provider.ProfileDetail.FollowNum, Mode=OneWay, FallbackValue=0}" />
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontSize="12"
@@ -178,7 +178,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
 
-                    CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}"
+                    CornerRadius="{x:Bind RightButtonCornerRadius}"
                     Click="Button_Click"
                     Tag="FansButton">
                     <StackPanel>
@@ -186,7 +186,7 @@
                             HorizontalAlignment="Center"
                             FontSize="20"
                             FontWeight="Bold"
-                            Text="{Binding ProfileDetail.FansNum, FallbackValue='0'}" />
+                            Text="{x:Bind Provider.ProfileDetail.FansNum, Mode=OneWay, FallbackValue=0}" />
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontSize="12"
@@ -200,7 +200,7 @@
                 VerticalAlignment="Stretch"
                 Click="Button_Click"
                 Tag="CreateFeedButton"
-                Visibility="{Binding IsLogin, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind Provider.IsLogin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <controls:StackPanel
                     Margin="8,0"
                     Orientation="Horizontal"
@@ -215,8 +215,8 @@
                         FontSize="16" />
                 </controls:StackPanel>
             </Button>
-            <Border MaxWidth="300" Visibility="{Binding Any, Converter={StaticResource BoolToVisibilityConverter}}">
-                <muxc:ItemsRepeater ItemTemplate="{StaticResource ProfileCardTemplateSelector}" ItemsSource="{Binding}">
+            <Border MaxWidth="300"                 Visibility="{x:Bind Provider.Any, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <muxc:ItemsRepeater ItemTemplate="{StaticResource ProfileCardTemplateSelector}" ItemsSource="{x:Bind Provider, Mode=OneWay}">
                     <muxc:ItemsRepeater.Layout>
                         <muxc:StackLayout Orientation="Vertical" Spacing="12" />
                     </muxc:ItemsRepeater.Layout>

@@ -152,6 +152,15 @@ namespace CoolapkUWP.Pages.SettingsPages
             }
         }
 
+        public CornerRadius BottomCornerRadius
+        {
+            get
+            {
+                CornerRadius r = (CornerRadius)Application.Current.Resources["ControlCornerRadius"];
+                return new CornerRadius(0, 0, r.BottomRight, r.BottomLeft);
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)

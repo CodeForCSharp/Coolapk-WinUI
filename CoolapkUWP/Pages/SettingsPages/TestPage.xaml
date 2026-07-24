@@ -124,7 +124,7 @@
                             </controls:Setting.Background>
                         </controls:Setting>
                         <controls:Setting
-                            ContentCornerRadius="{Binding Source={StaticResource ControlCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
+                            ContentCornerRadius="{x:Bind BottomCornerRadius}"
                             Header="SystemAccentColorDark3"
                             RequestedTheme="Dark"
                             Style="{StaticResource DefaultSettingExpanderItemStyle}">
@@ -224,7 +224,7 @@
                             x:Uid="/TestPage/CustomUASettings"
                             ActionIcon="&#xE8A7;"
                             Click="Button_Click"
-                            ContentCornerRadius="{Binding Source={StaticResource ControlCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
+                            ContentCornerRadius="{x:Bind BottomCornerRadius}"
                             Description="{x:Bind UserAgent, Mode=OneWay}"
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
@@ -262,7 +262,7 @@
                         <controls:Setting
                             x:Uid="/TestPage/OpenBrowser"
                             Click="Button_Click"
-                            ContentCornerRadius="{Binding Source={StaticResource ControlCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}"
+                            ContentCornerRadius="{x:Bind BottomCornerRadius}"
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
                             Tag="OpenBrowser" />

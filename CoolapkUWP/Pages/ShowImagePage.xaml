@@ -21,7 +21,7 @@
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                 </MenuFlyoutItem.Icon>
                 <MenuFlyoutItem.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="F5" ScopeOwner="{Binding ElementName=FlipView}" />
+                    <KeyboardAccelerator Key="F5" ScopeOwner="{x:Bind FlipView}" />
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
@@ -35,7 +35,7 @@
                     <KeyboardAccelerator
                         Key="C"
                         Modifiers="Control"
-                        ScopeOwner="{Binding ElementName=FlipView}" />
+                        ScopeOwner="{x:Bind FlipView}" />
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
@@ -49,7 +49,7 @@
                     <KeyboardAccelerator
                         Key="S"
                         Modifiers="Control,Shift"
-                        ScopeOwner="{Binding ElementName=FlipView}" />
+                        ScopeOwner="{x:Bind FlipView}" />
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
@@ -63,14 +63,14 @@
                     <KeyboardAccelerator
                         Key="S"
                         Modifiers="Control"
-                        ScopeOwner="{Binding ElementName=FlipView}" />
+                        ScopeOwner="{x:Bind FlipView}" />
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
             <MenuFlyoutItem
                 x:Uid="/ShowImagePage/OriginMenuItem"
                 Click="AppBarButton_Click"
                 Tag="Origin"
-                Visibility="{Binding ShowOrigin, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind Provider.ShowOrigin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB9F;" />
                 </MenuFlyoutItem.Icon>
@@ -78,7 +78,7 @@
                     <KeyboardAccelerator
                         Key="O"
                         Modifiers="Control"
-                        ScopeOwner="{Binding ElementName=FlipView}" />
+                        ScopeOwner="{x:Bind FlipView}" />
                 </MenuFlyoutItem.KeyboardAccelerators>
             </MenuFlyoutItem>
         </MenuFlyout>
@@ -112,12 +112,12 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="6"
-                    Visibility="{Binding IsShowHub, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock
                         x:Name="AppTitle"
                         MaxLines="1"
                         Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{Binding Title}"
+                        Text="{x:Bind Provider.Title, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
                 </Border>
             </Grid>
@@ -127,10 +127,10 @@
                     Background="Transparent"
                     ContextFlyout="{StaticResource FlipViewContextFlyout}"
                     IsTabStop="True"
-                    ItemsSource="{Binding Images}"
-                    SelectedIndex="{Binding Index, Mode=TwoWay}">
+                    ItemsSource="{x:Bind Provider.Images, Mode=OneWay}"
+                    SelectedIndex="{x:Bind Provider.Index, Mode=TwoWay}">
                     <FlipView.Resources>
-                        <Border x:Name="IsShowHubProxy" Tag="{Binding IsShowHub}" Visibility="Collapsed" />
+                        <Border x:Name="IsShowHubProxy" Tag="{x:Bind Provider.IsShowHub, Mode=OneWay}" Visibility="Collapsed" />
                     </FlipView.Resources>
                     <FlipView.ItemTemplate>
                         <DataTemplate>
@@ -217,29 +217,29 @@
                         </DataTemplate>
                     </FlipView.ItemTemplate>
                 </FlipView>
-                <Border Visibility="{Binding IsShowHub, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Border Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Border
                         Margin="4"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                         CornerRadius="6"
-                        Visibility="{Binding Images, Converter={StaticResource PipsPagerVisibilityConverter}}">
+                        Visibility="{x:Bind Provider.Images, Mode=OneWay, Converter={StaticResource PipsPagerVisibilityConverter}}">
                         <muxc:PipsPager
                             Margin="2,0"
-                            NumberOfPages="{Binding Images, Converter={StaticResource CollectionCountConverter}}"
-                            SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
+                            NumberOfPages="{x:Bind Provider.Images, Mode=OneWay, Converter={StaticResource CollectionCountConverter}}"
+                            SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
                     </Border>
                 </Border>
                 <Border
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind Provider.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Border.Child>
                         <muxc:ProgressRing
                             Width="60"
                             Height="60"
-                            IsActive="{Binding IsLoading}" />
+                            IsActive="{x:Bind Provider.IsLoading, Mode=OneWay}" />
                     </Border.Child>
                 </Border>
             </Grid>
@@ -249,7 +249,7 @@
             VerticalAlignment="Bottom"
             DefaultLabelPosition="Right"
             Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-            Visibility="{Binding IsShowHub, Converter={StaticResource BoolToVisibilityConverter}}">
+            Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
                     x:Uid="/ShowImagePage/RefreshButton"
@@ -290,7 +290,7 @@
                     x:Uid="/ShowImagePage/OriginButton"
                     Click="AppBarButton_Click"
                     Tag="Origin"
-                    Visibility="{Binding ShowOrigin, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind Provider.ShowOrigin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <AppBarButton.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB9F;" />
                     </AppBarButton.Icon>

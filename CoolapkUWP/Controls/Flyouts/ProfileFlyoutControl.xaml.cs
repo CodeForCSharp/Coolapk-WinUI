@@ -6,6 +6,7 @@ using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,10 +18,22 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace CoolapkUWP.Controls
 {
-    public sealed partial class ProfileFlyoutControl : UserControl
+    public sealed partial class ProfileFlyoutControl : UserControl, INotifyPropertyChanged
     {
         private DateTime dateTime = default;
-        private readonly ProfileFlyoutViewModel Provider;
+        private ProfileFlyoutViewModel _provider;
+        public ProfileFlyoutViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public static readonly DependencyProperty XamlHostProperty =
             DependencyProperty.Register(
@@ -42,6 +55,24 @@ namespace CoolapkUWP.Controls
                 typeof(ProfileFlyoutControl),
                 null);
 
+        public CornerRadius LeftButtonCornerRadius
+        {
+            get
+            {
+                CornerRadius r = (CornerRadius)Application.Current.Resources["ControlCornerRadius"];
+                return new CornerRadius(r.TopLeft, 0, 0, r.BottomLeft);
+            }
+        }
+
+        public CornerRadius RightButtonCornerRadius
+        {
+            get
+            {
+                CornerRadius r = (CornerRadius)Application.Current.Resources["ControlCornerRadius"];
+                return new CornerRadius(0, r.TopRight, r.BottomRight, 0);
+            }
+        }
+
         public FlyoutBase FlyoutBase
         {
             get => (FlyoutBase)GetValue(FlyoutBaseProperty);
@@ -52,7 +83,6 @@ namespace CoolapkUWP.Controls
         {
             InitializeComponent();
             Provider = new ProfileFlyoutViewModel();
-            DataContext = Provider;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -131,6 +161,13 @@ namespace CoolapkUWP.Controls
         {
             _ = Provider.Refresh(true);
             dateTime = DateTime.UtcNow;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
     }
 }
