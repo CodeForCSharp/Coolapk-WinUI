@@ -24,7 +24,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public class CreateFeedViewModel : IViewModel
+    public partial class CreateFeedViewModel : IViewModel
     {
         public static string[] ImageTypes = new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".heif", ".heic" };
 

@@ -5,7 +5,7 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Users
 {
-    public class UserAction : Entity, INotifyPropertyChanged
+    public partial class UserAction : Entity, INotifyPropertyChanged
     {
         private bool like;
         public bool Like

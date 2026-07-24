@@ -1,6 +1,6 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Models.Update;
 using CoolapkUWP.Models.Upload;
-using CommunityToolkit.WinUI.Helpers;
 using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Helpers
@@ -15,6 +15,9 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(UploadFileFragment[]))]
     [JsonSerializable(typeof(APIVersion))]
     [JsonSerializable(typeof(UserAgent))]
+    [JsonSerializable(typeof(APIVersions))]
+    [JsonSerializable(typeof(TokenVersions))]
+    [JsonSerializable(typeof(Microsoft.UI.Xaml.ElementTheme))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

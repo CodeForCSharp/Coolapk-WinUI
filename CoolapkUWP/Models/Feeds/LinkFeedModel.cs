@@ -3,7 +3,8 @@ using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -11,7 +12,7 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public class LinkFeedModel : INotifyPropertyChanged
+    public partial class LinkFeedModel : INotifyPropertyChanged
     {
         private string url;
         public string Url
@@ -107,8 +108,8 @@ namespace CoolapkUWP.Models.Feeds
             }
         }
 
-        private ImmutableArray<ImageModel> picArr;
-        public ImmutableArray<ImageModel> PicArr
+        private List<ImageModel> picArr;
+        public List<ImageModel> PicArr
         {
             get => picArr;
             set
@@ -138,7 +139,7 @@ namespace CoolapkUWP.Models.Feeds
 
         public LinkFeedModel(Uri uri, LinkType type, bool isPost = false, MultipartFormDataContent content = null)
         {
-            PicArr = ImmutableArray<ImageModel>.Empty;
+            PicArr = new List<ImageModel>();
             if (!string.IsNullOrEmpty(uri.ToString())) { GetJson(uri, type, isPost, content); }
         }
 
@@ -214,7 +215,7 @@ namespace CoolapkUWP.Models.Feeds
                             if (ShowPicArr)
                             {
                                 PicArr = (from item in picArr.AsArray()
-                                          select new ImageModel(item.ToString(), ImageType.Icon)).ToImmutableArray();
+                                          select new ImageModel(item.ToString(), ImageType.Icon)).ToList();
 
                                 foreach (ImageModel item in PicArr)
                                 {
@@ -254,7 +255,7 @@ namespace CoolapkUWP.Models.Feeds
                                         {
                                             ShowPicArr = pictures.AsArray().Count > 0;
                                             PicArr = (from items in pictures.AsArray()
-                                                      select new ImageModel(items.AsObject()["img_src"]?.GetValue<string>().Replace("\"", string.Empty), ImageType.OriginImage)).ToImmutableArray();
+                                                      select new ImageModel(items.AsObject()["img_src"]?.GetValue<string>().Replace("\"", string.Empty), ImageType.OriginImage)).ToList();
                                             foreach (ImageModel items in PicArr)
                                             {
                                                 items.ContextArray = PicArr;
@@ -348,7 +349,7 @@ namespace CoolapkUWP.Models.Feeds
                             {
                                 ShowPicArr = pictures.AsArray().Count > 0;
                                 PicArr = (from item in pictures.AsArray()
-                                          select new ImageModel(item.AsObject()["src"]?.GetValue<string>(), ImageType.OriginImage)).ToImmutableArray();
+                                          select new ImageModel(item.AsObject()["src"]?.GetValue<string>(), ImageType.OriginImage)).ToList();
                                 foreach (ImageModel item in PicArr)
                                 {
                                     item.ContextArray = PicArr;

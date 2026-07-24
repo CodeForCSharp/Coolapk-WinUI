@@ -18,7 +18,7 @@ using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels
 {
-    public class ShowImageViewModel : IViewModel
+    public partial class ShowImageViewModel : IViewModel
     {
         private string ImageName = string.Empty;
 

@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.Models
 {
-    public class NotificationsModel : INotifyPropertyChanged
+    public partial class NotificationsModel : INotifyPropertyChanged
     {
         public static NotificationsModel Instance = new NotificationsModel();
 

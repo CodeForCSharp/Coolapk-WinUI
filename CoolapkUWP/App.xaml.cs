@@ -15,13 +15,14 @@ using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace CoolapkUWP
 {
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("3E68D4BD-7135-4D10-8018-9FB6D9F33FA1")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IInitializeWithWindow
+    internal partial interface IInitializeWithWindow
     {
         void Initialize(IntPtr hwnd);
     }

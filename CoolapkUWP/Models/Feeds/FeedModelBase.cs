@@ -4,7 +4,7 @@ using CoolapkUWP.Models.Users;
 using CommunityToolkit.WinUI.Helpers;
 using System.Text.Json.Nodes;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -14,7 +14,7 @@ using Windows.UI;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public class FeedModelBase : SourceFeedModel, ICanFollow, ICanLike, ICanReply, ICanStar
+    public partial class FeedModelBase : SourceFeedModel, ICanFollow, ICanLike, ICanReply, ICanStar
     {
         private int likeNum;
         public int LikeNum
@@ -134,9 +134,9 @@ namespace CoolapkUWP.Models.Feeds
         public SourceFeedModel SourceFeed { get; private set; }
         public LinkFeedModel LinkSourceFeed { get; private set; }
 
-        public ImmutableArray<VoteItem> VoteRows { get; private set; } = ImmutableArray<VoteItem>.Empty;
-        public ImmutableArray<RelationRowsItem> RelationRows { get; private set; } = ImmutableArray<RelationRowsItem>.Empty;
-        public ImmutableArray<SourceFeedReplyModel> ReplyRows { get; private set; } = ImmutableArray<SourceFeedReplyModel>.Empty;
+        public List<VoteItem> VoteRows { get; private set; } = new List<VoteItem>();
+        public List<RelationRowsItem> RelationRows { get; private set; } = new List<RelationRowsItem>();
+        public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
 
         public FeedModelBase(JsonObject token) : base(token)
         {
@@ -210,7 +210,7 @@ namespace CoolapkUWP.Models.Feeds
 
                     if (vote.TryGetPropertyValue("options", out JsonNode options))
                     {
-                        VoteRows = options.AsArray().Select(item => new VoteItem(item.AsObject())).ToImmutableArray();
+                        VoteRows = options.AsArray().Select(item => new VoteItem(item.AsObject())).ToList();
                     }
                 }
             }
@@ -302,7 +302,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (token.TryGetPropertyValue("replyRows", out JsonNode replyRows))
             {
-                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToImmutableArray();
+                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToList();
             }
 
             ShowRelationRows =
@@ -316,7 +316,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (ShowRelationRows)
             {
-                ImmutableArray<RelationRowsItem>.Builder buider = ImmutableArray.CreateBuilder<RelationRowsItem>();
+                List<RelationRowsItem> buider = new List<RelationRowsItem>();
                 if (location != null && !string.IsNullOrEmpty(location.ToString()))
                 {
                     buider.Add(
@@ -381,7 +381,7 @@ namespace CoolapkUWP.Models.Feeds
                 }
 
                 ShowRelationRows = buider.Any();
-                RelationRows = buider.ToImmutable();
+                RelationRows = buider;
             }
 
             if (!IsQuestionFeed

@@ -2,14 +2,15 @@
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public class FeedReplyModel : SourceFeedReplyModel, INotifyPropertyChanged, ICanLike, ICanReply, ICanCopy
+    public partial class FeedReplyModel : SourceFeedReplyModel, INotifyPropertyChanged, ICanLike, ICanReply, ICanCopy
     {
         private int likeNum;
         public int LikeNum
@@ -73,7 +74,7 @@ namespace CoolapkUWP.Models.Feeds
 
         public ImageModel Pic { get; private set; }
 
-        public ImmutableArray<SourceFeedReplyModel> ReplyRows { get; private set; } = ImmutableArray<SourceFeedReplyModel>.Empty;
+        public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -116,7 +117,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (token.TryGetPropertyValue("replyRows", out JsonNode replyRows))
             {
-                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToImmutableArray();
+                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToList();
             }
 
             if (!string.IsNullOrEmpty(PicUri))

@@ -228,7 +228,7 @@
                         <muxc:PipsPager
                             Margin="2,0"
                             NumberOfPages="{x:Bind Entities, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
-                            SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
+                            SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
                     </Border>
                 </Grid>
             </Border>

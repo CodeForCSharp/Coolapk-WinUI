@@ -2,7 +2,8 @@
 using CoolapkUWP.Helpers;
 using CommunityToolkit.WinUI.Helpers;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -14,7 +15,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoolapkUWP.Models.Images
 {
-    public class ImageModel : INotifyPropertyChanged, IPic
+    public partial class ImageModel : INotifyPropertyChanged, IPic
     {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));
 
@@ -79,13 +80,13 @@ namespace CoolapkUWP.Models.Images
             }
         }
 
-        protected ImmutableArray<ImageModel> contextArray = ImmutableArray<ImageModel>.Empty;
-        public ImmutableArray<ImageModel> ContextArray
+        protected List<ImageModel> contextArray = new List<ImageModel>();
+        public List<ImageModel> ContextArray
         {
             get => contextArray;
             set
             {
-                if (contextArray.IsDefaultOrEmpty)
+                if (contextArray == null || contextArray.Count == 0)
                 {
                     contextArray = value;
                     RaisePropertyChangedEvent();

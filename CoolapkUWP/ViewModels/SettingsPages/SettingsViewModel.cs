@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.ViewModels.SettingsPages
 {
-    public class SettingsViewModel : IViewModel
+    public partial class SettingsViewModel : IViewModel
     {
         public static SettingsViewModel Caches { get; set; }
 
@@ -28,7 +28,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
 
         public static string DeviceFamily => AnalyticsInfo.VersionInfo.DeviceFamily.Replace('.', ' ');
 
-        public static string ToolkitVersion => typeof(ThemeHelper).Assembly.GetName().Version.ToString();
+        public static string ToolkitVersion => typeof(ThemeHelper).Assembly.GetName().Version?.ToString() ?? "1.0.0";
 
         public bool IsLogin
         {

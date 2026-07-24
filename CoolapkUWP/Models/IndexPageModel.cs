@@ -4,7 +4,8 @@ using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
@@ -153,7 +154,7 @@ namespace CoolapkUWP.Models
         public string Title { get; private set; }
         public bool ShowEntities { get; private set; }
         public string Description { get; private set; }
-        public ImmutableArray<Entity> Entities { get; private set; } = ImmutableArray<Entity>.Empty;
+        public List<Entity> Entities { get; private set; } = new List<Entity>();
 
         public IndexPageMessageCardModel(JsonObject token) : base(token)
         {
@@ -201,7 +202,7 @@ namespace CoolapkUWP.Models
 
             if (token.TryGetPropertyValue("entities", out JsonNode entities) && entities.AsArray().Count > 0)
             {
-                ImmutableArray<Entity>.Builder buider = ImmutableArray.CreateBuilder<Entity>();
+                List<Entity> buider = new List<Entity>();
                 foreach (JsonNode item in entities.AsArray())
                 {
                     JsonObject itemObj = item.AsObject();
@@ -227,7 +228,7 @@ namespace CoolapkUWP.Models
                         }
                     }
                 }
-                Entities = buider.ToImmutable();
+                Entities = buider;
                 ShowEntities = true;
             }
             else { ShowEntities = false; }
@@ -258,7 +259,7 @@ namespace CoolapkUWP.Models
         public string Description { get; private set; }
         public string EntityTemplate { get; private set; }
         public EntityType EntitiesType { get; private set; }
-        public ImmutableArray<Entity> Entities { get; private set; } = ImmutableArray<Entity>.Empty;
+        public List<Entity> Entities { get; private set; } = new List<Entity>();
 
         public IndexPageHasEntitiesModel(JsonObject token, EntityType type) : base(token)
         {
@@ -318,7 +319,7 @@ namespace CoolapkUWP.Models
 
             if (token.TryGetPropertyValue("entities", out JsonNode entities) && entities.AsArray().Count > 0)
             {
-                ImmutableArray<Entity>.Builder buider = ImmutableArray.CreateBuilder<Entity>();
+                List<Entity> buider = new List<Entity>();
                 foreach (JsonNode item in entities.AsArray())
                 {
                     JsonObject itemObj = item.AsObject();
@@ -347,7 +348,7 @@ namespace CoolapkUWP.Models
                     }
                 }
 
-                Entities = buider.ToImmutable();
+                Entities = buider;
                 ShowEntities = true;
             }
             else { ShowEntities = false; }

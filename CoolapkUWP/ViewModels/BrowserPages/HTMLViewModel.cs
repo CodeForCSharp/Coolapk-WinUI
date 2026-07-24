@@ -11,7 +11,7 @@ using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.BrowserPages
 {
-    public class HTMLViewModel : IViewModel
+    public partial class HTMLViewModel : IViewModel
     {
         public DispatcherQueue Dispatcher { get; }
 

@@ -22,23 +22,35 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SupportedOSPlatform>windows</SupportedOSPlatform>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <PublishAot>false</PublishAot>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <PublishAot>false</PublishAot>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <PublishAot>false</PublishAot>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IsAotCompatible>false</IsAotCompatible>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
@@ -61,7 +73,4 @@
     <Manifest Include="$(ApplicationManifest)" Condition="'$(ApplicationManifest)' != ''" />
   </ItemGroup>
 
-  <ItemGroup>
-    <TrimmerRootAssembly Include="CoolapkUWP" />
-  </ItemGroup>
 </Project>

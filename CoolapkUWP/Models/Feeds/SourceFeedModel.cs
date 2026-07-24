@@ -2,14 +2,16 @@
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
+using System.Linq;
 using System.ComponentModel;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public class SourceFeedModel : Entity, INotifyPropertyChanged
+    public partial class SourceFeedModel : Entity, INotifyPropertyChanged
     {
         private bool showUser = true;
         public bool ShowUser
@@ -57,7 +59,7 @@ namespace CoolapkUWP.Models.Feeds
         public UserModel UserInfo { get; private set; }
         public UserAction UserAction { get; private set; }
 
-        public ImmutableArray<ImageModel> PicArr { get; private set; } = ImmutableArray<ImageModel>.Empty;
+        public List<ImageModel> PicArr { get; private set; } = new List<ImageModel>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -145,8 +147,7 @@ namespace CoolapkUWP.Models.Feeds
                 PicArr = picArr.AsArray().Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
-                    .Where(x => x != null)
-                    .ToImmutableArray();
+                    .Where(x => x != null).ToList();
 
                 foreach (ImageModel item in PicArr)
                 {

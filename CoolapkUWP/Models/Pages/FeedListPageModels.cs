@@ -3,7 +3,8 @@ using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -320,7 +321,7 @@ namespace CoolapkUWP.Models.Pages
 
         public ImageModel Pic => Logo;
 
-        public ImmutableArray<UserModel> FollowUsers { get; private set; } = ImmutableArray<UserModel>.Empty;
+        public List<UserModel> FollowUsers { get; private set; } = new List<UserModel>();
 
         internal TopicDetail(JsonObject token) : base(token)
         {
@@ -381,8 +382,7 @@ namespace CoolapkUWP.Models.Pages
                 FollowUsers = recent_follow_list.AsArray().Select(
                     x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
                         ? new UserModel(userInfo.AsObject()) : null)
-                    .Where(x => x != null)
-                    .ToImmutableArray();
+                    .Where(x => x != null).ToList();
             }
 
             OnFollowChanged();
@@ -638,11 +638,11 @@ namespace CoolapkUWP.Models.Pages
 
         public ImageModel Logo { get; private set; }
 
-        public ImmutableArray<string> TagArr { get; private set; } = ImmutableArray<string>.Empty;
+        public List<string> TagArr { get; private set; } = new List<string>();
 
-        public ImmutableArray<UserModel> FollowUsers { get; private set; } = ImmutableArray<UserModel>.Empty;
+        public List<UserModel> FollowUsers { get; private set; } = new List<UserModel>();
 
-        public ImmutableArray<ImageModel> CoverArr { get; private set; } = ImmutableArray<ImageModel>.Empty;
+        public List<ImageModel> CoverArr { get; private set; } = new List<ImageModel>();
 
         internal ProductDetail(JsonObject token) : base(token)
         {
@@ -787,7 +787,7 @@ namespace CoolapkUWP.Models.Pages
 
             if (token.TryGetPropertyValue("tagArr", out JsonNode tagArr) && (tagArr as JsonArray).Count > 0)
             {
-                TagArr = tagArr.AsArray().Select(x => x.ToString()).ToImmutableArray();
+                TagArr = tagArr.AsArray().Select(x => x.ToString()).ToList();
             }
 
             if (token.TryGetPropertyValue("recent_follow_list", out JsonNode recent_follow_list) && (recent_follow_list as JsonArray).Count > 0)
@@ -795,8 +795,7 @@ namespace CoolapkUWP.Models.Pages
                 FollowUsers = recent_follow_list.AsArray().Select(
                     x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
                         ? new UserModel(userInfo.AsObject()) : null)
-                    .Where(x => x != null)
-                    .ToImmutableArray();
+                    .Where(x => x != null).ToList();
             }
 
             if (token.TryGetPropertyValue("coverArr", out JsonNode coverArr) && (coverArr as JsonArray).Count > 0)
@@ -804,8 +803,7 @@ namespace CoolapkUWP.Models.Pages
                 CoverArr = coverArr.AsArray().Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
-                    .Where(x => x != null)
-                    .ToImmutableArray();
+                    .Where(x => x != null).ToList();
 
                 foreach (ImageModel item in CoverArr)
                 {

@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public class SearchingViewModel : IViewModel
+    public partial class SearchingViewModel : IViewModel
     {
         public int PivotIndex = -1;
 

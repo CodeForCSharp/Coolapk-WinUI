@@ -4,7 +4,8 @@ using CoolapkUWP.Models.Images;
 using HtmlAgilityPack;
 using CommunityToolkit.WinUI.Converters;
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
+
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -108,7 +109,7 @@ namespace CoolapkUWP.Controls
             Regex emojis = new Regex(@"(\[\S*?\]|#\(\S*?\))");
             doc.LoadHtml(Text.Replace("<!--break-->", string.Empty));
             Paragraph paragraph = new Paragraph { LineHeight = FontSize + 10 };
-            ImmutableArray<ImageModel>.Builder imageArrayBuider = ImmutableArray.CreateBuilder<ImageModel>();
+            List<ImageModel> imageArrayBuider = new List<ImageModel>();
             void NewLine()
             {
                 RichTextBlock.Blocks.Add(paragraph);
@@ -423,7 +424,7 @@ namespace CoolapkUWP.Controls
                 }
             }
 
-            ImmutableArray<ImageModel> array = imageArrayBuider.ToImmutable();
+            List<ImageModel> array = imageArrayBuider;
             foreach (ImageModel item in array)
             {
                 item.ContextArray = array;

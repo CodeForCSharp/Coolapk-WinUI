@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public class ProfileFlyoutViewModel : DataSourceBase<Entity>, IViewModel
+    public partial class ProfileFlyoutViewModel : DataSourceBase<Entity>, IViewModel
     {
         private readonly CoolapkListProvider Provider;
 
