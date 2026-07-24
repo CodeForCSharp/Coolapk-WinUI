@@ -1,6 +1,7 @@
 ﻿using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,10 +14,22 @@ namespace CoolapkUWP.Pages.FeedPages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SearchingPage : Page
+    public sealed partial class SearchingPage : Page, INotifyPropertyChanged
     {
         private static int PivotIndex = 0;
-        private SearchingViewModel Provider;
+        private SearchingViewModel _provider;
+        public SearchingViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         private Func<bool, Task> Refresh;
 
@@ -29,7 +42,6 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 if (Provider.PivotIndex != -1)
                 { PivotIndex = Provider.PivotIndex; }
                 await Provider.Refresh(true);
@@ -79,6 +91,13 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 _ = ItemsSource.Refresh(true);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
     }
 }

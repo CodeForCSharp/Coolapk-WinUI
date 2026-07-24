@@ -49,11 +49,11 @@
         </Grid.RowDefinitions>
         <controls:PageHeader
             x:Name="HeaderControl"
-            Title="{Binding Title}"
+            Title="{x:Bind Provider.Title, Mode=OneWay}"
             Margin="18,0,0,0"
             FontSize="{StaticResource ContentControlFontSize}"
             FontWeight="Normal"
-            Visibility="{Binding IsShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+            Visibility="{x:Bind Provider.IsShowTitle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <Button
                 x:Name="RefreshButton"
                 x:Uid="/MainPage/RefreshButton"
@@ -76,7 +76,7 @@
                 ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
                 ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
                 ItemTemplateSelector="{StaticResource CardTemplateSelector}"
-                ItemsSource="{Binding}"
+                ItemsSource="{x:Bind Provider, Mode=OneWay}"
                 ShowsScrollingPlaceholders="False"
                 Style="{StaticResource DefaultCardListViewStyle}" />
         </muxc:RefreshContainer>

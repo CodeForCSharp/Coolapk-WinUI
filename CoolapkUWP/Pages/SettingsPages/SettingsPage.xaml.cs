@@ -4,6 +4,7 @@ using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.SettingsPages;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windows.Storage;
 using Windows.System;
@@ -18,9 +19,21 @@ namespace CoolapkUWP.Pages.SettingsPages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : Page, INotifyPropertyChanged
     {
-        internal SettingsViewModel Provider;
+        private SettingsViewModel _provider;
+        public SettingsViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public string OSVersion => Environment.OSVersion.ToString();
 
@@ -30,7 +43,6 @@ namespace CoolapkUWP.Pages.SettingsPages
         {
             base.OnNavigatedTo(e);
             Provider = SettingsViewModel.Caches ?? new SettingsViewModel(DispatcherQueue);
-            DataContext = Provider;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -103,5 +115,12 @@ namespace CoolapkUWP.Pages.SettingsPages
         }
 
         private void GotoUpdate_Click(object sender, RoutedEventArgs e) => _ = Launcher.LaunchUriAsync(new Uri((sender as FrameworkElement).Tag.ToString()));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 }

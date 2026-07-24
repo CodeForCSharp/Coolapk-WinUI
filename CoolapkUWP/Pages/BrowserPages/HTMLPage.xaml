@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <controls:PageHeader x:Name="HeaderControl" Title="{Binding Title}">
+        <controls:PageHeader x:Name="HeaderControl" Title="{x:Bind Provider.Title, Mode=OneWay}">
             <Button
                 x:Name="RefreshButton" VerticalAlignment="Center"
                 Click="RefreshButton_Click"

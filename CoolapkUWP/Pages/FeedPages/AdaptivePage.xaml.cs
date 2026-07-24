@@ -1,6 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,9 +14,21 @@ namespace CoolapkUWP.Pages.FeedPages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class AdaptivePage : Page
+    public sealed partial class AdaptivePage : Page, INotifyPropertyChanged
     {
-        private AdaptiveViewModel Provider;
+        private AdaptiveViewModel _provider;
+        public AdaptiveViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public AdaptivePage() => InitializeComponent();
 
@@ -26,7 +39,6 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 Provider.LoadMoreStarted += UIHelper.ShowProgressBar;
                 Provider.LoadMoreCompleted += UIHelper.HideProgressBar;
                 await Refresh(true);
@@ -47,6 +59,13 @@ namespace CoolapkUWP.Pages.FeedPages
         }
 
         public async Task Refresh(bool reset = false) => await Provider.Refresh(reset);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
 

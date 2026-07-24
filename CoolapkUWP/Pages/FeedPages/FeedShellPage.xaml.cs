@@ -6,6 +6,7 @@ using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -23,9 +24,21 @@ namespace CoolapkUWP.Pages.FeedPages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class FeedShellPage : Page
+    public sealed partial class FeedShellPage : Page, INotifyPropertyChanged
     {
-        private FeedShellViewModel Provider;
+        private FeedShellViewModel _provider;
+        public FeedShellViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public FeedShellPage() => InitializeComponent();
 
@@ -36,7 +49,6 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 await Provider.Refresh(true);
                 if (Provider.FeedDetail != null)
                 {
@@ -106,6 +118,13 @@ namespace CoolapkUWP.Pages.FeedPages
         }
 
         #region 界面模式切换
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
 
         private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
         {

@@ -16,7 +16,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:PageHeader
-            x:Name="HeaderControl" Title="{Binding Title}"
+            x:Name="HeaderControl" Title="{x:Bind Provider.Title, Mode=OneWay}"
             Margin="18,0,0,0"
             FontSize="{StaticResource ContentControlFontSize}"
             FontWeight="Normal">
@@ -27,14 +27,14 @@
                     VerticalAlignment="Center"
                     Click="GotoSystemBrowserButton_Click"
                     Style="{StaticResource TransparentButtonStyle}"
-                    Visibility="{Binding IsLoginPage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+                    Visibility="{x:Bind Provider.IsLoginPage, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
                 <Button
                     x:Name="TryLoginButton" x:Uid="/BrowserPage/BackButton"
                     Height="32"
                     VerticalAlignment="Center"
                     Click="TryLoginButton_Click"
                     Style="{StaticResource TransparentButtonStyle}"
-                    Visibility="{Binding IsLoginPage, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind Provider.IsLoginPage, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <UIElement.ContextFlyout>
                         <MenuFlyout>
                             <MenuFlyoutItem

@@ -229,7 +229,7 @@
                             IsClickEnabled="True"
                             Style="{StaticResource ClickableSettingExpanderItemStyle}"
                             Tag="CustomUA"
-                            Visibility="{Binding IsOn, ElementName=IsCustomUAToggle, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            Visibility="{x:Bind IsCustomUAToggle.IsOn, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                     </controls:SettingExpander>
                     <controls:Setting x:Uid="/TestPage/SlimCountSettings" Icon="&#xEA79;">
                         <Slider

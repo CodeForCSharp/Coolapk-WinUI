@@ -2,6 +2,7 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CommunityToolkit.WinUI;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -10,9 +11,21 @@ using Microsoft.Web.WebView2.Core;
 
 namespace CoolapkUWP.Pages.BrowserPages
 {
-    public sealed partial class HTMLPage : Page
+    public sealed partial class HTMLPage : Page, INotifyPropertyChanged
     {
-        private HTMLViewModel Provider;
+        private HTMLViewModel _provider;
+        public HTMLViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public HTMLPage() => InitializeComponent();
 
@@ -23,7 +36,6 @@ namespace CoolapkUWP.Pages.BrowserPages
             if (e.Parameter is HTMLViewModel ViewModel)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 await Refresh(true);
             }
         }
@@ -44,6 +56,13 @@ namespace CoolapkUWP.Pages.BrowserPages
         }
 
         public async Task Refresh(bool reset = false) => await Provider.Refresh(reset);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
     }

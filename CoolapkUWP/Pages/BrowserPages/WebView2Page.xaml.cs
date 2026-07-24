@@ -3,6 +3,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.BrowserPages;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Security.Cryptography;
@@ -14,16 +15,28 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 
-// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
+// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了"空白页"项模板
 
 namespace CoolapkUWP.Pages.BrowserPages
 {
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class BrowserPage : Page
+    public sealed partial class BrowserPage : Page, INotifyPropertyChanged
     {
-        private BrowserViewModel Provider;
+        private BrowserViewModel _provider;
+        public BrowserViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public BrowserPage() => InitializeComponent();
 
@@ -34,7 +47,6 @@ namespace CoolapkUWP.Pages.BrowserPages
             if (e.Parameter is BrowserViewModel ViewModel)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 if (Provider.Uri != null)
                 {
                     WebView.Source = Provider.Uri;
@@ -193,5 +205,12 @@ namespace CoolapkUWP.Pages.BrowserPages
         private void TryLoginButton_Click(object sender, RoutedEventArgs e) => _ = CheckLogin();
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => WebView.Reload();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 }
