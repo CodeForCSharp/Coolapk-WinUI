@@ -27,6 +27,15 @@ namespace CoolapkUWP.Controls.DataTemplates
     {
         public FeedsTemplates() => InitializeComponent();
 
+        public static CornerRadius BottomOverlayCornerRadius
+        {
+            get
+            {
+                var r = (CornerRadius)Application.Current.Resources["OverlayCornerRadius"];
+                return new CornerRadius(0, 0, r.BottomRight, r.BottomLeft);
+            }
+        }
+
         private void OnRootTapped(object sender, TappedRoutedEventArgs e)
         {
             FrameworkElement element = sender as FrameworkElement;

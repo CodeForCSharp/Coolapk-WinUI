@@ -51,6 +51,24 @@ namespace CoolapkUWP.Pages.FeedPages
             }
         }
 
+        public static CornerRadius LeftControlCornerRadius
+        {
+            get
+            {
+                var r = (CornerRadius)Application.Current.Resources["ControlCornerRadius"];
+                return new CornerRadius(r.TopLeft, 0, 0, r.BottomLeft);
+            }
+        }
+
+        public static CornerRadius RightControlCornerRadius
+        {
+            get
+            {
+                var r = (CornerRadius)Application.Current.Resources["ControlCornerRadius"];
+                return new CornerRadius(0, r.TopRight, r.BottomRight, 0);
+            }
+        }
+
         public FeedListPage() => InitializeComponent();
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

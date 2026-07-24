@@ -5,8 +5,9 @@
         xmlns:control="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:models="using:CoolapkUWP.Models"
+    xmlns:users="using:CoolapkUWP.Models.Users"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
@@ -34,7 +35,7 @@
 
     <!--  一级卡片  -->
 
-    <DataTemplate x:Key="TitleCardTemplate">
+    <DataTemplate x:Key="TitleCardTemplate" x:DataType="models:IndexPageOperationCardModel">
         <Grid
             x:Name="TitleGrid"
             Height="40"
@@ -42,7 +43,7 @@
             HorizontalAlignment="Stretch"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -53,9 +54,9 @@
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Text="{Binding Title}"
+                Text="{x:Bind Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             <TextBlock
                 x:Name="FallbackText"
                 Grid.Column="0"
@@ -63,7 +64,7 @@
                 FontSize="16"
                 Text="查看更多"
                 TextTrimming="CharacterEllipsis"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
             <FontIcon
                 x:Name="ForwardSymbol"
                 Grid.Column="1"
@@ -72,17 +73,17 @@
                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                 FontSize="16"
                 Glyph="&#xE72A;"
-                Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="LoginCardTemplate">
+    <DataTemplate x:Key="LoginCardTemplate" x:DataType="models:IndexPageOperationCardModel">
         <Grid
             Margin="12,0"
             HorizontalAlignment="Center"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -100,18 +101,18 @@
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Text="{Binding Title}"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                Text="{x:Bind Title, Mode=OneWay}"
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="RefreshCardTemplate">
+    <DataTemplate x:Key="RefreshCardTemplate" x:DataType="models:IndexPageOperationCardModel">
         <Grid
             Margin="12,0"
             HorizontalAlignment="Center"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -129,22 +130,22 @@
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Text="{Binding Title}"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                Text="{x:Bind Title, Mode=OneWay}"
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             <TextBlock
                 x:Name="FallbackText"
                 x:Uid="/Feed/ClickMeToRefresh"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="16"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ImageCardTemplate">
+    <DataTemplate x:Key="ImageCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Grid
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -159,7 +160,7 @@
                 Margin="12,0"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}">
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
@@ -169,9 +170,9 @@
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <FontIcon
                     x:Name="ForwardSymbol"
                     Grid.Column="1"
@@ -180,32 +181,32 @@
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="16"
                     Glyph="&#xE72A;"
-                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <Border
                 Grid.Row="1"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
-                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <Grid>
                     <FlipView
                         x:Name="FlipView"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         Background="{ThemeResource SystemControlTransparentBrush}"
-                        ItemsSource="{Binding Entities}"
+                        ItemsSource="{x:Bind Entities, Mode=OneWay}"
                         Loaded="FlipView_Loaded"
                         SizeChanged="FlipView_SizeChanged">
                         <FlipView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="models:IndexPageModel">
                                 <Border
                                     x:Name="Picture"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
 
                                     KeyDown="Grid_KeyDown"
-                                    Tag="{Binding}"
+                                    Tag="{x:Bind Mode=OneWay}"
                                     Tapped="Grid_Tapped">
                                     <Border.Background>
-                                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                                     </Border.Background>
                                 </Border>
                             </DataTemplate>
@@ -216,7 +217,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         CornerRadius="6"
-                        Visibility="{Binding Entities, Converter={StaticResource PipsPagerVisibilityConverter}}">
+                        Visibility="{x:Bind Entities, Converter={StaticResource PipsPagerVisibilityConverter}, Mode=OneWay}">
                             <Border.Background>
                             <AcrylicBrush
                                
@@ -226,22 +227,22 @@
                         </Border.Background>
                         <muxc:PipsPager
                             Margin="2,0"
-                            NumberOfPages="{Binding Entities, Converter={StaticResource CollectionCountConverter}}"
-                            SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
+                            NumberOfPages="{x:Bind Entities, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
+                            SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
                     </Border>
                 </Grid>
             </Border>
             <Border
                 Grid.Row="2"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
-                Tag="{Binding}"
+                Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped"
-                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}">
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
                 <Image
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     CanDrag="True"
-                    Source="{Binding Pic.Pic, Mode=OneWay}" />
+                    Source="{x:Bind Pic.Pic, Mode=OneWay}" />
             </Border>
             <Border
                 x:Name="SubTitleBorder"
@@ -249,25 +250,25 @@
                 Margin="12,8"
                 VerticalAlignment="Stretch"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
-                Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}">
-                <control:TextBlockEx Text="{Binding Description}" />
+                Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                <control:TextBlockEx Text="{x:Bind Description, Mode=OneWay}" />
             </Border>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="IconLinksTemplate">
+    <DataTemplate x:Key="IconLinksTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Border
             Margin="8"
             HorizontalAlignment="Stretch"
             Background="{ThemeResource SystemControlTransparentBrush}"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <muxc:ItemsRepeater
                 x:Name="EntitiesRepeater"
                 HorizontalAlignment="Center"
-                ItemsSource="{Binding Entities}">
+                ItemsSource="{x:Bind Entities, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
                     <primitives:ColumnMajorUniformToLargestGridLayout
                         ColumnSpacing="8"
@@ -284,19 +285,19 @@
                             Background="{ThemeResource SystemControlTransparentBrush}"
                             Click="Button_Click"
                             Style="{ThemeResource TransparentButtonStyle}"
-                            Tag="{Binding}">
+                            Tag="{x:Bind Mode=OneWay}">
                             <control:StackPanel HorizontalAlignment="Stretch" Spacing="2">
                                 <Border
                                     Width="40"
                                     Height="40"
                                     CornerRadius="{ThemeResource ControlCornerRadius}">
-                                    <Image Source="{Binding Pic.Pic, Mode=OneWay}" />
+                                    <Image Source="{x:Bind Pic.Pic, Mode=OneWay}" />
                                 </Border>
                                 <TextBlock
                                     x:Name="TitleText"
                                     HorizontalAlignment="Center"
                                     MaxLines="1"
-                                    Text="{Binding Title}" />
+                                    Text="{x:Bind Title, Mode=OneWay}" />
                             </control:StackPanel>
                         </Button>
                     </DataTemplate>
@@ -305,7 +306,7 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="MessageCardTemplate">
+    <DataTemplate x:Key="MessageCardTemplate" x:DataType="models:IndexPageMessageCardModel">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -321,24 +322,24 @@
                     Grid.Row="0"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Title}"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <control:TextBlockEx
                     x:Name="Description"
                     Grid.Row="1"
-                    Text="{Binding Description}"
-                    Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                    Text="{x:Bind Description, Mode=OneWay}"
+                    Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <muxc:ItemsRepeaterScrollHost
                 x:Name="EntitiesHost"
                 Grid.Row="1"
-                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <ScrollViewer
                     Padding="8"
                     HorizontalScrollBarVisibility="Auto"
                     HorizontalScrollMode="Auto"
                     VerticalScrollMode="Disabled">
-                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{Binding Entities}">
+                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{x:Bind Entities, Mode=OneWay}">
                         <muxc:ItemsRepeater.Layout>
                             <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
                         </muxc:ItemsRepeater.Layout>
@@ -348,7 +349,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="GridScrollCardTemplate">
+    <DataTemplate x:Key="GridScrollCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -362,9 +363,9 @@
                 Margin="12,0"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{Binding}"
+                Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped"
-                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
@@ -374,9 +375,9 @@
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <TextBlock
                     x:Name="FallbackText"
                     Grid.Column="0"
@@ -384,7 +385,7 @@
                     FontSize="16"
                     Text="查看更多"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
                 <FontIcon
                     x:Name="ForwardSymbol"
                     Grid.Column="1"
@@ -393,20 +394,20 @@
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="16"
                     Glyph="&#xE72A;"
-                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <Border
                 Grid.Row="1"
                 Height="8"
                 HorizontalAlignment="Stretch"
-                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+                Visibility="{x:Bind ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
             <muxc:ItemsRepeater
                 Grid.Row="2"
                 Margin="8,0,8,8"
                 HorizontalAlignment="Left"
                 ItemTemplate="{StaticResource ItemTemplateSelector}"
-                ItemsSource="{Binding Entities}"
-                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
                     <primitives:ColumnMajorUniformToLargestGridLayout
                         ColumnSpacing="8"
@@ -417,7 +418,7 @@
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ImageTextScrollCardTemplate">
+    <DataTemplate x:Key="ImageTextScrollCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -431,9 +432,9 @@
                 Margin="12,0"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{Binding}"
+                Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped"
-                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
@@ -443,9 +444,9 @@
                     Grid.Column="0"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <TextBlock
                     x:Name="FallbackText"
                     Grid.Column="0"
@@ -453,7 +454,7 @@
                     FontSize="16"
                     Text="查看更多"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true'}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
                 <FontIcon
                     x:Name="ForwardSymbol"
                     Grid.Column="1"
@@ -462,23 +463,23 @@
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                     FontSize="16"
                     Glyph="&#xE72A;"
-                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <Border
                 Grid.Row="1"
                 Height="8"
                 HorizontalAlignment="Stretch"
-                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
+                Visibility="{x:Bind ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
             <muxc:ItemsRepeaterScrollHost
                 x:Name="EntitiesHost"
                 Grid.Row="2"
-                Visibility="{Binding ShowEntities, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <ScrollViewer
                     Padding="8,0,8,8"
                     HorizontalScrollBarVisibility="Auto"
                     HorizontalScrollMode="Auto"
                     VerticalScrollMode="Disabled">
-                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{Binding Entities}">
+                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ItemTemplateSelector}" ItemsSource="{x:Bind Entities, Mode=OneWay}">
                         <muxc:ItemsRepeater.Layout>
                             <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
                         </muxc:ItemsRepeater.Layout>
@@ -490,7 +491,7 @@
 
     <!--  二级卡片  -->
 
-    <DataTemplate x:Key="SquareLinkCardTemplate">
+    <DataTemplate x:Key="SquareLinkCardTemplate" x:DataType="models:IndexPageModel">
         <Border
             Width="86"
             Height="86"
@@ -498,16 +499,16 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Border.Background>
-                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
             </Border.Background>
             <Grid
                 Padding="4"
                 VerticalAlignment="Bottom"
                 CornerRadius="0,0,8,8"
-                Tag="{Binding}"
+                Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped">
                     <Grid.Background>
                     <AcrylicBrush
@@ -521,7 +522,7 @@
                     HorizontalAlignment="Center"
                     Foreground="White"
                     MaxLines="1"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap" />
@@ -529,17 +530,17 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="IconLinkTemplate">
+    <DataTemplate x:Key="IconLinkTemplate" x:DataType="models:IndexPageModel">
         <Border
             Width="86"
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Border.Background>
-                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
             </Border.Background>
             <StackPanel Padding="4" CornerRadius="{ThemeResource OverlayCornerRadius}">
                     <StackPanel.Background>
@@ -554,16 +555,16 @@
                     Height="36"
                     Margin="4"
                     CornerRadius="{ThemeResource ControlCornerRadius}"
-                    Tag="{Binding}"
+                    Tag="{x:Bind Mode=OneWay}"
                     Tapped="Grid_Tapped">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                     </Border.Background>
                 </Border>
                 <TextBlock
                     HorizontalAlignment="Center"
                     MaxLines="1"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap" />
@@ -572,28 +573,28 @@
                     HorizontalAlignment="Center"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     MaxLines="1"
-                    Text="{Binding SubTitle}"
+                    Text="{x:Bind SubTitle, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
-                    Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </StackPanel>
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="LinkTemplate">
+    <DataTemplate x:Key="LinkTemplate" x:DataType="models:IndexPageModel">
         <Grid
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <Image
                     MaxWidth="160"
                     MaxHeight="65"
-                    Source="{Binding Pic.Pic, Mode=OneWay}"
+                    Source="{x:Bind Pic.Pic, Mode=OneWay}"
                     Stretch="UniformToFill" />
             </Border>
             <Border
@@ -602,13 +603,13 @@
                 VerticalAlignment="Bottom">
                 <TextBlock
                     Margin="8,0"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextWrapping="Wrap" />
             </Border>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="ImageTextTemplate">
+    <DataTemplate x:Key="ImageTextTemplate" x:DataType="models:IndexPageModel">
         <Grid
             Width="260"
             Height="118"
@@ -616,31 +617,31 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{Binding}"
+            Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Grid.Background>
-                <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" />
+                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" />
             </Grid.Background>
             <Border
                 VerticalAlignment="Bottom"
                 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                CornerRadius="{Binding Source={StaticResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}}">
+                CornerRadius="{x:Bind templates:IndexCardTemplates.BottomOverlayCornerRadius}">
                 <TextBlock
                     Margin="8"
                     FontSize="16"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="WordEllipsis" />
             </Border>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="MiniUserTemplate">
+    <DataTemplate x:Key="MiniUserTemplate" x:DataType="users:UserModel">
         <Button
             Width="86"
             Background="{ThemeResource SystemControlTransparentBrush}"
             Click="Button_Click"
             Style="{ThemeResource TransparentButtonStyle}"
-            Tag="{Binding}">
+            Tag="{x:Bind Mode=OneWay}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -653,19 +654,19 @@
                     Margin="8"
                     HorizontalAlignment="Center">
                     <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                     </Ellipse.Fill>
                 </Ellipse>
                 <TextBlock
                     Grid.Row="1"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis" />
             </Grid>
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="MiniIconLinkTemplate">
+    <DataTemplate x:Key="MiniIconLinkTemplate" x:DataType="models:IHasDescription">
         <Button
             Width="124"
             MinHeight="0"
@@ -674,7 +675,7 @@
             Background="{ThemeResource SystemControlTransparentBrush}"
             Click="Button_Click"
             Style="{ThemeResource TransparentButtonStyle}"
-            Tag="{Binding}">
+            Tag="{x:Bind Mode=OneWay}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -687,7 +688,7 @@
                     Margin="8"
                     CornerRadius="{ThemeResource ControlCornerRadius}">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                     </Border.Background>
                 </Border>
                 <TextBlock
@@ -695,7 +696,7 @@
                     Margin="0,0,0,2"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis" />
             </Grid>
         </Button>

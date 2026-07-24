@@ -5,6 +5,7 @@
     xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:CoolapkUWP.Models"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
@@ -21,13 +22,13 @@
 
     <!--  一级卡片  -->
 
-    <DataTemplate x:Key="TextLinkListCardTemplate">
+    <DataTemplate x:Key="TextLinkListCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <controls:StackPanel Spacing="12">
             <Grid
                 x:Name="TitleGrid" HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{Binding}"
-                Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+                Tag="{x:Bind Mode=OneWay}"
+                Visibility="{x:Bind ShowTitle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -37,9 +38,9 @@
                     VerticalAlignment="Center"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <Button
                     x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                     Grid.Column="1"
@@ -48,35 +49,35 @@
                     VerticalAlignment="Center"
                     Click="Button_Click"
                     FontSize="12"
-                    Tag="{Binding}"
-                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                    Tag="{x:Bind Mode=OneWay}"
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <Border
                 Background="{ThemeResource ButtonBackground}"
                 BorderBrush="{ThemeResource ButtonBorderBrush}"
                 BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
                 CornerRadius="{ThemeResource ControlCornerRadius}"
-                Visibility="{Binding Entities, Converter={StaticResource CollectionVisibilityConverter}}">
+                Visibility="{x:Bind Entities, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
                 <muxc:ItemsRepeater
                     HorizontalAlignment="Stretch"
                     ItemTemplate="{StaticResource ProfileItemTemplateSelector}"
-                    ItemsSource="{Binding Entities}" />
+                    ItemsSource="{x:Bind Entities, Mode=OneWay}" />
             </Border>
             <TextBlock
                 Margin="12,0"
                 VerticalAlignment="Center"
                 FontSize="14"
-                Text="{Binding Description}"
-                Visibility="{Binding Description, Converter={StaticResource BoolToVisibilityConverter}}" />
+                Text="{x:Bind Description, Mode=OneWay}"
+                Visibility="{x:Bind Description, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
         </controls:StackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="ImageTextScrollCardTemplate">
+    <DataTemplate x:Key="ImageTextScrollCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <controls:StackPanel Spacing="12">
             <Grid
                 x:Name="TitleGrid" HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{Binding}">
+                Tag="{x:Bind Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -86,9 +87,9 @@
                     VerticalAlignment="Center"
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 <Button
                     x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                     Grid.Column="1"
@@ -97,8 +98,8 @@
                     VerticalAlignment="Center"
                     Click="Button_Click"
                     FontSize="12"
-                    Tag="{Binding}"
-                    Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                    Tag="{x:Bind Mode=OneWay}"
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </Grid>
             <muxc:ItemsRepeaterScrollHost>
                 <ScrollViewer
@@ -107,7 +108,7 @@
                     HorizontalScrollBarVisibility="Auto"
                     HorizontalScrollMode="Auto"
                     VerticalScrollMode="Disabled">
-                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ProfileItemTemplateSelector}" ItemsSource="{Binding Entities}">
+                    <muxc:ItemsRepeater ItemTemplate="{StaticResource ProfileItemTemplateSelector}" ItemsSource="{x:Bind Entities, Mode=OneWay}">
                         <muxc:ItemsRepeater.Layout>
                             <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
                         </muxc:ItemsRepeater.Layout>
@@ -117,12 +118,12 @@
         </controls:StackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="TitleCardTemplate">
+    <DataTemplate x:Key="TitleCardTemplate" x:DataType="models:IndexPageOperationCardModel">
         <Grid
             x:Name="TitleGrid" HorizontalAlignment="Stretch"
             Background="{ThemeResource SystemControlTransparentBrush}"
-            Tag="{Binding}"
-            Visibility="{Binding ShowTitle, Converter={StaticResource BoolToVisibilityConverter}}">
+            Tag="{x:Bind Mode=OneWay}"
+            Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -132,9 +133,9 @@
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="SemiBold"
-                Text="{Binding Title}"
+                Text="{x:Bind Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
-                Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             <Button
                 x:Uid="/ProfileFlyoutControl/ReadMoreButton"
                 Grid.Column="1"
@@ -143,21 +144,21 @@
                 VerticalAlignment="Center"
                 Click="Button_Click"
                 FontSize="12"
-                Tag="{Binding}"
-                Visibility="{Binding Url, Converter={StaticResource StringVisibilityConverter}}" />
+                Tag="{x:Bind Mode=OneWay}"
+                Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
         </Grid>
     </DataTemplate>
 
     <!--  二级卡片  -->
 
-    <DataTemplate x:Key="HistoryTemplate">
+    <DataTemplate x:Key="HistoryTemplate" x:DataType="models:IHasDescription">
         <Button
             Padding="0,8"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             Click="Button_Click"
             Style="{StaticResource TransparentButtonStyle}"
-            Tag="{Binding Url}">
+            Tag="{x:Bind Url, Mode=OneWay}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="56" />
@@ -170,7 +171,7 @@
                     VerticalAlignment="Top"
                     CornerRadius="{ThemeResource OverlayCornerRadius}">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                     </Border.Background>
                 </Border>
                 <Grid
@@ -185,27 +186,27 @@
                     <TextBlock
                         Grid.Row="0"
                         VerticalAlignment="Center"
-                        Text="{Binding Title}"
-                        Visibility="{Binding Title, Converter={StaticResource StringVisibilityConverter}}" />
+                        Text="{x:Bind Title, Mode=OneWay}"
+                        Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                     <controls:TextBlockEx
                         Grid.Row="1"
                         VerticalAlignment="Center"
                         FontSize="13"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         MaxLines="1"
-                        Text="{Binding Description}"
-                        Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                        Text="{x:Bind Description, Mode=OneWay}"
+                        Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 </Grid>
             </Grid>
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="IconLinkTemplate">
+    <DataTemplate x:Key="IconLinkTemplate" x:DataType="models:IndexPageModel">
         <Button
             Width="86"
             Padding="4"
             Click="Button_Click"
-            Tag="{Binding Url}">
+            Tag="{x:Bind Url, Mode=OneWay}">
             <StackPanel CornerRadius="{ThemeResource ControlCornerRadius}">
                 <Border
                     Width="36"
@@ -213,34 +214,34 @@
                     Margin="4"
                     CornerRadius="{ThemeResource ControlCornerRadius}">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                     </Border.Background>
                 </Border>
                 <TextBlock
                     HorizontalAlignment="Stretch"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis" />
                 <TextBlock
                     x:Name="SubTitle" HorizontalAlignment="Stretch"
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Text="{Binding SubTitle}"
+                    Text="{x:Bind SubTitle, Mode=OneWay}"
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis"
-                    Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+                    Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
             </StackPanel>
         </Button>
     </DataTemplate>
 
-    <DataTemplate x:Key="TextLinkTemplate">
+    <DataTemplate x:Key="TextLinkTemplate" x:DataType="models:IndexPageModel">
         <Button
             Padding="8"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             Click="Button_Click"
             Style="{StaticResource TransparentButtonStyle}"
-            Tag="{Binding Url}">
+            Tag="{x:Bind Url, Mode=OneWay}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -251,12 +252,12 @@
                     Width="20"
                     Height="20"
                     VerticalAlignment="Center"
-                    Source="{Binding Pic.Pic, Mode=OneWay}" />
+                    Source="{x:Bind Pic.Pic, Mode=OneWay}" />
                 <TextBlock
                     Grid.Column="2"
                     Margin="0,0,0,2"
                     VerticalAlignment="Center"
-                    Text="{Binding Title}"
+                    Text="{x:Bind Title, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis" />
             </Grid>
         </Button>

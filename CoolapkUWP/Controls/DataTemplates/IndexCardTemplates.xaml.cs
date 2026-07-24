@@ -17,6 +17,15 @@ namespace CoolapkUWP.Controls.DataTemplates
     {
         public IndexCardTemplates() => InitializeComponent();
 
+        public static CornerRadius BottomOverlayCornerRadius
+        {
+            get
+            {
+                var r = (CornerRadius)Application.Current.Resources["OverlayCornerRadius"];
+                return new CornerRadius(0, 0, r.BottomRight, r.BottomLeft);
+            }
+        }
+
         private void FlipView_SizeChanged(object sender, SizeChangedEventArgs e) => (sender as FrameworkElement).MaxHeight = e.NewSize.Width / 3;
 
         private void FlipView_Loaded(object sender, RoutedEventArgs e)

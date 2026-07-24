@@ -172,7 +172,7 @@
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1"
                                     CornerRadius="{ThemeResource ControlCornerRadius}"
-                                    Visibility="{Binding Tag, ElementName=IsShowHubProxy, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    Visibility="{x:Bind IsShowHubProxy.Tag, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -199,7 +199,7 @@
                                         Minimum="50"
                                         Orientation="Vertical"
                                         ThumbToolTipValueConverter="{StaticResource ZoomToolTipValueConverter}"
-                                        Value="{Binding ZoomFactor, ElementName=ImageScrollViewer, Converter={StaticResource NumMultConverter}, ConverterParameter='100', Mode=TwoWay}" />
+                                        Value="{Binding ZoomFactor, ElementName=ImageScrollViewer, Converter={StaticResource NumMultConverter}, ConverterParameter='100', Mode=OneWay}" />
                                     <RepeatButton
                                         x:Name="ZoomDown"
                                         Grid.Row="2"

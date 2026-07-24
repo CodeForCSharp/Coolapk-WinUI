@@ -7,8 +7,11 @@
     xmlns:feedpages="using:CoolapkUWP.ViewModels.FeedPages"
     xmlns:local="using:CoolapkUWP.Pages.FeedPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:CoolapkUWP.Models.Pages"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:images="using:CoolapkUWP.Models.Images"
+    xmlns:users="using:CoolapkUWP.Models.Users"
     xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
     xmlns:ui="using:CommunityToolkit.WinUI"
     d:DataContext="{d:DesignInstance Type=feedpages:FeedListViewModel}"
@@ -20,7 +23,7 @@
                 <templates:IndexCardTemplates />
                 <templates:OtherDataTemplates />
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate x:Key="UserDetailCard">
+            <DataTemplate x:Key="UserDetailCard" x:DataType="pages:UserDetail">
                 <Border>
                     <Border.Resources>
                         <MenuFlyout x:Key="MoreFlyout">
@@ -28,7 +31,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{Binding}">
+                                Tag="{x:Bind Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -37,7 +40,7 @@
                                 x:Name="ReportButton"
                                 x:Uid="/FeedListPage/Report"
                                 Click="Button_Click"
-                                Tag="{Binding UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=user&amp;m=report&amp;id={0}', Mode=OneWay}">
+                                Tag="{x:Bind UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=user&amp;m=report&amp;id={0}', Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
                                 </MenuFlyoutItem.Icon>
@@ -50,7 +53,7 @@
                                     x:Name="RefreshButton"
                                     x:Uid="/FeedListPage/RefreshMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                                     </MenuFlyoutItem.Icon>
@@ -59,7 +62,7 @@
                                     x:Name="ShowImageButton"
                                     x:Uid="/FeedListPage/ShowMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
                                     </MenuFlyoutItem.Icon>
@@ -68,7 +71,7 @@
                                     x:Name="CopyButton"
                                     x:Uid="/FeedListPage/CopyMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                                     </MenuFlyoutItem.Icon>
@@ -77,7 +80,7 @@
                                     x:Name="ShareButton"
                                     x:Uid="/FeedListPage/ShareMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
                                     </MenuFlyoutItem.Icon>
@@ -86,7 +89,7 @@
                                     x:Name="SaveButton"
                                     x:Uid="/FeedListPage/SaveMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
                                     </MenuFlyoutItem.Icon>
@@ -104,7 +107,7 @@
                         DragStarting="Image_DragStarting">
                         <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
                             <Border.Background>
-                                <ImageBrush ImageSource="{Binding Cover.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                <ImageBrush ImageSource="{x:Bind Cover.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                             </Border.Background>
                         </Border>
                         <Grid
@@ -123,8 +126,8 @@
                                         Height="56"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
-                                        DisplayName="{Binding UserName}"
-                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                                     <Button
                                         x:Name="FollowButton"
                                         Grid.Column="1"
@@ -132,20 +135,20 @@
                                         HorizontalAlignment="Right"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{Binding}"
-                                        ToolTipService.ToolTip="{Binding FollowStatus}"
-                                        Visibility="{Binding FollowStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        Tag="{x:Bind Mode=OneWay}"
+                                        ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}"
+                                        Visibility="{x:Bind FollowStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal">
                                             <FontIcon
                                                 VerticalAlignment="Center"
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                 FontSize="15"
-                                                Glyph="{Binding FollowGlyph}" />
+                                                Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
                                             <TextBlock
                                                 x:Name="FollowStatus"
                                                 Margin="8,0,0,0"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FollowStatus}" />
+                                                Text="{x:Bind FollowStatus, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
                                 </Grid>
@@ -164,38 +167,38 @@
                                             HorizontalAlignment="Left"
                                             FontSize="12"
                                             FontStyle="Italic"
-                                            Foreground="{Binding Foreground, ElementName=NextLevelPercentage, Mode=OneWay}"
-                                            Text="{Binding LevelNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}'}" />
+                                            Foreground="{x:Bind NextLevelProgressBar.Foreground, Mode=OneWay}"
+                                            Text="{x:Bind LevelNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}', Mode=OneWay}" />
                                         <TextBlock
                                             Grid.Column="1"
                                             HorizontalAlignment="Right"
                                             FontSize="12"
-                                            Text="{Binding NextLevelNowExperience}" />
+                                            Text="{x:Bind NextLevelNowExperience, Mode=OneWay}" />
                                     </Grid>
                                     <muxc:ProgressBar
-                                        x:Name="NextLevelPercentage"
+                                        x:Name="NextLevelProgressBar"
                                         Grid.Row="1"
                                         Width="160"
                                         Margin="0,4"
-                                        Value="{Binding NextLevelPercentage}" />
+                                        Value="{x:Bind NextLevelPercentage, Mode=OneWay}" />
                                 </Grid>
                                 <TextBlock
-                                    IsTextSelectionEnabled="{Binding IsCopyEnabled}"
+                                    IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
-                                    Visibility="{Binding VerifyTitle, Converter={StaticResource StringVisibilityConverter}}">
+                                    Visibility="{x:Bind VerifyTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                     <Run
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         Foreground="LightGreen"
                                         Text="&#xE10B;" />
-                                    <Run Text="{Binding VerifyTitle}" />
+                                    <Run Text="{x:Bind VerifyTitle, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock
-                                    Text="{Binding Bio}"
+                                    Text="{x:Bind Bio, Mode=OneWay}"
                                     TextWrapping="WrapWholeWords"
-                                    Visibility="{Binding Bio, Converter={StaticResource StringVisibilityConverter}}" />
+                                    Visibility="{x:Bind Bio, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                                 <control:StackPanel Orientation="Horizontal" Spacing="12">
                                     <TextBlock FontSize="16">
-                                        <Run FontWeight="Bold" Text="{Binding LikeNum}" />
+                                        <Run FontWeight="Bold" Text="{x:Bind LikeNum, Mode=OneWay}" />
                                         <Run x:Uid="/FeedListPage/LikeNum" FontWeight="Thin" />
                                     </TextBlock>
                                     <Button
@@ -205,7 +208,7 @@
                                         FontSize="16"
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
-                                            <Run FontWeight="Bold" Text="{Binding FollowNum}" />
+                                            <Run FontWeight="Bold" Text="{x:Bind FollowNum, Mode=OneWay}" />
                                             <Run x:Uid="/FeedListPage/FollowNum" FontWeight="Thin" />
                                         </TextBlock>
                                     </Button>
@@ -216,12 +219,12 @@
                                         FontSize="16"
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
-                                            <Run FontWeight="Bold" Text="{Binding FansNum}" />
+                                            <Run FontWeight="Bold" Text="{x:Bind FansNum, Mode=OneWay}" />
                                             <Run x:Uid="/FeedListPage/FansNum" FontWeight="Thin" />
                                         </TextBlock>
                                     </Button>
                                     <TextBlock FontSize="16">
-                                        <Run FontWeight="Bold" Text="{Binding FeedNum}" />
+                                        <Run FontWeight="Bold" Text="{x:Bind FeedNum, Mode=OneWay}" />
                                         <Run x:Uid="/FeedListPage/FeedsNum" FontWeight="Thin" />
                                     </TextBlock>
                                 </control:StackPanel>
@@ -231,44 +234,44 @@
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1"
                                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{Binding Gender, Converter={StaticResource StringVisibilityConverter}}">
+                                        Visibility="{x:Bind Gender, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <TextBlock
                                             Margin="4,2"
                                             FontSize="12"
-                                            Text="{Binding Gender}" />
+                                            Text="{x:Bind Gender, Mode=OneWay}" />
                                     </Border>
                                     <Border
                                         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1"
                                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{Binding City, Converter={StaticResource StringVisibilityConverter}}">
+                                        Visibility="{x:Bind City, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <TextBlock
                                             Margin="4,2"
                                             FontSize="12"
-                                            Text="{Binding City}" />
+                                            Text="{x:Bind City, Mode=OneWay}" />
                                     </Border>
                                     <Border
                                         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1"
                                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{Binding Astro, Converter={StaticResource StringVisibilityConverter}}">
+                                        Visibility="{x:Bind Astro, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <TextBlock
                                             Margin="4,2"
                                             FontSize="12"
-                                            Text="{Binding Astro}" />
+                                            Text="{x:Bind Astro, Mode=OneWay}" />
                                     </Border>
                                     <Border
                                         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1"
                                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{Binding BlockStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        Visibility="{x:Bind BlockStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <TextBlock
                                             Margin="4,2"
                                             FontSize="12"
-                                            Text="{Binding BlockStatus}" />
+                                            Text="{x:Bind BlockStatus, Mode=OneWay}" />
                                     </Border>
                                 </control:StackPanel>
                             </control:StackPanel>
@@ -276,7 +279,7 @@
                     </Grid>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="TopicDetailCard">
+            <DataTemplate x:Key="TopicDetailCard" x:DataType="pages:TopicDetail">
                 <Border
                     Padding="10"
                     HorizontalAlignment="Stretch"
@@ -290,7 +293,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{Binding}">
+                                Tag="{x:Bind Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -313,37 +316,37 @@
                                 HorizontalAlignment="Left"
                                 CornerRadius="{ThemeResource OverlayCornerRadius}">
                                 <Border.Background>
-                                    <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                    <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
                             <control:StackPanel Grid.Column="1" Margin="8,0">
                                 <TextBlock
                                     FontSize="16"
                                     FontWeight="SemiBold"
-                                    Text="{Binding Title}" />
+                                    Text="{x:Bind Title, Mode=OneWay}" />
                                 <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                    <Run Text="{Binding HotNum}" />
-                                    <Run Text="{Binding CommentNum}" />
+                                    <Run Text="{x:Bind HotNum, Mode=OneWay}" />
+                                    <Run Text="{x:Bind CommentNum, Mode=OneWay}" />
                                 </TextBlock>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <muxc:ItemsRepeater ItemsSource="{Binding FollowUsers}">
+                                    <muxc:ItemsRepeater ItemsSource="{x:Bind FollowUsers, Mode=OneWay}">
                                         <muxc:ItemsRepeater.Layout>
                                             <muxc:StackLayout Orientation="Horizontal" Spacing="-6" />
                                         </muxc:ItemsRepeater.Layout>
                                         <muxc:ItemsRepeater.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate x:DataType="users:UserModel">
                                                 <muxc:PersonPicture
                                                     Width="16"
                                                     Height="16"
-                                                    DisplayName="{Binding UserName}"
-                                                    ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
-                                                    Tag="{Binding Url}"
+                                                    DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                                    ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                                                    Tag="{x:Bind Url, Mode=OneWay}"
                                                     Tapped="On_Tapped"
-                                                    ToolTipService.ToolTip="{Binding UserName}" />
+                                                    ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}" />
                                             </DataTemplate>
                                         </muxc:ItemsRepeater.ItemTemplate>
                                     </muxc:ItemsRepeater>
@@ -351,7 +354,7 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         FontSize="12"
-                                        Text="{Binding FollowNum}" />
+                                        Text="{x:Bind FollowNum, Mode=OneWay}" />
                                 </Grid>
                             </control:StackPanel>
                             <Button
@@ -361,34 +364,34 @@
                                 HorizontalAlignment="Right"
                                 Click="Button_Click"
                                 Style="{StaticResource TransparentButtonStyle}"
-                                Tag="{Binding}"
-                                ToolTipService.ToolTip="{Binding FollowStatus}">
+                                Tag="{x:Bind Mode=OneWay}"
+                                ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon
                                         VerticalAlignment="Center"
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         FontSize="15"
-                                        Glyph="{Binding FollowGlyph}" />
+                                        Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
                                     <TextBlock
                                         x:Name="FollowStatus"
                                         Margin="8,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding FollowStatus}" />
+                                        Text="{x:Bind FollowStatus, Mode=OneWay}" />
                                 </StackPanel>
                             </Button>
                         </Grid>
                         <TextBlock
-                            Text="{Binding Description}"
+                            Text="{x:Bind Description, Mode=OneWay}"
                             TextWrapping="WrapWholeWords"
-                            Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                            Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         <TextBlock
-                            Text="{Binding SubTitle}"
+                            Text="{x:Bind SubTitle, Mode=OneWay}"
                             TextWrapping="WrapWholeWords"
-                            Visibility="{Binding SubTitle, Converter={StaticResource StringVisibilityConverter}}" />
+                            Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                     </control:StackPanel>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="DyhDetailCard">
+            <DataTemplate x:Key="DyhDetailCard" x:DataType="pages:DyhDetail">
                 <Border
                     Padding="10"
                     HorizontalAlignment="Stretch"
@@ -402,7 +405,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{Binding}">
+                                Tag="{x:Bind Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -425,21 +428,21 @@
                                 HorizontalAlignment="Left"
                                 CornerRadius="{ThemeResource OverlayCornerRadius}">
                                 <Border.Background>
-                                    <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                    <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                                 </Border.Background>
                             </Border>
                             <control:StackPanel Grid.Column="1" Margin="8,0">
                                 <TextBlock
                                     FontSize="16"
                                     FontWeight="SemiBold"
-                                    Text="{Binding Title}" />
+                                    Text="{x:Bind Title, Mode=OneWay}" />
                                 <TextBlock
                                     FontSize="12"
                                     FontWeight="Thin"
-                                    Text="{Binding FollowNum}" />
+                                    Text="{x:Bind FollowNum, Mode=OneWay}" />
                                 <Grid
                                     Background="{ThemeResource SystemControlTransparentBrush}"
-                                    Tag="{Binding Uurl}"
+                                    Tag="{x:Bind Uurl, Mode=OneWay}"
                                     Tapped="On_Tapped">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -448,13 +451,13 @@
                                     <muxc:PersonPicture
                                         Width="16"
                                         Height="16"
-                                        DisplayName="{Binding UserName}"
-                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="4,0"
                                         FontSize="12"
-                                        Text="{Binding UserName}" />
+                                        Text="{x:Bind UserName, Mode=OneWay}" />
                                 </Grid>
                             </control:StackPanel>
                             <Button
@@ -464,30 +467,30 @@
                                 HorizontalAlignment="Right"
                                 Click="Button_Click"
                                 Style="{StaticResource TransparentButtonStyle}"
-                                Tag="{Binding}"
-                                ToolTipService.ToolTip="{Binding FollowStatus}">
+                                Tag="{x:Bind Mode=OneWay}"
+                                ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon
                                         VerticalAlignment="Center"
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         FontSize="15"
-                                        Glyph="{Binding FollowGlyph}" />
+                                        Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
                                     <TextBlock
                                         x:Name="FollowStatus"
                                         Margin="8,0,0,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding FollowStatus}" />
+                                        Text="{x:Bind FollowStatus, Mode=OneWay}" />
                                 </StackPanel>
                             </Button>
                         </Grid>
                         <TextBlock
-                            Text="{Binding Description}"
+                            Text="{x:Bind Description, Mode=OneWay}"
                             TextWrapping="WrapWholeWords"
-                            Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                            Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                     </control:StackPanel>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="ProductDetailCard">
+            <DataTemplate x:Key="ProductDetailCard" x:DataType="pages:ProductDetail">
                 <control:StackPanel Spacing="6">
                     <Grid
                         HorizontalAlignment="Stretch"
@@ -495,23 +498,23 @@
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="1"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
-                        Visibility="{Binding CoverArr, Converter={StaticResource CollectionVisibilityConverter}}">
+                        Visibility="{x:Bind CoverArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
                         <FlipView
                             x:Name="FlipView"
                             CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Background="{ThemeResource SystemControlTransparentBrush}"
-                            ItemsSource="{Binding CoverArr}"
+                            ItemsSource="{x:Bind CoverArr, Mode=OneWay}"
                             Loaded="FlipView_Loaded"
                             SizeChanged="FlipView_SizeChanged">
                             <FlipView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="images:ImageModel">
                                     <Image
                                         x:Name="Picture"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         CanDrag="True"
                                         DragStarting="Image_DragStarting"
-                                        Source="{Binding Pic, Mode=OneWay}"
+                                        Source="{x:Bind Pic, Mode=OneWay}"
                                         Stretch="UniformToFill">
                                         <Image.ContextFlyout>
                                             <MenuFlyout>
@@ -519,7 +522,7 @@
                                                     x:Name="RefreshButton"
                                                     x:Uid="/FeedListPage/RefreshMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{Binding}">
+                                                    Tag="{x:Bind Mode=OneWay}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                                                     </MenuFlyoutItem.Icon>
@@ -528,7 +531,7 @@
                                                     x:Name="CopyButton"
                                                     x:Uid="/FeedListPage/CopyMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{Binding}">
+                                                    Tag="{x:Bind Mode=OneWay}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                                                     </MenuFlyoutItem.Icon>
@@ -537,7 +540,7 @@
                                                     x:Name="ShareButton"
                                                     x:Uid="/FeedListPage/ShareMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{Binding}">
+                                                    Tag="{x:Bind Mode=OneWay}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
                                                     </MenuFlyoutItem.Icon>
@@ -546,7 +549,7 @@
                                                     x:Name="SaveButton"
                                                     x:Uid="/FeedListPage/SaveMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{Binding}">
+                                                    Tag="{x:Bind Mode=OneWay}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
                                                     </MenuFlyoutItem.Icon>
@@ -571,8 +574,8 @@
                             </Border.Background>
                             <muxc:PipsPager
                                 Margin="2,0"
-                                NumberOfPages="{Binding CoverArr, Converter={StaticResource CollectionCountConverter}}"
-                                SelectedPageIndex="{Binding SelectedIndex, ElementName=FlipView, Mode=TwoWay}" />
+                                NumberOfPages="{x:Bind CoverArr, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
+                                SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
                         </Border>
                     </Grid>
                     <Grid
@@ -595,37 +598,37 @@
                                     HorizontalAlignment="Left"
                                     CornerRadius="{ThemeResource OverlayCornerRadius}">
                                     <Border.Background>
-                                        <ImageBrush ImageSource="{Binding Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
+                                        <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
                                     </Border.Background>
                                 </Border>
                                 <control:StackPanel Grid.Column="1" Margin="8,0">
                                     <TextBlock
                                         FontSize="16"
                                         FontWeight="SemiBold"
-                                        Text="{Binding Title}" />
+                                        Text="{x:Bind Title, Mode=OneWay}" />
                                     <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                        <Run Text="{Binding HotNum}" />
-                                        <Run Text="{Binding CommentNum}" />
+                                        <Run Text="{x:Bind HotNum, Mode=OneWay}" />
+                                        <Run Text="{x:Bind CommentNum, Mode=OneWay}" />
                                     </TextBlock>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <muxc:ItemsRepeater ItemsSource="{Binding FollowUsers}">
+                                        <muxc:ItemsRepeater ItemsSource="{x:Bind FollowUsers, Mode=OneWay}">
                                             <muxc:ItemsRepeater.Layout>
                                                 <muxc:StackLayout Orientation="Horizontal" Spacing="-6" />
                                             </muxc:ItemsRepeater.Layout>
                                             <muxc:ItemsRepeater.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="users:UserModel">
                                                     <muxc:PersonPicture
                                                         Width="16"
                                                         Height="16"
-                                                        DisplayName="{Binding UserName}"
-                                                        ProfilePicture="{Binding UserAvatar.Pic, Mode=OneWay}"
-                                                        Tag="{Binding Url}"
+                                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
+                                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                                                        Tag="{x:Bind Url, Mode=OneWay}"
                                                         Tapped="On_Tapped"
-                                                        ToolTipService.ToolTip="{Binding UserName}" />
+                                                        ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}" />
                                                 </DataTemplate>
                                             </muxc:ItemsRepeater.ItemTemplate>
                                         </muxc:ItemsRepeater>
@@ -633,7 +636,7 @@
                                             Grid.Column="1"
                                             Margin="4,0"
                                             FontSize="12"
-                                            Text="{Binding FollowNum}" />
+                                            Text="{x:Bind FollowNum, Mode=OneWay}" />
                                     </Grid>
                                 </control:StackPanel>
                                 <Button
@@ -643,41 +646,41 @@
                                     HorizontalAlignment="Right"
                                     Click="Button_Click"
                                     Style="{StaticResource TransparentButtonStyle}"
-                                    Tag="{Binding}"
-                                    ToolTipService.ToolTip="{Binding FollowStatus}">
+                                    Tag="{x:Bind Mode=OneWay}"
+                                    ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                     <StackPanel Orientation="Horizontal">
                                         <FontIcon
                                             VerticalAlignment="Center"
                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                                             FontSize="15"
-                                            Glyph="{Binding FollowGlyph}" />
+                                            Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
                                         <TextBlock
                                             x:Name="FollowStatus"
                                             Margin="8,0,0,0"
                                             VerticalAlignment="Center"
-                                            Text="{Binding FollowStatus}" />
+                                            Text="{x:Bind FollowStatus, Mode=OneWay}" />
                                     </StackPanel>
                                 </Button>
                             </Grid>
                             <TextBlock
-                                Text="{Binding Description}"
+                                Text="{x:Bind Description, Mode=OneWay}"
                                 TextWrapping="WrapWholeWords"
-                                Visibility="{Binding Description, Converter={StaticResource StringVisibilityConverter}}" />
+                                Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </control:StackPanel>
                     </Grid>
-                    <muxc:ItemsRepeaterScrollHost Visibility="{Binding TagArr, Converter={StaticResource CollectionVisibilityConverter}}">
+                    <muxc:ItemsRepeaterScrollHost Visibility="{x:Bind TagArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
                         <ScrollViewer
                             Margin="0,-2"
                             Padding="0,2"
                             HorizontalScrollBarVisibility="Hidden"
                             HorizontalScrollMode="Auto"
                             VerticalScrollMode="Disabled">
-                            <muxc:ItemsRepeater HorizontalAlignment="Stretch" ItemsSource="{Binding TagArr}">
+                            <muxc:ItemsRepeater HorizontalAlignment="Stretch" ItemsSource="{x:Bind TagArr, Mode=OneWay}">
                                 <muxc:ItemsRepeater.Layout>
                                     <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
                                 </muxc:ItemsRepeater.Layout>
                                 <muxc:ItemsRepeater.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="x:String">
                                         <Grid
                                             VerticalAlignment="Center"
                                             Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -687,7 +690,7 @@
                                             <TextBlock
                                                 Margin="4,2"
                                                 FontSize="12"
-                                                Text="{Binding}" />
+                                                Text="{x:Bind Mode=OneWay}" />
                                         </Grid>
                                     </DataTemplate>
                                 </muxc:ItemsRepeater.ItemTemplate>
@@ -712,13 +715,13 @@
                                     VerticalAlignment="Center"
                                     FontSize="16"
                                     FontWeight="Bold"
-                                    Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 <TextBlock
                                     x:Uid="/FeedListPage/AllStar"
                                     VerticalAlignment="Center"
                                     FontSize="16"
                                     FontWeight="Bold"
-                                    Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 <Grid Grid.Column="1" HorizontalAlignment="Right">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -730,20 +733,20 @@
                                         Grid.Column="1"
                                         Padding="4,2"
 
-                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}"
+                                        CornerRadius="{x:Bind local:FeedListPage.RightControlCornerRadius}"
                                         BorderThickness="0,1,1,1"
                                         FontSize="12"
-                                        IsChecked="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
+                                        IsChecked="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
                                     <ToggleButton
                                         x:Name="OnlyOwnerButton"
                                         x:Uid="/FeedListPage/OnlyOwnerButton"
                                         Grid.Column="0"
                                         Padding="4,2"
 
-                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource LeftCornerRadiusFilterConverter}}"
+                                        CornerRadius="{x:Bind local:FeedListPage.LeftControlCornerRadius}"
                                         BorderThickness="1,1,0,1"
                                         FontSize="12"
-                                        IsChecked="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
+                                        IsChecked="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
                                 </Grid>
                             </Grid>
                             <Grid Height="100">
@@ -751,42 +754,42 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="1.5*" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel HorizontalAlignment="Center" Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel HorizontalAlignment="Center" Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         FontSize="35"
                                         FontWeight="Bold"
-                                        Text="{Binding OwnerScore}" />
+                                        Text="{x:Bind OwnerScore, Mode=OneWay}" />
                                     <muxc:RatingControl
                                         HorizontalAlignment="Center"
                                         IsReadOnly="True"
-                                        Value="{Binding OwnerScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5'}" />
+                                        Value="{x:Bind OwnerScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5', Mode=OneWay}" />
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         FontSize="12"
                                         FontWeight="Thin"
-                                        Text="{Binding RatingCount}" />
+                                        Text="{x:Bind RatingCount, Mode=OneWay}" />
                                 </StackPanel>
-                                <StackPanel HorizontalAlignment="Center" Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel HorizontalAlignment="Center" Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         FontSize="35"
                                         FontWeight="Bold"
-                                        Text="{Binding RatingScore}" />
+                                        Text="{x:Bind RatingScore, Mode=OneWay}" />
                                     <muxc:RatingControl
                                         HorizontalAlignment="Center"
                                         IsReadOnly="True"
-                                        Value="{Binding RatingScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5'}" />
+                                        Value="{x:Bind RatingScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5', Mode=OneWay}" />
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         FontSize="12"
                                         FontWeight="Thin"
-                                        Text="{Binding StarCount}" />
+                                        Text="{x:Bind StarCount, Mode=OneWay}" />
                                 </StackPanel>
                                 <Grid
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
-                                    Visibility="{Binding IsChecked, ElementName=OnlyOwnerButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -810,13 +813,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding OwnerStar5Percent}" />
+                                        Value="{x:Bind OwnerStar5Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="0"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding OwnerStar5Count}" />
+                                        Text="{x:Bind OwnerStar5Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="0"
@@ -828,13 +831,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding OwnerStar4Percent}" />
+                                        Value="{x:Bind OwnerStar4Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding OwnerStar4Count}" />
+                                        Text="{x:Bind OwnerStar4Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="2"
                                         Grid.Column="0"
@@ -846,13 +849,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding OwnerStar3Percent}" />
+                                        Value="{x:Bind OwnerStar3Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="2"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding OwnerStar3Count}" />
+                                        Text="{x:Bind OwnerStar3Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="3"
                                         Grid.Column="0"
@@ -864,13 +867,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding OwnerStar2Percent}" />
+                                        Value="{x:Bind OwnerStar2Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="3"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding OwnerStar2Count}" />
+                                        Text="{x:Bind OwnerStar2Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="4"
                                         Grid.Column="0"
@@ -882,18 +885,18 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding OwnerStar1Percent}" />
+                                        Value="{x:Bind OwnerStar1Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="4"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding OwnerStar1Count}" />
+                                        Text="{x:Bind OwnerStar1Count, Mode=OneWay}" />
                                 </Grid>
                                 <Grid
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
-                                    Visibility="{Binding IsChecked, ElementName=SeeAllButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -917,13 +920,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding Star5Percent}" />
+                                        Value="{x:Bind Star5Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="0"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding Star5Count}" />
+                                        Text="{x:Bind Star5Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="0"
@@ -935,13 +938,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding Star4Percent}" />
+                                        Value="{x:Bind Star4Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="1"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding Star4Count}" />
+                                        Text="{x:Bind Star4Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="2"
                                         Grid.Column="0"
@@ -953,13 +956,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding Star3Percent}" />
+                                        Value="{x:Bind Star3Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="2"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding Star3Count}" />
+                                        Text="{x:Bind Star3Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="3"
                                         Grid.Column="0"
@@ -971,13 +974,13 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding Star2Percent}" />
+                                        Value="{x:Bind Star2Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="3"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding Star2Count}" />
+                                        Text="{x:Bind Star2Count, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="4"
                                         Grid.Column="0"
@@ -989,20 +992,20 @@
                                         Grid.Column="1"
                                         Margin="4,0"
                                         VerticalAlignment="Center"
-                                        Value="{Binding Star1Percent}" />
+                                        Value="{x:Bind Star1Percent, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Row="4"
                                         Grid.Column="2"
                                         FontSize="10"
                                         FontWeight="Thin"
-                                        Text="{Binding Star1Count}" />
+                                        Text="{x:Bind Star1Count, Mode=OneWay}" />
                                 </Grid>
                             </Grid>
                         </control:StackPanel>
                     </Grid>
                 </control:StackPanel>
             </DataTemplate>
-            <DataTemplate x:Key="CollectionDetailCard">
+            <DataTemplate x:Key="CollectionDetailCard" x:DataType="pages:CollectionDetail">
                 <Grid
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -1015,7 +1018,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{Binding}">
+                                Tag="{x:Bind Mode=OneWay}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -1028,7 +1031,7 @@
                                     x:Name="RefreshButton"
                                     x:Uid="/FeedListPage/RefreshMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                                     </MenuFlyoutItem.Icon>
@@ -1037,7 +1040,7 @@
                                     x:Name="ShowImageButton"
                                     x:Uid="/FeedListPage/ShowMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8A7;" />
                                     </MenuFlyoutItem.Icon>
@@ -1046,7 +1049,7 @@
                                     x:Name="CopyButton"
                                     x:Uid="/FeedListPage/CopyMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                                     </MenuFlyoutItem.Icon>
@@ -1055,7 +1058,7 @@
                                     x:Name="ShareButton"
                                     x:Uid="/FeedListPage/ShareMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
                                     </MenuFlyoutItem.Icon>
@@ -1064,7 +1067,7 @@
                                     x:Name="SaveButton"
                                     x:Uid="/FeedListPage/SaveMenuItem"
                                     Click="AppBarButton_Click"
-                                    Tag="{Binding Cover}">
+                                    Tag="{x:Bind Cover, Mode=OneWay}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
                                     </MenuFlyoutItem.Icon>
@@ -1080,9 +1083,9 @@
                         DragStarting="Image_DragStarting">
                         <Image
                             ContextFlyout="{StaticResource MoreFlyout}"
-                            Source="{Binding Cover.Pic, Mode=OneWay}"
+                            Source="{x:Bind Cover.Pic, Mode=OneWay}"
                             Stretch="UniformToFill"
-                            Tag="{Binding Cover}" />
+                            Tag="{x:Bind Cover, Mode=OneWay}" />
                     </Border>
                     <Grid
                         Padding="8"
@@ -1098,7 +1101,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     FontSize="20"
-                                    Text="{Binding Title}"
+                                    Text="{x:Bind Title, Mode=OneWay}"
                                     TextWrapping="Wrap" />
                                 <StackPanel
                                     Grid.Column="2"
@@ -1111,18 +1114,18 @@
                                         Height="32"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{Binding}">
+                                        Tag="{x:Bind Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal">
                                             <FontIcon
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                 Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
                                                 Glyph="&#xE8E1;"
-                                                Visibility="{Binding Liked, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                                             <FontIcon
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                 Glyph="&#xE8E1;"
-                                                Visibility="{Binding Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true'}" />
-                                            <TextBlock Margin="8,0,0,0" Text="{Binding LikeNum}" />
+                                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                                            <TextBlock Margin="8,0,0,0" Text="{x:Bind LikeNum, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
                                     <Button
@@ -1130,20 +1133,20 @@
                                         Height="32"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{Binding}"
-                                        ToolTipService.ToolTip="{Binding FollowStatus}"
-                                        Visibility="{Binding FollowStatus, Converter={StaticResource StringVisibilityConverter}}">
+                                        Tag="{x:Bind Mode=OneWay}"
+                                        ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}"
+                                        Visibility="{x:Bind FollowStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal">
                                             <FontIcon
                                                 VerticalAlignment="Center"
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                 FontSize="15"
-                                                Glyph="{Binding FollowGlyph}" />
+                                                Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
                                             <TextBlock
                                                 x:Name="FollowStatus"
                                                 Margin="8,0,0,0"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding FollowStatus}" />
+                                                Text="{x:Bind FollowStatus, Mode=OneWay}" />
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>
@@ -1160,7 +1163,7 @@
                                     Height="20"
                                     VerticalAlignment="Center">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding UserAvatar.Pic, Mode=OneWay}" />
+                                        <ImageBrush ImageSource="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock
@@ -1169,15 +1172,15 @@
                                     VerticalAlignment="Center"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     TextWrapping="Wrap">
-                                    <Run Text="{Binding UserName}" />
-                                    <Run Text="{Binding LastUpdate}" />
-                                    <Run Text="{Binding FollowNum}" />
+                                    <Run Text="{x:Bind UserName, Mode=OneWay}" />
+                                    <Run Text="{x:Bind LastUpdate, Mode=OneWay}" />
+                                    <Run Text="{x:Bind FollowNum, Mode=OneWay}" />
                                 </TextBlock>
                             </Grid>
                             <TextBlock
-                                Text="{Binding Description}"
+                                Text="{x:Bind Description, Mode=OneWay}"
                                 TextWrapping="Wrap"
-                                Visibility="{Binding Description, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                Visibility="{x:Bind Description, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                         </control:StackPanel>
                     </Grid>
                 </Grid>
