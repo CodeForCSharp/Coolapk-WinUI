@@ -6,6 +6,7 @@ using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Linq;
@@ -21,9 +22,27 @@ using Microsoft.UI.Xaml.Input;
 
 namespace CoolapkUWP.Controls
 {
-    public sealed partial class FeedShellDetailControl : UserControl
+    public sealed partial class FeedShellDetailControl : UserControl, INotifyPropertyChanged
     {
-        public FeedShellDetailControl() => InitializeComponent();
+        private FeedDetailModel _feedDetail;
+        public FeedDetailModel FeedDetail
+        {
+            get => _feedDetail;
+            private set
+            {
+                if (_feedDetail != value)
+                {
+                    _feedDetail = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
+
+        public FeedShellDetailControl()
+        {
+            InitializeComponent();
+            DataContextChanged += (_, _) => FeedDetail = DataContext as FeedDetailModel;
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -96,5 +115,12 @@ namespace CoolapkUWP.Controls
         private void UrlButton_Click(object sender, RoutedEventArgs e) => _ = this.OpenLinkAsync((sender as FrameworkElement).Tag.ToString());
 
         private void GridView_SelectionChanged(object sender, SelectionChangedEventArgs e) => (sender as GridView).SelectedIndex = -1;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 }

@@ -7,6 +7,7 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml;
@@ -34,9 +35,21 @@ namespace CoolapkUWP.Pages.FeedPages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class FeedListPage : Page
+    public sealed partial class FeedListPage : Page, INotifyPropertyChanged
     {
-        private FeedListViewModel Provider;
+        private FeedListViewModel _provider;
+        public FeedListViewModel Provider
+        {
+            get => _provider;
+            private set
+            {
+                if (_provider != value)
+                {
+                    _provider = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
         public FeedListPage() => InitializeComponent();
 
@@ -47,7 +60,6 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
-                DataContext = Provider;
                 Provider.DataTemplateSelector = DetailTemplateSelector;
                 await Refresh(true);
             }
@@ -252,6 +264,13 @@ namespace CoolapkUWP.Pages.FeedPages
         }
 
         #endregion 界面模式切换
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
     }
 
     internal partial class DetailTemplateSelector : DataTemplateSelector
