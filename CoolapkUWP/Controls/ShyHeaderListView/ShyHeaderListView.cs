@@ -1,6 +1,8 @@
 ﻿using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Converters;
+using CoolapkUWP.ViewModels.DataSource;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -295,7 +297,51 @@ namespace CoolapkUWP.Controls
             index = index ?? SelectedIndex;
             if (index == -1) { return; }
             ShyHeaderSelectedItem = ShyHeaderItemSource[(int)index];
-            ItemsSource = ShyHeaderItemSource[(int)index].ItemSource;
+            object newSource = ShyHeaderItemSource[(int)index].ItemSource;
+            if (ItemsSource == newSource)
+            {
+                RefreshIfEmpty(newSource);
+                return;
+            }
+
+            try
+            {
+                ItemsSource = newSource;
+                RefreshIfEmpty(newSource);
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ShyHeaderListView)).LogError(ex, ex.ExceptionToMessage());
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    try
+                    {
+                        if (ItemsSource != null && ItemsSource != newSource)
+                        {
+                            ItemsSource = null;
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        ItemsSource = newSource;
+                        RefreshIfEmpty(newSource);
+                    }
+                    catch (Exception retryEx)
+                    {
+                        SettingsHelper.LogManager.CreateLogger(nameof(ShyHeaderListView)).LogError(retryEx, retryEx.ExceptionToMessage());
+                    }
+                });
+            }
+        }
+
+        private void RefreshIfEmpty(object source)
+        {
+            if (source is EntityItemSource entitySource && entitySource.Count == 0 && entitySource.HasMoreItems)
+            {
+                _ = entitySource.Refresh();
+            }
         }
 
         private void TopHeader_SizeChanged(object sender, SizeChangedEventArgs e)

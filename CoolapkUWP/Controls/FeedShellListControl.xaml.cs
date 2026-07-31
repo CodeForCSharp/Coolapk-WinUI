@@ -1,6 +1,7 @@
 ﻿using CoolapkUWP.ViewModels;
 using CoolapkUWP.ViewModels.DataSource;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -78,7 +79,9 @@ namespace CoolapkUWP.Controls
         {
             try
             {
-                if (ShyHeaderListView.ItemsSource is ICanToggleChangeSelectedIndex ToggleItemsSource)
+                object source = (e.AddedItems.FirstOrDefault() as ShyHeaderItem)?.ItemSource;
+
+                if (source is ICanToggleChangeSelectedIndex ToggleItemsSource)
                 {
                     CheckBox.Visibility = Visibility.Visible;
                     CheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding()
@@ -100,7 +103,7 @@ namespace CoolapkUWP.Controls
                     ToggleSwitch.Visibility = CheckBox.Visibility = Visibility.Collapsed;
                 }
 
-                if (ShyHeaderListView.ItemsSource is ICanComboBoxChangeSelectedIndex ComboBoxItemsSource)
+                if (source is ICanComboBoxChangeSelectedIndex ComboBoxItemsSource)
                 {
                     ComboBox.Visibility = Visibility.Visible;
                     ComboBox.ItemsSource = ComboBoxItemsSource.ItemSource;

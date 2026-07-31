@@ -174,11 +174,12 @@
                 <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
                     <Grid
                         x:Name="LayoutRoot"
-                        MinHeight="{ThemeResource NavigationViewItemOnLeftMinHeight}"
+                        Width="64"
+                        Height="64"
                         Margin="{ThemeResource NavigationViewItemOnLeftMargin}"
                         Background="{TemplateBinding Background}"
                         Control.IsTemplateFocusTarget="True"
-                        CornerRadius="{ThemeResource ControlCornerRadius}">
+                        CornerRadius="0">
                         <Grid.BackgroundTransition>
                             <BrushTransition Duration="0:0:0.083" />
                         </Grid.BackgroundTransition>
@@ -212,7 +213,7 @@
 
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
