@@ -81,9 +81,10 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 CornerRadius="{ThemeResource OverlayCornerRadius}">
-                <Border.Background>
-                    <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                </Border.Background>
+                <ctrl:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
             </Border>
             <Grid
                 Grid.Column="1"
@@ -120,15 +121,16 @@
                 <ColumnDefinition Width="56" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Ellipse
+            <Border
                 Width="40"
                 Height="40"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                </Ellipse.Fill>
-            </Ellipse>
+                <ctrl:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="20"
+                    Stretch="UniformToFill" />
+            </Border>
             <Grid
                 Grid.Column="1"
                 Margin="0,0,8,0"

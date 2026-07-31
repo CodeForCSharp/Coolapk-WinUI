@@ -232,9 +232,10 @@
                                                             Width="24"
                                                             Height="24"
                                                             CornerRadius="{ThemeResource ControlCornerRadius}">
-                                                            <Border.Background>
-                                                                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                                                            </Border.Background>
+                                                            <local:ImageEx
+                                                                Model="{x:Bind Pic}"
+                                                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                                                Stretch="UniformToFill" />
                                                         </Border>
                                                         <TextBlock
                                                             Grid.Column="1"

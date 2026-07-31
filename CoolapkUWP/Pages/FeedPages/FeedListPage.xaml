@@ -106,9 +106,10 @@
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         DragStarting="Image_DragStarting">
                         <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
-                            <Border.Background>
-                                <ImageBrush ImageSource="{x:Bind Cover.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                            </Border.Background>
+                            <control:ImageEx
+                                Model="{x:Bind Cover}"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                Stretch="UniformToFill" />
                         </Border>
                         <Grid
                             Padding="10"
@@ -315,10 +316,11 @@
                                 Height="56"
                                 HorizontalAlignment="Left"
                                 CornerRadius="{ThemeResource OverlayCornerRadius}">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                                </Border.Background>
-                            </Border>
+                                    <control:ImageEx
+                                        Model="{x:Bind Logo}"
+                                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                        Stretch="UniformToFill" />
+                                </Border>
                             <control:StackPanel Grid.Column="1" Margin="8,0">
                                 <TextBlock
                                     FontSize="16"
@@ -427,10 +429,11 @@
                                 Height="56"
                                 HorizontalAlignment="Left"
                                 CornerRadius="{ThemeResource OverlayCornerRadius}">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                                </Border.Background>
-                            </Border>
+                                    <control:ImageEx
+                                        Model="{x:Bind Logo}"
+                                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                        Stretch="UniformToFill" />
+                                </Border>
                             <control:StackPanel Grid.Column="1" Margin="8,0">
                                 <TextBlock
                                     FontSize="16"
@@ -597,10 +600,11 @@
                                     Height="56"
                                     HorizontalAlignment="Left"
                                     CornerRadius="{ThemeResource OverlayCornerRadius}">
-                                    <Border.Background>
-                                        <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                                    </Border.Background>
-                                </Border>
+                                <control:ImageEx
+                                    Model="{x:Bind Logo}"
+                                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                    Stretch="UniformToFill" />
+                            </Border>
                                 <control:StackPanel Grid.Column="1" Margin="8,0">
                                     <TextBlock
                                         FontSize="16"
@@ -1081,9 +1085,10 @@
                         CanDrag="True"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         DragStarting="Image_DragStarting">
-                        <Image
+                        <control:ImageEx
                             ContextFlyout="{StaticResource MoreFlyout}"
-                            Source="{x:Bind Cover.Pic, Mode=OneWay}"
+                            Model="{x:Bind Cover}"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Stretch="UniformToFill"
                             Tag="{x:Bind Cover, Mode=OneWay}" />
                     </Border>
@@ -1157,15 +1162,17 @@
                                     <ColumnDefinition Width="4" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Ellipse
+                                <Border
                                     Grid.Column="0"
                                     Width="20"
                                     Height="20"
-                                    VerticalAlignment="Center">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
+                                    VerticalAlignment="Center"
+                                    CornerRadius="10">
+                                    <control:ImageEx
+                                        Model="{x:Bind UserAvatar}"
+                                        CornerRadius="10"
+                                        Stretch="Fill" />
+                                </Border>
                                 <TextBlock
                                     Grid.Column="2"
                                     Margin="0,0,0,2"

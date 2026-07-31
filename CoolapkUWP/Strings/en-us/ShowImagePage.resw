@@ -147,4 +147,7 @@
   <data name="ShowMenuItem.Text" xml:space="preserve">
     <value>View</value>
   </data>
+  <data name="BackButton.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
 </root>

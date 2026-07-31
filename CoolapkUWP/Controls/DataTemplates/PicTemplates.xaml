@@ -2,7 +2,7 @@
     x:Class="CoolapkUWP.Controls.DataTemplates.PicTemplates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+      xmlns:controls="using:CoolapkUWP.Controls"
       xmlns:images="using:CoolapkUWP.Models.Images">
     <DataTemplate x:Key="PicDefaultTemplate" x:DataType="images:ImageModel">
         <Border
@@ -13,9 +13,6 @@
             KeyDown="Image_KeyDown"
             Tag="{x:Bind Mode=OneWay}"
             Tapped="Image_Tapped">
-            <Border.BackgroundTransition>
-                <BrushTransition />
-            </Border.BackgroundTransition>
             <Border.ContextFlyout>
                 <MenuFlyout>
                     <MenuFlyoutItem
@@ -56,21 +53,11 @@
                     </MenuFlyoutItem>
                 </MenuFlyout>
             </Border.ContextFlyout>
-            <Border.Background>
-                <ImageBrush ImageSource="{x:Bind Pic, Mode=OneWay}" Stretch="UniformToFill" />
-            </Border.Background>
             <Grid>
-                <Border
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Visibility="{x:Bind IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <Border.Child>
-                        <muxc:ProgressRing
-                            Width="50"
-                            Height="50"
-                            IsActive="{x:Bind IsLoading, Mode=OneWay}" />
-                    </Border.Child>
-                </Border>
+                <controls:ImageEx
+                    Model="{x:Bind}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Bottom">
                     <Border
                         x:Name="GIF"

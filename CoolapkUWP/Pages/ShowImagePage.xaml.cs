@@ -74,14 +74,14 @@ namespace CoolapkUWP.Pages
 
         }
 
-        private void AppWindow_Changed(object sender, object args) { }
-
         private bool TryGoBack(bool goBack = true)
         {
-            if (!Dispatcher.HasThreadAccess || !Frame.CanGoBack)
-            { return false; }
+            if (DispatcherQueue == null || !DispatcherQueue.HasThreadAccess) { return false; }
 
-            if (goBack) { Frame.GoBack(); }
+            Frame frame = Frame ?? (App.MainWindow.Content as Frame);
+            if (frame == null || !frame.CanGoBack) { return false; }
+
+            if (goBack) { frame.GoBack(); }
             return true;
         }
 
@@ -116,6 +116,9 @@ namespace CoolapkUWP.Pages
         {
             switch ((sender as FrameworkElement).Tag as string)
             {
+                case "Back":
+                    TryGoBack();
+                    break;
                 case "Copy":
                     Provider.CopyPic();
                     break;

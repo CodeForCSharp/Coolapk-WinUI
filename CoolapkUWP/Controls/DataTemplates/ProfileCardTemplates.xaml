@@ -170,9 +170,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     CornerRadius="{ThemeResource OverlayCornerRadius}">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Border.Background>
+                    <controls:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Stretch="UniformToFill" />
                 </Border>
                 <Grid
                     Grid.Column="1"
@@ -213,9 +214,10 @@
                     Height="36"
                     Margin="4"
                     CornerRadius="{ThemeResource ControlCornerRadius}">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Border.Background>
+                    <controls:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Stretch="UniformToFill" />
                 </Border>
                 <TextBlock
                     HorizontalAlignment="Stretch"
@@ -248,11 +250,13 @@
                     <ColumnDefinition Width="8" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Image
+                <controls:ImageEx
                     Width="20"
                     Height="20"
                     VerticalAlignment="Center"
-                    Source="{x:Bind Pic.Pic, Mode=OneWay}" />
+                    Model="{x:Bind Pic}"
+                    CornerRadius="10"
+                    Stretch="Uniform" />
                 <TextBlock
                     Grid.Column="2"
                     Margin="0,0,0,2"

@@ -41,9 +41,10 @@
                         VerticalAlignment="Stretch"
                         CornerRadius="{ThemeResource ControlCornerRadius}"
                         Visibility="{x:Bind IsShowLogo, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                        </Border.Background>
+                        <controls:ImageEx
+                            Model="{x:Bind Logo}"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Stretch="UniformToFill" />
                     </Border>
                 </Grid>
                 <TextBlock

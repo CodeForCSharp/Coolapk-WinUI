@@ -2,6 +2,7 @@
     x:Class="CoolapkUWP.Controls.DataTemplates.SearchWordTemplates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:CoolapkUWP.Models"
@@ -25,15 +26,17 @@
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Ellipse
+            <Border
                 Width="40"
                 Height="40"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top">
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{x:Bind Logo.Pic, Mode=OneWay}" />
-                </Ellipse.Fill>
-            </Ellipse>
+                VerticalAlignment="Top"
+                CornerRadius="20">
+                <controls:ImageEx
+                    Model="{x:Bind Logo}"
+                    CornerRadius="20"
+                    Stretch="Fill" />
+            </Border>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

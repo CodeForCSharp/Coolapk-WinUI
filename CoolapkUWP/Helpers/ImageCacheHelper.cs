@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
-using Windows.Storage.Streams;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ImageCache = CoolapkUWP.Common.ImageCache;
@@ -51,8 +50,27 @@ namespace CoolapkUWP.Helpers
             });
         }
 
-        internal static async Task<BitmapImage> GetImageAsync(ImageType type, string url, DispatcherQueue dispatcher, bool isForce = false)
+        private const int ThumbnailDecodePixelWidth = 512;
+        private const int IconDecodePixelWidth = 256;
+        private const int AvatarDecodePixelWidth = 256;
+
+        private static int GetDecodePixelWidth(ImageType type)
         {
+            if (type.HasFlag(ImageType.Small)) { return ThumbnailDecodePixelWidth; }
+            if (type.HasFlag(ImageType.Avatar)) { return AvatarDecodePixelWidth; }
+            if (type.HasFlag(ImageType.Icon)) { return IconDecodePixelWidth; }
+            return 0;
+        }
+
+        private static string SanitizeUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url)) { return url; }
+            return url.Trim('"').Replace("&quot;", string.Empty).Trim();
+        }
+
+        internal static async Task<BitmapImage> GetImageAsync(ImageType type, string url, DispatcherQueue dispatcher, bool isForce = false, int decodePixelWidth = 0)
+        {
+            url = SanitizeUrl(url);
             Uri uri = url.ValidateAndGetUri();
             if (uri == null) { return NoPic; }
 
@@ -69,93 +87,28 @@ namespace CoolapkUWP.Helpers
             {
                 if (type.HasFlag(ImageType.Small))
                 {
-                    if (url.Contains("coolapk.com") && !url.EndsWith(".png")) { url += ".s.jpg"; }
+                    if (url.Contains("coolapk.com") && !url.EndsWith(".png") && !url.EndsWith(".s.jpg")) { url += ".s.jpg"; }
                     uri = url.ValidateAndGetUri();
                 }
 
-                if (await dispatcher.AwaitableRunAsync(() => Dispatcher.HasThreadAccess))
+                if (decodePixelWidth <= 0) { decodePixelWidth = GetDecodePixelWidth(type); }
+
+                BitmapImage bitmap = null;
+                try
                 {
-                    await Dispatcher.ResumeForegroundAsync();
-                    try
-                    {
-                        BitmapImage image = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                        return image;
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        try
-                        {
-                            await ImageCache.Instance.RemoveAsync(new Uri[] { uri });
-                            BitmapImage image = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                            return image;
-                        }
-                        catch (Exception)
-                        {
-                            string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                            UIHelper.ShowMessage(str);
-                            return NoPic;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                        UIHelper.ShowMessage(str);
-                        return NoPic;
-                    }
+                    bitmap = await ImageCache.Instance.GetBitmapAsync(uri, decodePixelWidth, dispatcher);
                 }
-                else
+                catch (Exception)
                 {
-                    StorageFile file = null;
-                    try
-                    {
-                        file = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                        if (file == null)
-                        {
-                            _ = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                            file = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                        }
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        try
-                        {
-                            await ImageCache.Instance.RemoveAsync(new Uri[] { uri });
-                            _ = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                            file = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                        }
-                        catch (Exception)
-                        {
-                            string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                            UIHelper.ShowMessage(str);
-                            return null;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                        UIHelper.ShowMessage(str);
-                        return null;
-                    }
-                    using (IRandomAccessStreamWithContentType stream = await file.OpenReadAsync())
-                    {
-                        try
-                        {
-                            await dispatcher.ResumeForegroundAsync();
-                            BitmapImage image = new BitmapImage();
-                            await image.SetSourceAsync(stream);
-                            return image;
-                        }
-                        catch
-                        {
-                            return null;
-                        }
-                    }
                 }
+
+                return bitmap ?? NoPic;
             }
         }
 
         internal static async Task<StorageFile> GetImageFileAsync(ImageType type, string url)
         {
+            url = SanitizeUrl(url);
             Uri uri = url.ValidateAndGetUri();
             if (uri == null) { return null; }
 
@@ -167,28 +120,20 @@ namespace CoolapkUWP.Helpers
             {
                 if (type.HasFlag(ImageType.Small))
                 {
-                    if (url.Contains("coolapk.com") && !url.EndsWith(".png")) { url += ".s.jpg"; }
+                    if (url.Contains("coolapk.com") && !url.EndsWith(".png") && !url.EndsWith(".s.jpg")) { url += ".s.jpg"; }
                     uri = url.ValidateAndGetUri();
                 }
 
                 try
                 {
-                    StorageFile image = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                    if (image == null)
-                    {
-                        _ = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                        image = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                    }
-                    return image;
+                    return await ImageCache.Instance.GetFileFromCacheAsync(uri);
                 }
                 catch (FileNotFoundException)
                 {
                     try
                     {
                         await ImageCache.Instance.RemoveAsync(new Uri[] { uri });
-                        _ = await ImageCache.Instance.GetFromCacheAsync(uri, true);
-                        StorageFile image = await ImageCache.Instance.GetFileFromCacheAsync(uri);
-                        return image;
+                        return await ImageCache.Instance.GetFileFromCacheAsync(uri);
                     }
                     catch (Exception)
                     {

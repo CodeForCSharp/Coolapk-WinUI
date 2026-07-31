@@ -101,7 +101,7 @@ namespace CoolapkUWP.Models.Users
 
             if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
             {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.OriginImage);
+                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
             }
 
             if (token.TryGetPropertyValue("block_status", out JsonNode block_status))

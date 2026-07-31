@@ -205,9 +205,7 @@
                                     KeyDown="Grid_KeyDown"
                                     Tag="{x:Bind Mode=OneWay}"
                                     Tapped="Grid_Tapped">
-                                    <Border.Background>
-                                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                                    </Border.Background>
+                                    <control:ImageEx Model="{x:Bind Pic}" Stretch="UniformToFill" />
                                 </Border>
                             </DataTemplate>
                         </FlipView.ItemTemplate>
@@ -238,11 +236,10 @@
                 Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped"
                 Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
-                <Image
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    CanDrag="True"
-                    Source="{x:Bind Pic.Pic, Mode=OneWay}" />
+                <control:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="Uniform" />
             </Border>
             <Border
                 x:Name="SubTitleBorder"
@@ -291,7 +288,10 @@
                                     Width="40"
                                     Height="40"
                                     CornerRadius="{ThemeResource ControlCornerRadius}">
-                                    <Image Source="{x:Bind Pic.Pic, Mode=OneWay}" />
+                                    <control:ImageEx
+                                        Model="{x:Bind Pic}"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                                        Stretch="Uniform" />
                                 </Border>
                                 <TextBlock
                                     x:Name="TitleText"
@@ -501,12 +501,14 @@
             KeyDown="Grid_KeyDown"
             Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
-            <Border.Background>
-                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-            </Border.Background>
-            <Grid
-                Padding="4"
-                VerticalAlignment="Bottom"
+            <Grid>
+                <control:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
+                <Grid
+                    Padding="4"
+                    VerticalAlignment="Bottom"
                 CornerRadius="0,0,8,8"
                 Tag="{x:Bind Mode=OneWay}"
                 Tapped="Grid_Tapped">
@@ -526,6 +528,7 @@
                     TextAlignment="Center"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap" />
+                </Grid>
             </Grid>
         </Border>
     </DataTemplate>
@@ -539,10 +542,12 @@
             KeyDown="Grid_KeyDown"
             Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
-            <Border.Background>
-                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-            </Border.Background>
-            <StackPanel Padding="4" CornerRadius="{ThemeResource OverlayCornerRadius}">
+            <Grid>
+                <control:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
+                <StackPanel Padding="4" CornerRadius="{ThemeResource OverlayCornerRadius}">
                     <StackPanel.Background>
                     <AcrylicBrush
                        
@@ -557,9 +562,10 @@
                     CornerRadius="{ThemeResource ControlCornerRadius}"
                     Tag="{x:Bind Mode=OneWay}"
                     Tapped="Grid_Tapped">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Border.Background>
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Stretch="UniformToFill" />
                 </Border>
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -578,7 +584,8 @@
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
                     Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-            </StackPanel>
+                </StackPanel>
+            </Grid>
         </Border>
     </DataTemplate>
 
@@ -591,10 +598,11 @@
             Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
             <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
-                <Image
+                <control:ImageEx
+                    Model="{x:Bind Pic}"
                     MaxWidth="160"
                     MaxHeight="65"
-                    Source="{x:Bind Pic.Pic, Mode=OneWay}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Stretch="UniformToFill" />
             </Border>
             <Border
@@ -619,9 +627,10 @@
             KeyDown="Grid_KeyDown"
             Tag="{x:Bind Mode=OneWay}"
             Tapped="Grid_Tapped">
-            <Grid.Background>
-                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" />
-            </Grid.Background>
+            <control:ImageEx
+                Model="{x:Bind Pic}"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Stretch="Fill" />
             <Border
                 VerticalAlignment="Bottom"
                 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
@@ -647,16 +656,18 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Ellipse
+                <Border
                     Grid.Row="0"
                     Width="36"
                     Height="36"
                     Margin="8"
-                    HorizontalAlignment="Center">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Ellipse.Fill>
-                </Ellipse>
+                    HorizontalAlignment="Center"
+                    CornerRadius="18">
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="18"
+                        Stretch="UniformToFill" />
+                </Border>
                 <TextBlock
                     Grid.Row="1"
                     Text="{x:Bind Title, Mode=OneWay}"
@@ -687,9 +698,10 @@
                     Height="16"
                     Margin="8"
                     CornerRadius="{ThemeResource ControlCornerRadius}">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Border.Background>
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Stretch="UniformToFill" />
                 </Border>
                 <TextBlock
                     Grid.Column="1"

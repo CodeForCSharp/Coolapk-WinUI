@@ -405,9 +405,10 @@
                     BorderThickness="1"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Visibility="{x:Bind ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                    <Grid.Background>
-                        <ImageBrush ImageSource="{x:Bind ExtraPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Grid.Background>
+                    <controls:ImageEx
+                        Model="{x:Bind ExtraPic}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Stretch="UniformToFill" />
                     <Grid
                         Padding="8"
                         Tag="{x:Bind ExtraUrl, Mode=OneWay}"
@@ -429,9 +430,10 @@
                             Height="56"
                             CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Visibility="{x:Bind ExtraPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                            <Border.Background>
-                                <ImageBrush ImageSource="{x:Bind ExtraPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                            </Border.Background>
+                            <controls:ImageEx
+                                Model="{x:Bind ExtraPic}"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                Stretch="UniformToFill" />
                         </Border>
                         <Border
                             Width="56"
@@ -497,9 +499,10 @@
                     BorderThickness="1"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Visibility="{x:Bind MediaUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                    <Grid.Background>
-                        <ImageBrush ImageSource="{x:Bind MediaPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                    </Grid.Background>
+                    <controls:ImageEx
+                        Model="{x:Bind MediaPic}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Stretch="UniformToFill" />
                     <Grid
                         Padding="8"
                         Tag="{x:Bind MediaUrl, Mode=OneWay}"
@@ -520,9 +523,10 @@
                             Height="56"
                             CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Visibility="{x:Bind MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                            <Border.Background>
-                                <ImageBrush ImageSource="{x:Bind MediaPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                            </Border.Background>
+                            <controls:ImageEx
+                                Model="{x:Bind MediaPic}"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                                Stretch="UniformToFill" />
                         </Border>
                         <Border
                             Width="56"
@@ -992,9 +996,10 @@
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnRootTapped">
-            <Grid.Background>
-                <ImageBrush ImageSource="{x:Bind Pic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-            </Grid.Background>
+            <controls:ImageEx
+                Model="{x:Bind Pic}"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Stretch="UniformToFill" />
             <Border
                 VerticalAlignment="Bottom"
                 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"

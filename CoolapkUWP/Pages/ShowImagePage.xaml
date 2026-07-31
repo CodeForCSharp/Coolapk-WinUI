@@ -252,6 +252,17 @@
             Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <CommandBar.PrimaryCommands>
                 <AppBarButton
+                    x:Uid="/ShowImagePage/BackButton"
+                    Click="AppBarButton_Click"
+                    Tag="Back">
+                    <AppBarButton.Icon>
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72B;" />
+                    </AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Left" Modifiers="Menu" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton
                     x:Uid="/ShowImagePage/RefreshButton"
                     Click="AppBarButton_Click"
                     Tag="Refresh">

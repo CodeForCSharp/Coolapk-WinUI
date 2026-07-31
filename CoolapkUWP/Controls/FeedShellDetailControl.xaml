@@ -87,9 +87,8 @@
                 Margin="0,0,0,4"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.IsFeedArticle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <Image
-                    x:Name="MessageCover"
-                    Source="{x:Bind FeedDetail.MessageCover.Pic, Mode=OneWay}"
+                <local:ImageEx
+                    Model="{x:Bind FeedDetail.MessageCover}"
                     Stretch="UniformToFill"
                     Tag="{x:Bind FeedDetail.MessageCover, Mode=OneWay}"
                     Tapped="OnTapped"
@@ -174,9 +173,10 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind FeedDetail.TopicLogo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                        </Border.Background>
+                        <local:ImageEx
+                            Model="{x:Bind FeedDetail.TopicLogo}"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Stretch="UniformToFill" />
                     </Border>
                     <TextBlock
                         Grid.Column="1"
@@ -224,9 +224,10 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind FeedDetail.DyhLogo.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                        </Border.Background>
+                        <local:ImageEx
+                            Model="{x:Bind FeedDetail.DyhLogo}"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Stretch="UniformToFill" />
                     </Border>
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
@@ -506,9 +507,10 @@
                 BorderThickness="1"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <Grid.Background>
-                    <ImageBrush ImageSource="{x:Bind FeedDetail.ExtraPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                </Grid.Background>
+                <local:ImageEx
+                    Model="{x:Bind FeedDetail.ExtraPic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
                 <Grid
                     Padding="8"
                     Tag="{x:Bind FeedDetail.ExtraUrl, Mode=OneWay}"
@@ -530,9 +532,10 @@
                         Height="56"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         Visibility="{x:Bind FeedDetail.ExtraPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind FeedDetail.ExtraPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                        </Border.Background>
+                        <local:ImageEx
+                            Model="{x:Bind FeedDetail.ExtraPic}"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}"
+                            Stretch="UniformToFill" />
                     </Border>
                     <Border
                         Width="56"
@@ -597,9 +600,10 @@
                 BorderThickness="1"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.MediaUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <Grid.Background>
-                    <ImageBrush ImageSource="{x:Bind FeedDetail.MediaPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                </Grid.Background>
+                <local:ImageEx
+                    Model="{x:Bind FeedDetail.MediaPic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
                 <Grid
                     Padding="8"
                     Tag="{x:Bind FeedDetail.MediaUrl, Mode=OneWay}"
@@ -621,9 +625,10 @@
                         Height="56"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind FeedDetail.MediaPic.Pic, Mode=OneWay}" Stretch="UniformToFill" />
-                        </Border.Background>
+                        <local:ImageEx
+                            Model="{x:Bind FeedDetail.MediaPic}"
+                            CornerRadius="{ThemeResource OverlayCornerRadius}"
+                            Stretch="UniformToFill" />
                     </Border>
                     <Border
                         Width="56"
