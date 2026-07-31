@@ -11,7 +11,7 @@ namespace CoolapkUWP.ViewModels.DataSource
     /// Datasource base for Coolapk that enabled incremental loading (page based). <br/>
     /// Clone from <see cref="cnblogs UAP" href="https://github.com/MS-UAP/cnblogs-UAP"./>
     /// </summary>
-    public abstract class DataSourceBase<T> : IncrementalLoadingBase<T>
+    public abstract partial class DataSourceBase<T> : IncrementalLoadingBase<T>
     {
         public DataSourceBase() : base(App.MainWindow.DispatcherQueue) { }
 

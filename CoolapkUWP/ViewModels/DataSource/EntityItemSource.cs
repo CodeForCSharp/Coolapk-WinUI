@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.ViewModels.DataSource
 {
-    public abstract class EntityItemSource : DataSourceBase<Entity>
+    public abstract partial class EntityItemSource : DataSourceBase<Entity>
     {
         protected CoolapkListProvider Provider;
         protected CoolapkListProvider SubProvider;

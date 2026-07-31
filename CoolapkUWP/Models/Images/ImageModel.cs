@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoolapkUWP.Models.Images
 {
+    [WinRT.GeneratedBindableCustomProperty]
     public partial class ImageModel : INotifyPropertyChanged, IPic
     {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));

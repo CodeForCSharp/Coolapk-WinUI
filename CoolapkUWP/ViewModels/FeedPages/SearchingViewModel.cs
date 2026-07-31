@@ -119,7 +119,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         public bool IsEqual(SearchingViewModel other) => Title == other.Title;
     }
 
-    public class SearchFeedItemSource : EntityItemSource, INotifyPropertyChanged
+    public partial class SearchFeedItemSource : EntityItemSource, INotifyPropertyChanged
     {
         public string Keyword;
 
@@ -228,7 +228,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class SearchUserItemSource : EntityItemSource
+    public partial class SearchUserItemSource : EntityItemSource
     {
         public string Keyword;
 
@@ -252,7 +252,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class SearchTopicItemSource : EntityItemSource
+    public partial class SearchTopicItemSource : EntityItemSource
     {
         public string Keyword;
 

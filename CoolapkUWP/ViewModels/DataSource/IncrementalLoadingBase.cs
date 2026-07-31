@@ -24,7 +24,7 @@ namespace CoolapkUWP.ViewModels.DataSource
     /// so that you can load different data in your view model, refer this blog for detail
     /// <see href="http://blogs.msdn.com/b/devosaure/archive/2012/10/15/isupportincrementalloading-loading-a-subsets-of-data.aspx"/>
     /// </summary>
-    public abstract class IncrementalLoadingBase<T> : ObservableCollection<T>, ISupportIncrementalLoading
+    public abstract partial class IncrementalLoadingBase<T> : ObservableCollection<T>, ISupportIncrementalLoading
     {
         #region ISupportIncrementalLoading
 

@@ -644,7 +644,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class FeedListItemSource : EntityItemSource
+    public partial class FeedListItemSource : EntityItemSource
     {
         public string ID;
 

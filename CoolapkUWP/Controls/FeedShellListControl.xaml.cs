@@ -76,43 +76,47 @@ namespace CoolapkUWP.Controls
 
         private void ShyHeaderListView_ShyHeaderSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ShyHeaderListView.ItemsSource is ICanToggleChangeSelectedIndex ToggleItemsSource)
+            try
             {
-                CheckBox.Visibility = Visibility.Visible;
-                CheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding()
+                if (ShyHeaderListView.ItemsSource is ICanToggleChangeSelectedIndex ToggleItemsSource)
                 {
-                    Mode = BindingMode.TwoWay,
-                    Source = ToggleItemsSource,
-                    Path = new PropertyPath("ToggleIsOn")
-                });
-                ToggleSwitch.Visibility = Visibility.Visible;
-                ToggleSwitch.SetBinding(ToggleSwitch.IsOnProperty, new Binding()
+                    CheckBox.Visibility = Visibility.Visible;
+                    CheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding()
+                    {
+                        Mode = BindingMode.TwoWay,
+                        Source = ToggleItemsSource,
+                        Path = new PropertyPath("ToggleIsOn")
+                    });
+                    ToggleSwitch.Visibility = Visibility.Visible;
+                    ToggleSwitch.SetBinding(ToggleSwitch.IsOnProperty, new Binding()
+                    {
+                        Mode = BindingMode.TwoWay,
+                        Source = ToggleItemsSource,
+                        Path = new PropertyPath("ToggleIsOn")
+                    });
+                }
+                else
                 {
-                    Mode = BindingMode.TwoWay,
-                    Source = ToggleItemsSource,
-                    Path = new PropertyPath("ToggleIsOn")
-                });
-            }
-            else
-            {
-                ToggleSwitch.Visibility = CheckBox.Visibility = Visibility.Collapsed;
-            }
+                    ToggleSwitch.Visibility = CheckBox.Visibility = Visibility.Collapsed;
+                }
 
-            if (ShyHeaderListView.ItemsSource is ICanComboBoxChangeSelectedIndex ComboBoxItemsSource)
-            {
-                ComboBox.Visibility = Visibility.Visible;
-                ComboBox.ItemsSource = ComboBoxItemsSource.ItemSource;
-                ComboBox.SetBinding(Selector.SelectedIndexProperty, new Binding()
+                if (ShyHeaderListView.ItemsSource is ICanComboBoxChangeSelectedIndex ComboBoxItemsSource)
                 {
-                    Mode = BindingMode.TwoWay,
-                    Source = ComboBoxItemsSource,
-                    Path = new PropertyPath("ComboBoxSelectedIndex")
-                });
+                    ComboBox.Visibility = Visibility.Visible;
+                    ComboBox.ItemsSource = ComboBoxItemsSource.ItemSource;
+                    ComboBox.SetBinding(Selector.SelectedIndexProperty, new Binding()
+                    {
+                        Mode = BindingMode.TwoWay,
+                        Source = ComboBoxItemsSource,
+                        Path = new PropertyPath("ComboBoxSelectedIndex")
+                    });
+                }
+                else
+                {
+                    ComboBox.Visibility = Visibility.Collapsed;
+                }
             }
-            else
-            {
-                ComboBox.Visibility = Visibility.Collapsed;
-            }
+            catch { }
         }
 
         private void ShyHeaderListView_SizeChanged(object sender, SizeChangedEventArgs e)

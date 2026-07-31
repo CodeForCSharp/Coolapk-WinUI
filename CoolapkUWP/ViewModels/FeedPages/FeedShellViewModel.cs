@@ -252,7 +252,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class ReplyItemSource : EntityItemSource, INotifyPropertyChanged, ICanComboBoxChangeSelectedIndex, ICanToggleChangeSelectedIndex
+    [WinRT.GeneratedBindableCustomProperty]
+    public partial class ReplyItemSource : EntityItemSource, INotifyPropertyChanged, ICanComboBoxChangeSelectedIndex, ICanToggleChangeSelectedIndex
     {
         public string ID;
         public List<string> ItemSource { get; private set; }
@@ -356,7 +357,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class LikeItemSource : EntityItemSource
+    public partial class LikeItemSource : EntityItemSource
     {
         public string ID;
 
@@ -380,7 +381,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class ShareItemSource : EntityItemSource
+    public partial class ShareItemSource : EntityItemSource
     {
         public string ID;
 
@@ -404,7 +405,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class QuestionItemSource : EntityItemSource
+    public partial class QuestionItemSource : EntityItemSource
     {
         public string ID;
 
@@ -430,7 +431,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class VoteItemSource : EntityItemSource
+    public partial class VoteItemSource : EntityItemSource
     {
         public string ID;
 
@@ -456,7 +457,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class TagItemSource : EntityItemSource
+    public partial class TagItemSource : EntityItemSource
     {
         public string ID;
 

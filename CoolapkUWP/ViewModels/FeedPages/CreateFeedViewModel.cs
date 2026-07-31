@@ -196,7 +196,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class CreateUserItemSource : EntityItemSource
+    public partial class CreateUserItemSource : EntityItemSource
     {
         private string keyword = string.Empty;
         public string Keyword
@@ -253,7 +253,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public class CreateTopicItemSource : EntityItemSource
+    public partial class CreateTopicItemSource : EntityItemSource
     {
         private string keyword = string.Empty;
         public string Keyword
