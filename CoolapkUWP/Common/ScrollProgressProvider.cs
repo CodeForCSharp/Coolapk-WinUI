@@ -173,8 +173,7 @@ namespace CoolapkUWP.Common
 
             try
             {
-                var scrollVisual = ElementCompositionPreview.GetElementVisual(sv);
-                scrollPropertySet = scrollVisual?.Properties;
+                scrollPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(sv);
 
                 var compositor = Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread();
                 if (compositor != null && scrollPropertySet != null)

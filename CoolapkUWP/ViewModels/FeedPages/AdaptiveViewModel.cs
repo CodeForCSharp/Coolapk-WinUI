@@ -15,7 +15,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
     public partial class AdaptiveViewModel : EntityItemSource, IViewModel
     {
         private readonly string Uri;
-        private readonly List<Type> EntityTypes;
         protected bool IsInitPage => Uri == "/main/init";
         protected bool IsIndexPage => !Uri.Contains("?");
         protected bool IsHotFeedPage => Uri == "/main/indexV8" || Uri == "/main/index";
@@ -48,20 +47,18 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
 
-        internal AdaptiveViewModel(string uri, List<Type> types = null)
+        internal AdaptiveViewModel(string uri)
         {
             Uri = GetUri(uri);
-            EntityTypes = types;
             Provider = new CoolapkListProvider(
                 (p, _, __) => UriHelper.GetUri(UriType.GetIndexPage, Uri, IsIndexPage ? "?" : "&", p),
                 GetEntities,
                 "entityId");
         }
 
-        internal AdaptiveViewModel(CoolapkListProvider provider, List<Type> types = null)
+        internal AdaptiveViewModel(CoolapkListProvider provider)
         {
             Provider = provider;
-            EntityTypes = types;
         }
 
         public static AdaptiveViewModel GetUserListProvider(string uid, bool isFollowList, string name)
@@ -222,11 +219,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 foreach (Entity item in items)
                 {
                     if (item is NullEntity) { continue; }
-                    if (EntityTypes == null || EntityTypes.Contains(item.GetType()))
-                    {
-                        await AddAsync(item);
-                        AddSubProvider(item);
-                    }
+                    await AddAsync(item);
+                    AddSubProvider(item);
                 }
             }
         }

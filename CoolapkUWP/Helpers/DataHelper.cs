@@ -1,4 +1,5 @@
 ﻿using CoolapkUWP.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -107,7 +108,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(DataHelper)).Warn(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(DataHelper)).LogWarning(ex, ex.ExceptionToMessage());
                 string s = str.Replace("<br>", "\n").Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<br/>", "\n").Replace("<p>", "").Replace("</p>", "\n").Replace("&nbsp;", " ").Replace("<br />", "").Replace("<br />", "");
                 while (s.IndexOf("<a", StringComparison.Ordinal) > 0)
                 {
@@ -129,7 +130,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(DataHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(DataHelper)).LogError(ex, ex.ExceptionToMessage());
             }
             return str;
         }

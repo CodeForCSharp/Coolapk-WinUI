@@ -2,6 +2,7 @@
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -326,7 +327,7 @@ namespace CoolapkUWP.Models
                     if (itemObj.TryGetPropertyValue("entityType", out JsonNode entityType))
                     {
                         try { itemObj["entityForward"] = EntityTemplate; }
-                        catch (Exception ex) { SettingsHelper.LogManager.GetLogger(nameof(IndexPageModel)).Warn(ex.ExceptionToMessage(), ex); }
+                        catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(IndexPageModel)).LogWarning(ex, ex.ExceptionToMessage()); }
                         switch (entityType.ToString())
                         {
                             case "feed":

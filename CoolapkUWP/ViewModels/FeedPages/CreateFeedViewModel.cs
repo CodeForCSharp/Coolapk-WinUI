@@ -5,6 +5,7 @@ using CoolapkUWP.Models.Upload;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(CreateFeedViewModel)).Warn(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(CreateFeedViewModel)).LogWarning(ex, ex.ExceptionToMessage());
                 try
                 {
                     using (InMemoryRandomAccessStream random = new InMemoryRandomAccessStream())
@@ -105,7 +106,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 }
                 catch (Exception e)
                 {
-                    SettingsHelper.LogManager.GetLogger(nameof(CreateFeedViewModel)).Error(e.ExceptionToMessage(), e);
+                    SettingsHelper.LogManager.CreateLogger(nameof(CreateFeedViewModel)).LogError(e, e.ExceptionToMessage());
                 }
             }
         }

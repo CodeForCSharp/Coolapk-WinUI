@@ -1,10 +1,9 @@
 ﻿using CoolapkUWP.Models.Update;
-using MetroLog;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -135,7 +134,7 @@ namespace CoolapkUWP.Helpers
     {
         public static event TypedEventHandler<string, bool> LoginChanged;
         public static readonly LocalSettingsStorage LocalObject = new LocalSettingsStorage(new SystemTextJsonObjectSerializer());
-        public static readonly ILogManager LogManager = LogManagerFactory.CreateLogManager();
+        public static readonly ILoggerFactory LogManager = new LoggerFactory(new[] { new FileLoggerProvider() });
 
         static SettingsHelper() => SetDefaultSettings();
 
@@ -323,8 +322,7 @@ namespace CoolapkUWP.Helpers
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() },
-            TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
+            TypeInfoResolver = JsonContext.Default
         };
 
         string IObjectSerializer.Serialize<T>(T value) => JsonSerializer.Serialize(value, _options);

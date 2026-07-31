@@ -2,6 +2,7 @@
 using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Update;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -236,13 +237,13 @@ namespace CoolapkUWP.Helpers
             }
             catch (HttpRequestException e)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(ImageCacheHelper)).Error(e.ExceptionToMessage(), e);
+                SettingsHelper.LogManager.CreateLogger(nameof(ImageCacheHelper)).LogError(e, e.ExceptionToMessage());
                 if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(ex, ex.ExceptionToMessage());
                 return null;
             }
         }
@@ -256,13 +257,13 @@ namespace CoolapkUWP.Helpers
             }
             catch (HttpRequestException e)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(e.ExceptionToMessage(), e);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
                 if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(ex, ex.ExceptionToMessage());
                 return null;
             }
         }
@@ -276,13 +277,13 @@ namespace CoolapkUWP.Helpers
             }
             catch (HttpRequestException e)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(e.ExceptionToMessage(), e);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
                 if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(ex, ex.ExceptionToMessage());
                 return null;
             }
         }
@@ -331,13 +332,13 @@ namespace CoolapkUWP.Helpers
             }
             catch (HttpRequestException e)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(e.ExceptionToMessage(), e);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
                 if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
                 return result;
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(ex, ex.ExceptionToMessage());
                 if (string.IsNullOrWhiteSpace(str)) { throw ex; }
                 JsonObject o = JsonNode.Parse(str).AsObject();
                 if (o == null) { throw ex; }
@@ -376,7 +377,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (FormatException ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(NetworkHelper)).Warn(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogWarning(ex, ex.ExceptionToMessage());
             }
             return uri;
         }

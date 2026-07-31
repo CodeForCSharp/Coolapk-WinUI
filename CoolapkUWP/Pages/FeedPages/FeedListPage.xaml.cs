@@ -1,6 +1,7 @@
 ﻿using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Images;
+using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.DataSource;
@@ -302,15 +303,12 @@ namespace CoolapkUWP.Pages.FeedPages
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            switch (item.GetType().Name)
-            {
-                case "DyhDetail": return DyhDetail;
-                case "UserDetail": return UserDetail;
-                case "TopicDetail": return TopicDetail;
-                case "ProductDetail": return ProductDetail;
-                case "CollectionDetail": return CollectionDetail;
-                default: return Others;
-            }
+            if (item is DyhDetail) { return this.DyhDetail; }
+            if (item is UserDetail) { return this.UserDetail; }
+            if (item is TopicDetail) { return this.TopicDetail; }
+            if (item is ProductDetail) { return this.ProductDetail; }
+            if (item is CollectionDetail) { return this.CollectionDetail; }
+            return Others;
         }
     }
 }

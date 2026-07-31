@@ -1,4 +1,5 @@
 ﻿using CoolapkUWP.Helpers;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 
@@ -24,7 +25,7 @@ namespace CoolapkUWP.Models
                 }
                 catch (Exception ex)
                 {
-                    SettingsHelper.LogManager.GetLogger(nameof(Entity)).Warn(ex.ExceptionToMessage(), ex);
+                    SettingsHelper.LogManager.CreateLogger(nameof(Entity)).LogWarning(ex, ex.ExceptionToMessage());
                     EntityIDText = entityId.ToString();
                 }
             }

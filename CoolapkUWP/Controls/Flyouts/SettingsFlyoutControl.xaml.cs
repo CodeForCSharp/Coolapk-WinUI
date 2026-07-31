@@ -101,7 +101,7 @@ namespace CoolapkUWP.Controls
             switch ((sender as FrameworkElement).Tag.ToString())
             {
                 case "OpenLogFile":
-                    StorageFolder folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("MetroLogs", CreationCollisionOption.OpenIfExists);
+                    StorageFolder folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("Logs", CreationCollisionOption.OpenIfExists);
                     IReadOnlyList<StorageFile> files = await folder.GetFilesAsync();
                     StorageFile file = files.FirstOrDefault();
                     if (file != null) { _ = Launcher.LaunchFileAsync(file); }
@@ -116,7 +116,7 @@ namespace CoolapkUWP.Controls
             switch ((sender as FrameworkElement).Tag.ToString())
             {
                 case "LogFolder":
-                    _ = Launcher.LaunchFolderAsync(await ApplicationData.Current.LocalFolder.CreateFolderAsync("MetroLogs", CreationCollisionOption.OpenIfExists));
+                    _ = Launcher.LaunchFolderAsync(await ApplicationData.Current.LocalFolder.CreateFolderAsync("Logs", CreationCollisionOption.OpenIfExists));
                     break;
                 case "WindowsColor":
                     _ = Launcher.LaunchUriAsync(new Uri("ms-settings:colors"));

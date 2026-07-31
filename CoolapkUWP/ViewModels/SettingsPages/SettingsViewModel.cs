@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -305,7 +306,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
                 UpdateStateSeverity = InfoBarSeverity.Error;
                 GotoUpdateVisibility = Visibility.Collapsed;
                 UpdateStateTitle = _loader.GetString("CheckFailed");
-                SettingsHelper.LogManager.GetLogger(nameof(SettingsViewModel)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(SettingsViewModel)).LogError(ex, ex.ExceptionToMessage());
             }
             if (info != null)
             {

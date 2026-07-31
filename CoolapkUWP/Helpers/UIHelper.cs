@@ -7,6 +7,7 @@ using CoolapkUWP.Pages.SettingsPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,7 +117,7 @@ namespace CoolapkUWP.Helpers
             {
                 if (source is FrameworkElement FrameworkElement)
                 {
-                    result = source == DependencyObject.FindAscendant(FrameworkElement.Name);
+                    result = FrameworkElement == DependencyObject.FindAscendant(FrameworkElement.Name);
                 }
             }
 
@@ -181,7 +182,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (Exception e)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(UIHelper)).Error(e.ExceptionToMessage(), e);
+                SettingsHelper.LogManager.CreateLogger(nameof(UIHelper)).LogError(e, e.ExceptionToMessage());
                 return false;
             }
         }

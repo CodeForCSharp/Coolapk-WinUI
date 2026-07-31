@@ -3,6 +3,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Pages;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Linq;
@@ -109,7 +110,7 @@ namespace CoolapkUWP
 
         private void Application_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            SettingsHelper.LogManager.GetLogger(nameof(App)).Fatal(e.Exception.ExceptionToMessage(), e.Exception);
+            SettingsHelper.LogManager.CreateLogger(nameof(App)).LogCritical(e.Exception, e.Exception.ExceptionToMessage());
             e.Handled = true;
         }
     }

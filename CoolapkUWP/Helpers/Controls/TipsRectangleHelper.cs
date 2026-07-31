@@ -1,4 +1,5 @@
 using CommunityToolkit.WinUI;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -362,7 +363,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(TipsRectangleHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(TipsRectangleHelper)).LogError(ex, ex.ExceptionToMessage());
                 Debug.WriteLine(ex.Message);
                 Debug.WriteLine(ex.StackTrace);
             }

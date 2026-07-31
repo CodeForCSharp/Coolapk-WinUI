@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Helpers
 {
+    [JsonSourceGenerationOptions(UseStringEnumConverter = true)]
     [JsonSerializable(typeof(UpdateInfo))]
     [JsonSerializable(typeof(Asset))]
     [JsonSerializable(typeof(UploadPicturePrepareResult))]
@@ -18,6 +19,11 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(APIVersions))]
     [JsonSerializable(typeof(TokenVersions))]
     [JsonSerializable(typeof(Microsoft.UI.Xaml.ElementTheme))]
+    [JsonSerializable(typeof(string))]
+    [JsonSerializable(typeof(bool))]
+    [JsonSerializable(typeof(int))]
+    [JsonSerializable(typeof(uint))]
+    [JsonSerializable(typeof(System.DateTime))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

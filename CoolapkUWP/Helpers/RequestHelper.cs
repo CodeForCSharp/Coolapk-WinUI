@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CoolapkUWP.Models.Upload;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -23,7 +24,7 @@ namespace CoolapkUWP.Helpers
             try { token = JsonNode.Parse(results).AsObject(); }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(RequestHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
                 UIHelper.ShowMessage("加载失败");
                 return (false, null);
             }
@@ -54,7 +55,7 @@ namespace CoolapkUWP.Helpers
             try { token = JsonNode.Parse(json).AsObject(); }
             catch (Exception ex)
             {
-                SettingsHelper.LogManager.GetLogger(nameof(RequestHelper)).Error(ex.ExceptionToMessage(), ex);
+                SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
                 UIHelper.ShowMessage("加载失败");
                 return (false, null);
             }
@@ -136,7 +137,7 @@ namespace CoolapkUWP.Helpers
                                     }
                                     catch (Exception ex)
                                     {
-                                        SettingsHelper.LogManager.GetLogger(nameof(RequestHelper)).Error(ex.ExceptionToMessage(), ex);
+                                        SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
                                         UIHelper.ShowMessage("上传失败");
                                         continue;
                                     }
