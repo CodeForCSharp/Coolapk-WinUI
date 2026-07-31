@@ -949,14 +949,16 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Visibility="{x:Bind ReplyRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                    <muxc:ItemsRepeater
+                    <ItemsControl
                         HorizontalAlignment="Stretch"
                         ItemTemplate="{StaticResource ReplyRowsItemTemplate}"
                         ItemsSource="{x:Bind ReplyRows, Mode=OneWay}">
-                        <muxc:ItemsRepeater.Layout>
-                            <muxc:StackLayout />
-                        </muxc:ItemsRepeater.Layout>
-                    </muxc:ItemsRepeater>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                     <Button
                         x:Name="SeeAllButton"
                         Padding="4"
