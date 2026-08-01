@@ -35,13 +35,15 @@ namespace CoolapkUWP.Pages.FeedPages
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.Parameter is AdaptiveViewModel ViewModel
-                && Provider?.IsEqual(ViewModel) != true)
+            if (e.Parameter is AdaptiveViewModel ViewModel)
             {
-                Provider = ViewModel;
+                if (Provider?.IsEqual(ViewModel) != true)
+                {
+                    Provider = ViewModel;
+                    await Refresh(true);
+                }
                 Provider.LoadMoreStarted += UIHelper.ShowProgressBar;
                 Provider.LoadMoreCompleted += UIHelper.HideProgressBar;
-                await Refresh(true);
             }
         }
 

@@ -91,13 +91,13 @@ namespace CoolapkUWP.Common
         {
             await dispatcher.ResumeForegroundAsync();
 
-            if (decodePixelWidth <= 0 || decodePixelWidth > MaxDecodePixelWidth) { decodePixelWidth = MaxDecodePixelWidth; }
+            if (decodePixelWidth > MaxDecodePixelWidth) { decodePixelWidth = MaxDecodePixelWidth; }
 
             string fileName = GetCacheFileName(uri);
             string key = GetCacheKey(fileName, decodePixelWidth);
 
             BitmapImage cached = GetFromMemoryCache(key);
-            if (cached == null) { cached = GetBestFromMemoryCache(fileName, decodePixelWidth); }
+            if (cached == null && decodePixelWidth > 0) { cached = GetBestFromMemoryCache(fileName, decodePixelWidth); }
             if (cached != null) { return cached; }
 
             if (_inflightDecodes.TryGetValue(key, out Task<BitmapImage> pending)) { return await pending; }

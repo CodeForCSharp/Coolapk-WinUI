@@ -51,6 +51,7 @@ namespace CoolapkUWP.ViewModels
                     RaisePropertyChangedEvent();
                     Title = GetTitle(Images[value].Uri);
                     ShowOrigin = Images[value].Type.HasFlag(ImageType.Small);
+                    _ = Images[value].LoadAsync(0);
                 }
             }
         }
@@ -125,23 +126,12 @@ namespace CoolapkUWP.ViewModels
         public ShowImageViewModel(ImageModel image, DispatcherQueue dispatcher)
         {
             Dispatcher = dispatcher;
-            if (image.ContextArray.Any())
+            Images = image.ContextArray.Any() ? image.ContextArray : new List<ImageModel> { image };
+            foreach (ImageModel Image in Images)
             {
-                Images = image.ContextArray;
-                Index = Images.IndexOf(image);
+                Image.Type &= (ImageType)0xFE;
             }
-            else
-            {
-                Images = new List<ImageModel> { image };
-                Index = 0;
-            }
-            if (SettingsHelper.Get<bool>(SettingsHelper.IsDisplayOriginPicture))
-            {
-                foreach (ImageModel Image in Images)
-                {
-                    Image.Type &= (ImageType)0xFE;
-                }
-            }
+            Index = image.ContextArray.Any() ? Images.IndexOf(image) : 0;
         }
 
         ~ShowImageViewModel()
