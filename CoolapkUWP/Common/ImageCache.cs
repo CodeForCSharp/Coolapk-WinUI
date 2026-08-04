@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.Graphics.Imaging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -21,9 +22,10 @@ namespace CoolapkUWP.Common
 {
     public class ImageCache
     {
-        private const int MemoryCacheMaxCount = 150;
-        private const long MaxCacheableImageBytes = 2 * 1024 * 1024;
+        private const long MemoryCacheMaxBytes = 96L * 1024 * 1024;
+        private const long MaxCacheableImageBytes = 16 * 1024 * 1024;
         private const int MaxDecodePixelWidth = 1280;
+        private const long MaxDecodePixels = 4L * 1024 * 1024;
         private const long DiskCacheMaxBytes = 512L * 1024 * 1024;
         private static readonly TimeSpan DiskCacheMaxAge = TimeSpan.FromDays(30);
 
@@ -37,10 +39,13 @@ namespace CoolapkUWP.Common
         private Task _maintainTask;
         private readonly HttpClient _httpClient;
 
-        private readonly Dictionary<string, WeakReference<BitmapImage>> _memoryCache = new Dictionary<string, WeakReference<BitmapImage>>();
+        private readonly Dictionary<string, BitmapImage> _strongCache = new Dictionary<string, BitmapImage>();
+        private readonly LinkedList<string> _lru = new LinkedList<string>();
+        private readonly Dictionary<string, LinkedListNode<string>> _lruNodes = new Dictionary<string, LinkedListNode<string>>();
+        private long _strongCacheBytes;
 
         private readonly ConcurrentDictionary<string, Task<BitmapImage>> _inflightDecodes = new ConcurrentDictionary<string, Task<BitmapImage>>();
-        private readonly ConcurrentDictionary<string, Lazy<Task<StorageFile>>> _inflightDownloads = new ConcurrentDictionary<string, Lazy<Task<StorageFile>>>();
+        private readonly ConcurrentDictionary<string, Task<StorageFile>> _inflightDownloads = new ConcurrentDictionary<string, Task<StorageFile>>();
 
         private static readonly SemaphoreSlim _decodeSemaphore = new SemaphoreSlim(4);
 
@@ -96,8 +101,8 @@ namespace CoolapkUWP.Common
             string fileName = GetCacheFileName(uri);
             string key = GetCacheKey(fileName, decodePixelWidth);
 
-            BitmapImage cached = GetFromMemoryCache(key);
-            if (cached == null && decodePixelWidth > 0) { cached = GetBestFromMemoryCache(fileName, decodePixelWidth); }
+            BitmapImage cached = GetFromStrongCache(key);
+            if (cached == null && decodePixelWidth > 0) { cached = GetBestFromStrongCache(fileName, decodePixelWidth); }
             if (cached != null) { return cached; }
 
             if (_inflightDecodes.TryGetValue(key, out Task<BitmapImage> pending)) { return await pending; }
@@ -136,17 +141,11 @@ namespace CoolapkUWP.Common
         {
             await dispatcher.ResumeForegroundAsync();
             BitmapImage bitmap = await DecodeImageAsync(file, decodePixelWidth);
-            if (bitmap != null && CanCache(bitmap))
+            if (bitmap != null)
             {
-                AddToMemoryCache(key, bitmap);
+                AddToStrongCache(key, bitmap);
             }
             return bitmap;
-        }
-
-        private static bool CanCache(BitmapImage bitmap)
-        {
-            long size = EstimateBytes(bitmap);
-            return size > 0 && size <= MaxCacheableImageBytes;
         }
 
         private static async Task<BitmapImage> DecodeImageAsync(StorageFile file, int decodePixelWidth)
@@ -156,8 +155,13 @@ namespace CoolapkUWP.Common
             {
                 try
                 {
+                    (int width, int height) = await GetDecodeDimensionsAsync(file, decodePixelWidth);
                     var bitmap = new BitmapImage();
-                    if (decodePixelWidth > 0) { bitmap.DecodePixelWidth = decodePixelWidth; }
+                    if (width > 0 && height > 0)
+                    {
+                        bitmap.DecodePixelWidth = width;
+                        bitmap.DecodePixelHeight = height;
+                    }
                     using (var stream = await file.OpenReadAsync())
                     {
                         await bitmap.SetSourceAsync(stream);
@@ -172,73 +176,98 @@ namespace CoolapkUWP.Common
             }
         }
 
-        private BitmapImage GetFromMemoryCache(string key)
+        private static async Task<(int Width, int Height)> GetDecodeDimensionsAsync(StorageFile file, int decodePixelWidth)
         {
-            if (_memoryCache.TryGetValue(key, out WeakReference<BitmapImage> weakRef))
+            using var stream = await file.OpenReadAsync();
+            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+            int sourceWidth = (int)decoder.PixelWidth;
+            int sourceHeight = (int)decoder.PixelHeight;
+            if (sourceWidth <= 0 || sourceHeight <= 0) { return (0, 0); }
+
+            double scale = 1.0;
+            if (decodePixelWidth > 0 && sourceWidth > decodePixelWidth)
             {
-                if (weakRef.TryGetTarget(out BitmapImage bitmap)) { return bitmap; }
-                _memoryCache.Remove(key);
+                scale = (double)decodePixelWidth / sourceWidth;
+            }
+
+            int frameCount = Math.Max(1, (int)decoder.FrameCount);
+            double sourceArea = (double)sourceWidth * sourceHeight * frameCount;
+            if (sourceArea > MaxDecodePixels)
+            {
+                double areaScale = Math.Sqrt((double)MaxDecodePixels / sourceArea);
+                if (areaScale < scale) { scale = areaScale; }
+            }
+
+            int width = Math.Max(1, (int)Math.Round(sourceWidth * scale));
+            int height = Math.Max(1, (int)Math.Round(sourceHeight * scale));
+            if (width == sourceWidth && height == sourceHeight) { return (0, 0); }
+            return (width, height);
+        }
+
+        private BitmapImage GetFromStrongCache(string key)
+        {
+            if (_strongCache.TryGetValue(key, out BitmapImage bitmap))
+            {
+                TouchLru(key);
+                return bitmap;
             }
             return null;
         }
 
-        private BitmapImage GetBestFromMemoryCache(string fileName, int decodePixelWidth)
+        private BitmapImage GetBestFromStrongCache(string fileName, int decodePixelWidth)
         {
             string bestKey = null;
             int bestWidth = int.MaxValue;
-            List<string> dead = null;
-            foreach (KeyValuePair<string, WeakReference<BitmapImage>> entry in _memoryCache)
+            BitmapImage best = null;
+            foreach (KeyValuePair<string, BitmapImage> entry in _strongCache)
             {
                 if (!entry.Key.StartsWith(fileName + "|", StringComparison.Ordinal)) { continue; }
                 if (!int.TryParse(entry.Key.Substring(fileName.Length + 1), out int width)) { continue; }
                 if (width < decodePixelWidth || width >= bestWidth) { continue; }
-                if (entry.Value.TryGetTarget(out _))
-                {
-                    bestKey = entry.Key;
-                    bestWidth = width;
-                }
-                else
-                {
-                    (dead ??= new List<string>()).Add(entry.Key);
-                }
+                bestKey = entry.Key;
+                bestWidth = width;
+                best = entry.Value;
             }
-
-            if (dead != null)
-            {
-                foreach (string key in dead) { _memoryCache.Remove(key); }
-            }
-            if (bestKey == null) { return null; }
-            return _memoryCache[bestKey].TryGetTarget(out BitmapImage best) ? best : null;
+            if (best != null && bestKey != null) { TouchLru(bestKey); }
+            return best;
         }
 
-        private void AddToMemoryCache(string key, BitmapImage bitmap)
+        private void AddToStrongCache(string key, BitmapImage bitmap)
         {
-            if (_memoryCache.ContainsKey(key)) { return; }
+            if (_strongCache.ContainsKey(key))
+            {
+                TouchLru(key);
+                return;
+            }
 
             long size = EstimateBytes(bitmap);
-            if (size <= 0) { return; }
+            if (size <= 0 || size > MaxCacheableImageBytes) { return; }
 
-            _memoryCache[key] = new WeakReference<BitmapImage>(bitmap);
+            _strongCache[key] = bitmap;
+            _lruNodes[key] = _lru.AddFirst(key);
+            _strongCacheBytes += size;
+            EvictStrongCacheIfNeeded();
+        }
 
-            if (_memoryCache.Count > MemoryCacheMaxCount)
+        private void TouchLru(string key)
+        {
+            if (_lruNodes.TryGetValue(key, out LinkedListNode<string> node))
             {
-                PruneMemoryCache();
+                _lru.Remove(node);
+                _lru.AddFirst(node);
             }
         }
 
-        private void PruneMemoryCache()
+        private void EvictStrongCacheIfNeeded()
         {
-            List<string> dead = null;
-            foreach (KeyValuePair<string, WeakReference<BitmapImage>> entry in _memoryCache)
+            while (_strongCacheBytes > MemoryCacheMaxBytes && _lru.Count > 0)
             {
-                if (!entry.Value.TryGetTarget(out _))
-                {
-                    (dead ??= new List<string>()).Add(entry.Key);
-                }
-            }
-            if (dead != null)
-            {
-                foreach (string key in dead) { _memoryCache.Remove(key); }
+                LinkedListNode<string> node = _lru.Last;
+                BitmapImage victim = _strongCache[node.Value];
+                _strongCache.Remove(node.Value);
+                _lruNodes.Remove(node.Value);
+                _lru.RemoveLast();
+                _strongCacheBytes -= EstimateBytes(victim);
             }
         }
 
@@ -270,14 +299,14 @@ namespace CoolapkUWP.Common
 
         private async Task<StorageFile> DownloadToFileAsync(Uri uri, StorageFolder folder, string fileName)
         {
-            Lazy<Task<StorageFile>> lazy = _inflightDownloads.GetOrAdd(fileName, _ => new Lazy<Task<StorageFile>>(() => DownloadToFileCoreAsync(uri, folder, fileName)));
+            Task<StorageFile> task = _inflightDownloads.GetOrAdd(fileName, _ => DownloadToFileCoreAsync(uri, folder, fileName));
             try
             {
-                return await lazy.Value;
+                return await task;
             }
             finally
             {
-                _inflightDownloads.TryRemove(new KeyValuePair<string, Lazy<Task<StorageFile>>>(fileName, lazy));
+                _inflightDownloads.TryRemove(new KeyValuePair<string, Task<StorageFile>>(fileName, task));
             }
         }
 
@@ -438,7 +467,10 @@ namespace CoolapkUWP.Common
                 await file.DeleteAsync();
             }
 
-            _memoryCache.Clear();
+            _strongCache.Clear();
+            _lru.Clear();
+            _lruNodes.Clear();
+            _strongCacheBytes = 0;
         }
     }
 }

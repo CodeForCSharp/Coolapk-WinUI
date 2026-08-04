@@ -1,4 +1,3 @@
-using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using System;
 using System.ComponentModel;
@@ -12,14 +11,15 @@ namespace CoolapkUWP.Controls
 {
     public sealed partial class ImageEx : UserControl
     {
-        private const double Oversample = 1.0;
         private const int SizeBucket = 128;
 
         private int currentDecodeWidth;
+        private Storyboard _fadeInStoryboard;
 
         public ImageEx()
         {
             InitializeComponent();
+            Loaded += ImageEx_Loaded;
             Unloaded += ImageEx_Unloaded;
             SizeChanged += ImageEx_SizeChanged;
         }
@@ -58,24 +58,13 @@ namespace CoolapkUWP.Controls
 
             if (newValue == null)
             {
-                ImageElement.Source = null;
-                Placeholder.Visibility = Visibility.Visible;
+                UpdateSource();
                 return;
             }
 
+            newValue.PropertyChanged -= Model_PropertyChanged;
             newValue.PropertyChanged += Model_PropertyChanged;
-            BitmapImage source = newValue.CurrentPic;
-            ImageElement.Source = source;
-            if (source == null)
-            {
-                ImageElement.Opacity = 0;
-                Placeholder.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ImageElement.Opacity = 1;
-                Placeholder.Visibility = Visibility.Collapsed;
-            }
+            UpdateSource();
             Reload();
         }
 
@@ -83,10 +72,17 @@ namespace CoolapkUWP.Controls
         {
             if (e.PropertyName == nameof(ImageModel.Pic) && sender == Model)
             {
-                ImageElement.Source = Model.CurrentPic ?? ImageCacheHelper.NoPic;
-                Placeholder.Visibility = Visibility.Collapsed;
+                UpdateSource();
                 FadeIn();
             }
+        }
+
+        private void UpdateSource()
+        {
+            BitmapImage source = Model?.CurrentPic;
+            ImageElement.Source = source;
+            ImageElement.Opacity = source == null ? 0 : 1;
+            Placeholder.Visibility = source == null ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ImageEx_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -99,7 +95,7 @@ namespace CoolapkUWP.Controls
             if (Model == null || ActualWidth <= 0) { return; }
 
             double scale = XamlRoot?.RasterizationScale ?? 1.0;
-            double width = Math.Max(ActualWidth, 1) * scale * Oversample;
+            double width = Math.Max(ActualWidth, 1) * scale;
             int decodeWidth = Math.Max((int)(Math.Ceiling(width / SizeBucket) * SizeBucket), SizeBucket);
 
             if (decodeWidth == currentDecodeWidth) { return; }
@@ -115,16 +111,32 @@ namespace CoolapkUWP.Controls
                 return;
             }
 
-            DoubleAnimation animation = new DoubleAnimation
+            if (_fadeInStoryboard == null)
             {
-                To = 1,
-                Duration = TimeSpan.FromMilliseconds(200)
-            };
-            Storyboard storyboard = new Storyboard();
-            Storyboard.SetTarget(animation, ImageElement);
-            Storyboard.SetTargetProperty(animation, "Opacity");
-            storyboard.Children.Add(animation);
-            storyboard.Begin();
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 1,
+                    Duration = TimeSpan.FromMilliseconds(200)
+                };
+                Storyboard.SetTarget(animation, ImageElement);
+                Storyboard.SetTargetProperty(animation, "Opacity");
+                _fadeInStoryboard = new Storyboard();
+                _fadeInStoryboard.Children.Add(animation);
+            }
+            ImageElement.Opacity = 0;
+            _fadeInStoryboard.Begin();
+        }
+
+        private void ImageEx_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Model == null) { return; }
+
+            Model.PropertyChanged -= Model_PropertyChanged;
+            Model.PropertyChanged += Model_PropertyChanged;
+            UpdateSource();
+            currentDecodeWidth = 0;
+            Reload();
         }
 
         private void ImageEx_Unloaded(object sender, RoutedEventArgs e)
@@ -133,6 +145,11 @@ namespace CoolapkUWP.Controls
             {
                 Model.PropertyChanged -= Model_PropertyChanged;
             }
+
+            currentDecodeWidth = 0;
+            ImageElement.Source = null;
+            ImageElement.Opacity = 0;
+            Placeholder.Visibility = Visibility.Visible;
         }
     }
 }
