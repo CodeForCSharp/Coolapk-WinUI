@@ -48,16 +48,6 @@
                     <controls:Setting x:Uid="/SettingsPage/DisplayOriginPictureSettings" Icon="&#xE8B9;">
                         <ToggleSwitch IsOn="{x:Bind Provider.IsDisplayOriginPicture, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                     </controls:Setting>
-                    <controls:Setting x:Uid="/SettingsPage/TileUpdateTimeSettings" Icon="&#xEA79;">
-                        <Slider
-                            Width="{StaticResource SettingCardContentMinWidth}"
-                            Maximum="1440"
-                            Minimum="0"
-                            StepFrequency="15"
-                            TickFrequency="15"
-                            TickPlacement="Outside"
-                            Value="{x:Bind Provider.TileUpdateTime, Mode=TwoWay}" />
-                    </controls:Setting>
                 </controls:SettingsGroup>
                 <controls:SettingsGroup
                     x:Name="AccountSettingsHeader"
@@ -323,9 +313,6 @@
                     </controls:Setting>
                 </controls:SettingsGroup>
                 <controls:SettingsGroup x:Uid="/SettingsPage/OthersSettingsHeader">
-                    <controls:Setting x:Uid="/SettingsPage/ShowOtherExceptionSettings" Icon="&#xE90F;">
-                        <ToggleSwitch IsOn="{x:Bind Provider.ShowOtherException, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
-                    </controls:Setting>
                     <controls:Setting
                         x:Name="GoToTestPage"
                         x:Uid="/SettingsPage/GoToTestPage"

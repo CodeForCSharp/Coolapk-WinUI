@@ -16,25 +16,20 @@ namespace CoolapkUWP.Helpers
     {
         public const string Uid = nameof(Uid);
         public const string Token = nameof(Token);
-        public const string TileUrl = nameof(TileUrl);
         public const string UserName = nameof(UserName);
         public const string CustomUA = nameof(CustomUA);
         public const string IsUseAPI2 = nameof(IsUseAPI2);
         public const string CustomAPI = nameof(CustomAPI);
-        public const string IsFirstRun = nameof(IsFirstRun);
         public const string IsCustomUA = nameof(IsCustomUA);
         public const string APIVersion = nameof(APIVersion);
         public const string UpdateDate = nameof(UpdateDate);
         public const string IsNoPicsMode = nameof(IsNoPicsMode);
         public const string TokenVersion = nameof(TokenVersion);
-        public const string TileUpdateTime = nameof(TileUpdateTime);
         public const string IsUseCompositor = nameof(IsUseCompositor);
         public const string CurrentLanguage = nameof(CurrentLanguage);
         public const string SelectedAppTheme = nameof(SelectedAppTheme);
-        public const string ShowOtherException = nameof(ShowOtherException);
         public const string SemaphoreSlimCount = nameof(SemaphoreSlimCount);
         public const string IsDisplayOriginPicture = nameof(IsDisplayOriginPicture);
-        public const string CheckUpdateWhenLaunching = nameof(CheckUpdateWhenLaunching);
 
         public static Type Get<Type>(string key) => LocalObject.Read<Type>(key);
         public static void Set<Type>(string key, Type value) => LocalObject.Save(key, value);
@@ -51,10 +46,6 @@ namespace CoolapkUWP.Helpers
             {
                 LocalObject.Save(Token, string.Empty);
             }
-            if (!LocalObject.KeyExists(TileUrl))
-            {
-                LocalObject.Save(TileUrl, "https://api.coolapk.com/v6/page/dataList?url=V9_HOME_TAB_FOLLOW&type=circle");
-            }
             if (!LocalObject.KeyExists(UserName))
             {
                 LocalObject.Save(UserName, string.Empty);
@@ -70,10 +61,6 @@ namespace CoolapkUWP.Helpers
             if (!LocalObject.KeyExists(CustomAPI))
             {
                 LocalObject.Save(CustomAPI, new APIVersion("9.2.2", "1905301"));
-            }
-            if (!LocalObject.KeyExists(IsFirstRun))
-            {
-                LocalObject.Save(IsFirstRun, true);
             }
             if (!LocalObject.KeyExists(IsCustomUA))
             {
@@ -95,10 +82,6 @@ namespace CoolapkUWP.Helpers
             {
                 LocalObject.Save(TokenVersion, Common.TokenVersions.TokenV2);
             }
-            if (!LocalObject.KeyExists(TileUpdateTime))
-            {
-                LocalObject.Save(TileUpdateTime, 0u);
-            }
             if (!LocalObject.KeyExists(IsUseCompositor))
             {
                 LocalObject.Save(IsUseCompositor, true);
@@ -111,10 +94,6 @@ namespace CoolapkUWP.Helpers
             {
                 LocalObject.Save(SelectedAppTheme, ElementTheme.Default);
             }
-            if (!LocalObject.KeyExists(ShowOtherException))
-            {
-                LocalObject.Save(ShowOtherException, true);
-            }
             if (!LocalObject.KeyExists(SemaphoreSlimCount))
             {
                 LocalObject.Save(SemaphoreSlimCount, Environment.ProcessorCount);
@@ -122,10 +101,6 @@ namespace CoolapkUWP.Helpers
             if (!LocalObject.KeyExists(IsDisplayOriginPicture))
             {
                 LocalObject.Save(IsDisplayOriginPicture, false);
-            }
-            if (!LocalObject.KeyExists(CheckUpdateWhenLaunching))
-            {
-                LocalObject.Save(CheckUpdateWhenLaunching, true);
             }
         }
     }

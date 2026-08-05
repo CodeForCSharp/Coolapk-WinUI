@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -150,12 +141,6 @@
   <data name="OthersSettingsHeader.Header" xml:space="preserve">
     <value>Others</value>
   </data>
-  <data name="ShowOtherExceptionSettings.Description" xml:space="preserve">
-    <value>Notify in app when an unknown error has occurred.</value>
-  </data>
-  <data name="ShowOtherExceptionSettings.Header" xml:space="preserve">
-    <value>Show Unknown Error</value>
-  </data>
   <data name="ResetSettings.Description" xml:space="preserve">
     <value>Reset settings of this application.</value>
   </data>
@@ -266,17 +251,5 @@
   </data>
   <data name="DisplayOriginPictureSettings.Header" xml:space="preserve">
     <value>Show Original Images</value>
-  </data>
-  <data name="UseMultiWindowSettings.Description" xml:space="preserve">
-    <value>View the image in a new window.</value>
-  </data>
-  <data name="UseMultiWindowSettings.Header" xml:space="preserve">
-    <value>Use Multiple Windows (only supported 1903 and above)</value>
-  </data>
-  <data name="TileUpdateTimeSettings.Description" xml:space="preserve">
-    <value>Sets the interval between tile updates, per minute (Stop updating when less than 15 minutes)</value>
-  </data>
-  <data name="TileUpdateTimeSettings.Header" xml:space="preserve">
-    <value>Tile Update Interval</value>
   </data>
 </root>

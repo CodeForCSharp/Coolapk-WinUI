@@ -17,15 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
@@ -150,12 +141,6 @@
   <data name="OthersSettingsHeader.Header" xml:space="preserve">
     <value>其他</value>
   </data>
-  <data name="ShowOtherExceptionSettings.Description" xml:space="preserve">
-    <value>當應用出現未知錯誤時在應用內通知顯示。</value>
-  </data>
-  <data name="ShowOtherExceptionSettings.Header" xml:space="preserve">
-    <value>顯示未知錯誤</value>
-  </data>
   <data name="ResetSettings.Description" xml:space="preserve">
     <value>重置此應用程式的設置。</value>
   </data>
@@ -266,17 +251,5 @@
   </data>
   <data name="DisplayOriginPictureSettings.Header" xml:space="preserve">
     <value>顯示原圖</value>
-  </data>
-  <data name="UseMultiWindowSettings.Description" xml:space="preserve">
-    <value>在新視窗查看圖片。</value>
-  </data>
-  <data name="UseMultiWindowSettings.Header" xml:space="preserve">
-    <value>使用多視窗 (僅支援 1903 及以上)</value>
-  </data>
-  <data name="TileUpdateTimeSettings.Description" xml:space="preserve">
-    <value>設置磁貼更新的間隔，單位分鐘 (小於 15 分鐘停止更新)</value>
-  </data>
-  <data name="TileUpdateTimeSettings.Header" xml:space="preserve">
-    <value>磁貼更新間隔</value>
   </data>
 </root>

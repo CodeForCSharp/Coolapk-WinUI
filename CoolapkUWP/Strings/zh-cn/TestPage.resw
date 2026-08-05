@@ -174,12 +174,6 @@
   <data name="SetProgressValue.Header" xml:space="preserve">
     <value>进度值</value>
   </data>
-  <data name="SettingsFlyoutSettings.Description" xml:space="preserve">
-    <value>打开 Charm 侧边栏设置</value>
-  </data>
-  <data name="SettingsFlyoutSettings.Header" xml:space="preserve">
-    <value>打开设置</value>
-  </data>
   <data name="SlimCountSettings.Description" xml:space="preserve">
     <value>同时可以加载的图片数量</value>
   </data>
@@ -254,11 +248,5 @@
   </data>
   <data name="ExtensionSettings.Header" xml:space="preserve">
     <value>管理插件</value>
-  </data>
-  <data name="SearchFlyoutSettings.Description" xml:space="preserve">
-    <value>打开 Charm 侧边栏搜索</value>
-  </data>
-  <data name="SearchFlyoutSettings.Header" xml:space="preserve">
-    <value>打开搜索</value>
   </data>
 </root>

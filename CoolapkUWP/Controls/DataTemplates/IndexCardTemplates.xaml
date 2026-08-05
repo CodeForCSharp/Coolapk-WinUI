@@ -43,7 +43,7 @@
             HorizontalAlignment="Stretch"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -83,7 +83,7 @@
             HorizontalAlignment="Center"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -112,7 +112,7 @@
             HorizontalAlignment="Center"
             Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -145,7 +145,7 @@
     <DataTemplate x:Key="ImageCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Grid
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -203,7 +203,7 @@
                                     VerticalAlignment="Stretch"
 
                                     KeyDown="Grid_KeyDown"
-                                    Tag="{x:Bind Mode=OneWay}"
+                                    Tag="{x:Bind}"
                                     Tapped="Grid_Tapped">
                                     <control:ImageEx Model="{x:Bind Pic}" Stretch="UniformToFill" />
                                 </Border>
@@ -233,7 +233,7 @@
             <Border
                 Grid.Row="2"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
-                Tag="{x:Bind Mode=OneWay}"
+                Tag="{x:Bind}"
                 Tapped="Grid_Tapped"
                 Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
                 <control:ImageEx
@@ -260,7 +260,7 @@
             Background="{ThemeResource SystemControlTransparentBrush}"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <muxc:ItemsRepeater
                 x:Name="EntitiesRepeater"
@@ -282,7 +282,7 @@
                             Background="{ThemeResource SystemControlTransparentBrush}"
                             Click="Button_Click"
                             Style="{ThemeResource TransparentButtonStyle}"
-                            Tag="{x:Bind Mode=OneWay}">
+                            Tag="{x:Bind}">
                             <control:StackPanel HorizontalAlignment="Stretch" Spacing="2">
                                 <Border
                                     Width="40"
@@ -363,7 +363,7 @@
                 Margin="12,0"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{x:Bind Mode=OneWay}"
+                Tag="{x:Bind}"
                 Tapped="Grid_Tapped"
                 Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
@@ -432,7 +432,7 @@
                 Margin="12,0"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
-                Tag="{x:Bind Mode=OneWay}"
+                Tag="{x:Bind}"
                 Tapped="Grid_Tapped"
                 Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
@@ -499,7 +499,7 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid>
                 <control:ImageEx
@@ -510,7 +510,7 @@
                     Padding="4"
                     VerticalAlignment="Bottom"
                 CornerRadius="0,0,8,8"
-                Tag="{x:Bind Mode=OneWay}"
+                Tag="{x:Bind}"
                 Tapped="Grid_Tapped">
                     <Grid.Background>
                     <AcrylicBrush
@@ -540,7 +540,7 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Grid>
                 <control:ImageEx
@@ -560,7 +560,7 @@
                     Height="36"
                     Margin="4"
                     CornerRadius="{ThemeResource ControlCornerRadius}"
-                    Tag="{x:Bind Mode=OneWay}"
+                    Tag="{x:Bind}"
                     Tapped="Grid_Tapped">
                     <control:ImageEx
                         Model="{x:Bind Pic}"
@@ -595,7 +595,7 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <control:ImageEx
@@ -625,7 +625,7 @@
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             KeyDown="Grid_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Grid_Tapped">
             <control:ImageEx
                 Model="{x:Bind Pic}"
@@ -650,7 +650,7 @@
             Background="{ThemeResource SystemControlTransparentBrush}"
             Click="Button_Click"
             Style="{ThemeResource TransparentButtonStyle}"
-            Tag="{x:Bind Mode=OneWay}">
+            Tag="{x:Bind}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -686,7 +686,7 @@
             Background="{ThemeResource SystemControlTransparentBrush}"
             Click="Button_Click"
             Style="{ThemeResource TransparentButtonStyle}"
-            Tag="{x:Bind Mode=OneWay}">
+            Tag="{x:Bind}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />

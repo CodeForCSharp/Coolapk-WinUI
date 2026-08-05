@@ -93,7 +93,7 @@
                                     x:Name="DeletePic"
                                     x:Uid="/CreateFeedControl/DeletePicItem"
                                     Click="MenuFlyoutItem_Click"
-                                    Tag="{x:Bind Mode=OneWay}">
+                                    Tag="{x:Bind}">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74D;" />
                                     </MenuFlyoutItem.Icon>
@@ -101,7 +101,7 @@
                             </MenuFlyout>
                         </Border.ContextFlyout>
                         <Border.Background>
-                            <ImageBrush ImageSource="{x:Bind Mode=OneWay}" Stretch="UniformToFill" />
+                            <ImageBrush ImageSource="{x:Bind}" Stretch="UniformToFill" />
                         </Border.Background>
                     </Border>
                 </DataTemplate>

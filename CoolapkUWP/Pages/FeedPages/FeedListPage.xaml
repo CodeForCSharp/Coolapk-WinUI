@@ -32,7 +32,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{x:Bind Mode=OneWay}">
+                                Tag="{x:Bind}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -137,7 +137,7 @@
                                         HorizontalAlignment="Right"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{x:Bind Mode=OneWay}"
+                                        Tag="{x:Bind}"
                                         ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}"
                                         Visibility="{x:Bind FollowStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal">
@@ -295,7 +295,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{x:Bind Mode=OneWay}">
+                                Tag="{x:Bind}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -367,7 +367,7 @@
                                 HorizontalAlignment="Right"
                                 Click="Button_Click"
                                 Style="{StaticResource TransparentButtonStyle}"
-                                Tag="{x:Bind Mode=OneWay}"
+                                Tag="{x:Bind}"
                                 ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon
@@ -408,7 +408,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{x:Bind Mode=OneWay}">
+                                Tag="{x:Bind}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -471,7 +471,7 @@
                                 HorizontalAlignment="Right"
                                 Click="Button_Click"
                                 Style="{StaticResource TransparentButtonStyle}"
-                                Tag="{x:Bind Mode=OneWay}"
+                                Tag="{x:Bind}"
                                 ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                 <StackPanel Orientation="Horizontal">
                                     <FontIcon
@@ -526,7 +526,7 @@
                                                     x:Name="RefreshButton"
                                                     x:Uid="/FeedListPage/RefreshMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{x:Bind Mode=OneWay}">
+                                                    Tag="{x:Bind}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                                                     </MenuFlyoutItem.Icon>
@@ -535,7 +535,7 @@
                                                     x:Name="CopyButton"
                                                     x:Uid="/FeedListPage/CopyMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{x:Bind Mode=OneWay}">
+                                                    Tag="{x:Bind}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                                                     </MenuFlyoutItem.Icon>
@@ -544,7 +544,7 @@
                                                     x:Name="ShareButton"
                                                     x:Uid="/FeedListPage/ShareMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{x:Bind Mode=OneWay}">
+                                                    Tag="{x:Bind}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
                                                     </MenuFlyoutItem.Icon>
@@ -553,7 +553,7 @@
                                                     x:Name="SaveButton"
                                                     x:Uid="/FeedListPage/SaveMenuItem"
                                                     Click="AppBarButton_Click"
-                                                    Tag="{x:Bind Mode=OneWay}">
+                                                    Tag="{x:Bind}">
                                                     <MenuFlyoutItem.Icon>
                                                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
                                                     </MenuFlyoutItem.Icon>
@@ -651,7 +651,7 @@
                                     HorizontalAlignment="Right"
                                     Click="Button_Click"
                                     Style="{StaticResource TransparentButtonStyle}"
-                                    Tag="{x:Bind Mode=OneWay}"
+                                    Tag="{x:Bind}"
                                     ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
                                     <StackPanel Orientation="Horizontal">
                                         <FontIcon
@@ -695,7 +695,7 @@
                                             <TextBlock
                                                 Margin="4,2"
                                                 FontSize="12"
-                                                Text="{x:Bind Mode=OneWay}" />
+                                                Text="{x:Bind}" />
                                         </Grid>
                                     </DataTemplate>
                                 </muxc:ItemsRepeater.ItemTemplate>
@@ -1023,7 +1023,7 @@
                                 x:Name="PinTileButton"
                                 x:Uid="/FeedListPage/PinTile"
                                 Click="Button_Click"
-                                Tag="{x:Bind Mode=OneWay}">
+                                Tag="{x:Bind}">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
                                 </MenuFlyoutItem.Icon>
@@ -1120,7 +1120,7 @@
                                         Height="32"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{x:Bind Mode=OneWay}">
+                                        Tag="{x:Bind}">
                                         <StackPanel Orientation="Horizontal">
                                             <FontIcon
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -1139,7 +1139,7 @@
                                         Height="32"
                                         Click="Button_Click"
                                         Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{x:Bind Mode=OneWay}"
+                                        Tag="{x:Bind}"
                                         ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}"
                                         Visibility="{x:Bind FollowStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                         <StackPanel Orientation="Horizontal">

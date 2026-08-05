@@ -191,9 +191,6 @@ namespace CoolapkUWP.Pages.SettingsPages
                 case "OpenBrowser":
                     _ = Frame.Navigate(typeof(BrowserPage), new BrowserViewModel(URLTextBox.Text));
                     break;
-                case "SearchFlyout":
-                case "SettingsFlyout":
-                    break;
                 case "GetURLContent":
                     GetURLContent();
                     break;

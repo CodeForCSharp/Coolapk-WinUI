@@ -90,32 +90,6 @@ namespace CoolapkUWP.ViewModels.SettingsPages
             }
         }
 
-        public bool ShowOtherException
-        {
-            get => SettingsHelper.Get<bool>(SettingsHelper.ShowOtherException);
-            set
-            {
-                if (ShowOtherException != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.ShowOtherException, value);
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
-        public uint TileUpdateTime
-        {
-            get => SettingsHelper.Get<uint>(SettingsHelper.TileUpdateTime);
-            set
-            {
-                if (TileUpdateTime != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.TileUpdateTime, value);
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
         private bool isCleanCache;
         public bool IsCleanCache
         {

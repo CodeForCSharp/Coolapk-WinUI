@@ -174,12 +174,6 @@
   <data name="SetProgressValue.Header" xml:space="preserve">
     <value>Progress Value</value>
   </data>
-  <data name="SettingsFlyoutSettings.Description" xml:space="preserve">
-    <value>Show Settings Charm Pane</value>
-  </data>
-  <data name="SettingsFlyoutSettings.Header" xml:space="preserve">
-    <value>Open Settings</value>
-  </data>
   <data name="SlimCountSettings.Description" xml:space="preserve">
     <value>Number of images that can be loaded at the same time</value>
   </data>
@@ -254,11 +248,5 @@
   </data>
   <data name="ExtensionSettings.Header" xml:space="preserve">
     <value>Manage Extensions</value>
-  </data>
-  <data name="SearchFlyoutSettings.Description" xml:space="preserve">
-    <value>Show Search Charm Pane</value>
-  </data>
-  <data name="SearchFlyoutSettings.Header" xml:space="preserve">
-    <value>Open Search</value>
   </data>
 </root>

@@ -11,7 +11,7 @@
             CornerRadius="{ThemeResource OverlayCornerRadius}"
             DragStarting="Border_DragStarting"
             KeyDown="Image_KeyDown"
-            Tag="{x:Bind Mode=OneWay}"
+            Tag="{x:Bind}"
             Tapped="Image_Tapped">
             <Border.ContextFlyout>
                 <MenuFlyout>
@@ -19,7 +19,7 @@
                         x:Name="RefreshButton"
                         x:Uid="/ShowImagePage/RefreshMenuItem"
                         Click="AppBarButton_Click"
-                        Tag="{x:Bind Mode=OneWay}">
+                        Tag="{x:Bind}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
                         </MenuFlyoutItem.Icon>
@@ -28,7 +28,7 @@
                         x:Name="CopyButton"
                         x:Uid="/ShowImagePage/CopyMenuItem"
                         Click="AppBarButton_Click"
-                        Tag="{x:Bind Mode=OneWay}">
+                        Tag="{x:Bind}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
                         </MenuFlyoutItem.Icon>
@@ -37,7 +37,7 @@
                         x:Name="ShareButton"
                         x:Uid="/ShowImagePage/ShareMenuItem"
                         Click="AppBarButton_Click"
-                        Tag="{x:Bind Mode=OneWay}">
+                        Tag="{x:Bind}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
                         </MenuFlyoutItem.Icon>
@@ -46,7 +46,7 @@
                         x:Name="SaveButton"
                         x:Uid="/ShowImagePage/SaveMenuItem"
                         Click="AppBarButton_Click"
-                        Tag="{x:Bind Mode=OneWay}">
+                        Tag="{x:Bind}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
                         </MenuFlyoutItem.Icon>
