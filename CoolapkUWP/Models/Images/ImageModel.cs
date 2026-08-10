@@ -271,7 +271,7 @@ namespace CoolapkUWP.Models.Images
                 {
                     if (generation != loadGeneration) { return; }
 
-                    if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode)) { Pic = await ImageCacheHelper.GetNoPicAsync(Dispatcher); }
+                    if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode)) { Pic = ImageCacheHelper.NoPic; }
                     BitmapImage bitmapImage = await ImageCacheHelper.GetImageAsync(Type, Uri, Dispatcher, false, decodePixelWidth);
                     if (generation != loadGeneration) { return; }
 

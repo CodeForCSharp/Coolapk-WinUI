@@ -38,8 +38,6 @@ namespace CoolapkUWP.Helpers
         private static BitmapImage WhiteNoPicMode { get; set; }
         internal static BitmapImage NoPic { get => ThemeHelper.IsDarkTheme() ? DarkNoPicMode : WhiteNoPicMode; }
 
-        internal static DispatcherQueue Dispatcher { get; } = App.MainWindow.DispatcherQueue;
-
         static ImageCacheHelper()
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromHours(8);
@@ -81,7 +79,7 @@ namespace CoolapkUWP.Helpers
             }
             else if (!isForce && SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode))
             {
-                return await GetNoPicAsync(dispatcher);
+                return NoPic;
             }
             else
             {
@@ -152,20 +150,5 @@ namespace CoolapkUWP.Helpers
         }
 
         internal static Task CleanCacheAsync() => ImageCache.Instance.ClearAsync();
-
-        internal static async Task<BitmapImage> GetNoPicAsync(DispatcherQueue dispatcher)
-        {
-            if (await dispatcher.AwaitableRunAsync(() => Dispatcher.HasThreadAccess))
-            {
-                return NoPic;
-            }
-            else
-            {
-                await dispatcher.ResumeForegroundAsync();
-                return ThemeHelper.IsDarkTheme()
-                    ? new BitmapImage(DarkNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 }
-                    : new BitmapImage(WhiteNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 };
-            }
-        }
     }
 }
