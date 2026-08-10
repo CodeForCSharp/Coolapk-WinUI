@@ -1,10 +1,10 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,93 +12,27 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Pages
 {
-    internal class CollectionDetail : FeedListDetailBase, ICanLike, ICanFollow
+    internal partial class CollectionDetail : FeedListDetailBase, ICanLike, ICanFollow
     {
+        [ObservableProperty]
         private bool followed;
-        public bool Followed
-        {
-            get => followed;
-            set
-            {
-                if (followed != value)
-                {
-                    followed = value;
-                    RaisePropertyChangedEvent();
-                    OnFollowChanged();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followNum;
-        public string FollowNum
-        {
-            get => followNum;
-            set
-            {
-                if (followNum != value)
-                {
-                    followNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followGlyph;
-        public string FollowGlyph
-        {
-            get => followGlyph;
-            set
-            {
-                if (followGlyph != value)
-                {
-                    followGlyph = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followStatus;
-        public string FollowStatus
-        {
-            get => followStatus;
-            set
-            {
-                if (followStatus != value)
-                {
-                    followStatus = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private bool liked;
-        public bool Liked
-        {
-            get => liked;
-            set
-            {
-                if (liked != value)
-                {
-                    liked = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
-
+        [ObservableProperty]
         private int likeNum;
-        public int LikeNum
-        {
-            get => likeNum;
-            set
-            {
-                if (likeNum != value)
-                {
-                    likeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+
+        partial void OnFollowedChanged(bool value) => OnFollowChanged();
 
         public int ID { get; private set; }
         public int ItemNum { get; private set; }

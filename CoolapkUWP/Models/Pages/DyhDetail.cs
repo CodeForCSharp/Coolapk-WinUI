@@ -1,10 +1,10 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,64 +12,21 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Pages
 {
-    internal class DyhDetail : FeedListDetailBase, IHasDescription, ICanFollow
+    internal partial class DyhDetail : FeedListDetailBase, IHasDescription, ICanFollow
     {
+        [ObservableProperty]
         private bool followed;
-        public bool Followed
-        {
-            get => followed;
-            set
-            {
-                if (followed != value)
-                {
-                    followed = value;
-                    RaisePropertyChangedEvent();
-                    OnFollowChanged();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followNum;
-        public string FollowNum
-        {
-            get => followNum;
-            set
-            {
-                if (followNum != value)
-                {
-                    followNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followGlyph;
-        public string FollowGlyph
-        {
-            get => followGlyph;
-            set
-            {
-                if (followGlyph != value)
-                {
-                    followGlyph = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private string followStatus;
-        public string FollowStatus
-        {
-            get => followStatus;
-            set
-            {
-                if (followStatus != value)
-                {
-                    followStatus = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+
+        partial void OnFollowedChanged(bool value) => OnFollowChanged();
 
         public int ID { get; private set; }
 

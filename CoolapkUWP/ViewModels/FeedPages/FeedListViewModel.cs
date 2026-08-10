@@ -6,60 +6,29 @@ using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public abstract class FeedListViewModel : IViewModel
+    public abstract partial class FeedListViewModel : ObservableObject, IViewModel
     {
         protected const string idName = "id";
 
         public string ID { get; }
         private FeedListType ListType { get; }
 
-        private string title;
-        public string Title
-        {
-            get => title;
-            protected set
-            {
-                title = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial string Title { get; protected set; }
 
-        private List<ShyHeaderItem> itemSource;
-        public List<ShyHeaderItem> ItemSource
-        {
-            get => itemSource;
-            protected set
-            {
-                itemSource = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial List<ShyHeaderItem> ItemSource { get; protected set; }
 
-        private FeedListDetailBase detail;
-        public FeedListDetailBase Detail
-        {
-            get => detail;
-            protected set
-            {
-                detail = value;
-                RaisePropertyChangedEvent();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
+        [ObservableProperty]
+        public partial FeedListDetailBase Detail { get; protected set; }
 
         protected FeedListViewModel(string id, FeedListType type)
         {
