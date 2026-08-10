@@ -120,13 +120,13 @@ namespace CoolapkUWP.Pages
                     TryGoBack();
                     break;
                 case "Copy":
-                    Provider.CopyPic();
+                    _ = ImageActions.CopyPicAsync(Provider.Images[Provider.Index]);
                     break;
                 case "Save":
-                    Provider.SavePic();
+                    _ = ImageActions.SavePicAsync(Provider.Images[Provider.Index], Provider.ImageNameText);
                     break;
                 case "Share":
-                    Provider.SharePic();
+                    _ = ImageActions.SharePicAsync(Provider.Images[Provider.Index]);
                     break;
                 case "Refresh":
                     _ = Provider.Refresh();
@@ -161,7 +161,7 @@ namespace CoolapkUWP.Pages
         {
             args.DragUI.SetContentFromDataPackage();
             args.Data.RequestedOperation = DataPackageOperation.Copy;
-            await Provider.GetImageDataPackage(args.Data, "拖拽图片");
+            await ImageActions.GetImageDataPackageAsync(args.Data, Provider.Images[Provider.Index], "拖拽图片", Provider.ImageNameText);
         }
 
         private void Image_PointerPressed(object sender, PointerRoutedEventArgs e)

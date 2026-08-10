@@ -4,16 +4,10 @@ using CoolapkUWP.Models.Images;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.Resources;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using Windows.Storage.Streams;
 using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels
@@ -21,6 +15,7 @@ namespace CoolapkUWP.ViewModels
     public partial class ShowImageViewModel : IViewModel
     {
         private string ImageName = string.Empty;
+        public string ImageNameText => ImageName;
 
         public DispatcherQueue Dispatcher { get; }
 
@@ -154,93 +149,6 @@ namespace CoolapkUWP.ViewModels
             Regex regex = new Regex(@"[^/]+(?!.*/)");
             ImageName = regex.IsMatch(url) ? regex.Match(url).Value : "查看图片";
             return $"{ImageName} ({Index + 1}/{Images.Count})";
-        }
-
-        public async void CopyPic()
-        {
-            DataPackage dataPackage = await GetImageDataPackage("复制图片");
-            Clipboard.SetContentWithOptions(dataPackage, null);
-        }
-
-        public async void SharePic()
-        {
-            await GetImageDataPackage("分享图片");
-        }
-
-        public async Task<DataPackage> GetImageDataPackage(string title)
-        {
-            StorageFile file = await ImageCacheHelper.GetImageFileAsync(ImageType.OriginImage, Images[Index].Uri);
-            if (file == null)
-            {
-                string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                UIHelper.ShowMessage(str);
-                return null;
-            }
-            RandomAccessStreamReference bitmap = RandomAccessStreamReference.CreateFromFile(file);
-
-            DataPackage dataPackage = new DataPackage();
-            dataPackage.SetBitmap(bitmap);
-            dataPackage.Properties.Title = title;
-            dataPackage.Properties.Description = ImageName;
-
-            return dataPackage;
-        }
-
-        public async Task GetImageDataPackage(DataPackage dataPackage, string title)
-        {
-            StorageFile file = await ImageCacheHelper.GetImageFileAsync(ImageType.OriginImage, Images[Index].Uri);
-            if (file == null)
-            {
-                string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                UIHelper.ShowMessage(str);
-                return;
-            }
-            RandomAccessStreamReference bitmap = RandomAccessStreamReference.CreateFromFile(file);
-
-            dataPackage.SetBitmap(bitmap);
-            dataPackage.Properties.Title = title;
-            dataPackage.Properties.Description = ImageName;
-            dataPackage.SetStorageItems(new IStorageItem[] { file });
-        }
-
-        public async void SavePic()
-        {
-            string url = Images[Index].Uri;
-            StorageFile image = await ImageCacheHelper.GetImageFileAsync(ImageType.OriginImage, url);
-            if (image == null)
-            {
-                string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                UIHelper.ShowMessage(str);
-                return;
-            }
-
-            string fileName = ImageName;
-            FileSavePicker fileSavePicker = new FileSavePicker
-            {
-                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                SuggestedFileName = fileName.Replace(fileName.Substring(fileName.LastIndexOf('.')), string.Empty)
-            };
-            ((IInitializeWithWindow)(object)fileSavePicker).Initialize(App.WindowHandle);
-
-            string fileex = fileName.Substring(fileName.LastIndexOf('.') + 1);
-            int index = fileex.IndexOfAny(new char[] { '?', '%', '&' });
-            fileex = fileex.Substring(0, index == -1 ? fileex.Length : index);
-            fileSavePicker.FileTypeChoices.Add($"{fileex}文件", new string[] { "." + fileex });
-
-            StorageFile file = await fileSavePicker.PickSaveFileAsync();
-            if (file != null)
-            {
-                using (Stream FolderStream = await file.OpenStreamForWriteAsync())
-                {
-                    using (IRandomAccessStreamWithContentType RandomAccessStream = await image.OpenReadAsync())
-                    {
-                        using (Stream ImageStream = RandomAccessStream.AsStreamForRead())
-                        {
-                            await ImageStream.CopyToAsync(FolderStream);
-                        }
-                    }
-                }
-            }
         }
 
         private void ResigerImage(ImageModel oldvalue, ImageModel newvalue)

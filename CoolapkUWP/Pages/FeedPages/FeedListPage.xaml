@@ -1204,14 +1204,6 @@
                 List="{StaticResource ListDefaultTemplate}"
                 Others="{StaticResource Empty}"
                 User="{StaticResource UserTemplate}" />
-            <local:DetailTemplateSelector
-                x:Name="DetailTemplateSelector"
-                CollectionDetail="{StaticResource CollectionDetailCard}"
-                DyhDetail="{StaticResource DyhDetailCard}"
-                Others="{StaticResource Empty}"
-                ProductDetail="{StaticResource ProductDetailCard}"
-                TopicDetail="{StaticResource TopicDetailCard}"
-                UserDetail="{StaticResource UserDetailCard}" />
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
@@ -1264,7 +1256,7 @@
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
                                 Content="{x:Bind Provider.Detail, Mode=OneWay}"
-                                ContentTemplate="{x:Bind Provider.DetailDataTemplate, Mode=OneWay}" />
+                                ContentTemplate="{x:Bind DetailDataTemplate, Mode=OneWay}" />
                         </Grid>
                     </ScrollViewer>
                 </Grid>

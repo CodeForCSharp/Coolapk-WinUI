@@ -1,7 +1,6 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.DataSource;
@@ -70,6 +69,8 @@ namespace CoolapkUWP.Pages.FeedPages
             }
         }
 
+        public DataTemplate DetailDataTemplate { get; private set; }
+
         public FeedListPage() => InitializeComponent();
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -79,7 +80,6 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
-                Provider.DataTemplateSelector = DetailTemplateSelector;
                 await Refresh(true);
             }
         }
@@ -188,13 +188,13 @@ namespace CoolapkUWP.Pages.FeedPages
             switch ((sender as FrameworkElement).Name)
             {
                 case "CopyButton":
-                    Provider.CopyPic(image);
+                    _ = ImageActions.CopyPicAsync(image);
                     break;
                 case "SaveButton":
-                    Provider.SavePic(image);
+                    _ = ImageActions.SavePicAsync(image);
                     break;
                 case "ShareButton":
-                    Provider.SharePic(image);
+                    _ = ImageActions.SharePicAsync(image);
                     break;
                 case "RefreshButton":
                     _ = image.Refresh();
@@ -212,7 +212,7 @@ namespace CoolapkUWP.Pages.FeedPages
         {
             args.DragUI.SetContentFromDataPackage();
             args.Data.RequestedOperation = DataPackageOperation.Copy;
-            await Provider.GetImageDataPackage(args.Data, (sender as FrameworkElement).Tag as ImageModel, "拖拽图片");
+            await ImageActions.GetImageDataPackageAsync(args.Data, (sender as FrameworkElement).Tag as ImageModel, "拖拽图片");
         }
 
         private void On_Tapped(object sender, TappedRoutedEventArgs e)
@@ -289,26 +289,6 @@ namespace CoolapkUWP.Pages.FeedPages
         private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
         {
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
-    }
-
-    internal partial class DetailTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate Others { get; set; }
-        public DataTemplate DyhDetail { get; set; }
-        public DataTemplate UserDetail { get; set; }
-        public DataTemplate TopicDetail { get; set; }
-        public DataTemplate ProductDetail { get; set; }
-        public DataTemplate CollectionDetail { get; set; }
-
-        protected override DataTemplate SelectTemplateCore(object item)
-        {
-            if (item is DyhDetail) { return this.DyhDetail; }
-            if (item is UserDetail) { return this.UserDetail; }
-            if (item is TopicDetail) { return this.TopicDetail; }
-            if (item is ProductDetail) { return this.ProductDetail; }
-            if (item is CollectionDetail) { return this.CollectionDetail; }
-            return Others;
         }
     }
 }

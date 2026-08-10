@@ -1,8 +1,5 @@
 using CoolapkUWP.Controls;
-using CoolapkUWP.Controls.DataTemplates;
 using CoolapkUWP.Helpers;
-using CoolapkUWP.Models;
-using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.DataSource;
@@ -11,17 +8,7 @@ using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.Resources;
-using Windows.Storage;
-using Windows.Storage.Pickers;
-using Windows.Storage.Streams;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
