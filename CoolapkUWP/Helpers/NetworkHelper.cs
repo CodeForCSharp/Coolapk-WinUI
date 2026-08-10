@@ -195,24 +195,10 @@ namespace CoolapkUWP.Helpers
             headers.Add(name, ThemeHelper.IsDarkTheme() ? "1" : "0");
         }
 
-        private static void ReplaceAppToken(this HttpRequestHeaders headers)
+        private static void AddRequestHeaders(this HttpRequestMessage request, string requestName)
         {
-            const string name = "X-App-Token";
-            _ = headers.Remove(name);
-            headers.Add(name, token.GetToken());
-        }
-
-        private static void ReplaceRequested(this HttpRequestHeaders headers, string request)
-        {
-            const string name = "X-Requested-With";
-            _ = headers.Remove(name);
-            if (request != null) { headers.Add(name, request); }
-        }
-
-        private static void BeforeGetOrPost(Uri uri, string request)
-        {
-            Client.DefaultRequestHeaders.ReplaceAppToken();
-            Client.DefaultRequestHeaders.ReplaceRequested(request);
+            request.Headers.Add("X-App-Token", token.GetToken());
+            if (requestName != null) { request.Headers.Add("X-Requested-With", requestName); }
         }
 
     }
@@ -223,10 +209,14 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
-                HttpResponseMessage response;
-                BeforeGetOrPost(uri, "XMLHttpRequest");
-                response = await Client.PostAsync(uri, content);
-                return await response.Content.ReadAsStringAsync();
+                using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri) { Content = content })
+                {
+                    request.AddRequestHeaders("XMLHttpRequest");
+                    using (HttpResponseMessage response = await Client.SendAsync(request))
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                }
             }
             catch (HttpRequestException e)
             {
@@ -245,8 +235,14 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
-                BeforeGetOrPost(uri, request);
-                return await Client.GetStreamAsync(uri);
+                using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, uri))
+                {
+                    httpRequest.AddRequestHeaders(request);
+                    using (HttpResponseMessage response = await Client.SendAsync(httpRequest))
+                    {
+                        return await response.Content.ReadAsStreamAsync();
+                    }
+                }
             }
             catch (HttpRequestException e)
             {
@@ -265,8 +261,14 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
-                BeforeGetOrPost(uri, request);
-                return await Client.GetStringAsync(uri);
+                using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, uri))
+                {
+                    httpRequest.AddRequestHeaders(request);
+                    using (HttpResponseMessage response = await Client.SendAsync(httpRequest))
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                }
             }
             catch (HttpRequestException e)
             {
