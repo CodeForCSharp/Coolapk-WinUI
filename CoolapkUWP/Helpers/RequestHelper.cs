@@ -18,7 +18,7 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<(bool isSucceed, JsonNode result)> GetDataAsync(Uri uri, bool isBackground = false)
         {
-            string results = await NetworkHelper.GetStringAsync(uri, NetworkHelper.GetCoolapkCookies(uri), "XMLHttpRequest", isBackground);
+            string results = await NetworkHelper.GetStringAsync(uri, "XMLHttpRequest", isBackground);
             if (string.IsNullOrEmpty(results)) { return (false, null); }
             JsonObject token;
             try { token = JsonNode.Parse(results).AsObject(); }
@@ -38,7 +38,7 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<(bool isSucceed, string result)> GetStringAsync(Uri uri, string request = "com.coolapk.market", bool isBackground = false)
         {
-            string results = await NetworkHelper.GetStringAsync(uri, NetworkHelper.GetCoolapkCookies(uri), request, isBackground);
+            string results = await NetworkHelper.GetStringAsync(uri, request, isBackground);
             if (string.IsNullOrWhiteSpace(results))
             {
                 UIHelper.ShowMessage("加载失败");
@@ -49,7 +49,7 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<(bool isSucceed, JsonNode result)> PostDataAsync(Uri uri, HttpContent content = null, bool isBackground = false)
         {
-            string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground);
+            string json = await NetworkHelper.PostAsync(uri, content, isBackground);
             if (string.IsNullOrEmpty(json)) { return (false, null); }
             JsonObject token;
             try { token = JsonNode.Parse(json).AsObject(); }
@@ -75,7 +75,7 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<(bool isSucceed, string result)> PostStringAsync(Uri uri, HttpContent content = null, bool isBackground = false)
         {
-            string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground);
+            string json = await NetworkHelper.PostAsync(uri, content, isBackground);
             if (string.IsNullOrEmpty(json))
             {
                 UIHelper.ShowMessage("加载失败");

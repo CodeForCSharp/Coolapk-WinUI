@@ -12,8 +12,6 @@ using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Navigation;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了"空白页"项模板
 
@@ -113,24 +111,21 @@ namespace CoolapkUWP.Pages.BrowserPages
             string Uid = string.Empty, Token = string.Empty, UserName = string.Empty;
             if (manual)
             {
-                using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
+                foreach ((string name, string value) in NetworkHelper.GetCoolapkCookies(UriHelper.CoolapkUri))
                 {
-                    foreach (HttpCookie item in filter.CookieManager.GetCookies(UriHelper.CoolapkUri))
+                    switch (name)
                     {
-                        switch (item.Name)
-                        {
-                            case "uid":
-                                Uid = item.Value;
-                                break;
-                            case "username":
-                                UserName = item.Value;
-                                break;
-                            case "token":
-                                Token = item.Value;
-                                break;
-                            default:
-                                break;
-                        }
+                        case "uid":
+                            Uid = value;
+                            break;
+                        case "username":
+                            UserName = value;
+                            break;
+                        case "token":
+                            Token = value;
+                            break;
+                        default:
+                            break;
                     }
                 }
                 if (!string.IsNullOrEmpty(Uid) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Token))
@@ -166,19 +161,7 @@ namespace CoolapkUWP.Pages.BrowserPages
                 }
                 if (!string.IsNullOrEmpty(Uid) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Token))
                 {
-                    using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
-                    {
-                        HttpCookieManager cookieManager = filter.CookieManager;
-                        HttpCookie uid = new HttpCookie("uid", ".coolapk.com", "/");
-                        HttpCookie username = new HttpCookie("username", ".coolapk.com", "/");
-                        HttpCookie token = new HttpCookie("token", ".coolapk.com", "/");
-                        uid.Value = Uid;
-                        username.Value = UserName;
-                        token.Value = Token;
-                        cookieManager.SetCookie(uid);
-                        cookieManager.SetCookie(username);
-                        cookieManager.SetCookie(token);
-                    }
+                    NetworkHelper.SetLoginCookie(Uid, UserName, Token);
                     return true;
                 }
             }

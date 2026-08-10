@@ -13,8 +13,6 @@ using System.Net.Http.Headers;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 using HttpClient = System.Net.Http.HttpClient;
 using HttpResponseMessage = System.Net.Http.HttpResponseMessage;
 using HttpStatusCode = System.Net.HttpStatusCode;
@@ -53,20 +51,30 @@ namespace CoolapkUWP.Helpers
 
             if (!string.IsNullOrEmpty(Uid) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Token))
             {
-                using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
-                {
-                    HttpCookieManager cookieManager = filter.CookieManager;
-                    HttpCookie uid = new HttpCookie("uid", ".coolapk.com", "/");
-                    HttpCookie username = new HttpCookie("username", ".coolapk.com", "/");
-                    HttpCookie token = new HttpCookie("token", ".coolapk.com", "/");
-                    uid.Value = Uid;
-                    username.Value = UserName;
-                    token.Value = Token;
-                    cookieManager.SetCookie(uid);
-                    cookieManager.SetCookie(username);
-                    cookieManager.SetCookie(token);
-                }
+                SetLoginCookie(Uid, UserName, Token);
                 SettingsHelper.InvokeLoginChanged(Uid, true);
+            }
+        }
+
+        public static void SetLoginCookie(string Uid, string UserName, string Token)
+        {
+            if (string.IsNullOrEmpty(Uid) || string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token)) { return; }
+
+            CookieContainer container = ClientHandler.CookieContainer;
+            container.Add(new Cookie("uid", Uid) { Domain = ".coolapk.com", Path = "/" });
+            container.Add(new Cookie("username", UserName) { Domain = ".coolapk.com", Path = "/" });
+            container.Add(new Cookie("token", Token) { Domain = ".coolapk.com", Path = "/" });
+        }
+
+        public static void RemoveLoginCookie()
+        {
+            CookieCollection cookies = ClientHandler.CookieContainer.GetCookies(UriHelper.CoolapkUri);
+            foreach (Cookie cookie in cookies)
+            {
+                if (cookie.Name == "uid" || cookie.Name == "username" || cookie.Name == "token")
+                {
+                    cookie.Expired = true;
+                }
             }
         }
 
@@ -169,17 +177,13 @@ namespace CoolapkUWP.Helpers
 
         public static IEnumerable<(string name, string value)> GetCoolapkCookies(Uri uri)
         {
-            using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
+            foreach (Cookie item in ClientHandler.CookieContainer.GetCookies(GetHost(uri)))
             {
-                HttpCookieManager cookieManager = filter.CookieManager;
-                foreach (HttpCookie item in cookieManager.GetCookies(GetHost(uri)))
+                if (item.Name == "uid" ||
+                    item.Name == "username" ||
+                    item.Name == "token")
                 {
-                    if (item.Name == "uid" ||
-                        item.Name == "username" ||
-                        item.Name == "token")
-                    {
-                        yield return (item.Name, item.Value);
-                    }
+                    yield return (item.Name, item.Value);
                 }
             }
         }
@@ -205,19 +209,8 @@ namespace CoolapkUWP.Helpers
             if (request != null) { headers.Add(name, request); }
         }
 
-        private static void ReplaceCoolapkCookie(this CookieContainer container, IEnumerable<(string name, string value)> cookies, Uri uri)
+        private static void BeforeGetOrPost(Uri uri, string request)
         {
-            if (cookies == null) { return; }
-
-            foreach ((string name, string value) in cookies)
-            {
-                container.SetCookies(GetHost(uri), $"{name}={value}");
-            }
-        }
-
-        private static void BeforeGetOrPost(IEnumerable<(string name, string value)> coolapkCookies, Uri uri, string request)
-        {
-            ClientHandler.CookieContainer.ReplaceCoolapkCookie(coolapkCookies, uri);
             Client.DefaultRequestHeaders.ReplaceAppToken();
             Client.DefaultRequestHeaders.ReplaceRequested(request);
         }
@@ -226,12 +219,12 @@ namespace CoolapkUWP.Helpers
 
     public static partial class NetworkHelper
     {
-        public static async Task<string> PostAsync(Uri uri, HttpContent content, IEnumerable<(string name, string value)> coolapkCookies, bool isBackground)
+        public static async Task<string> PostAsync(Uri uri, HttpContent content, bool isBackground)
         {
             try
             {
                 HttpResponseMessage response;
-                BeforeGetOrPost(coolapkCookies, uri, "XMLHttpRequest");
+                BeforeGetOrPost(uri, "XMLHttpRequest");
                 response = await Client.PostAsync(uri, content);
                 return await response.Content.ReadAsStringAsync();
             }
@@ -248,11 +241,11 @@ namespace CoolapkUWP.Helpers
             }
         }
 
-        public static async Task<Stream> GetStreamAsync(Uri uri, IEnumerable<(string name, string value)> coolapkCookies, string request = "XMLHttpRequest", bool isBackground = false)
+        public static async Task<Stream> GetStreamAsync(Uri uri, string request = "XMLHttpRequest", bool isBackground = false)
         {
             try
             {
-                BeforeGetOrPost(coolapkCookies, uri, request);
+                BeforeGetOrPost(uri, request);
                 return await Client.GetStreamAsync(uri);
             }
             catch (HttpRequestException e)
@@ -268,11 +261,11 @@ namespace CoolapkUWP.Helpers
             }
         }
 
-        public static async Task<string> GetStringAsync(Uri uri, IEnumerable<(string name, string value)> coolapkCookies, string request = "XMLHttpRequest", bool isBackground = false)
+        public static async Task<string> GetStringAsync(Uri uri, string request = "XMLHttpRequest", bool isBackground = false)
         {
             try
             {
-                BeforeGetOrPost(coolapkCookies, uri, request);
+                BeforeGetOrPost(uri, request);
                 return await Client.GetStringAsync(uri);
             }
             catch (HttpRequestException e)

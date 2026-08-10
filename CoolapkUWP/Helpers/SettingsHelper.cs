@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 
 namespace CoolapkUWP.Helpers
 {
@@ -117,40 +115,36 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<bool> Login()
         {
-            using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
+            string uid = string.Empty, token = string.Empty, userName = string.Empty;
+            foreach ((string name, string value) in NetworkHelper.GetCoolapkCookies(UriHelper.CoolapkUri))
             {
-                HttpCookieManager cookieManager = filter.CookieManager;
-                string uid = string.Empty, token = string.Empty, userName = string.Empty;
-                foreach (HttpCookie item in cookieManager.GetCookies(UriHelper.CoolapkUri))
+                switch (name)
                 {
-                    switch (item.Name)
-                    {
-                        case "uid":
-                            uid = item.Value;
-                            break;
-                        case "username":
-                            userName = item.Value;
-                            break;
-                        case "token":
-                            token = item.Value;
-                            break;
-                        default:
-                            break;
-                    }
+                    case "uid":
+                        uid = value;
+                        break;
+                    case "username":
+                        userName = value;
+                        break;
+                    case "token":
+                        token = value;
+                        break;
+                    default:
+                        break;
                 }
-                if (string.IsNullOrEmpty(uid) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userName) || !await RequestHelper.CheckLogin())
-                {
-                    Logout();
-                    return false;
-                }
-                else
-                {
-                    Set(Uid, uid);
-                    Set(Token, token);
-                    Set(UserName, userName);
-                    InvokeLoginChanged(uid, true);
-                    return true;
-                }
+            }
+            if (string.IsNullOrEmpty(uid) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userName) || !await RequestHelper.CheckLogin())
+            {
+                Logout();
+                return false;
+            }
+            else
+            {
+                Set(Uid, uid);
+                Set(Token, token);
+                Set(UserName, userName);
+                InvokeLoginChanged(uid, true);
+                return true;
             }
         }
 
@@ -158,19 +152,7 @@ namespace CoolapkUWP.Helpers
         {
             if (!string.IsNullOrEmpty(Uid) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Token))
             {
-                using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
-                {
-                    HttpCookieManager cookieManager = filter.CookieManager;
-                    HttpCookie uid = new HttpCookie("uid", ".coolapk.com", "/");
-                    HttpCookie username = new HttpCookie("username", ".coolapk.com", "/");
-                    HttpCookie token = new HttpCookie("token", ".coolapk.com", "/");
-                    uid.Value = Uid;
-                    username.Value = UserName;
-                    token.Value = Token;
-                    cookieManager.SetCookie(uid);
-                    cookieManager.SetCookie(username);
-                    cookieManager.SetCookie(token);
-                }
+                NetworkHelper.SetLoginCookie(Uid, UserName, Token);
                 if (await RequestHelper.CheckLogin())
                 {
                     Set(SettingsHelper.Uid, Uid);
@@ -190,41 +172,30 @@ namespace CoolapkUWP.Helpers
 
         public static async Task<bool> CheckLoginAsync()
         {
-            using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
+            string uid = string.Empty, token = string.Empty, userName = string.Empty;
+            foreach ((string name, string value) in NetworkHelper.GetCoolapkCookies(UriHelper.CoolapkUri))
             {
-                HttpCookieManager cookieManager = filter.CookieManager;
-                string uid = string.Empty, token = string.Empty, userName = string.Empty;
-                foreach (HttpCookie item in cookieManager.GetCookies(UriHelper.CoolapkUri))
+                switch (name)
                 {
-                    switch (item.Name)
-                    {
-                        case "uid":
-                            uid = item.Value;
-                            break;
-                        case "username":
-                            userName = item.Value;
-                            break;
-                        case "token":
-                            token = item.Value;
-                            break;
-                        default:
-                            break;
-                    }
+                    case "uid":
+                        uid = value;
+                        break;
+                    case "username":
+                        userName = value;
+                        break;
+                    case "token":
+                        token = value;
+                        break;
+                    default:
+                        break;
                 }
-                return !string.IsNullOrEmpty(uid) && !string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userName) && await RequestHelper.CheckLogin();
             }
+            return !string.IsNullOrEmpty(uid) && !string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userName) && await RequestHelper.CheckLogin();
         }
 
         public static void Logout()
         {
-            using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
-            {
-                HttpCookieManager cookieManager = filter.CookieManager;
-                foreach (HttpCookie item in cookieManager.GetCookies(UriHelper.Base2Uri))
-                {
-                    cookieManager.DeleteCookie(item);
-                }
-            }
+            NetworkHelper.RemoveLoginCookie();
             Set(Uid, string.Empty);
             Set(Token, string.Empty);
             Set(UserName, string.Empty);

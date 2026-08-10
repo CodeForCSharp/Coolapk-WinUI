@@ -1,8 +1,6 @@
 using CoolapkUWP.Helpers;
 using System.Net;
 using Microsoft.UI.Xaml.Controls;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -70,19 +68,7 @@ namespace CoolapkUWP.Controls
                 {
                     GetText(UID);
                 }
-                using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
-                {
-                    HttpCookieManager cookieManager = filter.CookieManager;
-                    HttpCookie uid = new HttpCookie("uid", ".coolapk.com", "/");
-                    HttpCookie username = new HttpCookie("username", ".coolapk.com", "/");
-                    HttpCookie token = new HttpCookie("token", ".coolapk.com", "/");
-                    uid.Value = UID;
-                    username.Value = UserName;
-                    token.Value = Token;
-                    cookieManager.SetCookie(uid);
-                    cookieManager.SetCookie(username);
-                    cookieManager.SetCookie(token);
-                }
+                NetworkHelper.SetLoginCookie(UID, UserName, Token);
             }
         }
 
