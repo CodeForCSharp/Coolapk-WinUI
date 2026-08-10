@@ -146,20 +146,13 @@ namespace CoolapkUWP.ViewModels.DataSource
         /// </summary>
         protected virtual async Task AddItemsAsync(IList<T> items)
         {
-            if (items != null)
-            {
-                foreach (T item in items)
-                {
-                    await AddAsync(item);
-                    InvokeProgressChanged(item, items);
-                }
-            }
-        }
-
-        public virtual async Task AddAsync(T item)
-        {
+            if (items == null) { return; }
             await Dispatcher.ResumeForegroundAsync();
-            Add(item);
+            foreach (T item in items)
+            {
+                Add(item);
+                InvokeProgressChanged(item, items);
+            }
         }
 
         protected virtual void InvokeProgressChanged(T item, IList<T> items) => LoadMoreProgressChanged?.Invoke((double)(items.IndexOf(item) + 1) / items.Count);

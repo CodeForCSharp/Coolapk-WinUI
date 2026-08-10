@@ -21,6 +21,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
@@ -656,13 +657,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected override async Task AddItemsAsync(IList<Entity> items)
         {
-            if (items != null)
+            if (items == null) { return; }
+            await Dispatcher.ResumeForegroundAsync();
+            foreach (Entity item in items)
             {
-                foreach (Entity item in items)
-                {
-                    if (item is NullEntity) { continue; }
-                    await AddAsync(item);
-                }
+                if (item is NullEntity) { continue; }
+                Add(item);
             }
         }
     }

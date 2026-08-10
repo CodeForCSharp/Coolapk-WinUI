@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
@@ -123,13 +124,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected override async Task AddItemsAsync(IList<Entity> items)
         {
-            if (items != null)
+            if (items == null) { return; }
+            await Dispatcher.ResumeForegroundAsync();
+            foreach (Entity item in items)
             {
-                foreach (Entity item in items)
-                {
-                    if (item is NullEntity) { continue; }
-                    await AddAsync(item);
-                }
+                if (item is NullEntity) { continue; }
+                Add(item);
             }
         }
     }
