@@ -3,8 +3,6 @@ using CoolapkUWP.Models;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.Providers
@@ -26,83 +24,28 @@ namespace CoolapkUWP.ViewModels.Providers
 
         public void Clear() => _lastItem = _firstItem = string.Empty;
 
-        public async Task GetEntity(List<Entity> Models, int p = 1)
+        public async Task GetEntity(ICollection<Entity> models, int p = 1)
         {
             if (p == 1) { Clear(); }
             (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
-            if (result.isSucceed)
-            {
-                JsonArray array = result.result.AsArray();
-                if (array.Count < 1) { return; }
-                if (string.IsNullOrEmpty(_firstItem))
-                {
-                    _firstItem = RequestHelper.GetId(array[0], _idName);
-                }
-                _lastItem = RequestHelper.GetId(array[^1], _idName);
-                foreach (JsonNode item in array)
-                {
-                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
-                    if (entities == null) { continue; }
+            if (!result.isSucceed) { return; }
 
-                    foreach (Entity i in entities)
-                    {
-                        if (i == null) { continue; }
-                        Models.Add(i);
-                    }
-                }
+            JsonArray array = result.result.AsArray();
+            if (array.Count < 1) { return; }
+            if (string.IsNullOrEmpty(_firstItem))
+            {
+                _firstItem = RequestHelper.GetId(array[0], _idName);
             }
-        }
-
-        public async Task GetEntity(Collection<Entity> Models, int p = 1)
-        {
-            if (p == 1) { Clear(); }
-            (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
-            if (result.isSucceed)
+            _lastItem = RequestHelper.GetId(array[^1], _idName);
+            foreach (JsonNode item in array)
             {
-                JsonArray array = result.result.AsArray();
-                if (array.Count < 1) { return; }
-                if (string.IsNullOrEmpty(_firstItem))
-                {
-                    _firstItem = RequestHelper.GetId(array[0], _idName);
-                }
-                _lastItem = RequestHelper.GetId(array[^1], _idName);
-                foreach (JsonNode item in array)
-                {
-                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
-                    if (entities == null) { continue; }
+                IEnumerable<Entity> entities = GetEntities(item.AsObject());
+                if (entities == null) { continue; }
 
-                    foreach (Entity i in entities)
-                    {
-                        if (i == null) { continue; }
-                        Models.Add(i);
-                    }
-                }
-            }
-        }
-
-        public async Task GetEntity(IEnumerable<Entity> Models, int p = 1)
-        {
-            if (p == 1) { Clear(); }
-            (bool isSucceed, JsonNode result) result = await RequestHelper.GetDataAsync(_getUri(p, _firstItem, _lastItem), false);
-            if (result.isSucceed)
-            {
-                JsonArray array = result.result.AsArray();
-                if (array.Count < 1) { return; }
-                if (string.IsNullOrEmpty(_firstItem))
+                foreach (Entity entity in entities)
                 {
-                    _firstItem = RequestHelper.GetId(array[0], _idName);
-                }
-                _lastItem = RequestHelper.GetId(array[^1], _idName);
-                foreach (JsonNode item in array)
-                {
-                    IEnumerable<Entity> entities = GetEntities(item.AsObject());
-                    if (entities == null) { continue; }
-
-                    foreach (Entity i in entities)
-                    {
-                        if (i == null) { continue; }
-                        Models = Models.Concat(new Entity[] { i });
-                    }
+                    if (entity == null) { continue; }
+                    models.Add(entity);
                 }
             }
         }
