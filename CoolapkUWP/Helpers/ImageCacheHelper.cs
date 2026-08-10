@@ -38,6 +38,8 @@ namespace CoolapkUWP.Helpers
         private static BitmapImage WhiteNoPicMode { get; set; }
         internal static BitmapImage NoPic { get => ThemeHelper.IsDarkTheme() ? DarkNoPicMode : WhiteNoPicMode; }
 
+        internal static DispatcherQueue Dispatcher { get; } = App.MainWindow.DispatcherQueue;
+
         static ImageCacheHelper()
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromHours(8);

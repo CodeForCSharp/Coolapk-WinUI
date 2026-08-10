@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public abstract class FeedListViewModel : IViewModel
+    public abstract partial class FeedListViewModel : IViewModel
     {
         protected const string idName = "id";
 

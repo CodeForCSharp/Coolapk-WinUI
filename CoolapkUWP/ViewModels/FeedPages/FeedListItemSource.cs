@@ -1,3 +1,4 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Controls.DataTemplates;
 using CoolapkUWP.Helpers;
