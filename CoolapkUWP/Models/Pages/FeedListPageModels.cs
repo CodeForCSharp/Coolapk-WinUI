@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;

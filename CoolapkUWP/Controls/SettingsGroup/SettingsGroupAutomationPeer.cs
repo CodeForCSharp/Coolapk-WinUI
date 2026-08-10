@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace CoolapkUWP.Controls
 {

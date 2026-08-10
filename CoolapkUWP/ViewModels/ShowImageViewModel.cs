@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Common;
+using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using System;

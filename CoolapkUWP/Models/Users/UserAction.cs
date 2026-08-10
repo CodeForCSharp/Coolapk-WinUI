@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using System.Text.Json.Nodes;
 using System.ComponentModel;
 using Windows.ApplicationModel.Resources;

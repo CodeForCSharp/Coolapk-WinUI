@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Controls.DataTemplates;
+using CoolapkUWP.Controls.DataTemplates;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.Pages.FeedPages;

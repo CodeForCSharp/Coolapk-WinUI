@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Models;
+using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Models.Users;

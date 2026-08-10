@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Models.Update;
+using CoolapkUWP.Models.Update;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
 using System;

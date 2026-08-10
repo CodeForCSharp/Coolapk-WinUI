@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.ViewModels;
 using Microsoft.UI.Xaml.Controls;

@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.ViewModels;
+using CoolapkUWP.ViewModels;
 using CoolapkUWP.ViewModels.DataSource;
 using System.Collections.Generic;
 using System.Linq;

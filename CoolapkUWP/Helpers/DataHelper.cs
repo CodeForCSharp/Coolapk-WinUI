@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Common;
+using CoolapkUWP.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;

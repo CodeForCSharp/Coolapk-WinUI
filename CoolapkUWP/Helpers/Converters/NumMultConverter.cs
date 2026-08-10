@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml.Data;
 
 namespace CoolapkUWP.Helpers.Converters

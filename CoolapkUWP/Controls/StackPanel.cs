@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

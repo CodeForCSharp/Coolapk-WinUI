@@ -1,4 +1,4 @@
-﻿namespace CoolapkUWP.Helpers
+namespace CoolapkUWP.Helpers
 {
     internal static class EmojiHelper
     {

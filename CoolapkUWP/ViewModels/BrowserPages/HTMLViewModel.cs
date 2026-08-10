@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Common;
+using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using HtmlAgilityPack;
 using System.Text.Json.Nodes;

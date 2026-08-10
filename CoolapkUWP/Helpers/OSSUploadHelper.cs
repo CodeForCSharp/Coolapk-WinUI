@@ -1,4 +1,4 @@
-﻿using Aliyun.OSS;
+using Aliyun.OSS;
 using Aliyun.OSS.Util;
 using CoolapkUWP.Models.Upload;
 using System.IO;

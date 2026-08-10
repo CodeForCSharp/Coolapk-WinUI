@@ -1,4 +1,4 @@
-﻿namespace CoolapkUWP.Models.Users
+namespace CoolapkUWP.Models.Users
 {
     public class LinkUserModel
     {

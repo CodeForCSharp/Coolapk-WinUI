@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;

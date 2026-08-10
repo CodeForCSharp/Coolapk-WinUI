@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI;
 using System;
 using System.Linq;
 using System.Numerics;

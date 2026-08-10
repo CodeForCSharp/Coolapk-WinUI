@@ -1,0 +1,28 @@
+# 统一所有文本文件的行尾为 LF(仓库内规范),避免跨平台/OneDrive 产生格式噪音
+* text=auto eol=lf
+
+# 二进制文件,git 不做行尾/文本处理
+*.cer binary
+*.dll binary
+*.exe binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.bmp binary
+*.tif binary
+*.tiff binary
+*.pfx binary
+*.pdb binary
+*.appx binary
+*.appxbundle binary
+*.msix binary
+*.rar binary
+*.zip binary
+*.7z binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary

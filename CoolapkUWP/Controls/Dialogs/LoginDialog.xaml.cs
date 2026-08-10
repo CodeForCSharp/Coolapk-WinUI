@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using System.Net;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Web.Http;

@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Converters;
 using CoolapkUWP.Models.Images;
 using HtmlAgilityPack;

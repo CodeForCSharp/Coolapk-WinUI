@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.ViewModels.DataSource;
+using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using System;
 using System.ComponentModel;

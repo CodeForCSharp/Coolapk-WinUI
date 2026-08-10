@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using static QRCoder.QRCodeGenerator;
 

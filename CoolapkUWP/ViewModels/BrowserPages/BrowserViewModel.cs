@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;

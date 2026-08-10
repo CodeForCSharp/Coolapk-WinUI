@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Controls;
+using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CommunityToolkit.WinUI;

@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
 using System.ComponentModel;

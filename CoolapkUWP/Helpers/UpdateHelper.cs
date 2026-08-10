@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Models.Update;
+using CoolapkUWP.Models.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.SettingsPages;

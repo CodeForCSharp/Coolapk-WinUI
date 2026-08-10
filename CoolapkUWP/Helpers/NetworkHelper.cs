@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Common;
+using CoolapkUWP.Common;
 using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Update;
 using CommunityToolkit.WinUI.Helpers;

@@ -1,4 +1,4 @@
-﻿using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers;
 using CommunityToolkit.WinUI.Helpers;
 using System;
 using Windows.ApplicationModel;

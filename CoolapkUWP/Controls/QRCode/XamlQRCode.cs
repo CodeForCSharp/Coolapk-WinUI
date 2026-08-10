@@ -1,4 +1,4 @@
-﻿using QRCoder;
+using QRCoder;
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;

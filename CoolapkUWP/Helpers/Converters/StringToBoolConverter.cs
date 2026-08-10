@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.WinUI.Converters;
+using CommunityToolkit.WinUI.Converters;
 
 namespace CoolapkUWP.Helpers.Converters
 {
