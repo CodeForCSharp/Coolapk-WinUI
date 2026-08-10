@@ -1,11 +1,12 @@
 using CoolapkUWP.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
+using System.ComponentModel;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Users
 {
-    public partial class UserAction : Entity, ObservableObject
+    public partial class UserAction : Entity, INotifyPropertyChanged
     {
         [ObservableProperty]
         private bool like;
