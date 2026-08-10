@@ -4,29 +4,68 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public partial class SearchingViewModel : ObservableObject, IViewModel
+    public partial class SearchingViewModel : IViewModel
     {
         public int PivotIndex = -1;
 
-        [ObservableProperty]
-        public partial string Title { get; set; } = string.Empty;
+        private string title = string.Empty;
+        public string Title
+        {
+            get => title;
+            set
+            {
+                title = value;
+                RaisePropertyChangedEvent();
+            }
+        }
 
-        [ObservableProperty]
-        public partial SearchFeedItemSource SearchFeedItemSource { get; private set; }
+        private SearchFeedItemSource searchFeedItemSource;
+        public SearchFeedItemSource SearchFeedItemSource
+        {
+            get => searchFeedItemSource;
+            private set
+            {
+                searchFeedItemSource = value;
+                RaisePropertyChangedEvent();
+            }
+        }
 
-        [ObservableProperty]
-        public partial SearchUserItemSource SearchUserItemSource { get; private set; }
+        private SearchUserItemSource searchUserItemSource;
+        public SearchUserItemSource SearchUserItemSource
+        {
+            get => searchUserItemSource;
+            private set
+            {
+                searchUserItemSource = value;
+                RaisePropertyChangedEvent();
+            }
+        }
 
-        [ObservableProperty]
-        public partial SearchTopicItemSource SearchTopicItemSource { get; private set; }
+        private SearchTopicItemSource searchTopicItemSource;
+        public SearchTopicItemSource SearchTopicItemSource
+        {
+            get => searchTopicItemSource;
+            private set
+            {
+                searchTopicItemSource = value;
+                RaisePropertyChangedEvent();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
 
         public SearchingViewModel(string keyword, int index = -1)
         {

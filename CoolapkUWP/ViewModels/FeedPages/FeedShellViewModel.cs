@@ -5,28 +5,68 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public abstract partial class FeedShellViewModel : ObservableObject, IViewModel
+    public abstract class FeedShellViewModel : IViewModel, INotifyPropertyChanged
     {
         protected string ID { get; set; }
 
-        [ObservableProperty]
-        public partial string Title { get; protected set; } = string.Empty;
+        private string title = string.Empty;
+        public string Title
+        {
+            get => title;
+            protected set
+            {
+                if (title != value)
+                {
+                    title = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
-        [ObservableProperty]
-        public partial FeedDetailModel FeedDetail { get; protected set; }
+        private FeedDetailModel feedDetail;
+        public FeedDetailModel FeedDetail
+        {
+            get => feedDetail;
+            protected set
+            {
+                if (feedDetail != value)
+                {
+                    feedDetail = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
 
-        [ObservableProperty]
-        public partial List<ShyHeaderItem> ItemSource { get; protected set; }
+        private List<ShyHeaderItem> itemSource;
+        public List<ShyHeaderItem> ItemSource
+        {
+            get => itemSource;
+            protected set
+            {
+                if (itemSource != value)
+                {
+                    itemSource = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
+        {
+            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
 
         protected FeedShellViewModel(string id)
         {
