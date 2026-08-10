@@ -15,6 +15,7 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
+    [WinRT.GeneratedBindableCustomProperty]
     public partial class ReplyItemSource : EntityItemSource, INotifyPropertyChanged, ICanComboBoxChangeSelectedIndex, ICanToggleChangeSelectedIndex
     {
         public string ID;

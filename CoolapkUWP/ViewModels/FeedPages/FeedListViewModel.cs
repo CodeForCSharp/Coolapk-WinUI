@@ -74,5 +74,5 @@ namespace CoolapkUWP.ViewModels.FeedPages
         {
             yield return EntityTemplateSelector.GetEntity(jo);
         }
-
+    }
 }

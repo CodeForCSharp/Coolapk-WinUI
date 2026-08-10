@@ -68,6 +68,4 @@ namespace CoolapkUWP.ViewModels.FeedPages
             await (ItemSource.FirstOrDefault()?.ItemSource as EntityItemSource)?.Refresh(reset);
         }
     }
-
-    [WinRT.GeneratedBindableCustomProperty]
 }
