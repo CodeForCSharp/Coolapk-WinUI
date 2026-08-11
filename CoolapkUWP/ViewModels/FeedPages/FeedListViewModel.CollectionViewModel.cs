@@ -23,6 +23,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (Detail == null || reset)
                 {
                     Detail = await GetDetail();
+                    Title = (Detail as CollectionDetail)?.Title;
                 }
                 if (ItemSource == null)
                 {
@@ -79,8 +80,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     }
                 }
             }
-            protected override string GetTitleBarText(FeedListDetailBase detail) => (detail as CollectionDetail)?.Title;
-
             public override async Task<FeedListDetailBase> GetDetail()
             {
                 (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionDetail, ID), true);

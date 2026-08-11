@@ -28,6 +28,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             if (FeedDetail == null || reset)
             {
                 FeedDetail = await GetFeedDetailAsync(ID);
+                if (FeedDetail == null) { return; }
                 List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
                 Title = FeedDetail.Title;
                 if (ReplyItemSource == null || ReplyItemSource.ID != ID)

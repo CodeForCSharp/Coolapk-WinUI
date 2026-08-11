@@ -75,6 +75,12 @@ namespace CoolapkUWP.Pages.FeedPages
             return items;
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Refresh != null)
+            {
+                _ = Refresh(true);
+            }
+        }
     }
 }

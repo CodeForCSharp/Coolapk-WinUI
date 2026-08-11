@@ -141,7 +141,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     UriType.SearchFeeds,
                     feedType,
                     sortType,
-                    keyword,
+                    Keyword,
                     p,
                     p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
                 GetEntities,
@@ -186,7 +186,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     p,
                     p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
                 GetEntities,
-                "uid");
+                "id");
         }
     }
 
@@ -201,7 +201,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 (p, firstItem, lastItem) =>
                 UriHelper.GetUri(
                     UriType.SearchUsers,
-                    keyword,
+                    Keyword,
                     p,
                     p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
                 GetEntities,
@@ -225,7 +225,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 (p, firstItem, lastItem) =>
                 UriHelper.GetUri(
                     UriType.SearchTags,
-                    keyword,
+                    Keyword,
                     p,
                     p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
                 GetEntities,

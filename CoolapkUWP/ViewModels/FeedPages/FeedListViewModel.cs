@@ -68,8 +68,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         public bool IsEqual(FeedListViewModel other) => ListType == other.ListType && ID == other.ID;
 
-        protected abstract string GetTitleBarText(FeedListDetailBase detail);
-
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
             yield return EntityTemplateSelector.GetEntity(jo);

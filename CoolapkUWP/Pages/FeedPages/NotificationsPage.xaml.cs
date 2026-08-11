@@ -162,7 +162,10 @@ namespace CoolapkUWP.Pages.FeedPages
         private async Task Refresh(bool reset = false)
         {
             await NotificationsModel?.Update();
-            await RefreshTask(reset);
+            if (RefreshTask != null)
+            {
+                await RefreshTask(reset);
+            }
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
