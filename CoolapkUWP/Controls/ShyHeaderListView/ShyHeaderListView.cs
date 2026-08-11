@@ -2,16 +2,13 @@ using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Converters;
 using CoolapkUWP.ViewModels.DataSource;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
@@ -219,7 +216,7 @@ namespace CoolapkUWP.Controls
             }
             if (_pivotHeader != null)
             {
-                try { _pivotHeader.SelectedIndex = 0; } catch { }
+                _pivotHeader.SelectedIndex = 0;
                 _pivotHeader.SelectionChanged += PivotHeader_SelectionChanged;
                 if (ShyHeaderItemSource != null)
                 {
@@ -288,7 +285,7 @@ namespace CoolapkUWP.Controls
             }
             if (_pivotHeader?.SelectedIndex == -1)
             {
-                try { _pivotHeader.SelectedIndex = 0; } catch { }
+                _pivotHeader.SelectedIndex = 0;
             }
         }
 
@@ -304,36 +301,8 @@ namespace CoolapkUWP.Controls
                 return;
             }
 
-            try
-            {
-                ItemsSource = newSource;
-                RefreshIfEmpty(newSource);
-            }
-            catch (Exception ex)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(ShyHeaderListView)).LogError(ex, ex.ExceptionToMessage());
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    try
-                    {
-                        if (ItemsSource != null && ItemsSource != newSource)
-                        {
-                            ItemsSource = null;
-                        }
-                    }
-                    catch { }
-
-                    try
-                    {
-                        ItemsSource = newSource;
-                        RefreshIfEmpty(newSource);
-                    }
-                    catch (Exception retryEx)
-                    {
-                        SettingsHelper.LogManager.CreateLogger(nameof(ShyHeaderListView)).LogError(retryEx, retryEx.ExceptionToMessage());
-                    }
-                });
-            }
+            ItemsSource = newSource;
+            RefreshIfEmpty(newSource);
         }
 
         private void RefreshIfEmpty(object source)
@@ -379,26 +348,10 @@ namespace CoolapkUWP.Controls
                     _progressProvider.ScrollViewer = _scrollViewer;
                 }
 
-                Visual _headerVisual = ElementCompositionPreview.GetElementVisual(ListViewHeader);
-                CompositionPropertySet _manipulationPropertySet = null;
-
                 _propSet = _propSet ?? Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread().CreatePropertySet();
                 _propSet.InsertScalar("height", (float)Math.Max(0, _topHeader.ActualHeight - HeaderMargin));
 
-                try
-                {
-                    Compositor _compositor = Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread();
-                    ExpressionAnimation _headerAnimation = _compositor.CreateExpressionAnimation("_manipulationPropertySet.Translation.Y > -_propSet.height ? 0: -_propSet.height -_manipulationPropertySet.Translation.Y");
-
-                    _headerAnimation.SetReferenceParameter("_propSet", _propSet);
-                    _headerAnimation.SetReferenceParameter("_manipulationPropertySet", _manipulationPropertySet);
-
-                    _headerVisual.StartAnimation("Offset.Y", _headerAnimation);
-                }
-                catch
-                {
-                    _topheight = Math.Max(0, _topHeader.ActualHeight - HeaderMargin);
-                }
+                _topheight = Math.Max(0, _topHeader.ActualHeight - HeaderMargin);
             }
             else
             {

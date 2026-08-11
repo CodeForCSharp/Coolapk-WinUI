@@ -17,6 +17,7 @@ using Windows.Storage.Streams;
 using Windows.Graphics.Imaging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Extensions.Logging;
 
 namespace CoolapkUWP.Common
 {
@@ -168,7 +169,11 @@ namespace CoolapkUWP.Common
                     }
                     return bitmap;
                 }
-                catch { return null; }
+                catch (Exception ex)
+                {
+                    SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogWarning(ex, ex.ExceptionToMessage());
+                    return null;
+                }
             }
             finally
             {
@@ -364,7 +369,11 @@ namespace CoolapkUWP.Common
                 string lastModified = node?["lastModified"]?.GetValue<string>();
                 return (etag, DateTimeOffset.TryParse(lastModified, out DateTimeOffset lm) ? lm : DateTimeOffset.MinValue);
             }
-            catch { return (null, DateTimeOffset.MinValue); }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogWarning(ex, ex.ExceptionToMessage());
+                return (null, DateTimeOffset.MinValue);
+            }
         }
 
         private static async Task WriteMetaAsync(StorageFolder folder, string fileName, string etag, DateTimeOffset? lastModified)
@@ -379,7 +388,10 @@ namespace CoolapkUWP.Common
                 StorageFile meta = await folder.CreateFileAsync(GetMetaFileName(fileName), CreationCollisionOption.ReplaceExisting);
                 await FileIO.WriteTextAsync(meta, obj.ToJsonString());
             }
-            catch { }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogDebug(ex, ex.ExceptionToMessage());
+            }
         }
 
         private Task EnsureMaintainCacheAsync()
@@ -411,7 +423,10 @@ namespace CoolapkUWP.Common
                         entries.Add((file, props.DateModified, size));
                         totalBytes += size;
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogDebug(ex, ex.ExceptionToMessage());
+                    }
                 }
 
                 DateTimeOffset now = DateTimeOffset.Now;
@@ -423,7 +438,10 @@ namespace CoolapkUWP.Common
                         await file.DeleteAsync();
                         totalBytes -= size;
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogDebug(ex, ex.ExceptionToMessage());
+                    }
                 }
 
                 if (totalBytes > DiskCacheMaxBytes)
@@ -436,11 +454,17 @@ namespace CoolapkUWP.Common
                             await file.DeleteAsync();
                             totalBytes -= size;
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogDebug(ex, ex.ExceptionToMessage());
+                        }
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogDebug(ex, ex.ExceptionToMessage());
+            }
         }
 
         public async Task RemoveAsync(Uri[] uris)

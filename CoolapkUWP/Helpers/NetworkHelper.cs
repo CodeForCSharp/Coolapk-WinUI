@@ -356,7 +356,10 @@ namespace CoolapkUWP.Helpers
                     return location?.ToString() ?? ShortUrl.ToString();
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogDebug(ex, ex.ExceptionToMessage());
+            }
             return ShortUrl.ToString();
         }
 

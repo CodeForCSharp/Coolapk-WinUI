@@ -2,6 +2,8 @@ using CoolapkUWP.Common;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Win32;
 using Windows.UI.ViewManagement;
+using Microsoft.Extensions.Logging;
+using System;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -106,7 +108,11 @@ namespace CoolapkUWP.Helpers
                     .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
                 return key?.GetValue("AppsUseLightTheme") is int v && v == 0;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage());
+                return false;
+            }
         }
 
         public static bool IsDarkTheme(ElementTheme ActualTheme)
@@ -119,14 +125,19 @@ namespace CoolapkUWP.Helpers
                     .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
                 return key?.GetValue("AppsUseLightTheme") is int v && v == 0;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage());
+                return false;
+            }
         }
 
         public static async void UpdateSystemCaptionButtonColors()
         {
             bool IsDark = IsDarkTheme();
             bool IsHighContrast = false;
-            try { IsHighContrast = new AccessibilitySettings().HighContrast; } catch { }
+            try { IsHighContrast = new AccessibilitySettings().HighContrast; }
+            catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage()); }
     
             var ForegroundColor = IsDark || IsHighContrast ? Colors.White : Colors.Black;
             var BackgroundColor = IsHighContrast ? Microsoft.UI.ColorHelper.FromArgb(255, 0, 0, 0) : IsDark ? Microsoft.UI.ColorHelper.FromArgb(255, 32, 32, 32) : Microsoft.UI.ColorHelper.FromArgb(255, 243, 243, 243);
@@ -149,7 +160,8 @@ namespace CoolapkUWP.Helpers
 
             bool IsDark = window?.Content is FrameworkElement rootElement ? IsDarkTheme(rootElement.RequestedTheme) : IsDarkTheme();
             bool IsHighContrast = false;
-            try { IsHighContrast = new AccessibilitySettings().HighContrast; } catch { }
+            try { IsHighContrast = new AccessibilitySettings().HighContrast; }
+            catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage()); }
     
             var ForegroundColor = IsDark || IsHighContrast ? Colors.White : Colors.Black;
             var BackgroundColor = IsHighContrast ? Microsoft.UI.ColorHelper.FromArgb(255, 0, 0, 0) : IsDark ? Microsoft.UI.ColorHelper.FromArgb(255, 32, 32, 32) : Microsoft.UI.ColorHelper.FromArgb(255, 243, 243, 243);

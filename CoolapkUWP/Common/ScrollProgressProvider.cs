@@ -6,6 +6,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using CoolapkUWP.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace CoolapkUWP.Common
 {
@@ -193,8 +195,9 @@ namespace CoolapkUWP.Common
                     propSet.InsertScalar("delayprogress", -1f);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                SettingsHelper.LogManager.CreateLogger(nameof(ScrollProgressProvider)).LogDebug(ex, ex.ExceptionToMessage());
             }
         }
 

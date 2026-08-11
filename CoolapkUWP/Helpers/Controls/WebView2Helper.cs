@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -89,15 +90,11 @@ namespace CoolapkUWP.Helpers
 
         private static void UpdateMargin(WebView2 element, Thickness margin)
         {
-            try
-            {
-                Thickness Margin = margin;
-                _ = element.ExecuteScriptAsync($"document.body.style.marginLeft = '{Margin.Left}px'");
-                _ = element.ExecuteScriptAsync($"document.body.style.marginTop = '{Margin.Top}px'");
-                _ = element.ExecuteScriptAsync($"document.body.style.marginRight = '{Margin.Right}px'");
-                _ = element.ExecuteScriptAsync($"document.body.style.marginBottom = '{Margin.Bottom}px'");
-            }
-            catch { }
+            Thickness Margin = margin;
+            _ = element.ExecuteScriptAsync($"document.body.style.marginLeft = '{Margin.Left}px'");
+            _ = element.ExecuteScriptAsync($"document.body.style.marginTop = '{Margin.Top}px'");
+            _ = element.ExecuteScriptAsync($"document.body.style.marginRight = '{Margin.Right}px'");
+            _ = element.ExecuteScriptAsync($"document.body.style.marginBottom = '{Margin.Bottom}px'");
         }
 
         #endregion
@@ -145,7 +142,7 @@ namespace CoolapkUWP.Helpers
                 }
                 else { element.MinHeight = 0; }
             }
-            catch { }
+            catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(WebViewHelper)).LogDebug(ex, ex.ExceptionToMessage()); }
         }
 
         #endregion

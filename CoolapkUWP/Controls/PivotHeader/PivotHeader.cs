@@ -10,6 +10,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using CoolapkUWP.Helpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
@@ -107,7 +109,8 @@ namespace CoolapkUWP.Controls
                 return;
             }
 
-            try { TryStartAnimationWithScale(newIndicator, oldIndicator); } catch { }
+            try { TryStartAnimationWithScale(newIndicator, oldIndicator); }
+            catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(PivotHeader)).LogDebug(ex, ex.ExceptionToMessage()); }
         }
 
         private Rectangle GetIndicator(object item)
@@ -141,8 +144,9 @@ namespace CoolapkUWP.Controls
                 return await tcs.Task;
 
             }
-            catch
+            catch (Exception ex)
             {
+                SettingsHelper.LogManager.CreateLogger(nameof(PivotHeader)).LogDebug(ex, ex.ExceptionToMessage());
                 element.Loaded -= Element_Loaded;
                 T result = func.Invoke();
                 if (pre(result))
@@ -175,8 +179,9 @@ namespace CoolapkUWP.Controls
                         tcs.SetCanceled();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    SettingsHelper.LogManager.CreateLogger(nameof(PivotHeader)).LogDebug(ex, ex.ExceptionToMessage());
                     System.Diagnostics.Debug.WriteLine("canceled");
                 }
             }

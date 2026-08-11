@@ -242,8 +242,9 @@ namespace CoolapkUWP.Helpers
                 string content = await Windows.Storage.FileIO.ReadTextAsync(file);
                 return _serializer.Deserialize<T>(content);
             }
-            catch
+            catch (Exception ex)
             {
+                SettingsHelper.LogManager.CreateLogger(nameof(SettingsHelper)).LogDebug(ex, ex.ExceptionToMessage());
                 return default;
             }
         }

@@ -89,6 +89,10 @@ namespace CoolapkUWP
 
         private static void OnSynchronizationContextUnhandledException(object sender, CoolapkUWP.Helpers.UnhandledExceptionEventArgs args)
         {
+            if (args.Exception != null)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(App)).LogCritical(args.Exception, args.Exception.ExceptionToMessage());
+            }
             args.Handled = true;
         }
 
@@ -105,12 +109,23 @@ namespace CoolapkUWP
                         break;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(App)).LogWarning(ex, ex.ExceptionToMessage());
+            }
         }
 
         private void Application_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             SettingsHelper.LogManager.CreateLogger(nameof(App)).LogCritical(e.Exception, e.Exception.ExceptionToMessage());
+
+            // 致命异常不应被吞掉，让应用终止而不是在未知状态下继续运行
+            if (e.Exception is OutOfMemoryException or AccessViolationException or Microsoft.UI.Xaml.Markup.XamlParseException)
+            {
+                e.Handled = false;
+                return;
+            }
+
             e.Handled = true;
         }
     }
