@@ -1,132 +1,40 @@
 using CoolapkUWP.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
-using System.ComponentModel;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Users
 {
-    public partial class UserAction : Entity, INotifyPropertyChanged
+    [INotifyPropertyChanged]
+    public partial class UserAction : Entity
     {
-        private bool like;
-        public bool Like
-        {
-            get => like;
-            set
-            {
-                if (like != value)
-                {
-                    like = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool Like { get; set; }
 
-        private bool favorite;
-        public bool Favorite
-        {
-            get => favorite;
-            set
-            {
-                if (favorite != value)
-                {
-                    favorite = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool Favorite { get; set; }
 
-        private bool follow;
-        public bool Follow
-        {
-            get => follow;
-            set
-            {
-                if (follow != value)
-                {
-                    follow = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool Follow { get; set; }
 
-        private bool collect;
-        public bool Collect
-        {
-            get => collect;
-            set
-            {
-                if (collect != value)
-                {
-                    collect = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool Collect { get; set; }
 
-        private bool followAuthor;
-        public bool FollowAuthor
-        {
-            get => followAuthor;
-            set
-            {
-                if (followAuthor != value)
-                {
-                    followAuthor = value;
-                    RaisePropertyChangedEvent();
-                    OnFollowChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool FollowAuthor { get; set; }
 
-        private bool authorFollowYou;
-        public bool AuthorFollowYou
-        {
-            get => authorFollowYou;
-            set
-            {
-                if (authorFollowYou != value)
-                {
-                    authorFollowYou = value;
-                    RaisePropertyChangedEvent();
-                    OnFollowChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool AuthorFollowYou { get; set; }
 
-        private string followGlyph;
-        public string FollowGlyph
-        {
-            get => followGlyph;
-            set
-            {
-                if (followGlyph != value)
-                {
-                    followGlyph = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string FollowGlyph { get; set; }
 
-        private string followStatus;
-        public string FollowStatus
-        {
-            get => followStatus;
-            set
-            {
-                if (followStatus != value)
-                {
-                    followStatus = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string FollowStatus { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        partial void OnFollowAuthorChanged(bool value) => OnFollowChanged();
 
-        internal void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
+        partial void OnAuthorFollowYouChanged(bool value) => OnFollowChanged();
 
         public UserAction(JsonObject token) : base(token)
         {

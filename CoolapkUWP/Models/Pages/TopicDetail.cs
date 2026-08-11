@@ -1,6 +1,7 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -12,50 +13,18 @@ using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Pages
 {
-    internal class TopicDetail : FeedListDetailBase, IHasSubtitle, ICanFollow
+    internal partial class TopicDetail : FeedListDetailBase, IHasSubtitle, ICanFollow
     {
-        private bool followed;
-        public bool Followed
-        {
-            get => followed;
-            set
-            {
-                if (followed != value)
-                {
-                    followed = value;
-                    RaisePropertyChangedEvent();
-                    OnFollowChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool Followed { get; set; }
 
-        private string followGlyph;
-        public string FollowGlyph
-        {
-            get => followGlyph;
-            set
-            {
-                if (followGlyph != value)
-                {
-                    followGlyph = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string FollowGlyph { get; set; }
 
-        private string followStatus;
-        public string FollowStatus
-        {
-            get => followStatus;
-            set
-            {
-                if (followStatus != value)
-                {
-                    followStatus = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string FollowStatus { get; set; }
+
+        partial void OnFollowedChanged(bool value) => OnFollowChanged();
 
         public int ID { get; private set; }
 
