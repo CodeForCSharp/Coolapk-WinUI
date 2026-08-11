@@ -192,7 +192,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
             if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
             {
                 JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
-                Title = (string)j["pageTitle"];
+                string pageTitle = (string)j["pageTitle"];
+                _ = Dispatcher.AwaitableRunAsync(() => Title = pageTitle);
                 yield return null;
             }
             else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }

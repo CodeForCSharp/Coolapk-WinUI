@@ -1,11 +1,10 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -16,7 +15,8 @@ using Microsoft.UI.Xaml.Media.Imaging;
 namespace CoolapkUWP.Models.Images
 {
     [WinRT.GeneratedBindableCustomProperty]
-    public partial class ImageModel : INotifyPropertyChanged, IPic
+    [INotifyPropertyChanged]
+    public partial class ImageModel : IPic
     {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));
 
@@ -61,37 +61,15 @@ namespace CoolapkUWP.Models.Images
                 {
                     pic.SetTarget(value);
                 }
-                RaisePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
-        private bool isLongPic = false;
-        public bool IsLongPic
-        {
-            get => isLongPic;
-            private set
-            {
-                if (isLongPic != value)
-                {
-                    isLongPic = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsLongPic { get; private set; }
 
-        private bool isWidePic = false;
-        public bool IsWidePic
-        {
-            get => isWidePic;
-            private set
-            {
-                if (isWidePic != value)
-                {
-                    isWidePic = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsWidePic { get; private set; }
 
         protected List<ImageModel> contextArray = new List<ImageModel>();
         public List<ImageModel> ContextArray
@@ -102,7 +80,7 @@ namespace CoolapkUWP.Models.Images
                 if (contextArray == null || contextArray.Count == 0)
                 {
                     contextArray = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -175,19 +153,8 @@ namespace CoolapkUWP.Models.Images
             }
         }
 
-        private bool isLoading = true;
-        public bool IsLoading
-        {
-            get => isLoading;
-            private set
-            {
-                if (isLoading != value)
-                {
-                    isLoading = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsLoading { get; private set; } = true;
 
         public ImageModel(string uri, ImageType type) : this(uri, type, App.MainWindow.DispatcherQueue)
         {
@@ -208,7 +175,7 @@ namespace CoolapkUWP.Models.Images
                         {
                             if (pic != null && pic.TryGetTarget(out BitmapImage _))
                             {
-                                Pic = ImageCacheHelper.NoPic;
+                                _ = Dispatcher.AwaitableRunAsync(() => Pic = ImageCacheHelper.NoPic);
                             }
                         }
                         break;
@@ -232,17 +199,6 @@ namespace CoolapkUWP.Models.Images
         public event TypedEventHandler<ImageModel, object> LoadStarted;
         public event TypedEventHandler<ImageModel, object> LoadCompleted;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private async void RaisePropertyChangedEvent([CallerMemberName] string name = null)
-        {
-            if (name != null)
-            {
-                await Dispatcher.ResumeForegroundAsync();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
         public static void SetSemaphoreSlim(int initialCount)
         {
             semaphoreSlim.Dispose();
@@ -258,7 +214,6 @@ namespace CoolapkUWP.Models.Images
         private async Task LoadCoreAsync(int decodePixelWidth)
         {
             long generation = Interlocked.Increment(ref loadGeneration);
-            await ThreadSwitcher.ResumeBackgroundAsync();
             try
             {
                 if (generation != loadGeneration) { return; }
@@ -278,7 +233,6 @@ namespace CoolapkUWP.Models.Images
                     if (bitmapImage != null)
                     {
                         Pic = bitmapImage;
-                        await bitmapImage.DispatcherQueue.ResumeForegroundAsync();
                         double PixelWidth = bitmapImage.PixelWidth;
                         double PixelHeight = bitmapImage.PixelHeight;
                         Rect Bounds = await App.MainWindow.DispatcherQueue.AwaitableRunAsync(() => App.MainWindow.Bounds);

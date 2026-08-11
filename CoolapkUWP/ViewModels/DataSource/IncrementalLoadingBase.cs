@@ -82,11 +82,10 @@ namespace CoolapkUWP.ViewModels.DataSource
 
         protected override event PropertyChangedEventHandler PropertyChanged;
 
-        protected async void RaisePropertyChangedEvent([CallerMemberName] string name = null)
+        protected void RaisePropertyChangedEvent([CallerMemberName] string name = null)
         {
             if (name != null)
             {
-                await Dispatcher.ResumeForegroundAsync();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
         }
@@ -103,14 +102,14 @@ namespace CoolapkUWP.ViewModels.DataSource
         {
             try
             {
-                await ThreadSwitcher.ResumeBackgroundAsync();
+                await Dispatcher.ResumeForegroundAsync();
 
                 // We are going to load more.
                 IsLoading = true;
                 LoadMoreStarted?.Invoke();
 
-                // Data loading will different for sub-class.
-                IList<T> items = await LoadMoreItemsOverrideAsync(c, count);
+                // Data loading happens on a background thread (includes synchronous JSON parsing).
+                IList<T> items = await Task.Run(() => LoadMoreItemsOverrideAsync(c, count));
 
                 await AddItemsAsync(items);
 
