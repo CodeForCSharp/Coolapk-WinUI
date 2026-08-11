@@ -343,24 +343,24 @@ namespace CoolapkUWP.Helpers
 
         public static Uri GetHost(Uri uri) => new Uri("https://" + uri.Host);
 
-        public static string ExpandShortUrl(this Uri ShortUrl)
+        public static async Task<string> ExpandShortUrlAsync(this Uri shortUrl)
         {
             try
             {
                 using var handler = new HttpClientHandler { AllowAutoRedirect = false };
-                using var client = new HttpClient(handler);
-                using var response = client.GetAsync(ShortUrl).GetAwaiter().GetResult();
+                using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
+                using var response = await client.GetAsync(shortUrl, HttpCompletionOption.ResponseHeadersRead);
                 if (response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.MovedPermanently)
                 {
                     var location = response.Headers.Location;
-                    return location?.ToString() ?? ShortUrl.ToString();
+                    return location?.ToString() ?? shortUrl.ToString();
                 }
             }
             catch (Exception ex)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogDebug(ex, ex.ExceptionToMessage());
             }
-            return ShortUrl.ToString();
+            return shortUrl.ToString();
         }
 
         public static Uri ValidateAndGetUri(this string url)

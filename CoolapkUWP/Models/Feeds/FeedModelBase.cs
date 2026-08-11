@@ -1,8 +1,10 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -71,25 +73,34 @@ namespace CoolapkUWP.Models.Feeds
         public bool ShowSourceFeed { get; private set; }
         public bool EmptySourceFeed { get; private set; }
         public bool ShowRelationRows { get; private set; }
-        public bool ShowLinkSourceFeed { get; private set; }
+
+        [ObservableProperty]
+        public partial bool ShowLinkSourceFeed { get; set; }
 
         public string Info { get; private set; }
         public string VoteTag { get; private set; }
         public string InfoHTML { get; private set; }
-        public string ExtraUrl { get; private set; }
+
+        [ObservableProperty]
+        public partial string ExtraUrl { get; set; }
+
+        [ObservableProperty]
+        public partial string ExtraSubtitle { get; set; }
+
         public string MediaUrl { get; private set; }
         public string IPLocation { get; private set; }
         public string ExtraTitle { get; private set; }
         public string DeviceTitle { get; private set; }
         public string VoteEndTime { get; private set; }
         public string VoteStartTime { get; private set; }
-        public string ExtraSubtitle { get; private set; }
         public string MediaSubtitle { get; private set; }
 
         public ImageModel ExtraPic { get; private set; }
         public ImageModel MediaPic { get; private set; }
         public SourceFeedModel SourceFeed { get; private set; }
-        public LinkFeedModel LinkSourceFeed { get; private set; }
+
+        [ObservableProperty]
+        public partial LinkFeedModel LinkSourceFeed { get; set; }
 
         public List<VoteItem> VoteRows { get; private set; } = new List<VoteItem>();
         public List<RelationRowsItem> RelationRows { get; private set; } = new List<RelationRowsItem>();
@@ -208,35 +219,16 @@ namespace CoolapkUWP.Models.Feeds
 
                     if (ExtraUrl.Contains("b23.tv") || ExtraUrl.Contains("t.cn"))
                     {
-                        ExtraUrl = ExtraUrl.ValidateAndGetUri().ExpandShortUrl();
+                        _ = ExpandShortUrlAsync();
                     }
-
-                    ExtraSubtitle = ExtraUrl.ValidateAndGetUri() is Uri ExtraUri && ExtraUri != null ? ExtraUri.Host : ExtraUrl;
+                    else
+                    {
+                        BuildLinkSourceFeed();
+                    }
 
                     if (token.TryGetPropertyValue("extra_pic", out JsonNode extra_pic))
                     {
                         ExtraPic = new ImageModel(extra_pic.ToString(), ImageType.Icon);
-                    }
-
-                    if (ExtraUrl.Contains("coolapk") && ExtraUrl.Contains("feed"))
-                    {
-                        LinkSourceFeed = new LinkFeedModel(new Uri(ExtraUrl), LinkType.Coolapk);
-                        ShowLinkSourceFeed = true;
-                    }
-                    else if (ExtraUrl.Contains("bilibili") && ExtraUrl.Contains("t.bilibili"))
-                    {
-                        Regex GetID = new Regex(@"/t.*?/([\d|\w]+)");
-                        Uri uri = UriHelper.GetLinkUri(UriType.GetBilibiliFeed, LinkType.Bilibili, GetID.Match(ExtraUrl).Groups[1].Value);
-                        MultipartFormDataContent content = new MultipartFormDataContent { { new StringContent(GetID.Match(ExtraUrl).Groups[1].Value), "dynamic_id" } };
-                        LinkSourceFeed = new LinkFeedModel(uri, LinkType.Bilibili, true, content);
-                        ShowLinkSourceFeed = true;
-                    }
-                    else if (ExtraUrl.Contains("ithome") && ExtraUrl.Contains("qcontent"))
-                    {
-                        Regex GetID = new Regex(@"[%26|%3F]id%3D([\d|\w]+)");
-                        Uri uri = UriHelper.GetLinkUri(UriType.GetITHomeFeed, LinkType.ITHome, GetID.Match(ExtraUrl).Groups[1].Value);
-                        LinkSourceFeed = new LinkFeedModel(uri, LinkType.ITHome);
-                        ShowLinkSourceFeed = true;
                     }
                 }
             }
@@ -356,6 +348,56 @@ namespace CoolapkUWP.Models.Feeds
                 {
                     EmptySourceFeed = true;
                 }
+            }
+        }
+
+        private async Task ExpandShortUrlAsync()
+        {
+            string expandedUrl = null;
+            try
+            {
+                Uri uri = ExtraUrl.ValidateAndGetUri();
+                if (uri != null)
+                {
+                    expandedUrl = await uri.ExpandShortUrlAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(FeedModelBase)).LogWarning(ex, ex.ExceptionToMessage());
+            }
+
+            await App.MainWindow.DispatcherQueue.ResumeForegroundAsync();
+            if (!string.IsNullOrEmpty(expandedUrl))
+            {
+                ExtraUrl = expandedUrl;
+            }
+            BuildLinkSourceFeed();
+        }
+
+        private void BuildLinkSourceFeed()
+        {
+            ExtraSubtitle = ExtraUrl.ValidateAndGetUri() is Uri ExtraUri && ExtraUri != null ? ExtraUri.Host : ExtraUrl;
+
+            if (ExtraUrl.Contains("coolapk") && ExtraUrl.Contains("feed"))
+            {
+                LinkSourceFeed = new LinkFeedModel(new Uri(ExtraUrl), LinkType.Coolapk);
+                ShowLinkSourceFeed = true;
+            }
+            else if (ExtraUrl.Contains("bilibili") && ExtraUrl.Contains("t.bilibili"))
+            {
+                Regex GetID = new Regex(@"/t.*?/([\d|\w]+)");
+                Uri uri = UriHelper.GetLinkUri(UriType.GetBilibiliFeed, LinkType.Bilibili, GetID.Match(ExtraUrl).Groups[1].Value);
+                MultipartFormDataContent content = new MultipartFormDataContent { { new StringContent(GetID.Match(ExtraUrl).Groups[1].Value), "dynamic_id" } };
+                LinkSourceFeed = new LinkFeedModel(uri, LinkType.Bilibili, true, content);
+                ShowLinkSourceFeed = true;
+            }
+            else if (ExtraUrl.Contains("ithome") && ExtraUrl.Contains("qcontent"))
+            {
+                Regex GetID = new Regex(@"[%26|%3F]id%3D([\d|\w]+)");
+                Uri uri = UriHelper.GetLinkUri(UriType.GetITHomeFeed, LinkType.ITHome, GetID.Match(ExtraUrl).Groups[1].Value);
+                LinkSourceFeed = new LinkFeedModel(uri, LinkType.ITHome);
+                ShowLinkSourceFeed = true;
             }
         }
 
