@@ -1,6 +1,7 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using System.Text.Json.Nodes;
 using System;
@@ -16,47 +17,14 @@ namespace CoolapkUWP.Models.Feeds
 {
     public partial class FeedModelBase : SourceFeedModel, ICanFollow, ICanLike, ICanReply, ICanStar
     {
-        private int likeNum;
-        public int LikeNum
-        {
-            get => likeNum;
-            set
-            {
-                if (likeNum != value)
-                {
-                    likeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int LikeNum { get; set; }
 
-        private int replyNum;
-        public int ReplyNum
-        {
-            get => replyNum;
-            set
-            {
-                if (replyNum != value)
-                {
-                    replyNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int ReplyNum { get; set; }
 
-        private int starNum;
-        public int StarNum
-        {
-            get => starNum;
-            set
-            {
-                if (starNum != value)
-                {
-                    starNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int StarNum { get; set; }
 
         public bool Liked
         {
@@ -66,7 +34,7 @@ namespace CoolapkUWP.Models.Feeds
                 if (UserAction.Like != value)
                 {
                     UserAction.Like = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -79,24 +47,13 @@ namespace CoolapkUWP.Models.Feeds
                 if (UserAction.FollowAuthor != value)
                 {
                     UserAction.FollowAuthor = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
 
-        private bool showButtons = true;
-        public bool ShowButtons
-        {
-            get => showButtons;
-            set
-            {
-                if (showButtons != value)
-                {
-                    showButtons = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool ShowButtons { get; set; }
 
         int ICanFollow.ID => UID;
 

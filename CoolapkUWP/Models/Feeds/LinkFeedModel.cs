@@ -1,141 +1,48 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public partial class LinkFeedModel : INotifyPropertyChanged
+    public partial class LinkFeedModel : ObservableObject
     {
-        private string url;
-        public string Url
-        {
-            get => url;
-            set
-            {
-                url = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial string Url { get; set; }
 
-        private bool succeed;
-        public bool Succeed
-        {
-            get => succeed;
-            set
-            {
-                succeed = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial bool Succeed { get; set; }
 
-        private string message;
-        public string Message
-        {
-            get => message;
-            set
-            {
-                message = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial string Message { get; set; }
 
-        private string messageTitle;
-        public string MessageTitle
-        {
-            get => messageTitle;
-            set
-            {
-                messageTitle = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial string MessageTitle { get; set; }
 
-        private string dateline;
-        public string Dateline
-        {
-            get => dateline;
-            set
-            {
-                dateline = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial string Dateline { get; set; }
 
-        private bool showPicArr;
-        public bool ShowPicArr
-        {
-            get => showPicArr;
-            set
-            {
-                showPicArr = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial bool ShowPicArr { get; set; }
 
-        private bool showUser = true;
-        public bool ShowUser
-        {
-            get => showUser;
-            set
-            {
-                if (showUser != value)
-                {
-                    showUser = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool ShowUser { get; set; } = true;
 
-        private bool isCopyEnabled;
-        public bool IsCopyEnabled
-        {
-            get => isCopyEnabled;
-            set
-            {
-                if (isCopyEnabled != value)
-                {
-                    isCopyEnabled = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsCopyEnabled { get; set; }
 
-        private List<ImageModel> picArr;
-        public List<ImageModel> PicArr
-        {
-            get => picArr;
-            set
-            {
-                picArr = value;
-                RaisePropertyChangedEvent();
-            }
-        }
+        [ObservableProperty]
+        public partial List<ImageModel> PicArr { get; set; } = new List<ImageModel>();
 
-        private LinkUserModel userInfo;
-        public LinkUserModel UserInfo
-        {
-            get => userInfo;
-            set
-            {
-                userInfo = value;
-                RaisePropertyChangedEvent();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        internal void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
+        [ObservableProperty]
+        public partial LinkUserModel UserInfo { get; set; }
 
         public LinkFeedModel(Uri uri, LinkType type, bool isPost = false, MultipartFormDataContent content = null)
         {
@@ -288,7 +195,7 @@ namespace CoolapkUWP.Models.Feeds
                             }
                             if (Message != null && Message.Length - 120 >= 7)
                             {
-                                Message = message.ToString().Substring(0, 120) + "...<a href=\"" + Url + "\">";
+                                Message = Message.Substring(0, 120) + "...<a href=\"" + Url + "\">";
                             }
                         }
                     }
@@ -332,7 +239,7 @@ namespace CoolapkUWP.Models.Feeds
                                 }
                                 if (Message != null && Message.Length - 120 >= 7)
                                 {
-                                    Message = message.ToString().Substring(0, 120) + "...<a href=\"" + Url + "\">";
+                                    Message = Message.Substring(0, 120) + "...<a href=\"" + Url + "\">";
                                 }
                             }
                             if (data.TryGetPropertyValue("user", out JsonNode v2))

@@ -1,142 +1,44 @@
 using CoolapkUWP.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.Models
 {
-    public partial class NotificationsModel : INotifyPropertyChanged
+    public partial class NotificationsModel : ObservableObject
     {
         public static NotificationsModel Instance = new NotificationsModel();
 
         private readonly DispatcherTimer timer;
-        private int badgeNum, followNum, messageNum, atMeNum, atCommentMeNum, commentMeNum, feedLikeNum, cloudInstall, notification;
 
-        public int BadgeNum
-        {
-            get => badgeNum;
-            private set
-            {
-                if (value != badgeNum)
-                {
-                    badgeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int BadgeNum { get; private set; }
 
-        public int FollowNum
-        {
-            get => followNum;
-            private set
-            {
-                if (value != followNum)
-                {
-                    followNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int FollowNum { get; private set; }
 
-        public int MessageNum
-        {
-            get => messageNum;
-            private set
-            {
-                if (value != messageNum)
-                {
-                    messageNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int MessageNum { get; private set; }
 
-        public int AtMeNum
-        {
-            get => atMeNum;
-            private set
-            {
-                if (value != atMeNum)
-                {
-                    atMeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int AtMeNum { get; private set; }
 
-        public int AtCommentMeNum
-        {
-            get => atCommentMeNum;
-            private set
-            {
-                if (value != atCommentMeNum)
-                {
-                    atCommentMeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int AtCommentMeNum { get; private set; }
 
-        public int CommentMeNum
-        {
-            get => commentMeNum;
-            private set
-            {
-                if (value != commentMeNum)
-                {
-                    commentMeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int CommentMeNum { get; private set; }
 
-        public int FeedLikeNum
-        {
-            get => feedLikeNum;
-            private set
-            {
-                if (value != feedLikeNum)
-                {
-                    feedLikeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int FeedLikeNum { get; private set; }
 
-        public int CloudInstall
-        {
-            get => cloudInstall;
-            private set
-            {
-                if (value != cloudInstall)
-                {
-                    cloudInstall = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int CloudInstall { get; private set; }
 
-        public int Notification
-        {
-            get => notification;
-            private set
-            {
-                if (value != notification)
-                {
-                    notification = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
+        [ObservableProperty]
+        public partial int Notification { get; private set; }
 
         public NotificationsModel()
         {

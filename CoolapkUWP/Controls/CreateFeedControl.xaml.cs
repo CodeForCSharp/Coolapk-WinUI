@@ -85,7 +85,7 @@ namespace CoolapkUWP.Controls
         public CreateFeedControl()
         {
             InitializeComponent();
-            Provider = new CreateFeedViewModel(DispatcherQueue);
+            Provider = new CreateFeedViewModel();
         }
 
         private void Picker_Loaded(object sender, RoutedEventArgs e)

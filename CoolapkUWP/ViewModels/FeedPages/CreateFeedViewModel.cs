@@ -5,63 +5,37 @@ using CoolapkUWP.Models.Upload;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public partial class CreateFeedViewModel : IViewModel
+    public partial class CreateFeedViewModel : ObservableObject, IViewModel
     {
         public static string[] ImageTypes = new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".heif", ".heic" };
 
-        public DispatcherQueue Dispatcher { get; set; }
-
-        private string title = string.Empty;
-        public string Title
-        {
-            get => title;
-            set
-            {
-                if (title != value)
-                {
-                    title = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string Title { get; set; }
 
         public readonly CreateUserItemSource CreateUserItemSource = new CreateUserItemSource();
         public readonly CreateTopicItemSource CreateTopicItemSource = new CreateTopicItemSource();
 
         public readonly ObservableCollection<WriteableBitmap> Pictures = new ObservableCollection<WriteableBitmap>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private async void RaisePropertyChangedEvent([CallerMemberName] string name = null)
-        {
-            if (name != null)
-            {
-                await Dispatcher.ResumeForegroundAsync();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        public CreateFeedViewModel(DispatcherQueue dispatcher) => Dispatcher = dispatcher;
+        public CreateFeedViewModel() { }
 
         public async Task Refresh(bool reset)
         {

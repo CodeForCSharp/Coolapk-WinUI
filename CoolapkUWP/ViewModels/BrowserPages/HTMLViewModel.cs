@@ -1,80 +1,32 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
 using HtmlAgilityPack;
 using System.Text.Json.Nodes;
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.BrowserPages
 {
-    public partial class HTMLViewModel : IViewModel
+    public partial class HTMLViewModel : ObservableObject, IViewModel
     {
-        public DispatcherQueue Dispatcher { get; }
-
         private readonly Uri uri;
         private Action<UISettingChangedType> UISettingChanged;
 
-        private string title;
-        public string Title
-        {
-            get => title;
-            private set
-            {
-                if (title != value)
-                {
-                    title = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string Title { get; private set; }
 
-        private string html;
-        public string HTML
-        {
-            get => html;
-            private set
-            {
-                if (html != value)
-                {
-                    html = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string HTML { get; private set; }
 
-        private string rawHTML;
-        public string RawHTML
-        {
-            get => rawHTML;
-            private set
-            {
-                if (rawHTML != value)
-                {
-                    rawHTML = value;
-                    RaisePropertyChangedEvent();
-                    _ = GetHtmlAsync(value, ThemeHelper.IsDarkTheme() ? "Dark" : "Light");
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string RawHTML { get; private set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        partial void OnRawHTMLChanged(string value) => _ = GetHtmlAsync(value, ThemeHelper.IsDarkTheme() ? "Dark" : "Light");
 
-        private async void RaisePropertyChangedEvent([CallerMemberName] string name = null)
+        public HTMLViewModel(string url)
         {
-            if (name != null)
-            {
-                await Dispatcher.ResumeForegroundAsync();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        public HTMLViewModel(string url, DispatcherQueue dispatcher)
-        {
-            Dispatcher = dispatcher;
             uri = url.ValidateAndGetUri();
             UISettingChanged = (mode) =>
             {
@@ -133,7 +85,7 @@ namespace CoolapkUWP.ViewModels.BrowserPages
                 }
                 else
                 {
-                    (isSucceed, result) = await RequestHelper.GetStringAsync(uri).ConfigureAwait(false);
+                    (isSucceed, result) = await RequestHelper.GetStringAsync(uri);
                     if (isSucceed && !string.IsNullOrWhiteSpace(result))
                     {
                         HtmlDocument doc = new HtmlDocument();

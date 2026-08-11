@@ -355,7 +355,7 @@ namespace CoolapkUWP.Helpers
             }
             else if (link.StartsWith("/mp/", StringComparison.OrdinalIgnoreCase))
             {
-                return await frame.NavigateAsync(typeof(HTMLPage), new HTMLViewModel(origin, ShellDispatcher));
+                return await frame.NavigateAsync(typeof(HTMLPage), new HTMLViewModel(origin));
             }
             else if (origin.StartsWith("http://") || link.StartsWith("https://"))
             {

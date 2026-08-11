@@ -42,7 +42,7 @@ namespace CoolapkUWP.Pages.SettingsPages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Provider = SettingsViewModel.Caches ?? new SettingsViewModel(DispatcherQueue);
+            Provider = SettingsViewModel.Caches ?? new SettingsViewModel();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

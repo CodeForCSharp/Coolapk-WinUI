@@ -1,44 +1,23 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
 
 using System.Linq;
-using System.ComponentModel;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public partial class SourceFeedModel : Entity, INotifyPropertyChanged
+    [INotifyPropertyChanged]
+    public partial class SourceFeedModel : Entity
     {
-        private bool showUser = true;
-        public bool ShowUser
-        {
-            get => showUser;
-            set
-            {
-                if (showUser != value)
-                {
-                    showUser = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool ShowUser { get; set; }
 
-        private bool isCopyEnabled;
-        public bool IsCopyEnabled
-        {
-            get => isCopyEnabled;
-            set
-            {
-                if (isCopyEnabled != value)
-                {
-                    isCopyEnabled = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsCopyEnabled { get; set; }
 
         public int RatingStar { get; private set; }
 
@@ -59,13 +38,6 @@ namespace CoolapkUWP.Models.Feeds
         public UserAction UserAction { get; private set; }
 
         public List<ImageModel> PicArr { get; private set; } = new List<ImageModel>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        internal void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
 
         public SourceFeedModel(JsonObject token) : base(token)
         {

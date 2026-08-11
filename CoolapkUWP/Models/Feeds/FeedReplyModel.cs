@@ -1,44 +1,26 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
 
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.Models.Feeds
 {
-    public partial class FeedReplyModel : SourceFeedReplyModel, INotifyPropertyChanged, ICanLike, ICanReply, ICanCopy
+    [INotifyPropertyChanged]
+    public partial class FeedReplyModel : SourceFeedReplyModel, ICanLike, ICanReply, ICanCopy
     {
-        private int likeNum;
-        public int LikeNum
-        {
-            get => likeNum;
-            set
-            {
-                if (likeNum != value)
-                {
-                    likeNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int LikeNum { get; set; }
 
-        private int replyNum;
-        public int ReplyNum
-        {
-            get => replyNum;
-            set
-            {
-                if (replyNum != value)
-                {
-                    replyNum = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial int ReplyNum { get; set; }
+
+        [ObservableProperty]
+        public partial bool IsCopyEnabled { get; set; }
 
         public bool Liked
         {
@@ -48,21 +30,7 @@ namespace CoolapkUWP.Models.Feeds
                 if (UserAction.Like != value)
                 {
                     UserAction.Like = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
-        private bool isCopyEnabled;
-        public bool IsCopyEnabled
-        {
-            get => isCopyEnabled;
-            set
-            {
-                if (isCopyEnabled != value)
-                {
-                    isCopyEnabled = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -75,13 +43,6 @@ namespace CoolapkUWP.Models.Feeds
         public ImageModel Pic { get; private set; }
 
         public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        internal void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
 
         public FeedReplyModel(JsonObject token, bool ShowReplyRow = true) : base(token)
         {

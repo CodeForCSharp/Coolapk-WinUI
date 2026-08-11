@@ -1,27 +1,23 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Update;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using System.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.System.Profile;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.ViewModels.SettingsPages
 {
-    public partial class SettingsViewModel : IViewModel
+    public partial class SettingsViewModel : ObservableObject, IViewModel
     {
         public static SettingsViewModel Caches { get; set; }
-
-        public DispatcherQueue Dispatcher { get; }
 
         private readonly ResourceLoader _loader = ResourceLoader.GetForViewIndependentUse("SettingsPage");
 
@@ -34,7 +30,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
         public bool IsLogin
         {
             get => !string.IsNullOrEmpty(SettingsHelper.Get<string>(SettingsHelper.Uid));
-            set => RaisePropertyChangedEvent();
+            set => OnPropertyChanged();
         }
 
         public DateTime UpdateDate
@@ -45,7 +41,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
                 if (UpdateDate != value)
                 {
                     SettingsHelper.Set(SettingsHelper.UpdateDate, value);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -58,7 +54,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
                 if (SelectedTheme != value)
                 {
                     ThemeHelper.RootTheme = (ElementTheme)(2 - value);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -72,7 +68,7 @@ namespace CoolapkUWP.ViewModels.SettingsPages
                 {
                     SettingsHelper.Set(SettingsHelper.IsNoPicsMode, value);
                     ThemeHelper.UISettingChanged?.Invoke(UISettingChangedType.NoPicChanged);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -85,147 +81,37 @@ namespace CoolapkUWP.ViewModels.SettingsPages
                 if (IsDisplayOriginPicture != value)
                 {
                     SettingsHelper.Set(SettingsHelper.IsDisplayOriginPicture, value);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
         }
 
-        private bool isCleanCache;
-        public bool IsCleanCache
-        {
-            get => isCleanCache;
-            set
-            {
-                if (isCleanCache != value)
-                {
-                    isCleanCache = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool IsCleanCache { get; set; }
 
-        private bool _checkingUpdate;
-        public bool CheckingUpdate
-        {
-            get => _checkingUpdate;
-            set
-            {
-                if (_checkingUpdate != value)
-                {
-                    _checkingUpdate = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool CheckingUpdate { get; set; }
 
-        private string _gotoUpdateTag;
-        public string GotoUpdateTag
-        {
-            get => _gotoUpdateTag;
-            set
-            {
-                if (_gotoUpdateTag != value)
-                {
-                    _gotoUpdateTag = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string GotoUpdateTag { get; set; }
 
-        private Visibility _gotoUpdateVisibility;
-        public Visibility GotoUpdateVisibility
-        {
-            get => _gotoUpdateVisibility;
-            set
-            {
-                if (_gotoUpdateVisibility != value)
-                {
-                    _gotoUpdateVisibility = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial Visibility GotoUpdateVisibility { get; set; }
 
-        private bool _updateStateIsOpen;
-        public bool UpdateStateIsOpen
-        {
-            get => _updateStateIsOpen;
-            set
-            {
-                if (_updateStateIsOpen != value)
-                {
-                    _updateStateIsOpen = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial bool UpdateStateIsOpen { get; set; }
 
-        private string _updateStateMessage;
-        public string UpdateStateMessage
-        {
-            get => _updateStateMessage;
-            set
-            {
-                if (_updateStateMessage != value)
-                {
-                    _updateStateMessage = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string UpdateStateMessage { get; set; }
 
-        private InfoBarSeverity _updateStateSeverity;
-        public InfoBarSeverity UpdateStateSeverity
-        {
-            get => _updateStateSeverity;
-            set
-            {
-                if (_updateStateSeverity != value)
-                {
-                    _updateStateSeverity = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial InfoBarSeverity UpdateStateSeverity { get; set; }
 
-        private string _updateStateTitle;
-        public string UpdateStateTitle
-        {
-            get => _updateStateTitle;
-            set
-            {
-                if (_updateStateTitle != value)
-                {
-                    _updateStateTitle = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
+        [ObservableProperty]
+        public partial string UpdateStateTitle { get; set; }
 
-        private string _aboutTextBlockText;
-        public string AboutTextBlockText
-        {
-            get => _aboutTextBlockText;
-            set
-            {
-                if (_aboutTextBlockText != value)
-                {
-                    _aboutTextBlockText = value;
-                    RaisePropertyChangedEvent();
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private async void RaisePropertyChangedEvent([CallerMemberName] string name = null)
-        {
-            if (name != null)
-            {
-                await Dispatcher.ResumeForegroundAsync();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-        }
+        [ObservableProperty]
+        public partial string AboutTextBlockText { get; set; }
 
         public string VersionTextBlockText
         {
@@ -238,16 +124,14 @@ namespace CoolapkUWP.ViewModels.SettingsPages
             }
         }
 
-        public SettingsViewModel(DispatcherQueue dispatcher)
+        public SettingsViewModel()
         {
             Caches = this;
-            Dispatcher = dispatcher;
             SettingsHelper.LoginChanged += (sender, args) => IsLogin = args;
         }
 
         private async Task GetAboutTextBlockText()
         {
-            await ThreadSwitcher.ResumeBackgroundAsync();
             string langCode = LanguageHelper.GetPrimaryLanguage();
             Uri dataUri = new Uri($"ms-appx:///Assets/About/About.{langCode}.md");
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(dataUri);

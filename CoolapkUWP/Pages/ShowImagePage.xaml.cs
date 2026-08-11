@@ -43,7 +43,7 @@ namespace CoolapkUWP.Pages
             base.OnNavigatedTo(e);
             if (e.Parameter is ImageModel Model)
             {
-                Provider = new ShowImageViewModel(Model, DispatcherQueue);
+                Provider = new ShowImageViewModel(Model);
             }
             else if (e.Parameter is ShowImageViewModel ViewModel)
             {
