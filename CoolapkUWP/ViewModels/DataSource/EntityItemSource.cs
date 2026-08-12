@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.ViewModels.Providers;
@@ -59,10 +58,9 @@ namespace CoolapkUWP.ViewModels.DataSource
             return Models;
         }
 
-        protected override async Task AddItemsAsync(IList<Entity> items)
+        protected override Task AddItemsAsync(IList<Entity> items)
         {
-            if (items == null) { return; }
-            await Dispatcher.ResumeForegroundAsync();
+            if (items == null) { return Task.CompletedTask; }
             foreach (Entity item in items)
             {
                 if (!(item is NullEntity))
@@ -71,6 +69,7 @@ namespace CoolapkUWP.ViewModels.DataSource
                     if (useSubProvider) { AddSubProvider(item); }
                 }
             }
+            return Task.CompletedTask;
         }
 
         public virtual async Task Refresh(bool reset = false)

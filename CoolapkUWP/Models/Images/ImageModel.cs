@@ -1,6 +1,7 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
@@ -133,26 +134,6 @@ namespace CoolapkUWP.Models.Images
             }
         }
 
-        public BitmapImage RealPic
-        {
-            get
-            {
-                if (pic != null && pic.TryGetTarget(out BitmapImage image))
-                {
-                    return image;
-                }
-
-                if (Dispatcher.HasThreadAccess)
-                {
-                    _ = GetImage();
-                    return ImageCacheHelper.NoPic;
-                }
-
-                GetImage().Wait();
-                return Pic;
-            }
-        }
-
         [ObservableProperty]
         public partial bool IsLoading { get; private set; } = true;
 
@@ -175,7 +156,7 @@ namespace CoolapkUWP.Models.Images
                         {
                             if (pic != null && pic.TryGetTarget(out BitmapImage _))
                             {
-                                _ = Dispatcher.AwaitableRunAsync(() => Pic = ImageCacheHelper.NoPic);
+                                _ = Dispatcher.EnqueueAsync(() => Pic = ImageCacheHelper.NoPic);
                             }
                         }
                         break;
@@ -222,7 +203,7 @@ namespace CoolapkUWP.Models.Images
                     if (generation != loadGeneration) { return; }
 
                     if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode)) { Pic = ImageCacheHelper.NoPic; }
-                    BitmapImage bitmapImage = await ImageCacheHelper.GetImageAsync(Type, Uri, Dispatcher, false, decodePixelWidth);
+                    BitmapImage bitmapImage = await ImageCacheHelper.GetImageAsync(Type, Uri, false, decodePixelWidth);
                     if (generation != loadGeneration) { return; }
 
                     if (bitmapImage != null)
@@ -230,7 +211,7 @@ namespace CoolapkUWP.Models.Images
                         Pic = bitmapImage;
                         double PixelWidth = bitmapImage.PixelWidth;
                         double PixelHeight = bitmapImage.PixelHeight;
-                        Rect Bounds = await WindowContext.DispatcherQueue.AwaitableRunAsync(() => WindowContext.Bounds);
+                        Rect Bounds = await WindowContext.DispatcherQueue.EnqueueAsync(() => WindowContext.Bounds);
                         IsLongPic = PixelHeight * Bounds.Width > PixelWidth * Bounds.Height * 1.5
                                     && PixelHeight > PixelWidth * 1.5;
                         IsWidePic = PixelWidth * Bounds.Height > PixelHeight * Bounds.Width * 1.5

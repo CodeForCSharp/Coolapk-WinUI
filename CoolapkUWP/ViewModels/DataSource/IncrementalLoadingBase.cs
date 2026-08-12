@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -102,8 +101,6 @@ namespace CoolapkUWP.ViewModels.DataSource
         {
             try
             {
-                await Dispatcher.ResumeForegroundAsync();
-
                 // We are going to load more.
                 IsLoading = true;
                 LoadMoreStarted?.Invoke();
@@ -142,14 +139,14 @@ namespace CoolapkUWP.ViewModels.DataSource
         /// <summary>
         /// Append items to list.
         /// </summary>
-        protected virtual async Task AddItemsAsync(IList<T> items)
+        protected virtual Task AddItemsAsync(IList<T> items)
         {
-            if (items == null) { return; }
-            await Dispatcher.ResumeForegroundAsync();
+            if (items == null) { return Task.CompletedTask; }
             for (int i = 0; i < items.Count; i++)
             {
                 Add(items[i]);
             }
+            return Task.CompletedTask;
         }
 
         protected abstract Task<IList<T>> LoadMoreItemsOverrideAsync(CancellationToken c, uint count);

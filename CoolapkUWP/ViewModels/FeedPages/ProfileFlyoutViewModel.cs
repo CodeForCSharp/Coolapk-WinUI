@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Pages;
@@ -8,7 +7,6 @@ using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.UI.Dispatching;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
@@ -123,15 +121,15 @@ namespace CoolapkUWP.ViewModels.FeedPages
             return Models;
         }
 
-        protected override async Task AddItemsAsync(IList<Entity> items)
+        protected override Task AddItemsAsync(IList<Entity> items)
         {
-            if (items == null) { return; }
-            await Dispatcher.ResumeForegroundAsync();
+            if (items == null) { return Task.CompletedTask; }
             foreach (Entity item in items)
             {
                 if (item is NullEntity) { continue; }
                 Add(item);
             }
+            return Task.CompletedTask;
         }
     }
 }

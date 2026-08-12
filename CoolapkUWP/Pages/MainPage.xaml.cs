@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
@@ -8,6 +7,7 @@ using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.Pages.SettingsPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Xaml.Controls;
 
@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Dispatching;
@@ -268,7 +269,7 @@ namespace CoolapkUWP.Pages
                         : new Thickness(16, 0, 16, 0);
         }
 
-        private void OnLoginChanged(string sender, bool args) => _ = DispatcherQueue.AwaitableRunAsync(() => SetUserAvatar(args));
+        private void OnLoginChanged(string sender, bool args) => _ = DispatcherQueue.EnqueueAsync(() => SetUserAvatar(args));
 
         private async void SetUserAvatar(bool isLogin)
         {
@@ -328,25 +329,33 @@ namespace CoolapkUWP.Pages
                 ObservableCollection<Entity> observableCollection = new ObservableCollection<Entity>();
                 sender.ItemsSource = observableCollection;
                 string keyWord = sender.Text;
-                await ThreadSwitcher.ResumeBackgroundAsync();
                 await semaphoreSlim.WaitAsync();
                 try
                 {
-                    (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.SearchWords, keyWord), true);
-                    if (isSucceed && result != null && result is JsonArray array && array.Count > 0)
+                    (bool isSucceed, JsonNode result) = await Task.Run(() => RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.SearchWords, keyWord), true));
+                    if (isSucceed && result is JsonArray array && array.Count > 0)
                     {
-                        foreach (JsonNode token in array)
+                        List<Entity> entities = await Task.Run(() =>
                         {
-                            switch ((string)token["entityType"])
+                            List<Entity> list = new List<Entity>();
+                            foreach (JsonNode token in array)
                             {
-                                case "apk":
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(AppModel.FromJson(token as JsonObject)));
-                                    break;
-                                case "searchWord":
-                                default:
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(SearchWord.FromJson(token as JsonObject)));
-                                    break;
+                                switch ((string)token["entityType"])
+                                {
+                                    case "apk":
+                                        list.Add(AppModel.FromJson(token as JsonObject));
+                                        break;
+                                    case "searchWord":
+                                    default:
+                                        list.Add(SearchWord.FromJson(token as JsonObject));
+                                        break;
+                                }
                             }
+                            return list;
+                        });
+                        foreach (Entity entity in entities)
+                        {
+                            observableCollection.Add(entity);
                         }
                     }
                 }
@@ -377,60 +386,71 @@ namespace CoolapkUWP.Pages
 
         #region 状态栏
 
-        public async void ShowProgressBar()
+        public void ShowProgressBar()
         {
-            await DispatcherQueue.ResumeForegroundAsync();
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.IsIndeterminate = true;
-            ProgressBar.ShowError = false;
-            ProgressBar.ShowPaused = false;
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                ProgressBar.Visibility = Visibility.Visible;
+                ProgressBar.IsIndeterminate = true;
+                ProgressBar.ShowError = false;
+                ProgressBar.ShowPaused = false;
+            });
         }
 
-        public async void ShowProgressBar(double value)
+        public void ShowProgressBar(double value)
         {
-            await DispatcherQueue.ResumeForegroundAsync();
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.IsIndeterminate = false;
-            ProgressBar.ShowError = false;
-            ProgressBar.ShowPaused = false;
-            ProgressBar.Value = value;
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                ProgressBar.Visibility = Visibility.Visible;
+                ProgressBar.IsIndeterminate = false;
+                ProgressBar.ShowError = false;
+                ProgressBar.ShowPaused = false;
+                ProgressBar.Value = value;
+            });
         }
 
-        public async void PausedProgressBar()
+        public void PausedProgressBar()
         {
-            await DispatcherQueue.ResumeForegroundAsync();
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.IsIndeterminate = true;
-            ProgressBar.ShowError = false;
-            ProgressBar.ShowPaused = true;
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                ProgressBar.Visibility = Visibility.Visible;
+                ProgressBar.IsIndeterminate = true;
+                ProgressBar.ShowError = false;
+                ProgressBar.ShowPaused = true;
+            });
         }
 
-        public async void ErrorProgressBar()
+        public void ErrorProgressBar()
         {
-            await DispatcherQueue.ResumeForegroundAsync();
-            ProgressBar.Visibility = Visibility.Visible;
-            ProgressBar.IsIndeterminate = true;
-            ProgressBar.ShowPaused = false;
-            ProgressBar.ShowError = true;
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                ProgressBar.Visibility = Visibility.Visible;
+                ProgressBar.IsIndeterminate = true;
+                ProgressBar.ShowPaused = false;
+                ProgressBar.ShowError = true;
+            });
         }
 
-        public async void HideProgressBar()
+        public void HideProgressBar()
         {
-            await DispatcherQueue.ResumeForegroundAsync();
-            ProgressBar.Visibility = Visibility.Collapsed;
-            ProgressBar.IsIndeterminate = false;
-            ProgressBar.ShowError = false;
-            ProgressBar.ShowPaused = false;
-            ProgressBar.Value = 0;
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                ProgressBar.Visibility = Visibility.Collapsed;
+                ProgressBar.IsIndeterminate = false;
+                ProgressBar.ShowError = false;
+                ProgressBar.ShowPaused = false;
+                ProgressBar.Value = 0;
+            });
         }
 
-        public async void ShowMessage(string message = null)
+        public void ShowMessage(string message = null)
         {
-            await DispatcherQueue.ResumeForegroundAsync();
+            _ = DispatcherQueue.EnqueueAsync(() =>
+            {
+                AppTitleText.Text = message ?? ResourceLoader.GetForViewIndependentUse().GetString("AppName") ?? "酷安";
 
-            AppTitleText.Text = message ?? ResourceLoader.GetForViewIndependentUse().GetString("AppName") ?? "酷安";
-
-            App.MainWindow.Title = message ?? string.Empty;
+                App.MainWindow.Title = message ?? string.Empty;
+            });
         }
 
         #endregion

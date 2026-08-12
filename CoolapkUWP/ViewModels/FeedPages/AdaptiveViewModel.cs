@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using CoolapkUWP.Controls.DataTemplates;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
@@ -6,6 +5,7 @@ using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
+using CommunityToolkit.WinUI;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -174,7 +174,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             {
                 JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
                 string pageTitle = (string)j["pageTitle"];
-                _ = Dispatcher.AwaitableRunAsync(() => Title = pageTitle);
+                _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
                 yield return null;
             }
             else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }

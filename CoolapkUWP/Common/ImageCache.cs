@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Graphics.Imaging;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Extensions.Logging;
 
@@ -99,10 +98,8 @@ namespace CoolapkUWP.Common
 
         private static string GetCacheKey(string fileName, int decodePixelWidth) => $"{fileName}|{decodePixelWidth}";
 
-        public async Task<BitmapImage> GetBitmapAsync(Uri uri, int decodePixelWidth, DispatcherQueue dispatcher)
+        public async Task<BitmapImage> GetBitmapAsync(Uri uri, int decodePixelWidth)
         {
-            await dispatcher.ResumeForegroundAsync();
-
             if (decodePixelWidth > MaxDecodePixelWidth) { decodePixelWidth = MaxDecodePixelWidth; }
 
             string fileName = GetCacheFileName(uri);
@@ -114,7 +111,7 @@ namespace CoolapkUWP.Common
 
             if (_inflightDecodes.TryGetValue(key, out Task<BitmapImage> pending)) { return await pending; }
 
-            Task<BitmapImage> task = LoadAndCacheAsync(uri, decodePixelWidth, key, dispatcher);
+            Task<BitmapImage> task = LoadAndCacheAsync(uri, decodePixelWidth, key);
             _inflightDecodes[key] = task;
             try
             {
@@ -126,27 +123,23 @@ namespace CoolapkUWP.Common
             }
         }
 
-        private async Task<BitmapImage> LoadAndCacheAsync(Uri uri, int decodePixelWidth, string key, DispatcherQueue dispatcher)
+        private async Task<BitmapImage> LoadAndCacheAsync(Uri uri, int decodePixelWidth, string key)
         {
-            await ThreadSwitcher.ResumeBackgroundAsync();
-
             StorageFile file = await GetFileFromCacheAsync(uri);
-            BitmapImage bitmap = await DecodeAndCacheAsync(file, decodePixelWidth, key, dispatcher);
+            BitmapImage bitmap = await DecodeAndCacheAsync(file, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
 
-            await ThreadSwitcher.ResumeBackgroundAsync();
             await file.DeleteAsync();
             StorageFile fresh = await GetFileFromCacheAsync(uri);
-            bitmap = await DecodeAndCacheAsync(fresh, decodePixelWidth, key, dispatcher);
+            bitmap = await DecodeAndCacheAsync(fresh, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
 
             await fresh.DeleteAsync();
             return null;
         }
 
-        private async Task<BitmapImage> DecodeAndCacheAsync(StorageFile file, int decodePixelWidth, string key, DispatcherQueue dispatcher)
+        private async Task<BitmapImage> DecodeAndCacheAsync(StorageFile file, int decodePixelWidth, string key)
         {
-            await dispatcher.ResumeForegroundAsync();
             BitmapImage bitmap = await DecodeImageAsync(file, decodePixelWidth);
             if (bitmap != null)
             {
@@ -404,7 +397,7 @@ namespace CoolapkUWP.Common
         {
             if (_maintainTask == null)
             {
-                _maintainTask = MaintainCacheAsync();
+                _maintainTask = Task.Run(MaintainCacheAsync);
             }
             return _maintainTask;
         }
@@ -413,8 +406,6 @@ namespace CoolapkUWP.Common
         {
             try
             {
-                await ThreadSwitcher.ResumeBackgroundAsync();
-
                 var folder = await GetCacheFolderAsync();
                 var files = await folder.GetFilesAsync();
 

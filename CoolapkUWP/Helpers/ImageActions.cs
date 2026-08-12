@@ -1,4 +1,4 @@
-using CoolapkUWP.Common;
+using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CommunityToolkit.WinUI;
 using System;
@@ -68,8 +68,6 @@ namespace CoolapkUWP.Helpers
         {
             DataPackage dataPackage = await GetImageDataPackageAsync(image, "分享图片");
             if (dataPackage == null) { return; }
-
-            await WindowContext.DispatcherQueue.ResumeForegroundAsync();
 
             DataTransferManager manager = DataTransferManager.GetForCurrentView();
             TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler = null;

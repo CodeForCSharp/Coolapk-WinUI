@@ -1,11 +1,11 @@
 using CoolapkUWP.Common;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ImageCache = CoolapkUWP.Common.ImageCache;
 
@@ -44,7 +44,7 @@ namespace CoolapkUWP.Helpers
         static ImageCacheHelper()
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromHours(8);
-            _ = WindowContext.DispatcherQueue.AwaitableRunAsync(() =>
+            _ = WindowContext.DispatcherQueue.EnqueueAsync(() =>
             {
                 DarkNoPicMode = new BitmapImage(DarkNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 };
                 WhiteNoPicMode = new BitmapImage(WhiteNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 };
@@ -79,7 +79,7 @@ namespace CoolapkUWP.Helpers
                 : url;
         }
 
-        internal static async Task<BitmapImage> GetImageAsync(ImageType type, string url, DispatcherQueue dispatcher, bool isForce = false, int decodePixelWidth = 0)
+        internal static async Task<BitmapImage> GetImageAsync(ImageType type, string url, bool isForce = false, int decodePixelWidth = 0)
         {
             url = SanitizeUrl(url);
             Uri uri = url.ValidateAndGetUri();
@@ -87,7 +87,6 @@ namespace CoolapkUWP.Helpers
 
             if (url.IndexOf("ms-appx", StringComparison.Ordinal) == 0)
             {
-                await dispatcher.ResumeForegroundAsync();
                 return new BitmapImage(uri);
             }
             else if (!isForce && SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode))
@@ -107,7 +106,7 @@ namespace CoolapkUWP.Helpers
                 BitmapImage bitmap = null;
                 try
                 {
-                    bitmap = await ImageCache.Instance.GetBitmapAsync(uri, decodePixelWidth, dispatcher);
+                    bitmap = await ImageCache.Instance.GetBitmapAsync(uri, decodePixelWidth);
                 }
                 catch (Exception)
                 {

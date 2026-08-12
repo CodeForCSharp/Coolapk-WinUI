@@ -4,10 +4,10 @@ using CoolapkUWP.Models;
 using CoolapkUWP.Models.Exceptions;
 using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.FeedPages;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using System.ComponentModel;
 using System.Text.Json.Nodes;
-using CoolapkUWP.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -477,7 +477,7 @@ namespace CoolapkUWP.Controls
             e.Handled = true;
         }
 
-        private void Clipboard_ContentChanged(object sender, object e) => _ = DispatcherQueue.AwaitableRunAsync(async () => PastePic.IsEnabled = await Provider.CheckData(Clipboard.GetContent()));
+        private void Clipboard_ContentChanged(object sender, object e) => _ = DispatcherQueue.EnqueueAsync(async () => PastePic.IsEnabled = await Provider.CheckData(Clipboard.GetContent()));
 
         private void GridView_SelectionChanged(object sender, SelectionChangedEventArgs e) => (sender as GridView).SelectedIndex = -1;
 

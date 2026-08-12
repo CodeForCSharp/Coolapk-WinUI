@@ -1,4 +1,3 @@
-using CoolapkUWP.Common;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Pages;
 using CoolapkUWP.Pages.BrowserPages;
@@ -34,66 +33,78 @@ namespace CoolapkUWP.Helpers
 
     internal static partial class UIHelper
     {
-        public static async void ShowProgressBar()
+        public static void ShowProgressBar()
         {
-            await MainPage.DispatcherQueue.ResumeForegroundAsync();
-            IsShowingProgressBar = true;
-            MainPage?.ShowProgressBar();
+            _ = MainPage?.DispatcherQueue.EnqueueAsync(() =>
+            {
+                IsShowingProgressBar = true;
+                MainPage?.ShowProgressBar();
+            });
         }
 
-        public static async void ShowProgressBar(double value = 0)
+        public static void ShowProgressBar(double value = 0)
         {
-            await MainPage.DispatcherQueue.ResumeForegroundAsync();
-            IsShowingProgressBar = true;
-            MainPage?.ShowProgressBar(value);
+            _ = MainPage?.DispatcherQueue.EnqueueAsync(() =>
+            {
+                IsShowingProgressBar = true;
+                MainPage?.ShowProgressBar(value);
+            });
         }
 
-        public static async void PausedProgressBar()
+        public static void PausedProgressBar()
         {
-            await MainPage.DispatcherQueue.ResumeForegroundAsync();
-            IsShowingProgressBar = true;
-            MainPage?.PausedProgressBar();
+            _ = MainPage?.DispatcherQueue.EnqueueAsync(() =>
+            {
+                IsShowingProgressBar = true;
+                MainPage?.PausedProgressBar();
+            });
         }
 
-        public static async void ErrorProgressBar()
+        public static void ErrorProgressBar()
         {
-            await MainPage.DispatcherQueue.ResumeForegroundAsync();
-            IsShowingProgressBar = true;
-            MainPage?.ErrorProgressBar();
+            _ = MainPage?.DispatcherQueue.EnqueueAsync(() =>
+            {
+                IsShowingProgressBar = true;
+                MainPage?.ErrorProgressBar();
+            });
         }
 
-        public static async void HideProgressBar()
+        public static void HideProgressBar()
         {
-            await MainPage.DispatcherQueue.ResumeForegroundAsync();
-            IsShowingProgressBar = false;
-            MainPage?.HideProgressBar();
+            _ = MainPage?.DispatcherQueue.EnqueueAsync(() =>
+            {
+                IsShowingProgressBar = false;
+                MainPage?.HideProgressBar();
+            });
         }
 
-        public static async void ShowMessage(string message)
+        public static void ShowMessage(string message)
         {
             MessageList.Add(message);
             if (!IsShowingMessage)
             {
                 IsShowingMessage = true;
-                await MainPage.DispatcherQueue.ResumeForegroundAsync();
-                while (MessageList.Any())
+                _ = MainPage?.DispatcherQueue.EnqueueAsync(async () =>
                 {
-                    if (MainPage != null)
+                    while (MessageList.Any())
                     {
-                        if (!string.IsNullOrEmpty(MessageList[0]))
+                        if (MainPage != null)
                         {
-                            string messages = $"[{MessageList.Count}] {MessageList[0].Replace("\n", " ")}";
-                            MainPage.ShowMessage(messages);
-                            await Task.Delay(Duration);
-                        }
-                        MessageList.RemoveAt(0);
-                        if (MessageList.Count == 0)
-                        {
-                            MainPage.ShowMessage();
+                            if (!string.IsNullOrEmpty(MessageList[0]))
+                            {
+                                string messages = $"[{MessageList.Count}] {MessageList[0].Replace("\n", " ")}";
+                                MainPage.ShowMessage(messages);
+                                await Task.Delay(Duration);
+                            }
+                            MessageList.RemoveAt(0);
+                            if (MessageList.Count == 0)
+                            {
+                                MainPage.ShowMessage();
+                            }
                         }
                     }
-                }
-                IsShowingMessage = false;
+                    IsShowingMessage = false;
+                });
             }
         }
 
@@ -132,26 +143,6 @@ namespace CoolapkUWP.Helpers
             if (!string.IsNullOrWhiteSpace(ex.HelpLink)) { builder.Append($"HelperLink: {ex.HelpLink}"); }
             return builder.ToString();
         }
-
-        public static TResult AwaitByTaskCompleteSource<TResult>(Func<Task<TResult>> function)
-        {
-            TaskCompletionSource<TResult> taskCompletionSource = new TaskCompletionSource<TResult>();
-            Task<TResult> task = taskCompletionSource.Task;
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    TResult result = await function.Invoke().ConfigureAwait(false);
-                    taskCompletionSource.SetResult(result);
-                }
-                catch (Exception e)
-                {
-                    taskCompletionSource.SetException(e);
-                }
-            });
-            TResult taskResult = task.Result;
-            return taskResult;
-        }
     }
 
     internal static partial class UIHelper
@@ -171,10 +162,10 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
-                await frame.DispatcherQueue.ResumeForegroundAsync();
-                return infoOverride is null
-                    ? frame.Navigate(pageType, parameter)
-                    : frame.Navigate(pageType, parameter, infoOverride);
+                return await frame.DispatcherQueue.EnqueueAsync(() =>
+                    infoOverride is null
+                        ? frame.Navigate(pageType, parameter)
+                        : frame.Navigate(pageType, parameter, infoOverride));
             }
             catch (Exception e)
             {
@@ -189,10 +180,9 @@ namespace CoolapkUWP.Helpers
             return mainPage.ShowImageAsync(image);
         }
 
-        public static async Task<bool> ShowImageAsync(this MainPage mainPage, ImageModel image)
+        public static Task<bool> ShowImageAsync(this MainPage mainPage, ImageModel image)
         {
-            await mainPage.DispatcherQueue.ResumeForegroundAsync();
-            return mainPage.Frame.Navigate(typeof(ShowImagePage), image);
+            return mainPage.DispatcherQueue.EnqueueAsync(() => mainPage.Frame.Navigate(typeof(ShowImagePage), image));
         }
     }
 
@@ -359,8 +349,7 @@ namespace CoolapkUWP.Helpers
             }
             else if (origin.Contains("://"))
             {
-                await frame.DispatcherQueue.ResumeForegroundAsync();
-                return await Launcher.LaunchUriAsync(origin.ValidateAndGetUri());
+                return await frame.DispatcherQueue.EnqueueAsync(async () => await Launcher.LaunchUriAsync(origin.ValidateAndGetUri()));
             }
             else
             {
