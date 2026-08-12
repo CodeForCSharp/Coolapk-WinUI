@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text;
 
@@ -27,59 +30,30 @@ namespace CoolapkUWP.Models.Feeds
         public ImageModel TopicLogo { get; private set; }
         public ImageModel MessageCover { get; private set; }
 
-        public FeedDetailModel(JsonObject token) : base(token)
+        public FeedDetailModel(FeedDto dto) : base(dto)
         {
-            if (token.TryGetPropertyValue("readNum", out JsonNode readNum))
-            {
-                ReadNum = readNum.ToInt32Safe();
-            }
+            ReadNum = dto.ReadNum.ToInt32Safe();
+            Title = dto.Title;
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
-            {
-                Title = title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("targetRow", out JsonNode v))
+            if (dto.TargetRow is JsonObject v)
             {
                 ShowDyhName = true;
 
-                JsonObject targetRow = v.AsObject();
-
-                if (targetRow.TryGetPropertyValue("logo", out JsonNode logo))
-                {
-                    DyhLogo = new ImageModel(logo.ToString(), ImageType.Icon);
-                }
-
-                if (targetRow.TryGetPropertyValue("title", out JsonNode dtitle))
-                {
-                    DyhName = dtitle.ToString();
-                }
-
-                if (targetRow.TryGetPropertyValue("url", out JsonNode url))
-                {
-                    DyhUrl = url.ToString();
-                }
-
-                if (targetRow.TryGetPropertyValue("subTitle", out JsonNode subTitle))
-                {
-                    DyhSubTitle = subTitle.ToString();
-                }
+                DyhLogo = v.TryGetPropertyValue("logo", out JsonNode logo) ? new ImageModel(logo.ToString(), ImageType.Icon) : null;
+                DyhName = v.TryGetPropertyValue("title", out JsonNode dtitle) ? dtitle.ToString() : null;
+                DyhUrl = v.TryGetPropertyValue("url", out JsonNode url) ? url.ToString() : null;
+                DyhSubTitle = v.TryGetPropertyValue("subTitle", out JsonNode subTitle) ? subTitle.ToString() : null;
             }
 
-            if (token.TryGetPropertyValue("ttitle", out JsonNode ttitle) && !ShowDyhName && !string.IsNullOrEmpty(ttitle.ToString()))
+            if (!string.IsNullOrEmpty(dto.Ttitle) && !ShowDyhName)
             {
                 ShowTopicTitle = true;
+                TopicTitle = dto.Ttitle;
+                TopicUrl = dto.Turl;
 
-                TopicTitle = ttitle.ToString();
-
-                if (token.TryGetPropertyValue("turl", out JsonNode turl))
+                if (!string.IsNullOrEmpty(dto.Tpic))
                 {
-                    TopicUrl = turl.ToString();
-                }
-
-                if (token.TryGetPropertyValue("tpic", out JsonNode tpic))
-                {
-                    TopicLogo = new ImageModel(tpic.ToString(), ImageType.Icon);
+                    TopicLogo = new ImageModel(dto.Tpic, ImageType.Icon);
                 }
             }
 
@@ -89,87 +63,64 @@ namespace CoolapkUWP.Models.Feeds
                 {
                     case "answer":
                         IsAnswerFeed = true;
-                        if (token.TryGetPropertyValue("extraData", out JsonNode extraData))
+                        if (dto.ExtraData is JsonNode extraData)
                         {
-                            JsonObject j = JsonNode.Parse(extraData.ToString()).AsObject();
-                            if (j.TryGetPropertyValue("questionUrl", out JsonNode questionUrl))
-                            {
-                                QuestionUrl = questionUrl.ToString();
-                            }
+                            JsonObject j = JsonNode.Parse(extraData.ToJsonString()).AsObject();
+                            QuestionUrl = j.TryGetPropertyValue("questionUrl", out JsonNode questionUrl)
+                                ? questionUrl.ToString() : null;
                         }
 
-                        MessageRawOutput = string.Empty;
-                        StringBuilder builder = new StringBuilder();
-                        if (token.TryGetPropertyValue("message_raw_output", out JsonNode message_raw_output))
-                        {
-                            foreach (JsonNode item in JsonNode.Parse(message_raw_output.ToString()).AsArray())
-                            {
-                                JsonObject itemObj = item.AsObject();
-                                if (itemObj.TryGetPropertyValue("type", out JsonNode type))
-                                {
-                                    switch (type.ToString())
-                                    {
-                                        case "text":
-                                            if (itemObj.TryGetPropertyValue("message", out JsonNode message))
-                                            {
-                                                builder.Append(message.ToString());
-                                            }
-                                            break;
-
-                                        case "image":
-                                            if (itemObj.TryGetPropertyValue("uri", out JsonNode uri))
-                                            {
-                                                itemObj.TryGetPropertyValue("description", out JsonNode description);
-                                                builder.Append($"\n<img src=\"{uri}\" alt=\"{description}\">{description}</a>\n");
-                                            }
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-                        MessageRawOutput = builder.ToString();
+                        MessageRawOutput = BuildMessageRawOutput(dto.MessageRawOutput, "uri", false);
                         break;
 
                     case "feedArticle":
                         IsFeedArticle = true;
-                        if (token.TryGetPropertyValue("message_cover", out JsonNode message_cover) && !string.IsNullOrEmpty(message_cover.ToString()))
+                        if (!string.IsNullOrEmpty(dto.MessageCover))
                         {
-                            MessageCover = new ImageModel(message_cover.ToString(), ImageType.SmallImage);
+                            MessageCover = new ImageModel(dto.MessageCover, ImageType.SmallImage);
                         }
 
-                        MessageRawOutput = string.Empty;
-                        builder = new StringBuilder();
-                        if (token.TryGetPropertyValue("message_raw_output", out message_raw_output))
-                        {
-                            foreach (JsonNode item in JsonNode.Parse(message_raw_output.ToString()).AsArray())
-                            {
-                                JsonObject itemObj = item.AsObject();
-                                if (itemObj.TryGetPropertyValue("type", out JsonNode type))
-                                {
-                                    switch (type.ToString())
-                                    {
-                                        case "text":
-                                            if (itemObj.TryGetPropertyValue("message", out JsonNode message))
-                                            {
-                                                builder.Append(message.ToString());
-                                            }
-                                            break;
-
-                                        case "image":
-                                            if (itemObj.TryGetPropertyValue("url", out JsonNode uri))
-                                            {
-                                                itemObj.TryGetPropertyValue("description", out JsonNode description);
-                                                builder.Append($"\n<img src=\"{uri}\" alt=\"{description}\"/>\n");
-                                            }
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-                        MessageRawOutput = builder.ToString();
+                        MessageRawOutput = BuildMessageRawOutput(dto.MessageRawOutput, "url", true);
                         break;
                 }
             }
+        }
+
+        public static new FeedDetailModel FromJson(JsonObject json)
+            => new FeedDetailModel(JsonSerializer.Deserialize<FeedDto>(json, DtoJson.Options));
+
+        private static string BuildMessageRawOutput(string raw, string imageField, bool articleStyle)
+        {
+            if (string.IsNullOrEmpty(raw)) { return string.Empty; }
+
+            StringBuilder builder = new StringBuilder();
+            foreach (JsonNode item in JsonNode.Parse(raw).AsArray())
+            {
+                JsonObject itemObj = item.AsObject();
+                if (itemObj.TryGetPropertyValue("type", out JsonNode type))
+                {
+                    switch (type.ToString())
+                    {
+                        case "text":
+                            if (itemObj.TryGetPropertyValue("message", out JsonNode message))
+                            {
+                                builder.Append(message.ToString());
+                            }
+                            break;
+
+                        case "image":
+                            if (itemObj.TryGetPropertyValue(imageField, out JsonNode uri))
+                            {
+                                itemObj.TryGetPropertyValue("description", out JsonNode description);
+                                builder.Append(articleStyle
+                                    ? $"\n<img src=\"{uri}\" alt=\"{description}\"/>\n"
+                                    : $"\n<img src=\"{uri}\" alt=\"{description}\">{description}</a>\n");
+                            }
+                            break;
+                    }
+                }
+            }
+            return builder.ToString();
         }
     }
 }

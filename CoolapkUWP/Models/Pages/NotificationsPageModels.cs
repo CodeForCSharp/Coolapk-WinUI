@@ -225,7 +225,7 @@ namespace CoolapkUWP.Models.Pages
                 Dateline += " [仅自己可见]";
             }
 
-            FeedDetail = new SourceFeedModel(token);
+            FeedDetail = SourceFeedModel.FromJson(token);
         }
 
         public override string ToString() => Title;

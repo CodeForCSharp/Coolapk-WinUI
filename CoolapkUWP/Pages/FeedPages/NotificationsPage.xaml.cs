@@ -94,7 +94,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new FeedModel(o) },
+                                    (o) => new Entity[] { FeedModel.FromJson(o) },
                                     "id")));
                         break;
                     case "AtCommentMe":

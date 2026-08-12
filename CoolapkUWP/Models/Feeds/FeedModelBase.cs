@@ -1,10 +1,13 @@
 using CoolapkUWP.Common;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -106,116 +109,71 @@ namespace CoolapkUWP.Models.Feeds
         public List<RelationRowsItem> RelationRows { get; private set; } = new List<RelationRowsItem>();
         public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
 
-        public FeedModelBase(JsonObject token) : base(token)
+        public FeedModelBase(FeedDto dto) : base(dto)
         {
-            if (token.TryGetPropertyValue("info", out JsonNode info) && !string.IsNullOrEmpty(info.ToString()))
-            {
-                Info = info.ToString();
-            }
-            else if (token.TryGetPropertyValue("feedTypeName", out JsonNode feedTypeName))
-            {
-                Info = feedTypeName.ToString();
-            }
+            LikeNum = dto.Likenum.ToInt32Safe();
+            ReplyNum = dto.Replynum.ToInt32Safe();
+            StarNum = dto.Favnum.ToInt32Safe();
+            ShareNum = dto.Forwardnum.ToInt32Safe();
 
-            InfoHTML = token.TryGetPropertyValue("infoHtml", out JsonNode infoHtml) && !string.IsNullOrEmpty(infoHtml.ToString())
-                ? infoHtml.ToString()
+            Info = !string.IsNullOrEmpty(dto.Info)
+                ? dto.Info
+                : dto.FeedTypeName;
+
+            InfoHTML = !string.IsNullOrEmpty(dto.InfoHtml)
+                ? dto.InfoHtml
                 : Dateline;
-
-            if (token.TryGetPropertyValue("likenum", out JsonNode likenum))
-            {
-                LikeNum = likenum.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("favnum", out JsonNode favnum))
-            {
-                StarNum = favnum.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("replynum", out JsonNode replynum))
-            {
-                ReplyNum = replynum.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("forwardnum", out JsonNode forwardnum))
-            {
-                ShareNum = forwardnum.ToInt32Safe();
-            }
 
             if (IsVoteFeed)
             {
-                if (token.TryGetPropertyValue("vote", out JsonNode v))
+                if (dto.Vote is JsonObject vote)
                 {
-                    JsonObject vote = v.AsObject();
-                    if (vote.TryGetPropertyValue("total_vote_num", out JsonNode total_vote_num))
-                    {
-                        TotalVoteNum = total_vote_num.ToInt32Safe();
-                    }
+                    TotalVoteNum = vote.TryGetPropertyValue("total_vote_num", out JsonNode total_vote_num)
+                        ? total_vote_num.ToInt32Safe() : 0;
 
-                    if (vote.TryGetPropertyValue("total_comment_num", out JsonNode total_comment_num))
-                    {
-                        TotalCommentNum = total_comment_num.ToInt32Safe();
-                    }
+                    TotalCommentNum = vote.TryGetPropertyValue("total_comment_num", out JsonNode total_comment_num)
+                        ? total_comment_num.ToInt32Safe() : 0;
 
-                    if (vote.TryGetPropertyValue("start_time", out JsonNode start_time))
-                    {
-                        VoteStartTime = start_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
-                    }
+                    VoteStartTime = vote.TryGetPropertyValue("start_time", out JsonNode start_time)
+                        ? start_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null) : null;
 
-                    if (vote.TryGetPropertyValue("end_time", out JsonNode end_time))
-                    {
-                        VoteEndTime = end_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
-                    }
+                    VoteEndTime = vote.TryGetPropertyValue("end_time", out JsonNode end_time)
+                        ? end_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null) : null;
 
-                    if (vote.TryGetPropertyValue("type", out JsonNode type))
-                    {
-                        VoteType = type.ToInt32Safe();
-                    }
+                    VoteType = vote.TryGetPropertyValue("type", out JsonNode type)
+                        ? type.ToInt32Safe() : 0;
 
-                    if (vote.TryGetPropertyValue("link_tag", out JsonNode link_tag))
-                    {
-                        VoteTag = link_tag.ToString();
-                    }
+                    VoteTag = vote.TryGetPropertyValue("link_tag", out JsonNode link_tag)
+                        ? link_tag.ToString() : null;
 
                     if (vote.TryGetPropertyValue("options", out JsonNode options))
                     {
-                        VoteRows = options.AsArray().Select(item => new VoteItem(item.AsObject())).ToList();
+                        VoteRows = options.AsArray()
+                            .Select(item => new VoteItem(JsonSerializer.Deserialize<VoteItemDto>(item, DtoJson.Options)))
+                            .ToList();
                     }
                 }
             }
 
             if (IsQuestionFeed)
             {
-                if (token.TryGetPropertyValue("question_answer_num", out JsonNode question_answer_num))
+                QuestionAnswerNum = dto.QuestionAnswerNum.ToInt32Safe();
+                QuestionFollowNum = dto.QuestionFollowNum.ToInt32Safe();
+            }
+
+            DeviceTitle = !string.IsNullOrEmpty(dto.DeviceTitle)
+                ? dto.DeviceTitle
+                : dto.DeviceName;
+
+            IPLocation = dto.IpLocation;
+
+            if (!string.IsNullOrEmpty(dto.ExtraTitle))
+            {
+                ExtraTitle = dto.ExtraTitle;
+
+                if (dto.ExtraUrl != null)
                 {
-                    QuestionAnswerNum = question_answer_num.ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("question_follow_num", out JsonNode question_follow_num))
-                {
-                    QuestionFollowNum = question_follow_num.ToInt32Safe();
-                }
-            }
-
-            if (token.TryGetPropertyValue("device_title", out JsonNode device_title) && !string.IsNullOrEmpty(device_title.ToString()))
-            {
-                DeviceTitle = device_title.ToString();
-            }
-            else if (token.TryGetPropertyValue("device_name", out JsonNode device_name))
-            {
-                DeviceTitle = device_name.ToString();
-            }
-
-            if (token.TryGetPropertyValue("ip_location", out JsonNode ip_location))
-            {
-                IPLocation = ip_location.ToString();
-            }
-
-            if (token.TryGetPropertyValue("extra_title", out JsonNode extra_title) && !string.IsNullOrEmpty(extra_title.ToString()))
-            {
-                ExtraTitle = extra_title.ToString();
-
-                if (token.TryGetPropertyValue("extra_url", out JsonNode extra_url))
-                {
-                    ExtraUrl = extra_url.ToString();
+                    ExtraUrl = dto.ExtraUrl;
 
                     if (ExtraUrl.Contains("b23.tv") || ExtraUrl.Contains("t.cn"))
                     {
@@ -226,74 +184,80 @@ namespace CoolapkUWP.Models.Feeds
                         BuildLinkSourceFeed();
                     }
 
-                    if (token.TryGetPropertyValue("extra_pic", out JsonNode extra_pic))
+                    if (!string.IsNullOrEmpty(dto.ExtraPic))
                     {
-                        ExtraPic = new ImageModel(extra_pic.ToString(), ImageType.Icon);
+                        ExtraPic = new ImageModel(dto.ExtraPic, ImageType.Icon);
                     }
                 }
             }
 
-            if (token.TryGetPropertyValue("media_url", out JsonNode media_url))
+            if (dto.MediaUrl != null)
             {
-                MediaUrl = media_url.ToString();
+                MediaUrl = dto.MediaUrl;
                 MediaSubtitle = MediaUrl.ValidateAndGetUri() is Uri ExtraUri && ExtraUri != null ? ExtraUri.Host : MediaUrl;
 
-                if (token.TryGetPropertyValue("media_pic", out JsonNode media_pic))
+                if (!string.IsNullOrEmpty(dto.MediaPic))
                 {
-                    MediaPic = new ImageModel(media_pic.ToString(), ImageType.Icon);
+                    MediaPic = new ImageModel(dto.MediaPic, ImageType.Icon);
                 }
             }
 
-            if (token.TryGetPropertyValue("replyRowsCount", out JsonNode replyRowsCount))
+            ReplyRowsCount = dto.ReplyRowsCount.ToInt32Safe();
+
+            if (dto.ReplyRows != null)
             {
-                ReplyRowsCount = replyRowsCount.ToInt32Safe();
+                ReplyRows = dto.ReplyRows
+                    .Select(item => SourceFeedReplyModel.FromJson(item.AsObject()))
+                    .ToList();
             }
 
-            if (token.TryGetPropertyValue("replyRows", out JsonNode replyRows))
-            {
-                ReplyRows = replyRows.AsArray().Select(item => new SourceFeedReplyModel(item.AsObject())).ToList();
-            }
+            string location = dto.Location;
+            string ttitle = dto.Ttitle;
+            string dyhName = dto.DyhName;
+            int changeCount = dto.ChangeCount.ToInt32Safe();
+            int status = dto.Status.ToInt32Safe();
+            int blockStatus = dto.BlockStatus.ToInt32Safe();
 
             ShowRelationRows =
-                (token.TryGetPropertyValue("location", out JsonNode location) && !string.IsNullOrEmpty(location.ToString())) |
-                (token.TryGetPropertyValue("ttitle", out JsonNode ttitle) && !string.IsNullOrEmpty(ttitle.ToString())) |
-                (token.TryGetPropertyValue("dyh_name", out JsonNode dyh_name) && !string.IsNullOrEmpty(dyh_name.ToString())) |
-                (token.TryGetPropertyValue("relationRows", out JsonNode relationRows) && relationRows.AsArray().Count > 0) |
-                (token.TryGetPropertyValue("change_count", out JsonNode change_count) && change_count.ToInt32Safe() > 0) |
-                (token.TryGetPropertyValue("status", out JsonNode status) && status.ToInt32Safe() == -1) |
-                (token.TryGetPropertyValue("block_status", out JsonNode block_status) && block_status.ToInt32Safe() != 0);
+                (!string.IsNullOrEmpty(location)) |
+                (!string.IsNullOrEmpty(ttitle)) |
+                (!string.IsNullOrEmpty(dyhName)) |
+                (dto.RelationRows is JsonArray relationRows && relationRows.Count > 0) |
+                (changeCount > 0) |
+                (status == -1) |
+                (blockStatus != 0);
 
             if (ShowRelationRows)
             {
                 List<RelationRowsItem> builder = new List<RelationRowsItem>();
-                if (location != null && !string.IsNullOrEmpty(location.ToString()))
+                if (!string.IsNullOrEmpty(location))
                 {
                     builder.Add(
                         new RelationRowsItem(
-                            title: location.ToString(),
+                            title: location,
                             icon: "\uE707"));
                 }
 
-                if (ttitle != null && !string.IsNullOrEmpty(ttitle.ToString()))
+                if (!string.IsNullOrEmpty(ttitle))
                 {
                     builder.Add(
                         new RelationRowsItem(
-                            url: (string)token["turl"],
-                            title: ttitle.ToString(),
-                            logo: (string)token["tpic"]));
+                            url: dto.Turl,
+                            title: ttitle,
+                            logo: dto.Tpic));
                 }
 
-                if (EntityType != "article" && dyh_name != null && !string.IsNullOrEmpty(dyh_name.ToString()))
+                if (EntityType != "article" && !string.IsNullOrEmpty(dyhName))
                 {
                     builder.Add(
                         new RelationRowsItem(
-                            url: $"/dyh/{token["dyh_id"]}",
-                            title: dyh_name.ToString()));
+                            url: $"/dyh/{dto.DyhId}",
+                            title: dyhName));
                 }
 
-                if (relationRows != null)
+                if (dto.RelationRows is JsonArray relationRows2)
                 {
-                    foreach (JsonNode i in relationRows.AsArray())
+                    foreach (JsonNode i in relationRows2)
                     {
                         JsonObject item = i.AsObject();
                         builder.Add(
@@ -304,16 +268,16 @@ namespace CoolapkUWP.Models.Feeds
                     }
                 }
 
-                if (change_count != null && change_count.ToInt32Safe() > 0)
+                if (changeCount > 0)
                 {
                     builder.Add(
                         new RelationRowsItem(
                             url: $"/feed/changeHistoryList?id={ID}",
-                            title: $"已编辑{change_count.ToInt32Safe()}次",
+                            title: $"已编辑{changeCount}次",
                             icon: "\uE70F"));
                 }
 
-                if (status != null && status.ToInt32Safe() == -1)
+                if (status == -1)
                 {
                     builder.Add(
                         new RelationRowsItem(
@@ -321,7 +285,7 @@ namespace CoolapkUWP.Models.Feeds
                             icon: "\uE727"));
                 }
 
-                if (block_status != null && block_status.ToInt32Safe() != 0)
+                if (blockStatus != 0)
                 {
                     builder.Add(
                         new RelationRowsItem(
@@ -334,15 +298,12 @@ namespace CoolapkUWP.Models.Feeds
             }
 
             if (!IsQuestionFeed
-                && token.TryGetPropertyValue("source_id", out JsonNode source_id)
-                && !string.IsNullOrEmpty(source_id.ToString()))
+                && !string.IsNullOrEmpty(dto.SourceId))
             {
                 ShowSourceFeed = true;
-                if (token.TryGetPropertyValue("forwardSourceFeed", out JsonNode forwardSourceFeed)
-                    && !string.IsNullOrEmpty(forwardSourceFeed.ToString())
-                    && forwardSourceFeed.ToString() != "null")
+                if (dto.ForwardSourceFeed is JsonObject forwardSourceFeed)
                 {
-                    SourceFeed = new SourceFeedModel(forwardSourceFeed.AsObject());
+                    SourceFeed = SourceFeedModel.FromJson(forwardSourceFeed);
                 }
                 else
                 {
@@ -435,50 +396,28 @@ namespace CoolapkUWP.Models.Feeds
 
         public Color Color { get; set; }
 
-        public VoteItem(JsonObject token)
+        public VoteItem(VoteItemDto dto)
         {
-            if (token.TryGetPropertyValue("id", out JsonNode id))
-            {
-                ID = id.ToInt32Safe();
-            }
+            ID = dto.Id.ToInt32Safe();
+            Order = dto.Order.ToInt32Safe();
+            VoteID = dto.VoteId.ToInt32Safe();
+            Status = dto.Status.ToInt32Safe();
+            Title = dto.Title;
 
-            if (token.TryGetPropertyValue("order", out JsonNode order))
+            if (!string.IsNullOrEmpty(dto.Color))
             {
-                Order = order.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("vote_id", out JsonNode vote_id))
-            {
-                VoteID = vote_id.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("status", out JsonNode status))
-            {
-                Status = status.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("title", out JsonNode title))
-            {
-                Title = title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("color", out JsonNode color))
-            {
-                if (!string.IsNullOrEmpty(color.ToString()))
+                try
                 {
-                    try
-                    {
-                        Color = color.ToString().ToColor();
-                    }
-                    catch
-                    {
-                        Color = Colors.Transparent;
-                    }
+                    Color = dto.Color.ToColor();
                 }
-                else
+                catch
                 {
                     Color = Colors.Transparent;
                 }
+            }
+            else
+            {
+                Color = Colors.Transparent;
             }
         }
     }

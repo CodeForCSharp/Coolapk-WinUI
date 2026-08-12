@@ -1,10 +1,12 @@
 using CoolapkUWP.Controls;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
-
 using System.Linq;
 using Windows.ApplicationModel.Resources;
 
@@ -27,67 +29,48 @@ namespace CoolapkUWP.Models.Feeds
 
         public List<ImageModel> PicArr { get; private set; } = new List<ImageModel>();
 
-        public SourceFeedReplyModel(JsonObject token) : base(token)
+        public SourceFeedReplyModel(FeedReplyDto dto)
         {
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            ID = dto.Id.ToInt32Safe();
+
+            UserInfo = dto.UserInfo is JsonObject userInfo
+                ? new UserModel(userInfo)
+                : new UserModel(null);
+
+            UserAction = dto.UserAction is JsonObject userAction
+                ? new UserAction(userAction)
+                : new UserAction(null);
+
+            IsFeedAuthor = dto.IsFeedAuthor.ToInt32Safe() == 1;
+
+            if (dto.Ruid != null)
             {
-                ID = id.ToInt32Safe();
+                Rurl = $"/u/{dto.Ruid}";
             }
 
-            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
-            {
-                JsonObject userInfo = v1.AsObject();
-                UserInfo = new UserModel(userInfo);
-            }
-            else
-            {
-                UserInfo = new UserModel(null);
-            }
-
-            if (token.TryGetPropertyValue("userAction", out JsonNode v2))
-            {
-                JsonObject userAction = v2.AsObject();
-                UserAction = new UserAction(userAction);
-            }
-            else
-            {
-                UserAction = new UserAction(null);
-            }
-
-            if (token.TryGetPropertyValue("isFeedAuthor", out JsonNode isFeedAuthor))
-            {
-                IsFeedAuthor = isFeedAuthor.ToInt32Safe() == 1;
-            }
-
-            if (token.TryGetPropertyValue("ruid", out JsonNode ruid))
-            {
-                Rurl = $"/u/{ruid}";
-            }
-
-            if (token.TryGetPropertyValue("rusername", out JsonNode rusername))
-            {
-                Rusername = rusername.ToString();
-            }
+            Rusername = dto.Rusername;
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
 
-            if (token.TryGetPropertyValue("message", out JsonNode message))
+            if (dto.Message != null)
             {
                 Message =
                 string.IsNullOrEmpty(Rusername)
-                ? $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}: {message}"
-                : $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}@{GetUserLink(Rurl, Rusername)}: {message}";
+                ? $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}: {dto.Message}"
+                : $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}@{GetUserLink(Rurl, Rusername)}: {dto.Message}";
             }
 
-            if (token.TryGetPropertyValue("pic", out JsonNode pic) && !string.IsNullOrEmpty(pic.ToString()))
+            if (!string.IsNullOrEmpty(dto.Pic))
             {
-                PicUri = pic.ToString();
+                PicUri = dto.Pic;
                 Message += $" <a href=\"{PicUri}\">{loader.GetString("SeePic")}</a>";
             }
 
-            if (token.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0 && !string.IsNullOrEmpty(picArr.AsArray()[0].ToString()))
+            if (dto.PicArr != null && dto.PicArr.Count > 0 && !string.IsNullOrEmpty(dto.PicArr[0].ToString()))
             {
-                PicArr = picArr.AsArray().Select(
+                PicArr = dto.PicArr.Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
                     .Where(x => x != null).ToList();
@@ -98,11 +81,11 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
-            {
-                BlockStatus = block_status.ToInt32Safe();
-            }
+            BlockStatus = dto.BlockStatus.ToInt32Safe();
         }
+
+        public static SourceFeedReplyModel FromJson(JsonObject json)
+            => new SourceFeedReplyModel(JsonSerializer.Deserialize<FeedReplyDto>(json, DtoJson.Options));
 
         private static string GetAuthorString(bool isFeedAuthor) => isFeedAuthor ? TextBlockEx.AuthorBorder : string.Empty;
 

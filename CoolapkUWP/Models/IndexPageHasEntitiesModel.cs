@@ -92,7 +92,7 @@ namespace CoolapkUWP.Models
                         switch (entityType.ToString())
                         {
                             case "feed":
-                                builder.Add(new FeedModel(itemObj));
+                                builder.Add(FeedModel.FromJson(itemObj));
                                 break;
 
                             case "user":

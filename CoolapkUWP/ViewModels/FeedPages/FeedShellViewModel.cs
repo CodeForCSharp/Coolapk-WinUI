@@ -39,7 +39,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             if (!isSucceed) { return null; }
 
             JsonObject detail = result.AsObject();
-            return detail != null ? new FeedDetailModel(detail) : null;
+            return detail != null ? FeedDetailModel.FromJson(detail) : null;
         }
 
         public abstract Task Refresh(bool reset = false);

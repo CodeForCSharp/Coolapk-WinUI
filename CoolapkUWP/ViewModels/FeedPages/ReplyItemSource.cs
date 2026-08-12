@@ -97,7 +97,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject json)
         {
-            yield return (string)json["entityType"] == "feed_reply" ? new FeedReplyModel(json) : (Entity)new NullEntity();
+            yield return (string)json["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(json) : (Entity)new NullEntity();
         }
 
         public void SetComboBoxSelectedIndex(int value)

@@ -150,7 +150,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
-            yield return new FeedModel(jo);
+            yield return FeedModel.FromJson(jo);
         }
 
         private void UpdateProvider()
