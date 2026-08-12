@@ -1,3 +1,4 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Models.Images;
 using CommunityToolkit.WinUI;
 using System;
@@ -9,6 +10,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.Helpers
@@ -64,7 +66,20 @@ namespace CoolapkUWP.Helpers
 
         public static async Task SharePicAsync(ImageModel image)
         {
-            _ = await GetImageDataPackageAsync(image, "分享图片");
+            DataPackage dataPackage = await GetImageDataPackageAsync(image, "分享图片");
+            if (dataPackage == null) { return; }
+
+            await WindowContext.DispatcherQueue.ResumeForegroundAsync();
+
+            DataTransferManager manager = DataTransferManager.GetForCurrentView();
+            TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler = null;
+            handler = (_, args) =>
+            {
+                args.Request.Data = dataPackage;
+                manager.DataRequested -= handler;
+            };
+            manager.DataRequested += handler;
+            DataTransferManager.ShowShareUI();
         }
 
         public static async Task SavePicAsync(ImageModel image, string fileName = null)
