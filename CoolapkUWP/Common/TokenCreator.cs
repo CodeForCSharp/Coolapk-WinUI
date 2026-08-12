@@ -9,7 +9,7 @@ namespace CoolapkUWP.Common
     {
         private static readonly string guid = Guid.NewGuid().ToString();
         private static readonly string aid = RandHexString(16);
-        private static readonly string mac = RandMacAdress();
+        private static readonly string mac = RandMacAddress();
         private static readonly string SystemManufacturer = string.Empty;
         private static readonly string SystemProductName = string.Empty;
 
@@ -78,12 +78,12 @@ namespace CoolapkUWP.Common
         /// <summary>
         /// CreateDeviceCode Generace your custom device code
         /// </summary>
-        private static string CreateDeviceCode(string aid, string mac, string manufactor, string brand, string model, string buildNumber)
+        private static string CreateDeviceCode(string aid, string mac, string manufacturer, string brand, string model, string buildNumber)
         {
-            return $"{aid}; ; ; {mac}; {manufactor}; {brand}; {model}; {buildNumber}".GetBase64(true).Reverse();
+            return $"{aid}; ; ; {mac}; {manufacturer}; {brand}; {model}; {buildNumber}".GetBase64(true).Reverse();
         }
 
-        private static string RandMacAdress()
+        private static string RandMacAddress()
         {
             Random rand = new Random();
             string macAdress = string.Empty;

@@ -112,7 +112,7 @@ namespace CoolapkUWP.Helpers
                     content.Add(uploadDir, "uploadDir");
                     content.Add(is_anonymous, "is_anonymous");
                     content.Add(uploadFileList, "uploadFileList");
-                    (bool isSucceed, JsonNode result) = await PostDataAsync(UriHelper.GetUri(UriType.OOSUploadPrepare), content);
+                    (bool isSucceed, JsonNode result) = await PostDataAsync(UriHelper.GetUri(UriType.OSSUploadPrepare), content);
                     if (isSucceed)
                     {
                         UploadPicturePrepareResult data = result.Deserialize(_jsonContext.UploadPicturePrepareResult);

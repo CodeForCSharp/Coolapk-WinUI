@@ -81,7 +81,7 @@ namespace CoolapkUWP.Models
 
             if (token.TryGetPropertyValue("entities", out JsonNode entities) && entities.AsArray().Count > 0)
             {
-                List<Entity> buider = new List<Entity>();
+                List<Entity> builder = new List<Entity>();
                 foreach (JsonNode item in entities.AsArray())
                 {
                     JsonObject itemObj = item.AsObject();
@@ -92,25 +92,25 @@ namespace CoolapkUWP.Models
                         switch (entityType.ToString())
                         {
                             case "feed":
-                                buider.Add(new FeedModel(itemObj));
+                                builder.Add(new FeedModel(itemObj));
                                 break;
 
                             case "user":
-                                buider.Add(new UserModel(itemObj));
+                                builder.Add(new UserModel(itemObj));
                                 break;
 
                             case "collection":
-                                buider.Add(new CollectionModel(itemObj));
+                                builder.Add(new CollectionModel(itemObj));
                                 break;
 
                             default:
-                                buider.Add(new IndexPageModel(itemObj));
+                                builder.Add(new IndexPageModel(itemObj));
                                 break;
                         }
                     }
                 }
 
-                Entities = buider;
+                Entities = builder;
                 ShowEntities = true;
             }
             else { ShowEntities = false; }

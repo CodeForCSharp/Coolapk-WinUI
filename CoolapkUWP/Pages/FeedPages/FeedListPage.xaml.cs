@@ -25,9 +25,7 @@ namespace CoolapkUWP.Pages.FeedPages
     {
         TagPageList,
         DyhPageList,
-        AppPageList,
         UserPageList,
-        DevicePageList,
         ProductPageList,
         CollectionPageList,
     }

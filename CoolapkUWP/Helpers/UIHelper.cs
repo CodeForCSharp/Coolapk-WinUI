@@ -124,8 +124,6 @@ namespace CoolapkUWP.Helpers
             return DependencyObject.Tag == null && result;
         }
 
-        public static void SetBadgeNumber(string badgeGlyphValue) { }
-
         public static string ExceptionToMessage(this Exception ex)
         {
             StringBuilder builder = new StringBuilder();

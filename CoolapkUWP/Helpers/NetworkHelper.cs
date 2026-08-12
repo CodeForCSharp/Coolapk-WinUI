@@ -220,7 +220,7 @@ namespace CoolapkUWP.Helpers
             }
             catch (HttpRequestException e)
             {
-                SettingsHelper.LogManager.CreateLogger(nameof(ImageCacheHelper)).LogError(e, e.ExceptionToMessage());
+                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
                 if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }

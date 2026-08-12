@@ -83,8 +83,8 @@ namespace CoolapkUWP
 
         private static void RegisterExceptionHandlingSynchronizationContext(Frame rootFrame)
         {
-            ExceptionHandlingSynchronizationContext synchronizatioCcontext = ExceptionHandlingSynchronizationContext.RegisterForFrame(rootFrame);
-            synchronizatioCcontext.UnhandledException += OnSynchronizationContextUnhandledException;
+            ExceptionHandlingSynchronizationContext synchronizationContext = ExceptionHandlingSynchronizationContext.RegisterForFrame(rootFrame);
+            synchronizationContext.UnhandledException += OnSynchronizationContextUnhandledException;
         }
 
         private static void OnSynchronizationContextUnhandledException(object sender, CoolapkUWP.Helpers.UnhandledExceptionEventArgs args)

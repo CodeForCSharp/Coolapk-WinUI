@@ -265,10 +265,10 @@ namespace CoolapkUWP.Models.Feeds
 
             if (ShowRelationRows)
             {
-                List<RelationRowsItem> buider = new List<RelationRowsItem>();
+                List<RelationRowsItem> builder = new List<RelationRowsItem>();
                 if (location != null && !string.IsNullOrEmpty(location.ToString()))
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             title: location.ToString(),
                             icon: "\uE707"));
@@ -276,7 +276,7 @@ namespace CoolapkUWP.Models.Feeds
 
                 if (ttitle != null && !string.IsNullOrEmpty(ttitle.ToString()))
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             url: (string)token["turl"],
                             title: ttitle.ToString(),
@@ -285,7 +285,7 @@ namespace CoolapkUWP.Models.Feeds
 
                 if (EntityType != "article" && dyh_name != null && !string.IsNullOrEmpty(dyh_name.ToString()))
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             url: $"/dyh/{token["dyh_id"]}",
                             title: dyh_name.ToString()));
@@ -296,7 +296,7 @@ namespace CoolapkUWP.Models.Feeds
                     foreach (JsonNode i in relationRows.AsArray())
                     {
                         JsonObject item = i.AsObject();
-                        buider.Add(
+                        builder.Add(
                             new RelationRowsItem(
                                 url: (string)item["url"],
                                 title: (string)item["title"],
@@ -306,7 +306,7 @@ namespace CoolapkUWP.Models.Feeds
 
                 if (change_count != null && change_count.ToInt32Safe() > 0)
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             url: $"/feed/changeHistoryList?id={ID}",
                             title: $"已编辑{change_count.ToInt32Safe()}次",
@@ -315,7 +315,7 @@ namespace CoolapkUWP.Models.Feeds
 
                 if (status != null && status.ToInt32Safe() == -1)
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             title: "仅自己可见",
                             icon: "\uE727"));
@@ -323,14 +323,14 @@ namespace CoolapkUWP.Models.Feeds
 
                 if (block_status != null && block_status.ToInt32Safe() != 0)
                 {
-                    buider.Add(
+                    builder.Add(
                         new RelationRowsItem(
                             title: "已折叠",
                             icon: "\uE7BA"));
                 }
 
-                ShowRelationRows = buider.Any();
-                RelationRows = buider;
+                ShowRelationRows = builder.Any();
+                RelationRows = builder;
             }
 
             if (!IsQuestionFeed

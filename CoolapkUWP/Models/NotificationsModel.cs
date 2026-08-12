@@ -91,7 +91,6 @@ namespace CoolapkUWP.Models
                 if (token.TryGetPropertyValue("badge", out JsonNode badge) && badge != null)
                 {
                     BadgeNum = token["badge"].ToInt32Safe();
-                    UIHelper.SetBadgeNumber(BadgeNum.ToString());
                 }
                 if (token.TryGetPropertyValue("contacts_follow", out JsonNode contacts_follow) && contacts_follow != null)
                 {

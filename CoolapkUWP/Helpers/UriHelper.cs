@@ -68,7 +68,7 @@ namespace CoolapkUWP.Helpers
         PostFeedUnlike,
         PostCollectionUnlike,
         OperateProductFollow,
-        OOSUploadPrepare,
+        OSSUploadPrepare,
         RequestValidate,
         UploadImage,
         Search,
@@ -192,7 +192,7 @@ namespace CoolapkUWP.Helpers
                 case UriType.PostFeedUnlike: return "/v6/feed/unlike{0}?id={1}";
                 case UriType.PostCollectionUnlike: return "/v6/collection/unLike";
                 case UriType.OperateProductFollow: return "/v6/product/changeFollowStatus";
-                case UriType.OOSUploadPrepare: return "/v6/upload/ossUploadPrepare";
+                case UriType.OSSUploadPrepare: return "/v6/upload/ossUploadPrepare";
                 case UriType.RequestValidate: return "/v6/account/requestValidate";
                 case UriType.UploadImage: return "/v6/feed/uploadImage?fieldName=picFile&uploadDir={0}";
                 case UriType.Search: return "/v6/search?type={0}&searchValue={1}&page={2}{3}&showAnonymous=-1";
