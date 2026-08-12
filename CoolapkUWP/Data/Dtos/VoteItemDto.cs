@@ -5,10 +5,10 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class VoteItemDto
     {
-        public string Id { get; set; }
-        public string Order { get; set; }
-        public string VoteId { get; set; }
-        public string Status { get; set; }
+        public int Id { get; set; }
+        public int Order { get; set; }
+        public int VoteId { get; set; }
+        public int Status { get; set; }
         public string Title { get; set; }
         public string Color { get; set; }
     }

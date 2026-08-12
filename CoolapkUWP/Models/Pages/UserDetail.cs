@@ -47,16 +47,16 @@ namespace CoolapkUWP.Models.Pages
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            UID = dto.Uid.ToInt32Safe();
-            FeedNum = dto.Feed.ToInt32Safe();
-            LikeNum = dto.BeLikeNum.ToInt32Safe();
-            FansNum = dto.Fans.ToInt32Safe();
-            LevelNum = dto.Level.ToInt32Safe();
-            FollowNum = dto.Follow.ToInt32Safe();
+            UID = dto.Uid;
+            FeedNum = dto.Feed;
+            LikeNum = dto.BeLikeNum;
+            FansNum = dto.Fans;
+            LevelNum = dto.Level;
+            FollowNum = dto.Follow;
 
-            IsFans = dto.IsFans.ToInt32Safe() != 0;
-            IsBlackList = dto.IsBlackList.ToInt32Safe() == 1;
-            Followed = dto.IsFollow.ToInt32Safe() != 0;
+            IsFans = dto.IsFans != 0;
+            IsBlackList = dto.IsBlackList == 1;
+            Followed = dto.IsFollow != 0;
 
             Bio = dto.Bio;
 
@@ -76,14 +76,14 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.Logintime != null)
             {
-                LoginTime = $"{dto.Logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
+                LoginTime = $"{dto.Logintime.Value.ConvertUnixTimeStampToReadable()}活跃";
             }
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
             if (dto.BlockStatus != null)
             {
-                int blockStatus = dto.BlockStatus.ToInt32Safe();
+                int blockStatus = dto.BlockStatus.Value;
                 BlockStatus = blockStatus == -1 ? loader.GetString("BlockStatus-1")
                     : blockStatus == 2 ? loader.GetString("BlockStatus2") : "\0\0";
                 BlockStatus = BlockStatus.Substring(1, BlockStatus.Length - 2);
@@ -91,8 +91,8 @@ namespace CoolapkUWP.Models.Pages
 
             VerifyTitle = dto.VerifyTitle;
 
-            NextLevelExperience = dto.NextLevelExperience.ToDoubleSafe();
-            NextLevelPercentage = dto.NextLevelPercentage.ToDoubleSafe();
+            NextLevelExperience = dto.NextLevelExperience;
+            NextLevelPercentage = dto.NextLevelPercentage;
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";
 
             if (dto.Cover != null)

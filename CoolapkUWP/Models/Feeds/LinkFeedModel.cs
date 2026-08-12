@@ -50,7 +50,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.Dateline != null)
             {
-                Dateline = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Dateline = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.UserUrl != null)

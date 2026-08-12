@@ -5,7 +5,7 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class DyhDetailDto : EntityDto
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public UserActionDto UserAction { get; set; }
         public string Uid { get; set; }
         public string Title { get; set; }

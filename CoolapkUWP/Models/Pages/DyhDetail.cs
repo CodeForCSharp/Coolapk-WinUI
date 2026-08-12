@@ -34,8 +34,8 @@ namespace CoolapkUWP.Models.Pages
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
-            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+            ID = dto.Id;
+            Followed = dto.UserAction?.Follow == 1;
 
             if (dto.Uid != null)
             {

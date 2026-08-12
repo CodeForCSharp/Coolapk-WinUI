@@ -5,8 +5,8 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class CollectionDto : EntityDto
     {
-        public string Id { get; set; }
-        public string ItemNum { get; set; }
+        public int Id { get; set; }
+        public int ItemNum { get; set; }
         public string Title { get; set; }
         public string SubTitle { get; set; }
         public string Url { get; set; }

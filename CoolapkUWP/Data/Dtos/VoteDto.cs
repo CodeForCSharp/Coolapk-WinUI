@@ -7,11 +7,11 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class VoteDto
     {
-        public string TotalVoteNum { get; set; }
-        public string TotalCommentNum { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-        public string Type { get; set; }
+        public int TotalVoteNum { get; set; }
+        public int TotalCommentNum { get; set; }
+        public long? StartTime { get; set; }
+        public long? EndTime { get; set; }
+        public int Type { get; set; }
         public string LinkTag { get; set; }
         public List<VoteItemDto> Options { get; set; }
     }

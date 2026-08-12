@@ -85,7 +85,7 @@ namespace CoolapkUWP.Models.Feeds
                         break;
                     case "rating":
                         IsRatingFeed = true;
-                        RatingStar = dto.Star.ToInt32Safe();
+                        RatingStar = dto.Star;
                         break;
                     case "question":
                         IsQuestionFeed = true;
@@ -96,7 +96,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.Dateline != null)
             {
-                Dateline = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Dateline = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.PicArr != null && dto.PicArr.Count > 0)

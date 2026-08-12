@@ -36,10 +36,10 @@ namespace CoolapkUWP.Models.Pages
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
+            ID = dto.Id;
             Url = dto.Url;
             Title = dto.Title;
-            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+            Followed = dto.UserAction?.Follow == 1;
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 

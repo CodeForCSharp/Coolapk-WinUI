@@ -31,7 +31,7 @@ namespace CoolapkUWP.Models
             }
             else if (dto.Dateline != null)
             {
-                Description = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Description = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.Logo != null)

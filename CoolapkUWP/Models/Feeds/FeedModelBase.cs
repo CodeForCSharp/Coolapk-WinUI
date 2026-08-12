@@ -112,10 +112,10 @@ namespace CoolapkUWP.Models.Feeds
 
         public FeedModelBase(FeedDto dto) : base(dto)
         {
-            LikeNum = dto.Likenum.ToInt32Safe();
-            ReplyNum = dto.Replynum.ToInt32Safe();
-            StarNum = dto.Favnum.ToInt32Safe();
-            ShareNum = dto.Forwardnum.ToInt32Safe();
+            LikeNum = dto.Likenum;
+            ReplyNum = dto.Replynum;
+            StarNum = dto.Favnum;
+            ShareNum = dto.Forwardnum;
 
             Info = !string.IsNullOrEmpty(dto.Info)
                 ? dto.Info
@@ -129,11 +129,11 @@ namespace CoolapkUWP.Models.Feeds
             {
                 VoteDto vote = dto.Vote;
 
-                TotalVoteNum = vote.TotalVoteNum.ToInt32Safe();
-                TotalCommentNum = vote.TotalCommentNum.ToInt32Safe();
-                VoteStartTime = vote.StartTime?.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
-                VoteEndTime = vote.EndTime?.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
-                VoteType = vote.Type.ToInt32Safe();
+                TotalVoteNum = vote.TotalVoteNum;
+                TotalCommentNum = vote.TotalCommentNum;
+                VoteStartTime = vote.StartTime?.ConvertUnixTimeStampToReadable(null);
+                VoteEndTime = vote.EndTime?.ConvertUnixTimeStampToReadable(null);
+                VoteType = vote.Type;
                 VoteTag = vote.LinkTag;
 
                 if (vote.Options != null)
@@ -144,8 +144,8 @@ namespace CoolapkUWP.Models.Feeds
 
             if (IsQuestionFeed)
             {
-                QuestionAnswerNum = dto.QuestionAnswerNum.ToInt32Safe();
-                QuestionFollowNum = dto.QuestionFollowNum.ToInt32Safe();
+                QuestionAnswerNum = dto.QuestionAnswerNum;
+                QuestionFollowNum = dto.QuestionFollowNum;
             }
 
             DeviceTitle = !string.IsNullOrEmpty(dto.DeviceTitle)
@@ -189,7 +189,7 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            ReplyRowsCount = dto.ReplyRowsCount.ToInt32Safe();
+            ReplyRowsCount = dto.ReplyRowsCount;
 
             if (dto.ReplyRows != null)
             {
@@ -201,9 +201,9 @@ namespace CoolapkUWP.Models.Feeds
             string location = dto.Location;
             string ttitle = dto.Ttitle;
             string dyhName = dto.DyhName;
-            int changeCount = dto.ChangeCount.ToInt32Safe();
-            int status = dto.Status.ToInt32Safe();
-            int blockStatus = dto.BlockStatus.ToInt32Safe();
+            int changeCount = dto.ChangeCount;
+            int status = dto.Status;
+            int blockStatus = dto.BlockStatus;
 
             ShowRelationRows =
                 (!string.IsNullOrEmpty(location)) |
@@ -362,10 +362,10 @@ namespace CoolapkUWP.Models.Feeds
 
         public VoteItem(VoteItemDto dto)
         {
-            ID = dto.Id.ToInt32Safe();
-            Order = dto.Order.ToInt32Safe();
-            VoteID = dto.VoteId.ToInt32Safe();
-            Status = dto.Status.ToInt32Safe();
+            ID = dto.Id;
+            Order = dto.Order;
+            VoteID = dto.VoteId;
+            Status = dto.Status;
             Title = dto.Title;
 
             if (!string.IsNullOrEmpty(dto.Color))

@@ -47,7 +47,7 @@ namespace CoolapkUWP.Services
                             dto.Message = data.TryGetPropertyValue("message", out JsonNode message) ? message.ToString() : null;
                             if (data.TryGetPropertyValue("dateline", out JsonNode dateline))
                             {
-                                dto.Dateline = dateline.ToString();
+                                dto.Dateline = long.TryParse(dateline.ToString(), out long datelineValue) ? datelineValue : 0L;
                             }
                             dto.MessageTitle = data.TryGetPropertyValue("message_title", out JsonNode message_title) ? message_title.ToString() : null;
                             if (data.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0 && picArr != null)
@@ -78,7 +78,7 @@ namespace CoolapkUWP.Services
                                         dto.MessageTitle = item.TryGetPropertyValue("title", out JsonNode title) ? title.ToString() : null;
                                         if (item.TryGetPropertyValue("upload_time", out JsonNode upload_time))
                                         {
-                                            dto.Dateline = upload_time.ToString();
+                                            dto.Dateline = long.TryParse(upload_time.ToString(), out long uploadTimeValue) ? uploadTimeValue : 0L;
                                         }
                                         if (item.TryGetPropertyValue("pictures", out JsonNode pictures))
                                         {
@@ -158,8 +158,8 @@ namespace CoolapkUWP.Services
                             if (data.TryGetPropertyValue("createTime", out JsonNode createTime))
                             {
                                 dto.Dateline = System.DateTime.TryParse(createTime.ToString(), out System.DateTime createDateTime)
-                                    ? System.Convert.ToInt64(createDateTime.ConvertDateTimeToUnixTimeStamp()).ToString()
-                                    : createTime.ToString();
+                                    ? System.Convert.ToInt64(createDateTime.ConvertDateTimeToUnixTimeStamp())
+                                    : 0L;
                             }
                         }
                     }

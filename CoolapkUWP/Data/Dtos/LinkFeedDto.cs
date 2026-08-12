@@ -11,7 +11,7 @@ namespace CoolapkUWP.Data.Dtos
         public string Url { get; set; }
         public string Message { get; set; }
         public string MessageTitle { get; set; }
-        public string Dateline { get; set; }
+        public long? Dateline { get; set; }
         public List<string> PicUris { get; set; }
         public string UserName { get; set; }
         public string UserUrl { get; set; }

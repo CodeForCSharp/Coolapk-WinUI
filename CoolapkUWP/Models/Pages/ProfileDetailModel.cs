@@ -35,15 +35,15 @@ namespace CoolapkUWP.Models.Pages
                 Url = $"https://www.coolapk.com{dto.Url}";
             }
 
-            FansNum = dto.Fans.ToDoubleSafe();
-            FeedNum = dto.Feed.ToDoubleSafe();
-            LevelNum = dto.Level.ToDoubleSafe();
+            FansNum = dto.Fans;
+            FeedNum = dto.Feed;
+            LevelNum = dto.Level;
             UserName = dto.Username;
-            FollowNum = dto.Follow.ToDoubleSafe();
+            FollowNum = dto.Follow;
             LevelTodayMessage = dto.LevelTodayMessage;
 
-            NextLevelExperience = dto.NextLevelExperience.ToDoubleSafe();
-            NextLevelPercentage = dto.NextLevelPercentage.ToDoubleSafe();
+            NextLevelExperience = dto.NextLevelExperience;
+            NextLevelPercentage = dto.NextLevelPercentage;
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";
         }
 

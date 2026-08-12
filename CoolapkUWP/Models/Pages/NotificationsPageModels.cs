@@ -30,11 +30,11 @@ namespace CoolapkUWP.Models.Pages
 
         protected void ApplyCommon(NotificationDto dto)
         {
-            ID = dto.Id.ToInt32Safe();
+            ID = dto.Id;
 
             if (dto.Dateline != null)
             {
-                Dateline = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Dateline = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (!string.IsNullOrEmpty(dto.BlockStatus) && dto.BlockStatus != "0")
@@ -50,9 +50,9 @@ namespace CoolapkUWP.Models.Pages
 
         protected static string GetBlockStatus(NotificationUserInfoDto userInfo, ResourceLoader loader)
             => userInfo == null ? null
-                : userInfo.Status.ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                : userInfo.BlockStatus.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                : userInfo.BlockStatus.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2")
+                : userInfo.Status == -1 ? loader.GetString("Status-1")
+                : userInfo.BlockStatus == -1 ? loader.GetString("BlockStatus-1")
+                : userInfo.BlockStatus == 2 ? loader.GetString("BlockStatus2")
                 : null;
 
         public override string ToString() => $"{UserName} - {Dateline}";
@@ -164,7 +164,7 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.LikeTime != null)
             {
-                Dateline = dto.LikeTime.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Dateline = dto.LikeTime.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.LikeAvatar != null)
@@ -219,7 +219,7 @@ namespace CoolapkUWP.Models.Pages
                 }
             }
 
-            if (dto.IsTop.ToInt32Safe() == 1)
+            if (dto.IsTop == 1)
             {
                 Dateline += " " + "[置顶]";
             }

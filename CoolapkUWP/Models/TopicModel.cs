@@ -76,14 +76,14 @@ namespace CoolapkUWP.Models
             {
                 Description = dto.RssType;
             }
-            else if (!string.IsNullOrEmpty(dto.HotNum))
+            else if (dto.HotNum != null)
             {
-                Description = DataHelper.GetNumString(dto.HotNum.ToDoubleSafe()) + "热度";
+                Description = DataHelper.GetNumString(dto.HotNum.Value) + "热度";
             }
 
-            if (!string.IsNullOrEmpty(dto.Lastupdate))
+            if (dto.Lastupdate != null)
             {
-                LastUpdate = dto.Lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                LastUpdate = dto.Lastupdate.Value.ConvertUnixTimeStampToReadable();
             }
         }
 

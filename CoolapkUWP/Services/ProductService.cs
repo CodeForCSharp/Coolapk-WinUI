@@ -32,9 +32,9 @@ namespace CoolapkUWP.Services
 
             ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);
 
-            if (!string.IsNullOrEmpty(dto.Id))
+            if (dto.Id > 0)
             {
-                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, dto.Id);
+                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, dto.Id.ToString());
 
                 if (provider != null)
                 {

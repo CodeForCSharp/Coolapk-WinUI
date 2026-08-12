@@ -18,22 +18,22 @@ namespace CoolapkUWP.Data.Dtos
         public string Message { get; set; }
         public string MessageTitle { get; set; }
         public string FeedType { get; set; }
-        public string Dateline { get; set; }
+        public long? Dateline { get; set; }
         public string Pic { get; set; }
         public List<string> PicArr { get; set; }
-        public string Star { get; set; }
+        public int Star { get; set; }
 
         // FeedModelBase
-        public string Likenum { get; set; }
-        public string Replynum { get; set; }
-        public string Favnum { get; set; }
-        public string Forwardnum { get; set; }
+        public int Likenum { get; set; }
+        public int Replynum { get; set; }
+        public int Favnum { get; set; }
+        public int Forwardnum { get; set; }
         public string Info { get; set; }
         public string FeedTypeName { get; set; }
         public string InfoHtml { get; set; }
         public VoteDto Vote { get; set; }
-        public string QuestionAnswerNum { get; set; }
-        public string QuestionFollowNum { get; set; }
+        public int QuestionAnswerNum { get; set; }
+        public int QuestionFollowNum { get; set; }
         public string DeviceTitle { get; set; }
         public string DeviceName { get; set; }
         public string IpLocation { get; set; }
@@ -42,7 +42,7 @@ namespace CoolapkUWP.Data.Dtos
         public string ExtraPic { get; set; }
         public string MediaUrl { get; set; }
         public string MediaPic { get; set; }
-        public string ReplyRowsCount { get; set; }
+        public int ReplyRowsCount { get; set; }
         public List<FeedReplyDto> ReplyRows { get; set; }
         public string Location { get; set; }
         public string Ttitle { get; set; }
@@ -51,17 +51,17 @@ namespace CoolapkUWP.Data.Dtos
         public string DyhName { get; set; }
         public string DyhId { get; set; }
         public System.Text.Json.Nodes.JsonArray RelationRows { get; set; }
-        public string ChangeCount { get; set; }
-        public string Status { get; set; }
-        public string BlockStatus { get; set; }
+        public int ChangeCount { get; set; }
+        public int Status { get; set; }
+        public int BlockStatus { get; set; }
         public string SourceId { get; set; }
         public System.Text.Json.Nodes.JsonNode ForwardSourceFeed { get; set; }
 
         // FeedModel
-        public string IsStickTop { get; set; }
+        public int IsStickTop { get; set; }
 
         // FeedDetailModel
-        public string ReadNum { get; set; }
+        public int ReadNum { get; set; }
         public string Title { get; set; }
         public DyhRowDto TargetRow { get; set; }
         public System.Text.Json.Nodes.JsonNode ExtraData { get; set; }

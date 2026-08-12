@@ -17,7 +17,7 @@ namespace CoolapkUWP.Data.Dtos
         public string Newtitle { get; set; }
         public string Username { get; set; }
         public string RssType { get; set; }
-        public string HotNum { get; set; }
-        public string Lastupdate { get; set; }
+        public double? HotNum { get; set; }
+        public long? Lastupdate { get; set; }
     }
 }

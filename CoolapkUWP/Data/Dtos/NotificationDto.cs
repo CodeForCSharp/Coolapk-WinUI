@@ -5,12 +5,12 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class NotificationDto : EntityDto
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Uid { get; set; }
         public string Ruid { get; set; }
         public string Rusername { get; set; }
-        public string Dateline { get; set; }
+        public long? Dateline { get; set; }
         public string BlockStatus { get; set; }
         public string Status { get; set; }
         public NotificationUserInfoDto UserInfo { get; set; }
@@ -28,13 +28,13 @@ namespace CoolapkUWP.Data.Dtos
         public string FeedTypeName { get; set; }
         public string InfoHtml { get; set; }
         public string LikeUid { get; set; }
-        public string LikeTime { get; set; }
+        public long? LikeTime { get; set; }
         public string LikeAvatar { get; set; }
         public NotificationUserInfoDto LikeUserInfo { get; set; }
         public string LikeUsername { get; set; }
 
         public string Ukey { get; set; }
         public NotificationUserInfoDto MessageUserInfo { get; set; }
-        public string IsTop { get; set; }
+        public int IsTop { get; set; }
     }
 }

@@ -44,12 +44,12 @@ namespace CoolapkUWP.Models.Users
 
             InitializeEntity(null, null, null, null);
 
-            Like = dto.Like.ToInt32Safe() != 0;
-            Favorite = dto.Favorite.ToInt32Safe() != 0;
-            Follow = dto.Follow.ToInt32Safe() != 0;
-            Collect = dto.Collect.ToInt32Safe() != 0;
-            FollowAuthor = dto.FollowAuthor.ToInt32Safe() != 0;
-            AuthorFollowYou = dto.AuthorFollowYou.ToInt32Safe() != 0;
+            Like = dto.Like != 0;
+            Favorite = dto.Favorite != 0;
+            Follow = dto.Follow != 0;
+            Collect = dto.Collect != 0;
+            FollowAuthor = dto.FollowAuthor != 0;
+            AuthorFollowYou = dto.AuthorFollowYou != 0;
 
             OnFollowChanged();
         }

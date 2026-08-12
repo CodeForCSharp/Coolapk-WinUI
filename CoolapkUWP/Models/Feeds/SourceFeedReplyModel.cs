@@ -33,7 +33,7 @@ namespace CoolapkUWP.Models.Feeds
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
+            ID = dto.Id;
 
             UserInfo = dto.UserInfo != null
                 ? new UserModel(dto.UserInfo)
@@ -43,7 +43,7 @@ namespace CoolapkUWP.Models.Feeds
                 ? new UserAction(dto.UserAction)
                 : new UserAction(null);
 
-            IsFeedAuthor = dto.IsFeedAuthor.ToInt32Safe() == 1;
+            IsFeedAuthor = dto.IsFeedAuthor == 1;
 
             if (dto.Ruid != null)
             {
@@ -81,7 +81,7 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
 
-            BlockStatus = dto.BlockStatus.ToInt32Safe();
+            BlockStatus = dto.BlockStatus;
         }
 
         public static SourceFeedReplyModel FromJson(JsonObject json)

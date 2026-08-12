@@ -49,7 +49,7 @@ namespace CoolapkUWP.Models.Feeds
         {
             if (dto.Dateline != null)
             {
-                Dateline = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Dateline = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.Message != null)
@@ -57,10 +57,10 @@ namespace CoolapkUWP.Models.Feeds
                 Message = dto.Message;
             }
 
-            LikeNum = dto.Likenum.ToInt32Safe();
-            ReplyNum = dto.Replynum.ToInt32Safe();
-            ReplyRowsMore = dto.ReplyRowsMore.ToInt32Safe();
-            ReplyRowsCount = dto.ReplyRowsCount.ToInt32Safe();
+            LikeNum = dto.Likenum;
+            ReplyNum = dto.Replynum;
+            ReplyRowsMore = dto.ReplyRowsMore;
+            ReplyRowsCount = dto.ReplyRowsCount;
 
             if (dto.ReplyRows != null)
             {

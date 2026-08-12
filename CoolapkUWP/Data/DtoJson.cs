@@ -15,7 +15,7 @@ namespace CoolapkUWP.Data
             TypeInfoResolver = JsonContext.Default,
             PropertyNameCaseInsensitive = true,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            Converters = { new LenientStringConverter() }
+            Converters = { new LenientStringConverter(), new LenientNumberConverterFactory() }
         };
     }
 }

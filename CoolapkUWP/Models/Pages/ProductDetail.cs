@@ -62,19 +62,19 @@ namespace CoolapkUWP.Models.Pages
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
+            ID = dto.Id;
 
-            Star1Count = dto.Star1Count.ToInt32Safe();
-            Star2Count = dto.Star2Count.ToInt32Safe();
-            Star3Count = dto.Star3Count.ToInt32Safe();
-            Star4Count = dto.Star4Count.ToInt32Safe();
-            Star5Count = dto.Star5Count.ToInt32Safe();
+            Star1Count = dto.Star1Count;
+            Star2Count = dto.Star2Count;
+            Star3Count = dto.Star3Count;
+            Star4Count = dto.Star4Count;
+            Star5Count = dto.Star5Count;
 
-            OwnerStar1Count = dto.OwnerStar1Count.ToInt32Safe();
-            OwnerStar2Count = dto.OwnerStar2Count.ToInt32Safe();
-            OwnerStar3Count = dto.OwnerStar3Count.ToInt32Safe();
-            OwnerStar4Count = dto.OwnerStar4Count.ToInt32Safe();
-            OwnerStar5Count = dto.OwnerStar5Count.ToInt32Safe();
+            OwnerStar1Count = dto.OwnerStar1Count;
+            OwnerStar2Count = dto.OwnerStar2Count;
+            OwnerStar3Count = dto.OwnerStar3Count;
+            OwnerStar4Count = dto.OwnerStar4Count;
+            OwnerStar5Count = dto.OwnerStar5Count;
 
             double MaxStarCount = Math.Max(Math.Max(Math.Max(Star1Count, Star2Count), Math.Max(Star3Count, Star4Count)), Star5Count);
             double MaxOwnerStarCount = Math.Max(Math.Max(Math.Max(OwnerStar1Count, OwnerStar2Count), Math.Max(OwnerStar3Count, OwnerStar4Count)), OwnerStar5Count);
@@ -93,7 +93,7 @@ namespace CoolapkUWP.Models.Pages
             OwnerStar4Percent = OwnerStar4Count * 100 / MaxOwnerStarCount;
             OwnerStar5Percent = OwnerStar5Count * 100 / MaxOwnerStarCount;
 
-            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+            Followed = dto.UserAction?.Follow == 1;
 
             Title = dto.Title;
 
@@ -126,8 +126,8 @@ namespace CoolapkUWP.Models.Pages
 
             Description = dto.Description;
 
-            OwnerScore = dto.OwnerStarAverageScore.ToDoubleSafe();
-            RatingScore = dto.RatingAverageScore.ToDoubleSafe();
+            OwnerScore = dto.OwnerStarAverageScore;
+            RatingScore = dto.RatingAverageScore;
 
             if (dto.Logo != null)
             {

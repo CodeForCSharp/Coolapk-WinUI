@@ -32,7 +32,7 @@ namespace CoolapkUWP.Models.Feeds
 
         public FeedDetailModel(FeedDto dto) : base(dto)
         {
-            ReadNum = dto.ReadNum.ToInt32Safe();
+            ReadNum = dto.ReadNum;
             Title = dto.Title;
 
             if (dto.TargetRow != null)

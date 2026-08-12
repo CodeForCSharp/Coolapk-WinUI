@@ -9,7 +9,7 @@ namespace CoolapkUWP.Data.Dtos
         public string Url { get; set; }
         public string Description { get; set; }
         public string TargetTypeTitle { get; set; }
-        public string Dateline { get; set; }
+        public long? Dateline { get; set; }
         public string Logo { get; set; }
     }
 }

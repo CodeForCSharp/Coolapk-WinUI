@@ -38,12 +38,12 @@ namespace CoolapkUWP.Models.Pages
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
-            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
-            Liked = dto.UserAction?.Like.ToInt32Safe() == 1;
+            ID = dto.Id;
+            Followed = dto.UserAction?.Follow == 1;
+            Liked = dto.UserAction?.Like == 1;
 
-            ItemNum = dto.ItemNum.ToInt32Safe();
-            LikeNum = dto.LikeNum.ToInt32Safe();
+            ItemNum = dto.ItemNum;
+            LikeNum = dto.LikeNum;
 
             Url = dto.Url;
             Title = dto.Title;
@@ -59,7 +59,7 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.Lastupdate != null)
             {
-                LastUpdate = $"{dto.Lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
+                LastUpdate = $"{dto.Lastupdate.Value.ConvertUnixTimeStampToReadable()}活跃";
             }
 
             if (dto.CoverPic != null)

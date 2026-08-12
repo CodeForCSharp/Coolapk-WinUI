@@ -5,8 +5,8 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class NotificationUserInfoDto
     {
-        public string Status { get; set; }
-        public string BlockStatus { get; set; }
+        public int Status { get; set; }
+        public int BlockStatus { get; set; }
         public string Username { get; set; }
         public string UserAvatar { get; set; }
     }

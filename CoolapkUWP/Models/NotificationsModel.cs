@@ -83,15 +83,15 @@ namespace CoolapkUWP.Models
         {
             if (dto != null)
             {
-                CloudInstall = dto.CloudInstall.ToInt32Safe();
-                Notification = dto.Notification.ToInt32Safe();
-                BadgeNum = dto.Badge.ToInt32Safe();
-                FollowNum = dto.ContactsFollow.ToInt32Safe();
-                MessageNum = dto.Message.ToInt32Safe();
-                AtMeNum = dto.Atme.ToInt32Safe();
-                AtCommentMeNum = dto.Atcommentme.ToInt32Safe();
-                CommentMeNum = dto.Commentme.ToInt32Safe();
-                FeedLikeNum = dto.Feedlike.ToInt32Safe();
+                CloudInstall = dto.CloudInstall;
+                Notification = dto.Notification;
+                BadgeNum = dto.Badge;
+                FollowNum = dto.ContactsFollow;
+                MessageNum = dto.Message;
+                AtMeNum = dto.Atme;
+                AtCommentMeNum = dto.Atcommentme;
+                CommentMeNum = dto.Commentme;
+                FeedLikeNum = dto.Feedlike;
             }
         }
     }

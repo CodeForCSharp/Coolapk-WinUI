@@ -23,8 +23,8 @@ namespace CoolapkUWP.Models
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ID = dto.Id.ToInt32Safe();
-            ItemNum = dto.ItemNum.ToInt32Safe();
+            ID = dto.Id;
+            ItemNum = dto.ItemNum;
             Title = dto.Title;
             SubTitle = dto.SubTitle;
             Url = dto.Url;

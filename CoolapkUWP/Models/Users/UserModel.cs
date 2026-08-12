@@ -45,47 +45,47 @@ namespace CoolapkUWP.Models.Users
 
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            UID = dto.Uid.ToInt32Safe();
+            UID = dto.Uid;
             Bio = dto.Bio;
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
             if (dto.Fans != null)
             {
-                fansNum = dto.Fans.ToInt32Safe();
+                fansNum = dto.Fans.Value;
                 FansNum = $"{fansNum}{loader.GetString("Fan")}";
             }
 
-            Level = dto.Level.ToInt32Safe();
+            Level = dto.Level;
 
             if (dto.Cover != null)
             {
                 Cover = new ImageModel(dto.Cover, ImageType.OriginImage);
             }
 
-            Status = dto.Status.ToInt32Safe();
-            RegDate = dto.Regdate.ToInt32Safe();
+            Status = dto.Status;
+            RegDate = dto.Regdate;
             UserName = dto.Username;
 
             if (dto.Logintime != null)
             {
-                LoginTime = $"{dto.Logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
+                LoginTime = $"{dto.Logintime.Value.ConvertUnixTimeStampToReadable()}活跃";
             }
 
             if (dto.Follow != null)
             {
-                followNum = dto.Follow.ToInt32Safe();
+                followNum = dto.Follow.Value;
                 FollowNum = $"{followNum}{loader.GetString("Follow")}";
             }
 
-            Experience = dto.Experience.ToInt32Safe();
+            Experience = dto.Experience;
 
             if (dto.UserAvatar != null)
             {
                 UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
-            BlockStatus = dto.BlockStatus.ToInt32Safe();
+            BlockStatus = dto.BlockStatus;
         }
 
         public static UserModel FromJson(JsonObject json)

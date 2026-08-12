@@ -5,14 +5,14 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class NotificationNumbersDto
     {
-        public string CloudInstall { get; set; }
-        public string Notification { get; set; }
-        public string Badge { get; set; }
-        public string ContactsFollow { get; set; }
-        public string Message { get; set; }
-        public string Atme { get; set; }
-        public string Atcommentme { get; set; }
-        public string Commentme { get; set; }
-        public string Feedlike { get; set; }
+        public int CloudInstall { get; set; }
+        public int Notification { get; set; }
+        public int Badge { get; set; }
+        public int ContactsFollow { get; set; }
+        public int Message { get; set; }
+        public int Atme { get; set; }
+        public int Atcommentme { get; set; }
+        public int Commentme { get; set; }
+        public int Feedlike { get; set; }
     }
 }

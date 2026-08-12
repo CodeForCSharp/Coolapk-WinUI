@@ -5,11 +5,11 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class UserActionDto
     {
-        public string Follow { get; set; }
-        public string Like { get; set; }
-        public string Favorite { get; set; }
-        public string Collect { get; set; }
-        public string FollowAuthor { get; set; }
-        public string AuthorFollowYou { get; set; }
+        public int Follow { get; set; }
+        public int Like { get; set; }
+        public int Favorite { get; set; }
+        public int Collect { get; set; }
+        public int FollowAuthor { get; set; }
+        public int AuthorFollowYou { get; set; }
     }
 }
