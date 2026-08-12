@@ -2,34 +2,8 @@ using System;
 
 namespace CoolapkUWP.Models.Update
 {
-    public readonly struct SystemVersionInfo
+    public readonly record struct SystemVersionInfo(int Major, int Minor, int Build, int Revision)
     {
-        public SystemVersionInfo(int major, int minor, int build, int revision = 0)
-        {
-            Major = major;
-            Minor = minor;
-            Build = build;
-            Revision = revision;
-        }
-
-        public int Major { get; }
-
-        public int Minor { get; }
-
-        public int Build { get; }
-
-        public int Revision { get; }
-
-        public bool Equals(SystemVersionInfo other) => Major == other.Major && Minor == other.Minor && Build == other.Build && Revision == other.Revision;
-
-        public override bool Equals(object obj) => obj is SystemVersionInfo other && Equals(other);
-
-        public override int GetHashCode() => Major.GetHashCode() ^ Minor.GetHashCode() ^ Build.GetHashCode() ^ Revision.GetHashCode();
-
-        public static bool operator ==(SystemVersionInfo left, SystemVersionInfo right) => left.Equals(right);
-
-        public static bool operator !=(SystemVersionInfo left, SystemVersionInfo right) => !(left == right);
-
         public int CompareTo(SystemVersionInfo other)
         {
             return Major != other.Major
