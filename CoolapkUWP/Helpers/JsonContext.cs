@@ -34,6 +34,8 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(VoteDto))]
     [JsonSerializable(typeof(DyhRowDto))]
     [JsonSerializable(typeof(RecentFollowDto))]
+    [JsonSerializable(typeof(CollectionContentsDto))]
+    [JsonSerializable(typeof(SelectorEntityDto))]
     [JsonSerializable(typeof(UpdateInfo))]
     [JsonSerializable(typeof(Asset))]
     [JsonSerializable(typeof(UploadPicturePrepareResult))]

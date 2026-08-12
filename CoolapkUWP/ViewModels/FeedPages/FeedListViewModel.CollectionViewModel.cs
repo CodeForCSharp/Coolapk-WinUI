@@ -1,9 +1,12 @@
 using CoolapkUWP.Controls;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -30,35 +33,31 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionContents, ID, "1", ""), true);
                     if (isSucceed)
                     {
-                        JsonArray array = result.AsArray();
-                        foreach (JsonNode item in array)
+                        List<CollectionContentsDto> contents = JsonSerializer.Deserialize<List<CollectionContentsDto>>(result, DtoJson.Options);
+                        foreach (CollectionContentsDto item in contents ?? new List<CollectionContentsDto>())
                         {
-                            if (item.AsObject().TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && entityTemplate.ToString() == "selectorLinkCard")
+                            if (item.EntityTemplate == "selectorLinkCard" && item.Entities != null)
                             {
-                                if (item.AsObject().TryGetPropertyValue("entities", out JsonNode v1))
+                                List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
+                                foreach (SelectorEntityDto entity in item.Entities)
                                 {
-                                    JsonArray entities = v1.AsArray();
-                                    List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
-                                    foreach (JsonNode entity in entities)
+                                    if (!string.IsNullOrEmpty(entity.Url))
                                     {
-                                        if (entity.AsObject().TryGetPropertyValue("url", out JsonNode url) && !string.IsNullOrEmpty(url.ToString()))
+                                        CoolapkListProvider Provider = new CoolapkListProvider(
+                                            (p, firstItem, lastItem) => UriHelper.GetUri(UriType.DataList, entity.Url.Replace("#", "%23").Replace("/", "%2F").Replace("?", "%3F").Replace("=", "%3D").Replace("&", "%26"), $"&page={p}" + (string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}") + (string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}")),
+                                            GetEntities,
+                                            "id");
+                                        FeedListItemSource FeedListItemSource = new FeedListItemSource(ID, Provider);
+                                        ShyHeaderItem ShyHeaderItem = new ShyHeaderItem { ItemSource = FeedListItemSource };
+                                        if (!string.IsNullOrEmpty(entity.Title))
                                         {
-                                            CoolapkListProvider Provider = new CoolapkListProvider(
-                                                (p, firstItem, lastItem) => UriHelper.GetUri(UriType.DataList, url.ToString().Replace("#", "%23").Replace("/", "%2F").Replace("?", "%3F").Replace("=", "%3D").Replace("&", "%26"), $"&page={p}" + (string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}") + (string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}")),
-                                                GetEntities,
-                                                "id");
-                                            FeedListItemSource FeedListItemSource = new FeedListItemSource(ID, Provider);
-                                            ShyHeaderItem ShyHeaderItem = new ShyHeaderItem { ItemSource = FeedListItemSource };
-                                            if (entity.AsObject().TryGetPropertyValue("title", out JsonNode title) && !string.IsNullOrEmpty(title.ToString()))
-                                            {
-                                                ShyHeaderItem.Header = title.ToString();
-                                            }
-                                            ItemSource.Add(ShyHeaderItem);
+                                            ShyHeaderItem.Header = entity.Title;
                                         }
+                                        ItemSource.Add(ShyHeaderItem);
                                     }
-                                    this.ItemSource = ItemSource;
-                                    break;
                                 }
+                                this.ItemSource = ItemSource;
+                                break;
                             }
                         }
                         if (ItemSource == null)

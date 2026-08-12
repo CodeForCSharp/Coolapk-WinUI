@@ -1,3 +1,5 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
@@ -7,6 +9,7 @@ using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using CoolapkUWP.ViewModels.FeedPages;
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Linq;
@@ -69,11 +72,11 @@ namespace CoolapkUWP.Controls
             UIHelper.HideProgressBar();
             if (!isSucceed) { return; }
 
-            JsonObject token = result.AsObject();
+            ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            if (!string.IsNullOrEmpty(dto.Id))
             {
-                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, id.ToString());
+                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, dto.Id);
 
                 if (provider != null)
                 {
