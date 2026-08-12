@@ -189,9 +189,16 @@ namespace CoolapkUWP.Common
             if (sourceWidth <= 0 || sourceHeight <= 0) { return (0, 0); }
 
             double scale = 1.0;
-            if (decodePixelWidth > 0 && sourceWidth > decodePixelWidth)
+            if (decodePixelWidth > 0)
             {
-                scale = (double)decodePixelWidth / sourceWidth;
+                if (sourceHeight > sourceWidth * 1.5)
+                {
+                    decodePixelWidth = Math.Max(decodePixelWidth / 2, 256);
+                }
+                if (sourceWidth > decodePixelWidth)
+                {
+                    scale = (double)decodePixelWidth / sourceWidth;
+                }
             }
 
             int frameCount = Math.Max(1, (int)decoder.FrameCount);
