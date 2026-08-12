@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了“用户控件”项模板
 
@@ -28,6 +27,9 @@ namespace CoolapkUWP.Controls
     public sealed partial class TextBlockEx : UserControl
     {
         public const string AuthorBorder = "<div class=\"author-border\"/>";
+        private static readonly Regex EmojisRegex = new Regex(@"(\[\S*?\]|#\(\S*?\))");
+        private static readonly FontSizeToHeightConverter SharedFontSizeToHeightConverter = new FontSizeToHeightConverter();
+        private static readonly BoolToVisibilityConverter SharedBoolToVisibilityConverter = new BoolToVisibilityConverter();
         private readonly ResourceLoader _loader = ResourceLoader.GetForViewIndependentUse("Feed");
 
         public static readonly DependencyProperty TextProperty =
@@ -106,7 +108,6 @@ namespace CoolapkUWP.Controls
         {
             RichTextBlock.Blocks.Clear();
             HtmlDocument doc = new HtmlDocument();
-            Regex emojis = new Regex(@"(\[\S*?\]|#\(\S*?\))");
             doc.LoadHtml(Text.Replace("<!--break-->", string.Empty));
             Paragraph paragraph = new Paragraph { LineHeight = FontSize + 10 };
             List<ImageModel> imageArrayBuider = new List<ImageModel>();
@@ -116,13 +117,35 @@ namespace CoolapkUWP.Controls
                 paragraph = new Paragraph { LineHeight = FontSize + 10 };
             }
             void AddText(string item) => paragraph.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(item) });
+
+            void AddEmojiInline(string key, string tooltip)
+            {
+                InlineUIContainer container = new InlineUIContainer();
+                Image image = new Image { Source = EmojiHelper.GetBitmap(key) };
+                ToolTipService.SetToolTip(image, new ToolTip { Content = tooltip });
+                Viewbox viewbox = new Viewbox
+                {
+                    Child = image,
+                    Margin = new Thickness(0, 0, 0, -4),
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                viewbox.SetBinding(WidthProperty, new Binding
+                {
+                    Source = this,
+                    Mode = BindingMode.OneWay,
+                    Converter = SharedFontSizeToHeightConverter,
+                    Path = new PropertyPath(nameof(FontSize))
+                });
+                container.Child = viewbox;
+                paragraph.Inlines.Add(container);
+            }
             HtmlNodeCollection nodes = doc.DocumentNode.ChildNodes;
             foreach (HtmlNode node in nodes)
             {
                 switch (node.NodeType)
                 {
                     case HtmlNodeType.Text:
-                        string[] list = emojis.Split(node.InnerText);
+                        string[] list = EmojisRegex.Split(node.InnerText);
                         foreach (string item in list)
                         {
                             if (string.IsNullOrEmpty(item)) { continue; }
@@ -133,24 +156,7 @@ namespace CoolapkUWP.Controls
                                         string str = item.Substring(1);
                                         if (EmojiHelper.Emojis.Contains(str))
                                         {
-                                            InlineUIContainer container = new InlineUIContainer();
-                                            Image image = new Image { Source = new BitmapImage(new Uri($"ms-appx:///Assets/Emoji/{str}.png")) };
-                                            ToolTipService.SetToolTip(image, new ToolTip { Content = item });
-                                            Viewbox viewbox = new Viewbox
-                                            {
-                                                Child = image,
-                                                Margin = new Thickness(0, 0, 0, -4),
-                                                VerticalAlignment = VerticalAlignment.Center
-                                            };
-                                            viewbox.SetBinding(WidthProperty, new Binding
-                                            {
-                                                Source = this,
-                                                Mode = BindingMode.OneWay,
-                                                Converter = new FontSizeToHeightConverter(),
-                                                Path = new PropertyPath(nameof(FontSize))
-                                            });
-                                            container.Child = viewbox;
-                                            paragraph.Inlines.Add(container);
+                                            AddEmojiInline(str, item);
                                         }
                                         else { AddText(item); }
                                     }
@@ -159,49 +165,15 @@ namespace CoolapkUWP.Controls
                                     {
                                         if (SettingsHelper.Get<bool>("IsUseOldEmojiMode") && EmojiHelper.OldEmojis.Contains(item))
                                         {
-                                            InlineUIContainer container = new InlineUIContainer();
-                                            Image image = new Image { Source = new BitmapImage(new Uri($"ms-appx:///Assets/Emoji/{item}.png")) };
-                                            ToolTipService.SetToolTip(image, new ToolTip { Content = item });
-                                            Viewbox viewbox = new Viewbox
-                                            {
-                                                Child = image,
-                                                Margin = new Thickness(0, 0, 0, -4),
-                                                VerticalAlignment = VerticalAlignment.Center
-                                            };
-                                            viewbox.SetBinding(WidthProperty, new Binding
-                                            {
-                                                Source = this,
-                                                Mode = BindingMode.OneWay,
-                                                Converter = new FontSizeToHeightConverter(),
-                                                Path = new PropertyPath(nameof(FontSize))
-                                            });
-                                            container.Child = viewbox;
-                                            paragraph.Inlines.Add(container);
+                                            AddEmojiInline(item, item);
                                         }
                                         else if (EmojiHelper.Emojis.Contains(item))
                                         {
-                                            InlineUIContainer container = new InlineUIContainer();
-                                            Image image = new Image { Source = new BitmapImage(new Uri($"ms-appx:///Assets/Emoji/{item}.png")) };
-                                            ToolTipService.SetToolTip(image, new ToolTip { Content = item });
-                                            Viewbox viewbox = new Viewbox
-                                            {
-                                                Child = image,
-                                                Margin = new Thickness(0, 0, 0, -4),
-                                                VerticalAlignment = VerticalAlignment.Center
-                                            };
-                                            viewbox.SetBinding(WidthProperty, new Binding
-                                            {
-                                                Source = this,
-                                                Mode = BindingMode.OneWay,
-                                                Converter = new FontSizeToHeightConverter(),
-                                                Path = new PropertyPath(nameof(FontSize))
-                                            });
-                                            container.Child = viewbox;
-                                            paragraph.Inlines.Add(container);
+                                            AddEmojiInline(item, item);
                                         }
                                         else { AddText(item); }
-                                        break;
                                     }
+                                    break;
                                 default:
                                     AddText(item);
                                     break;
@@ -315,7 +287,7 @@ namespace CoolapkUWP.Controls
                                     {
                                         Source = imageModel,
                                         Mode = BindingMode.OneWay,
-                                        Converter = new BoolToVisibilityConverter(),
+                                        Converter = SharedBoolToVisibilityConverter,
                                         Path = new PropertyPath(nameof(imageModel.IsGif))
                                     });
 
@@ -335,7 +307,7 @@ namespace CoolapkUWP.Controls
                                     {
                                         Source = imageModel,
                                         Mode = BindingMode.OneWay,
-                                        Converter = new BoolToVisibilityConverter(),
+                                        Converter = SharedBoolToVisibilityConverter,
                                         Path = new PropertyPath(nameof(imageModel.IsWidePic))
                                     });
 
@@ -353,7 +325,7 @@ namespace CoolapkUWP.Controls
                                     {
                                         Source = imageModel,
                                         Mode = BindingMode.OneWay,
-                                        Converter = new BoolToVisibilityConverter(),
+                                        Converter = SharedBoolToVisibilityConverter,
                                         Path = new PropertyPath(nameof(imageModel.IsLongPic))
                                     });
 

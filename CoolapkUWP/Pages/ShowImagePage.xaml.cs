@@ -54,6 +54,7 @@ namespace CoolapkUWP.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            Provider?.Dispose();
             App.MainWindow?.SetTitleBar(null);
             var TitleBar = App.MainWindow.AppWindow.TitleBar;
             Frame.Navigated -= On_Navigated;

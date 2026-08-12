@@ -528,7 +528,7 @@ namespace CoolapkUWP.Controls
             string item = value.ToString();
             if (EmojiHelper.Emojis.Contains(item))
             {
-                result = new BitmapImage(new Uri($"ms-appx:///Assets/Emoji/{item}.png"));
+                result = EmojiHelper.GetBitmap(item);
             }
             return ConverterTools.Convert(result, targetType);
         }

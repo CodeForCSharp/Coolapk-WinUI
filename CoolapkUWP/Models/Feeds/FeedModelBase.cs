@@ -24,6 +24,9 @@ namespace CoolapkUWP.Models.Feeds
 {
     public partial class FeedModelBase : SourceFeedModel, ICanFollow, ICanLike, ICanReply, ICanStar
     {
+        private static readonly Regex BilibiliFeedIdRegex = new Regex(@"/t.*?/([\d|\w]+)");
+        private static readonly Regex ITHomeFeedIdRegex = new Regex(@"[%26|%3F]id%3D([\d|\w]+)");
+
         [ObservableProperty]
         public partial int LikeNum { get; set; }
 
@@ -338,16 +341,15 @@ namespace CoolapkUWP.Models.Feeds
                 }
                 else if (ExtraUrl.Contains("bilibili") && ExtraUrl.Contains("t.bilibili"))
                 {
-                    Regex GetID = new Regex(@"/t.*?/([\d|\w]+)");
-                    Uri uri = UriHelper.GetLinkUri(UriType.GetBilibiliFeed, LinkType.Bilibili, GetID.Match(ExtraUrl).Groups[1].Value);
-                    MultipartFormDataContent content = new MultipartFormDataContent { { new StringContent(GetID.Match(ExtraUrl).Groups[1].Value), "dynamic_id" } };
+                    string id = BilibiliFeedIdRegex.Match(ExtraUrl).Groups[1].Value;
+                    Uri uri = UriHelper.GetLinkUri(UriType.GetBilibiliFeed, LinkType.Bilibili, id);
+                    MultipartFormDataContent content = new MultipartFormDataContent { { new StringContent(id), "dynamic_id" } };
                     LinkSourceFeed = new LinkFeedModel(await LinkPreviewService.LoadAsync(uri, LinkType.Bilibili, true, content), LinkType.Bilibili);
                     ShowLinkSourceFeed = true;
                 }
                 else if (ExtraUrl.Contains("ithome") && ExtraUrl.Contains("qcontent"))
                 {
-                    Regex GetID = new Regex(@"[%26|%3F]id%3D([\d|\w]+)");
-                    Uri uri = UriHelper.GetLinkUri(UriType.GetITHomeFeed, LinkType.ITHome, GetID.Match(ExtraUrl).Groups[1].Value);
+                    Uri uri = UriHelper.GetLinkUri(UriType.GetITHomeFeed, LinkType.ITHome, ITHomeFeedIdRegex.Match(ExtraUrl).Groups[1].Value);
                     LinkSourceFeed = new LinkFeedModel(await LinkPreviewService.LoadAsync(uri, LinkType.ITHome), LinkType.ITHome);
                     ShowLinkSourceFeed = true;
                 }

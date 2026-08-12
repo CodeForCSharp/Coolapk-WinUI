@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels
 {
-    public partial class ShowImageViewModel : ObservableObject, IViewModel
+    public partial class ShowImageViewModel : ObservableObject, IViewModel, IDisposable
     {
+        private static readonly Regex ImageNameRegex = new Regex(@"[^/]+(?!.*/)");
+
         private string ImageName = string.Empty;
         public string ImageNameText => ImageName;
 
@@ -57,7 +59,7 @@ namespace CoolapkUWP.ViewModels
             Index = image.ContextArray.Any() ? Images.IndexOf(image) : 0;
         }
 
-        ~ShowImageViewModel()
+        public void Dispose()
         {
             foreach (ImageModel image in Images)
             {
@@ -74,8 +76,8 @@ namespace CoolapkUWP.ViewModels
 
         private string GetTitle(string url)
         {
-            Regex regex = new Regex(@"[^/]+(?!.*/)");
-            ImageName = regex.IsMatch(url) ? regex.Match(url).Value : "查看图片";
+            Match match = ImageNameRegex.Match(url);
+            ImageName = match.Success ? match.Value : "查看图片";
             return $"{ImageName} ({Index + 1}/{Images.Count})";
         }
 

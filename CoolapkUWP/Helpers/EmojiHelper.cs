@@ -1,9 +1,25 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.UI.Xaml.Media.Imaging;
+
 namespace CoolapkUWP.Helpers
 {
     internal static class EmojiHelper
     {
+        private static readonly Dictionary<string, BitmapImage> BitmapCache = new Dictionary<string, BitmapImage>();
+
+        public static BitmapImage GetBitmap(string name)
+        {
+            if (!BitmapCache.TryGetValue(name, out BitmapImage bitmap))
+            {
+                bitmap = new BitmapImage(new Uri($"ms-appx:///Assets/Emoji/{name}.png"));
+                BitmapCache[name] = bitmap;
+            }
+            return bitmap;
+        }
+
         #region 旧表情
-        public static string[] OldEmojis = new string[]
+        public static HashSet<string> OldEmojis = new HashSet<string>
         {
             "[doge]",
             "[doge原谅ta]",
@@ -75,7 +91,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region 全部
-        public static string[] Emojis = new string[]
+        public static HashSet<string> Emojis = new HashSet<string>
         {
             "[哈哈哈]",
             "[惊讶]",
