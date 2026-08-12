@@ -1,13 +1,14 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
@@ -42,63 +43,50 @@ namespace CoolapkUWP.Models.Pages
 
         public List<UserModel> FollowUsers { get; private set; } = new List<UserModel>();
 
-        internal TopicDetail(JsonObject token) : base(token)
+        internal TopicDetail(TopicDetailDto dto)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            ID = dto.Id.ToInt32Safe();
+            Url = dto.Url;
+            Title = dto.Title;
+            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            if (dto.HotNumTxt != null)
             {
-                ID = id.ToInt32Safe();
+                HotNum = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
             }
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            if (dto.FollownumTxt != null)
             {
-                Url = url.ToString();
+                FollowNum = $"{dto.FollownumTxt}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            if (dto.CommentnumTxt != null)
             {
-                Title = title.ToString();
+                CommentNum = $"{dto.CommentnumTxt}{loader.GetString("CommentNum")}";
             }
 
-            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                Followed = follow.ToInt32Safe() == 1;
+                Description = dto.Description;
             }
 
-            if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_text))
+            if (dto.Intro != null && Description != dto.Intro)
             {
-                HotNum = $"{hot_num_text}{loader.GetString("HotNum")}";
+                SubTitle = dto.Intro;
             }
 
-            if (token.TryGetPropertyValue("follownum_txt", out JsonNode follownum_text))
+            if (dto.Logo != null)
             {
-                FollowNum = $"{follownum_text}{loader.GetString("Follow")}";
+                Logo = new ImageModel(dto.Logo, ImageType.Icon);
             }
 
-            if (token.TryGetPropertyValue("commentnum_txt", out JsonNode commentnum_text))
+            if (dto.RecentFollowList != null && dto.RecentFollowList.Count > 0)
             {
-                CommentNum = $"{commentnum_text}{loader.GetString("CommentNum")}";
-            }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
-            {
-                Description = description.ToString();
-            }
-
-            if (token.TryGetPropertyValue("intro", out JsonNode intro) && Description != intro.ToString())
-            {
-                SubTitle = intro.ToString();
-            }
-
-            if (token.TryGetPropertyValue("logo", out JsonNode logo))
-            {
-                Logo = new ImageModel(logo.ToString(), ImageType.Icon);
-            }
-
-            if (token.TryGetPropertyValue("recent_follow_list", out JsonNode recent_follow_list) && (recent_follow_list as JsonArray).Count > 0)
-            {
-                FollowUsers = recent_follow_list.AsArray().Select(
+                FollowUsers = dto.RecentFollowList.Select(
                     x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
                         ? new UserModel(userInfo.AsObject()) : null)
                     .Where(x => x != null).ToList();
@@ -107,6 +95,9 @@ namespace CoolapkUWP.Models.Pages
             OnFollowChanged();
         }
 
+        public static TopicDetail FromJson(JsonObject json)
+            => new TopicDetail(JsonSerializer.Deserialize<TopicDetailDto>(json, DtoJson.Options));
+
         private void OnFollowChanged()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
@@ -114,15 +105,7 @@ namespace CoolapkUWP.Models.Pages
             FollowGlyph = Followed ? "\uE8FB" : "\uE710";
         }
 
-        public async Task ChangeFollow()
-        {
-            UriType type = Followed ? UriType.PostTopicUnfollow : UriType.PostTopicFollow;
-
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, Title), null, true);
-            if (!isSucceed) { return; }
-
-            Followed = !Followed;
-        }
+        public Task ChangeFollow() => FeedActionsService.ChangeTopicFollowAsync(this);
 
         public override string ToString() => $"{Title} - {Description}";
     }

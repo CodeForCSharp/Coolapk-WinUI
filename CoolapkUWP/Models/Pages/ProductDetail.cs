@@ -1,13 +1,15 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
@@ -67,77 +69,26 @@ namespace CoolapkUWP.Models.Pages
 
         public List<ImageModel> CoverArr { get; private set; } = new List<ImageModel>();
 
-        internal ProductDetail(JsonObject token) : base(token)
+        internal ProductDetail(ProductDetailDto dto)
         {
-            ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
-            {
-                ID = id.ToInt32Safe();
-            }
+            ID = dto.Id.ToInt32Safe();
 
-            double MaxStarCount = 0, MaxOwnerStarCount = 0;
+            Star1Count = dto.Star1Count.ToInt32Safe();
+            Star2Count = dto.Star2Count.ToInt32Safe();
+            Star3Count = dto.Star3Count.ToInt32Safe();
+            Star4Count = dto.Star4Count.ToInt32Safe();
+            Star5Count = dto.Star5Count.ToInt32Safe();
 
-            if (token.TryGetPropertyValue("star_1_count", out JsonNode star_1_count))
-            {
-                Star1Count = star_1_count.ToInt32Safe();
-                MaxStarCount = Math.Max(Star1Count, MaxStarCount);
-            }
+            OwnerStar1Count = dto.OwnerStar1Count.ToInt32Safe();
+            OwnerStar2Count = dto.OwnerStar2Count.ToInt32Safe();
+            OwnerStar3Count = dto.OwnerStar3Count.ToInt32Safe();
+            OwnerStar4Count = dto.OwnerStar4Count.ToInt32Safe();
+            OwnerStar5Count = dto.OwnerStar5Count.ToInt32Safe();
 
-            if (token.TryGetPropertyValue("star_2_count", out JsonNode star_2_count))
-            {
-                Star2Count = star_2_count.ToInt32Safe();
-                MaxStarCount = Math.Max(Star2Count, MaxStarCount);
-            }
-
-            if (token.TryGetPropertyValue("star_3_count", out JsonNode star_3_count))
-            {
-                Star3Count = star_3_count.ToInt32Safe();
-                MaxStarCount = Math.Max(Star3Count, MaxStarCount);
-            }
-
-            if (token.TryGetPropertyValue("star_4_count", out JsonNode star_4_count))
-            {
-                Star4Count = star_4_count.ToInt32Safe();
-                MaxStarCount = Math.Max(Star4Count, MaxStarCount);
-            }
-
-            if (token.TryGetPropertyValue("star_5_count", out JsonNode star_5_count))
-            {
-                Star5Count = star_5_count.ToInt32Safe();
-                MaxStarCount = Math.Max(Star5Count, MaxStarCount);
-            }
-
-            if (token.TryGetPropertyValue("owner_star_1_count", out JsonNode owner_star_1_count))
-            {
-                OwnerStar1Count = owner_star_1_count.ToInt32Safe();
-                MaxOwnerStarCount = Math.Max(OwnerStar1Count, MaxOwnerStarCount);
-            }
-
-            if (token.TryGetPropertyValue("owner_star_2_count", out JsonNode owner_star_2_count))
-            {
-                OwnerStar2Count = owner_star_2_count.ToInt32Safe();
-                MaxOwnerStarCount = Math.Max(OwnerStar2Count, MaxOwnerStarCount);
-            }
-
-            if (token.TryGetPropertyValue("owner_star_3_count", out JsonNode owner_star_3_count))
-            {
-                OwnerStar3Count = owner_star_3_count.ToInt32Safe();
-                MaxOwnerStarCount = Math.Max(OwnerStar3Count, MaxOwnerStarCount);
-            }
-
-            if (token.TryGetPropertyValue("owner_star_4_count", out JsonNode owner_star_4_count))
-            {
-                OwnerStar4Count = owner_star_4_count.ToInt32Safe();
-                MaxOwnerStarCount = Math.Max(OwnerStar4Count, MaxOwnerStarCount);
-            }
-
-            if (token.TryGetPropertyValue("owner_star_5_count", out JsonNode owner_star_5_count))
-            {
-                OwnerStar5Count = owner_star_5_count.ToInt32Safe();
-                MaxOwnerStarCount = Math.Max(OwnerStar5Count, MaxOwnerStarCount);
-            }
-
+            double MaxStarCount = Math.Max(Math.Max(Math.Max(Star1Count, Star2Count), Math.Max(Star3Count, Star4Count)), Star5Count);
+            double MaxOwnerStarCount = Math.Max(Math.Max(Math.Max(OwnerStar1Count, OwnerStar2Count), Math.Max(OwnerStar3Count, OwnerStar4Count)), OwnerStar5Count);
             MaxStarCount = Math.Max(MaxStarCount, double.Epsilon);
             MaxOwnerStarCount = Math.Max(MaxOwnerStarCount, double.Epsilon);
 
@@ -153,77 +104,63 @@ namespace CoolapkUWP.Models.Pages
             OwnerStar4Percent = OwnerStar4Count * 100 / MaxOwnerStarCount;
             OwnerStar5Percent = OwnerStar5Count * 100 / MaxOwnerStarCount;
 
-            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
+            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+
+            Title = dto.Title;
+
+            ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
+
+            if (dto.HotNumTxt != null)
             {
-                Followed = follow.ToInt32Safe() == 1;
+                HotNum = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
             }
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            if (dto.StarTotalCount != null)
             {
-                Title = title.ToString();
+                StarCount = $"{dto.StarTotalCount}位酷友打分";
             }
 
-            if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_text))
+            if (dto.FollowNumTxt != null)
             {
-                HotNum = $"{hot_num_text}{loader.GetString("HotNum")}";
+                FollowNum = $"{dto.FollowNumTxt}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetPropertyValue("star_total_count", out JsonNode star_total_count))
+            if (dto.FeedCommentNumTxt != null)
             {
-                StarCount = $"{star_total_count}位酷友打分";
+                CommentNum = $"{dto.FeedCommentNumTxt}{loader.GetString("CommentNum")}";
             }
 
-            if (token.TryGetPropertyValue("follow_num_txt", out JsonNode follownum_text))
+            if (dto.RatingTotalNum != null)
             {
-                FollowNum = $"{follownum_text}{loader.GetString("Follow")}";
+                RatingCount = $"{dto.RatingTotalNum}位机主打分";
             }
 
-            if (token.TryGetPropertyValue("feed_comment_num_txt", out JsonNode commentnum_text))
+            Description = dto.Description;
+
+            OwnerScore = dto.OwnerStarAverageScore.ToDoubleSafe();
+            RatingScore = dto.RatingAverageScore.ToDoubleSafe();
+
+            if (dto.Logo != null)
             {
-                CommentNum = $"{commentnum_text}{loader.GetString("CommentNum")}";
+                Logo = new ImageModel(dto.Logo, ImageType.Icon);
             }
 
-            if (token.TryGetPropertyValue("rating_total_num", out JsonNode rating_total_num))
+            if (dto.TagArr != null && dto.TagArr.Count > 0)
             {
-                RatingCount = $"{rating_total_num}位机主打分";
+                TagArr = dto.TagArr.Select(x => x.ToString()).ToList();
             }
 
-            if (token.TryGetPropertyValue("description", out JsonNode description))
+            if (dto.RecentFollowList != null && dto.RecentFollowList.Count > 0)
             {
-                Description = description.ToString();
-            }
-
-            if (token.TryGetPropertyValue("owner_star_average_score", out JsonNode owner_star_average_score))
-            {
-                OwnerScore = owner_star_average_score.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("rating_average_score", out JsonNode rating_average_score))
-            {
-                RatingScore = rating_average_score.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("logo", out JsonNode logo))
-            {
-                Logo = new ImageModel(logo.ToString(), ImageType.Icon);
-            }
-
-            if (token.TryGetPropertyValue("tagArr", out JsonNode tagArr) && (tagArr as JsonArray).Count > 0)
-            {
-                TagArr = tagArr.AsArray().Select(x => x.ToString()).ToList();
-            }
-
-            if (token.TryGetPropertyValue("recent_follow_list", out JsonNode recent_follow_list) && (recent_follow_list as JsonArray).Count > 0)
-            {
-                FollowUsers = recent_follow_list.AsArray().Select(
+                FollowUsers = dto.RecentFollowList.Select(
                     x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
                         ? new UserModel(userInfo.AsObject()) : null)
                     .Where(x => x != null).ToList();
             }
 
-            if (token.TryGetPropertyValue("coverArr", out JsonNode coverArr) && (coverArr as JsonArray).Count > 0)
+            if (dto.CoverArr != null && dto.CoverArr.Count > 0)
             {
-                CoverArr = coverArr.AsArray().Select(
+                CoverArr = dto.CoverArr.Select(
                     x => !string.IsNullOrEmpty(x.ToString())
                         ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
                     .Where(x => x != null).ToList();
@@ -237,6 +174,9 @@ namespace CoolapkUWP.Models.Pages
             OnFollowChanged();
         }
 
+        public static ProductDetail FromJson(JsonObject json)
+            => new ProductDetail(JsonSerializer.Deserialize<ProductDetailDto>(json, DtoJson.Options));
+
         private void OnFollowChanged()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
@@ -244,21 +184,7 @@ namespace CoolapkUWP.Models.Pages
             FollowGlyph = Followed ? "\uE8FB" : "\uE710";
         }
 
-        public async Task ChangeFollow()
-        {
-            using (MultipartFormDataContent content = new MultipartFormDataContent())
-            {
-                using (StringContent id = new StringContent(ID.ToString()))
-                using (StringContent status = new StringContent(Followed ? "0" : "1"))
-                {
-                    content.Add(id, "id");
-                    content.Add(status, "status");
-                    (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(UriType.OperateProductFollow), content, true);
-                    if (!isSucceed) { return; }
-                    Followed = !Followed;
-                }
-            }
-        }
+        public Task ChangeFollow() => FeedActionsService.ChangeProductFollowAsync(this);
 
         public override string ToString() => $"{Title} - {Description}";
     }

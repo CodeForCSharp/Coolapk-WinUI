@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models.Pages
@@ -18,59 +21,33 @@ namespace CoolapkUWP.Models.Pages
         public double NextLevelPercentage { get; private set; }
         public string NextLevelNowExperience { get; private set; }
 
-        public ProfileDetailModel(JsonObject token) : base(token)
+        public ProfileDetailModel(ProfileDetailDto dto)
         {
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            if (dto.UserAvatar != null)
             {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            if (dto.Url != null)
             {
-                Url = $"https://www.coolapk.com{url}";
+                Url = $"https://www.coolapk.com{dto.Url}";
             }
 
-            if (token.TryGetPropertyValue("fans", out JsonNode fans))
-            {
-                FansNum = fans.ToDoubleSafe();
-            }
+            FansNum = dto.Fans.ToDoubleSafe();
+            FeedNum = dto.Feed.ToDoubleSafe();
+            LevelNum = dto.Level.ToDoubleSafe();
+            UserName = dto.Username;
+            FollowNum = dto.Follow.ToDoubleSafe();
+            LevelTodayMessage = dto.LevelTodayMessage;
 
-            if (token.TryGetPropertyValue("feed", out JsonNode feed))
-            {
-                FeedNum = feed.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("level", out JsonNode level))
-            {
-                LevelNum = level.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("username", out JsonNode username))
-            {
-                UserName = username.ToString();
-            }
-
-            if (token.TryGetPropertyValue("follow", out JsonNode follow))
-            {
-                FollowNum = follow.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("level_today_message", out JsonNode level_today_message))
-            {
-                LevelTodayMessage = level_today_message.ToString();
-            }
-
-            if (token.TryGetPropertyValue("next_level_experience", out JsonNode next_level_experience))
-            {
-                NextLevelExperience = next_level_experience.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("next_level_percentage", out JsonNode next_level_percentage))
-            {
-                NextLevelPercentage = next_level_percentage.ToDoubleSafe();
-            }
-
+            NextLevelExperience = dto.NextLevelExperience.ToDoubleSafe();
+            NextLevelPercentage = dto.NextLevelPercentage.ToDoubleSafe();
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";
         }
+
+        public static ProfileDetailModel FromJson(JsonObject json)
+            => new ProfileDetailModel(JsonSerializer.Deserialize<ProfileDetailDto>(json, DtoJson.Options));
     }
 }

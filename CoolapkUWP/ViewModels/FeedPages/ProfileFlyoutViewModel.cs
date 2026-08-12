@@ -77,7 +77,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             if (!isSucceed) { return null; }
 
             JsonObject detail = result.AsObject();
-            return detail != null ? new ProfileDetailModel(detail) : null;
+            return detail != null ? ProfileDetailModel.FromJson(detail) : null;
         }
 
         private IEnumerable<Entity> GetEntities(JsonObject json)

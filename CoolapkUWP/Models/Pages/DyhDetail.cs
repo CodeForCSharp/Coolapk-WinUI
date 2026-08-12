@@ -1,13 +1,11 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
@@ -43,56 +41,49 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/dyh/{ID}";
 
-        internal DyhDetail(JsonObject token) : base(token)
+        internal DyhDetail(DyhDetailDto dto)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            ID = dto.Id.ToInt32Safe();
+            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+
+            if (dto.Uid != null)
+            {
+                Uurl = $"/u/{dto.Uid}";
+            }
+
+            Title = dto.Title;
+            UserName = dto.Author;
+            Description = dto.Description;
+
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            if (dto.Follownum != null)
             {
-                ID = id.ToInt32Safe();
+                FollowNum = $"{dto.Follownum}{loader.GetString("SubscribeNum")}";
             }
 
-            if (token.TryGetPropertyValue("userAction", out JsonNode userAction) && userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
+            if (dto.Logo != null)
             {
-                Followed = follow.ToInt32Safe() == 1;
+                Logo = new ImageModel(dto.Logo, ImageType.Icon);
             }
 
-            if (token.TryGetPropertyValue("uid", out JsonNode uid))
+            if (dto.UserAvatar != null)
             {
-                Uurl = $"/u/{uid}";
-            }
-
-            if (token.TryGetPropertyValue("title", out JsonNode title))
-            {
-                Title = title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("author", out JsonNode author))
-            {
-                UserName = author.ToString();
-            }
-
-            if (token.TryGetPropertyValue("follownum", out JsonNode follownum))
-            {
-                FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
-            }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description))
-            {
-                Description = description.ToString();
-            }
-
-            if (token.TryGetPropertyValue("logo", out JsonNode logo))
-            {
-                Logo = new ImageModel(logo.ToString(), ImageType.Icon);
-            }
-
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
-            {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
             OnFollowChanged();
+        }
+
+        public static DyhDetail FromJson(JsonObject json)
+            => new DyhDetail(JsonSerializer.Deserialize<DyhDetailDto>(json, DtoJson.Options));
+
+        internal void SetFollowNum(int num)
+        {
+            ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
+            FollowNum = $"{num}{loader.GetString("SubscribeNum")}";
         }
 
         private void OnFollowChanged()
@@ -102,20 +93,7 @@ namespace CoolapkUWP.Models.Pages
             FollowGlyph = Followed ? "\uE8FB" : "\uE710";
         }
 
-        public async Task ChangeFollow()
-        {
-            UriType type = Followed ? UriType.PostDyhUnfollow : UriType.PostDyhFollow;
-
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, ID), null, true);
-            if (!isSucceed) { return; }
-
-            Followed = !Followed;
-            if (result.ToInt32Safe() is int follownum && follownum >= 0)
-            {
-                ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
-                FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
-            }
-        }
+        public Task ChangeFollow() => FeedActionsService.ChangeDyhFollowAsync(this);
 
         public override string ToString() => $"{Title} - {Description}";
     }

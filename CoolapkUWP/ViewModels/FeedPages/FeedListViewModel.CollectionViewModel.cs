@@ -90,7 +90,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
                 if (token != null)
                 {
-                    detail = new CollectionDetail(token);
+                    detail = CollectionDetail.FromJson(token);
                 }
 
                 return detail;

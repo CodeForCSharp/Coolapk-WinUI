@@ -71,7 +71,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
                 if (token != null)
                 {
-                    detail = new DyhDetail(token);
+                    detail = DyhDetail.FromJson(token);
                 }
 
                 return detail;

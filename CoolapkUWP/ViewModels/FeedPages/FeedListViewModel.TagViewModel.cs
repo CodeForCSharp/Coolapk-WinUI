@@ -85,7 +85,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
                 if (token != null)
                 {
-                    detail = new TopicDetail(token);
+                    detail = TopicDetail.FromJson(token);
                 }
 
                 return detail;

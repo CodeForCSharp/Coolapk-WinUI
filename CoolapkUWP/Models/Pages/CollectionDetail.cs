@@ -1,13 +1,11 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
@@ -47,79 +45,54 @@ namespace CoolapkUWP.Models.Pages
         public ImageModel Cover { get; private set; }
         public ImageModel UserAvatar { get; private set; }
 
-        public CollectionDetail(JsonObject token) : base(token)
+        internal CollectionDetail(CollectionDetailDto dto)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            ID = dto.Id.ToInt32Safe();
+            Followed = dto.UserAction?.Follow.ToInt32Safe() == 1;
+            Liked = dto.UserAction?.Like.ToInt32Safe() == 1;
+
+            ItemNum = dto.ItemNum.ToInt32Safe();
+            LikeNum = dto.LikeNum.ToInt32Safe();
+
+            Url = dto.Url;
+            Title = dto.Title;
+            UserName = dto.Username;
+            Description = dto.Description;
+
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            if (dto.FollowNum != null)
             {
-                ID = id.ToInt32Safe();
+                FollowNum = $"{dto.FollowNum}{loader.GetString("SubscribeNum")}";
             }
 
-            if (token.TryGetPropertyValue("userAction", out JsonNode userAction))
+            if (dto.Lastupdate != null)
             {
-                if (userAction.AsObject().TryGetPropertyValue("follow", out JsonNode follow))
-                {
-                    Followed = follow.ToInt32Safe() == 1;
-                }
-
-                if (userAction.AsObject().TryGetPropertyValue("like", out JsonNode like))
-                {
-                    Liked = like.ToInt32Safe() == 1;
-                }
+                LastUpdate = $"{dto.Lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
             }
 
-            if (token.TryGetPropertyValue("item_num", out JsonNode item_num))
+            if (dto.CoverPic != null)
             {
-                ItemNum = item_num.ToInt32Safe();
+                Cover = new ImageModel(dto.CoverPic, ImageType.OriginImage);
             }
 
-            if (token.TryGetPropertyValue("like_num", out JsonNode like_num))
+            if (dto.UserAvatar != null)
             {
-                LikeNum = like_num.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("url", out JsonNode url))
-            {
-                Url = url.ToString();
-            }
-
-            if (token.TryGetPropertyValue("title", out JsonNode title))
-            {
-                Title = title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("username", out JsonNode username))
-            {
-                UserName = username.ToString();
-            }
-
-            if (token.TryGetPropertyValue("follow_num", out JsonNode follownum))
-            {
-                FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
-            }
-
-            if (token.TryGetPropertyValue("lastupdate", out JsonNode lastupdate))
-            {
-                LastUpdate = $"{lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
-            }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description))
-            {
-                Description = description.ToString();
-            }
-
-            if (token.TryGetPropertyValue("cover_pic", out JsonNode cover_pic))
-            {
-                Cover = new ImageModel(cover_pic.ToString(), ImageType.OriginImage);
-            }
-
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
-            {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
             OnFollowChanged();
+        }
+
+        public static CollectionDetail FromJson(JsonObject json)
+            => new CollectionDetail(JsonSerializer.Deserialize<CollectionDetailDto>(json, DtoJson.Options));
+
+        internal void SetFollowNum(int num)
+        {
+            ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
+            FollowNum = $"{num}{loader.GetString("SubscribeNum")}";
         }
 
         private void OnFollowChanged()
@@ -129,41 +102,8 @@ namespace CoolapkUWP.Models.Pages
             FollowGlyph = Followed ? "\uE8FB" : "\uE710";
         }
 
-        public async Task ChangeLike()
-        {
-            UriType type = Liked ? UriType.PostCollectionUnlike : UriType.PostCollectionLike;
+        public Task ChangeLike() => FeedActionsService.ChangeCollectionLikeAsync(this);
 
-            using (MultipartFormDataContent content = new MultipartFormDataContent())
-            using (StringContent id = new StringContent(ID.ToString()))
-            {
-                content.Add(id, "id");
-                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
-                if (!isSucceed) { return; }
-                Liked = !Liked;
-                if (result.ToInt32Safe() is int follownum && follownum >= 0)
-                {
-                    LikeNum = follownum;
-                }
-            }
-        }
-
-        public async Task ChangeFollow()
-        {
-            UriType type = Followed ? UriType.PostCollectionUnfollow : UriType.PostCollectionFollow;
-
-            using (MultipartFormDataContent content = new MultipartFormDataContent())
-            using (StringContent id = new StringContent(ID.ToString()))
-            {
-                content.Add(id, "id");
-                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
-                if (!isSucceed) { return; }
-                Followed = !Followed;
-                if (result.ToInt32Safe() is int follownum && follownum >= 0)
-                {
-                    ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
-                    FollowNum = $"{follownum}{loader.GetString("SubscribeNum")}";
-                }
-            }
-        }
+        public Task ChangeFollow() => FeedActionsService.ChangeCollectionFollowAsync(this);
     }
 }

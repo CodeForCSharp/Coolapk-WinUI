@@ -1,13 +1,11 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
@@ -56,123 +54,73 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/u/{UID}";
 
-        internal UserDetail(JsonObject token) : base(token)
+        internal UserDetail(UserDetailDto dto)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            UID = dto.Uid.ToInt32Safe();
+            FeedNum = dto.Feed.ToInt32Safe();
+            LikeNum = dto.BeLikeNum.ToInt32Safe();
+            FansNum = dto.Fans.ToInt32Safe();
+            LevelNum = dto.Level.ToInt32Safe();
+            FollowNum = dto.Follow.ToInt32Safe();
+
+            IsFans = dto.IsFans.ToInt32Safe() != 0;
+            IsBlackList = dto.IsBlackList.ToInt32Safe() == 1;
+            Followed = dto.IsFollow.ToInt32Safe() != 0;
+
+            Bio = dto.Bio;
+
+            if (dto.Province != null && dto.City != null)
+            {
+                City = dto.Province == dto.City ? dto.City : $"{dto.Province} {dto.City}";
+            }
+
+            Astro = dto.Astro;
+
+            int gender = dto.Gender.ToInt32Safe();
+            Gender = gender == 1 ? "♂"
+                    : gender == 0 ? "♀"
+                    : string.Empty;
+
+            UserName = dto.DisplayUsername;
+
+            if (dto.Logintime != null)
+            {
+                LoginTime = $"{dto.Logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
+            }
+
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("uid", out JsonNode uid))
+            if (dto.BlockStatus != null)
             {
-                UID = uid.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("feed", out JsonNode feed))
-            {
-                FeedNum = feed.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("be_like_num", out JsonNode be_like_num))
-            {
-                LikeNum = be_like_num.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("fans", out JsonNode fans))
-            {
-                FansNum = fans.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("level", out JsonNode level))
-            {
-                LevelNum = level.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("follow", out JsonNode follow))
-            {
-                FollowNum = follow.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("isFans", out JsonNode isFans))
-            {
-                IsFans = isFans.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("isBlackList", out JsonNode isBlackList))
-            {
-                IsBlackList = isBlackList.ToInt32Safe() == 1;
-            }
-
-            if (token.TryGetPropertyValue("isFollow", out JsonNode isFollow))
-            {
-                Followed = isFollow.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("bio", out JsonNode bio))
-            {
-                Bio = bio.ToString();
-            }
-
-            if (token.TryGetPropertyValue("province", out JsonNode province) && token.TryGetPropertyValue("city", out JsonNode city))
-            {
-                City = province.ToString() == city.ToString() ? city.ToString() : $"{province} {city}";
-            }
-
-            if (token.TryGetPropertyValue("astro", out JsonNode astro))
-            {
-                Astro = astro.ToString();
-            }
-
-            if (token.TryGetPropertyValue("gender", out JsonNode gender))
-            {
-                Gender = gender.ToInt32Safe() == 1 ? "♂"
-                    : gender.ToInt32Safe() == 0 ? "♀"
-                    : string.Empty;
-            }
-
-            if (token.TryGetPropertyValue("displayUsername", out JsonNode displayUsername))
-            {
-                UserName = displayUsername.ToString();
-            }
-
-            if (token.TryGetPropertyValue("logintime", out JsonNode logintime))
-            {
-                LoginTime = $"{logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
-            }
-
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
-            {
-                BlockStatus = block_status.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                    : block_status.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : "\0\0";
+                int blockStatus = dto.BlockStatus.ToInt32Safe();
+                BlockStatus = blockStatus == -1 ? loader.GetString("BlockStatus-1")
+                    : blockStatus == 2 ? loader.GetString("BlockStatus2") : "\0\0";
                 BlockStatus = BlockStatus.Substring(1, BlockStatus.Length - 2);
             }
 
-            if (token.TryGetPropertyValue("verify_title", out JsonNode verify_title))
-            {
-                VerifyTitle = verify_title.ToString();
-            }
+            VerifyTitle = dto.VerifyTitle;
 
-            if (token.TryGetPropertyValue("next_level_experience", out JsonNode next_level_experience))
-            {
-                NextLevelExperience = next_level_experience.ToDoubleSafe();
-            }
-
-            if (token.TryGetPropertyValue("next_level_percentage", out JsonNode next_level_percentage))
-            {
-                NextLevelPercentage = next_level_percentage.ToDoubleSafe();
-            }
-
+            NextLevelExperience = dto.NextLevelExperience.ToDoubleSafe();
+            NextLevelPercentage = dto.NextLevelPercentage.ToDoubleSafe();
             NextLevelNowExperience = $"{NextLevelPercentage / 100 * NextLevelExperience:F0}/{NextLevelExperience}";
 
-            if (token.TryGetPropertyValue("cover", out JsonNode cover))
+            if (dto.Cover != null)
             {
-                Cover = new ImageModel(cover.ToString(), ImageType.OriginImage);
+                Cover = new ImageModel(dto.Cover, ImageType.OriginImage);
             }
 
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
+            if (dto.UserAvatar != null)
             {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
             OnFollowChanged();
         }
+
+        public static UserDetail FromJson(JsonObject json)
+            => new UserDetail(JsonSerializer.Deserialize<UserDetailDto>(json, DtoJson.Options));
 
         private void OnFollowChanged()
         {
@@ -188,15 +136,7 @@ namespace CoolapkUWP.Models.Pages
             }
         }
 
-        public async Task ChangeFollow()
-        {
-            UriType type = Followed ? UriType.PostUserUnfollow : UriType.PostUserFollow;
-
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, UID), null, true);
-            if (!isSucceed) { return; }
-
-            Followed = !Followed;
-        }
+        public Task ChangeFollow() => FeedActionsService.ChangeUserFollowAsync(this);
 
         public override string ToString() => $"{UserName} - {Bio}";
     }
