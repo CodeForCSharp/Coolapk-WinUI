@@ -36,12 +36,12 @@ namespace CoolapkUWP.Models.Feeds
             ID = dto.Id.ToInt32Safe();
 
             UserInfo = dto.UserInfo is JsonObject userInfo
-                ? new UserModel(userInfo)
-                : new UserModel(null);
+                ? UserModel.FromJson(userInfo)
+                : UserModel.FromJson(null);
 
             UserAction = dto.UserAction is JsonObject userAction
-                ? new UserAction(userAction)
-                : new UserAction(null);
+                ? UserAction.FromJson(userAction)
+                : UserAction.FromJson(null);
 
             IsFeedAuthor = dto.IsFeedAuthor.ToInt32Safe() == 1;
 

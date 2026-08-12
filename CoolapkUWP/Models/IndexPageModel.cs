@@ -1,11 +1,9 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
-using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
-using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
-using System.Collections.Generic;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
@@ -19,132 +17,126 @@ namespace CoolapkUWP.Models
         public string EntityTemplate { get; private set; }
         public ImageModel Pic { get; private set; }
 
-        public IndexPageModel(JsonObject token) : base(token)
+        public IndexPageModel(IndexPageDto dto)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate))
+            EntityTemplate = dto.EntityTemplate;
+            Title = dto.Title;
+
+            if (!string.IsNullOrEmpty(dto.SubTitle))
             {
-                EntityTemplate = entityTemplate.ToString();
+                SubTitle = dto.SubTitle;
+            }
+            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
+            {
+                SubTitle = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
+            }
+            else if (!string.IsNullOrEmpty(dto.LinkTag))
+            {
+                SubTitle = dto.LinkTag;
+            }
+            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
+            {
+                SubTitle = dto.ApkTypeName;
+            }
+            else if (!string.IsNullOrEmpty(dto.TypeName))
+            {
+                SubTitle = dto.TypeName;
+            }
+            else if (!string.IsNullOrEmpty(dto.Keywords))
+            {
+                SubTitle = dto.Keywords;
+            }
+            else if (!string.IsNullOrEmpty(dto.CatName))
+            {
+                SubTitle = dto.CatName;
+            }
+            else if (!string.IsNullOrEmpty(dto.RssType))
+            {
+                SubTitle = dto.RssType;
+            }
+            else if (!string.IsNullOrEmpty(dto.ProductNum))
+            {
+                SubTitle = $"{dto.ProductNum}{loader.GetString("ProductNum")}";
+            }
+            else if (!string.IsNullOrEmpty(dto.Description))
+            {
+                SubTitle = dto.Description;
             }
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            if (!string.IsNullOrEmpty(dto.VideoPlaybackUrl))
             {
-                Title = title.ToString();
+                Url = dto.VideoPlaybackUrl;
+            }
+            else if (!string.IsNullOrEmpty(dto.Url))
+            {
+                Url = dto.Url;
             }
 
-            if (token.TryGetPropertyValue("subTitle", out JsonNode subTitle) && !string.IsNullOrEmpty(subTitle.ToString()))
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                SubTitle = subTitle.ToString();
+                Description = dto.Description;
             }
-            else if (token.TryGetPropertyValue("subtitle", out JsonNode subtitle) && !string.IsNullOrEmpty(subtitle.ToString()))
+            else if (!string.IsNullOrEmpty(dto.ReleaseTime))
             {
-                SubTitle = subtitle.ToString();
+                Description = $"{loader.GetString("ReleaseTime")}{dto.ReleaseTime}";
             }
-            else if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_txt) && !string.IsNullOrEmpty(hot_num_txt.ToString()))
+            else if (!string.IsNullOrEmpty(dto.LinkTag))
             {
-                SubTitle = $"{hot_num_txt}{loader.GetString("HotNum")}";
+                Description = dto.LinkTag;
             }
-            else if (token.TryGetPropertyValue("link_tag", out JsonNode link_tag) && !string.IsNullOrEmpty(link_tag.ToString()))
+            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
             {
-                SubTitle = link_tag.ToString();
+                Description = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
             }
-            else if (token.TryGetPropertyValue("apkTypeName", out JsonNode apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
+            else if (!string.IsNullOrEmpty(dto.Keywords))
             {
-                SubTitle = apkTypeName.ToString();
+                Description = dto.Keywords;
             }
-            else if (token.TryGetPropertyValue("typeName", out JsonNode typeName) && !string.IsNullOrEmpty(typeName.ToString()))
+            else if (!string.IsNullOrEmpty(dto.CatName))
             {
-                SubTitle = typeName.ToString();
+                Description = dto.CatName;
             }
-            else if (token.TryGetPropertyValue("keywords", out JsonNode keywords) && !string.IsNullOrEmpty(keywords.ToString()))
+            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
             {
-                SubTitle = keywords.ToString();
+                Description = dto.ApkTypeName;
             }
-            else if (token.TryGetPropertyValue("catName", out JsonNode catName) && !string.IsNullOrEmpty(catName.ToString()))
+            else if (!string.IsNullOrEmpty(dto.TypeName))
             {
-                SubTitle = catName.ToString();
+                Description = dto.TypeName;
             }
-            else if (token.TryGetPropertyValue("rss_type", out JsonNode rss_type) && !string.IsNullOrEmpty(rss_type.ToString()))
+            else if (!string.IsNullOrEmpty(dto.RssType))
             {
-                SubTitle = rss_type.ToString();
+                Description = dto.RssType;
             }
-            else if (token.TryGetPropertyValue("product_num", out JsonNode product_num) && !string.IsNullOrEmpty(product_num.ToString()))
+            else if (!string.IsNullOrEmpty(dto.SubTitle))
             {
-                SubTitle = $"{product_num}{loader.GetString("ProductNum")}";
-            }
-            else if (token.TryGetPropertyValue("description", out JsonNode description))
-            {
-                SubTitle = description.ToString();
+                Description = dto.SubTitle;
             }
 
-            if (token.TryGetPropertyValue("video_playback_url", out JsonNode video_playback_url) && !string.IsNullOrEmpty(video_playback_url.ToString()))
+            if (!string.IsNullOrEmpty(dto.CoverPic))
             {
-                Url = video_playback_url.ToString();
+                Pic = new ImageModel(dto.CoverPic, ImageType.OriginImage);
             }
-            else if (token.TryGetPropertyValue("url", out JsonNode url))
+            else if (!string.IsNullOrEmpty(dto.Pic))
             {
-                Url = url.ToString();
+                Pic = new ImageModel(dto.Pic, ImageType.OriginImage);
             }
-
-            if (token.TryGetPropertyValue("description", out JsonNode v1) && !string.IsNullOrEmpty(v1.ToString()))
+            else if (!string.IsNullOrEmpty(dto.Logo))
             {
-                Description = v1.ToString();
+                Pic = new ImageModel(dto.Logo, ImageType.Icon);
             }
-            else if (token.TryGetPropertyValue("release_time", out JsonNode release_time) && !string.IsNullOrEmpty(release_time.ToString()))
+            else if (!string.IsNullOrEmpty(dto.PicUrl))
             {
-                Description = $"{loader.GetString("ReleaseTime")}{release_time}";
-            }
-            else if (token.TryGetPropertyValue("link_tag", out JsonNode link_tag) && !string.IsNullOrEmpty(link_tag.ToString()))
-            {
-                Description = link_tag.ToString();
-            }
-            else if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_txt) && !string.IsNullOrEmpty(hot_num_txt.ToString()))
-            {
-                Description = $"{hot_num_txt}{loader.GetString("HotNum")}";
-            }
-            else if (token.TryGetPropertyValue("keywords", out JsonNode keywords) && !string.IsNullOrEmpty(keywords.ToString()))
-            {
-                Description = keywords.ToString();
-            }
-            else if (token.TryGetPropertyValue("catName", out JsonNode catName) && !string.IsNullOrEmpty(catName.ToString()))
-            {
-                Description = catName.ToString();
-            }
-            else if (token.TryGetPropertyValue("apkTypeName", out JsonNode apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
-            {
-                Description = apkTypeName.ToString();
-            }
-            else if (token.TryGetPropertyValue("typeName", out JsonNode typeName) && !string.IsNullOrEmpty(typeName.ToString()))
-            {
-                Description = typeName.ToString();
-            }
-            else if (token.TryGetPropertyValue("rss_type", out JsonNode rss_type) && !string.IsNullOrEmpty(rss_type.ToString()))
-            {
-                Description = rss_type.ToString();
-            }
-            else if (token.TryGetPropertyValue("subTitle", out JsonNode v2))
-            {
-                Description = v2.ToString();
-            }
-
-            if (token.TryGetPropertyValue("cover_pic", out JsonNode cover_pic) && !string.IsNullOrEmpty(cover_pic.ToString()))
-            {
-                Pic = new ImageModel(cover_pic.ToString(), ImageType.OriginImage);
-            }
-            else if (token.TryGetPropertyValue("pic", out JsonNode pic) && !string.IsNullOrEmpty(pic.ToString()))
-            {
-                Pic = new ImageModel(pic.ToString(), ImageType.OriginImage);
-            }
-            else if (token.TryGetPropertyValue("logo", out JsonNode logo) && !string.IsNullOrEmpty(logo.ToString()))
-            {
-                Pic = new ImageModel(logo.ToString(), ImageType.Icon);
-            }
-            else if (token.TryGetPropertyValue("pic_url", out JsonNode pic_url))
-            {
-                Pic = new ImageModel(pic_url.ToString(), ImageType.Icon);
+                Pic = new ImageModel(dto.PicUrl, ImageType.Icon);
             }
         }
+
+        public static IndexPageModel FromJson(JsonObject json)
+            => new IndexPageModel(JsonSerializer.Deserialize<IndexPageDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

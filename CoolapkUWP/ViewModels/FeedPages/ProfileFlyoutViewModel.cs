@@ -102,10 +102,10 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             case "feedScrollCard":
                             case "imageTextScrollCard":
                             case "iconMiniLinkGridCard":
-                            case "iconMiniGridCard": return new IndexPageHasEntitiesModel(json, EntityType.Others);
+                            case "iconMiniGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Others);
                             case "iconListCard":
-                            case "textLinkListCard": return new IndexPageHasEntitiesModel(json, EntityType.TextLinks);
-                            case "titleCard": return new IndexPageOperationCardModel(json, OperationType.ShowTitle);
+                            case "textLinkListCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TextLinks);
+                            case "titleCard": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
                             default: return null;
                         }
                     }

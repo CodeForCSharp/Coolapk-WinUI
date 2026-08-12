@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
@@ -16,71 +19,76 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Logo;
 
-        public TopicModel(JsonObject token) : base(token)
+        public TopicModel(TopicDto dto)
         {
-            if (token.TryGetPropertyValue("url", out JsonNode url) && !string.IsNullOrEmpty(url.ToString()))
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            if (!string.IsNullOrEmpty(dto.Url))
             {
-                Url = url.ToString();
+                Url = dto.Url;
             }
 
-            if (token.TryGetPropertyValue("title", out JsonNode title) && !string.IsNullOrEmpty(title.ToString()))
+            if (!string.IsNullOrEmpty(dto.Title))
             {
-                Title = title.ToString();
+                Title = dto.Title;
             }
 
-            if (token.TryGetPropertyValue("follownum", out JsonNode follownum) && !string.IsNullOrEmpty(follownum.ToString()))
+            if (!string.IsNullOrEmpty(dto.Follownum))
             {
-                FollowNum = follownum.ToString();
+                FollowNum = dto.Follownum;
             }
-            else if (token.TryGetPropertyValue("follow_num", out JsonNode follow_num) && !string.IsNullOrEmpty(follow_num.ToString()))
+            else if (!string.IsNullOrEmpty(dto.FollowNum))
             {
-                FollowNum = follow_num.ToString();
-            }
-
-            if (token.TryGetPropertyValue("logo", out JsonNode logo) && !string.IsNullOrEmpty(logo.ToString()))
-            {
-                Logo = new ImageModel(logo.ToString(), ImageType.Icon);
+                FollowNum = dto.FollowNum;
             }
 
-            if (token.TryGetPropertyValue("newsnum", out JsonNode newsnum) && !string.IsNullOrEmpty(newsnum.ToString()))
+            if (!string.IsNullOrEmpty(dto.Logo))
             {
-                CommentNum = newsnum.ToString();
-            }
-            else if (token.TryGetPropertyValue("commentnum", out JsonNode commentnum) && !string.IsNullOrEmpty(commentnum.ToString()))
-            {
-                CommentNum = commentnum.ToString();
-            }
-            else if (token.TryGetPropertyValue("rating_total_num", out JsonNode rating_total_num) && !string.IsNullOrEmpty(rating_total_num.ToString()))
-            {
-                CommentNum = rating_total_num.ToString();
+                Logo = new ImageModel(dto.Logo, ImageType.Icon);
             }
 
-            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
+            if (!string.IsNullOrEmpty(dto.Newsnum))
             {
-                Description = description.ToString();
+                CommentNum = dto.Newsnum;
             }
-            else if (token.TryGetPropertyValue("newtitle", out JsonNode newtitle) && !string.IsNullOrEmpty(newtitle.ToString()))
+            else if (!string.IsNullOrEmpty(dto.Commentnum))
             {
-                Description = newtitle.ToString();
+                CommentNum = dto.Commentnum;
             }
-            else if (token.TryGetPropertyValue("username", out JsonNode username) && !string.IsNullOrEmpty(username.ToString()))
+            else if (!string.IsNullOrEmpty(dto.RatingTotalNum))
             {
-                Description = "作者" + username.ToString();
-            }
-            else if (token.TryGetPropertyValue("rss_type", out JsonNode rss_type) && !string.IsNullOrEmpty(rss_type.ToString()))
-            {
-                Description = rss_type.ToString();
-            }
-            else if (token.TryGetPropertyValue("hot_num", out JsonNode hot_num) && !string.IsNullOrEmpty(hot_num.ToString()))
-            {
-                Description = DataHelper.GetNumString(double.Parse(hot_num.ToString())) + "热度";
+                CommentNum = dto.RatingTotalNum;
             }
 
-            if (token.TryGetPropertyValue("lastupdate", out JsonNode lastupdate) && !string.IsNullOrEmpty(lastupdate.ToString()))
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                LastUpdate = lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                Description = dto.Description;
+            }
+            else if (!string.IsNullOrEmpty(dto.Newtitle))
+            {
+                Description = dto.Newtitle;
+            }
+            else if (!string.IsNullOrEmpty(dto.Username))
+            {
+                Description = "作者" + dto.Username;
+            }
+            else if (!string.IsNullOrEmpty(dto.RssType))
+            {
+                Description = dto.RssType;
+            }
+            else if (!string.IsNullOrEmpty(dto.HotNum))
+            {
+                Description = DataHelper.GetNumString(dto.HotNum.ToDoubleSafe()) + "热度";
+            }
+
+            if (!string.IsNullOrEmpty(dto.Lastupdate))
+            {
+                LastUpdate = dto.Lastupdate.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
         }
+
+        public static TopicModel FromJson(JsonObject json)
+            => new TopicModel(JsonSerializer.Deserialize<TopicDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

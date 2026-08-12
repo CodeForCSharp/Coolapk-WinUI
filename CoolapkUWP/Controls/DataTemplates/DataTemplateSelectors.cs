@@ -218,11 +218,11 @@ namespace CoolapkUWP.Controls.DataTemplates
             {
                 case "feed":
                 case "discovery": return FeedModel.FromJson(json, isHotFeedPage ? FeedDisplayMode.IsFirstPageFeed : FeedDisplayMode.Normal);
-                case "user": return new UserModel(json);
-                case "topic": return new TopicModel(json);
-                case "history": return new HistoryModel(json);
-                case "collection": return new CollectionModel(json);
-                case "entity_type_user_card_manager": return new IndexPageOperationCardModel(json, OperationType.ShowTitle);
+                case "user": return UserModel.FromJson(json);
+                case "topic": return TopicModel.FromJson(json);
+                case "history": return HistoryModel.FromJson(json);
+                case "collection": return CollectionModel.FromJson(json);
+                case "entity_type_user_card_manager": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
                 default:
                     if (json.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && !string.IsNullOrEmpty(entityTemplate.ToString()))
                     {
@@ -244,31 +244,31 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "apkScrollCard":
                             //case "iconListCard":
                             //case "listCard":
-                            case "gridCard": return new IndexPageHasEntitiesModel(json, EntityType.Others);
+                            case "gridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Others);
                             case "iconMiniLinkGridCard":
-                            case "iconMiniGridCard": return new IndexPageHasEntitiesModel(json, EntityType.GridLink);
-                            //case "listCard": //return new IndexPageHasEntitiesModel(jo, EntityType.Others);
+                            case "iconMiniGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.GridLink);
+                            //case "listCard": //return IndexPageHasEntitiesModel.FromJson(jo, EntityType.Others);
                             case "headCard":
                             case "imageCarouselCard_1": //return new IndexPageHasEntitiesViewModel(jo, EntitiesType.Image_1);
-                            case "imageCard": return new IndexPageHasEntitiesModel(json, EntityType.Image);
+                            case "imageCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Image);
                             //case "apkImageCard":
                             case "configCard":
                                 return json.TryGetPropertyValue("url", out JsonNode url) && url.ToString().Length >= 5
-                                    ? new IndexPageHasEntitiesModel(json, EntityType.IconLink)
+                                    ? IndexPageHasEntitiesModel.FromJson(json, EntityType.IconLink)
                                     : null;
-                            case "iconLinkGridCard": return new IndexPageHasEntitiesModel(json, EntityType.IconLink);
+                            case "iconLinkGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.IconLink);
                             case "feedGroupListCard":
                             case "feedListCard":
                             case "imageTextGridCard":
                             case "apkListCard":
-                            case "textLinkListCard": return new IndexPageHasEntitiesModel(json, EntityType.TextLinks);
+                            case "textLinkListCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TextLinks);
                             case "textCard":
-                            case "messageCard": return new IndexPageMessageCardModel(json);
-                            case "refreshCard": return new IndexPageOperationCardModel(json, OperationType.Refresh);
-                            case "unLoginCard": return new IndexPageOperationCardModel(json, OperationType.Login);
-                            case "titleCard": return new IndexPageOperationCardModel(json, OperationType.ShowTitle);
-                            case "iconTabLinkGridCard": return new IndexPageHasEntitiesModel(json, EntityType.TabLink);
-                            case "selectorLinkCard": return new IndexPageHasEntitiesModel(json, EntityType.SelectorLink);
+                            case "messageCard": return IndexPageMessageCardModel.FromJson(json);
+                            case "refreshCard": return IndexPageOperationCardModel.FromJson(json, OperationType.Refresh);
+                            case "unLoginCard": return IndexPageOperationCardModel.FromJson(json, OperationType.Login);
+                            case "titleCard": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
+                            case "iconTabLinkGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TabLink);
+                            case "selectorLinkCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.SelectorLink);
                             default: return null;
                         }
                     }

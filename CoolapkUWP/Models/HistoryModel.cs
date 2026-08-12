@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
@@ -11,36 +14,34 @@ namespace CoolapkUWP.Models
         public ImageModel Pic { get; private set; }
         public string Description { get; private set; }
 
-        public HistoryModel(JsonObject token) : base(token)
+        public HistoryModel(HistoryDto dto)
         {
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            Title = dto.Title;
+            Url = dto.Url;
+
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                Title = title.ToString();
+                Description = dto.Description;
+            }
+            else if (!string.IsNullOrEmpty(dto.TargetTypeTitle))
+            {
+                Description = dto.TargetTypeTitle;
+            }
+            else if (dto.Dateline != null)
+            {
+                Description = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            if (dto.Logo != null)
             {
-                Url = url.ToString();
-            }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description))
-            {
-                Description = description.ToString();
-            }
-            else if (token.TryGetPropertyValue("target_type_title", out JsonNode target_type_title) && !string.IsNullOrEmpty(target_type_title.ToString()))
-            {
-                Description = target_type_title.ToString();
-            }
-            else if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
-            {
-                Description = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
-            }
-
-            if (token.TryGetPropertyValue("logo", out JsonNode logo))
-            {
-                Pic = new ImageModel(logo.ToString(), ImageType.Icon);
+                Pic = new ImageModel(dto.Logo, ImageType.Icon);
             }
         }
+
+        public static HistoryModel FromJson(JsonObject json)
+            => new HistoryModel(JsonSerializer.Deserialize<HistoryDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

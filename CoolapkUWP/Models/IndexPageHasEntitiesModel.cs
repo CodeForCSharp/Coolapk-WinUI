@@ -1,12 +1,14 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
 {
@@ -23,66 +25,57 @@ namespace CoolapkUWP.Models
         public EntityType EntitiesType { get; private set; }
         public List<Entity> Entities { get; private set; } = new List<Entity>();
 
-        public IndexPageHasEntitiesModel(JsonObject token, EntityType type) : base(token)
+        public IndexPageHasEntitiesModel(IndexPageHasEntitiesDto dto, EntityType type)
         {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
             EntitiesType = type;
+            Title = dto.Title;
+            Url = dto.Url;
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                Title = title.ToString();
+                Description = dto.Description;
             }
-
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            else if (!string.IsNullOrEmpty(dto.ReleaseTime))
             {
-                Url = url.ToString();
+                Description = "发布日期：" + dto.ReleaseTime;
             }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
+            else if (!string.IsNullOrEmpty(dto.LinkTag))
             {
-                Description = description.ToString();
+                Description = dto.LinkTag;
             }
-            else if (token.TryGetPropertyValue("release_time", out JsonNode release_time) && !string.IsNullOrEmpty(release_time.ToString()))
+            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
             {
-                Description = "发布日期：" + release_time.ToString();
+                Description = dto.HotNumTxt + "热度";
             }
-            else if (token.TryGetPropertyValue("link_tag", out JsonNode link_tag) && !string.IsNullOrEmpty(link_tag.ToString()))
+            else if (!string.IsNullOrEmpty(dto.Keywords))
             {
-                Description = link_tag.ToString();
+                Description = dto.Keywords;
             }
-            else if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_txt) && !string.IsNullOrEmpty(hot_num_txt.ToString()))
+            else if (!string.IsNullOrEmpty(dto.CatName))
             {
-                Description = hot_num_txt.ToString() + "热度";
+                Description = dto.CatName;
             }
-            else if (token.TryGetPropertyValue("keywords", out JsonNode keywords) && !string.IsNullOrEmpty(keywords.ToString()))
+            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
             {
-                Description = keywords.ToString();
+                Description = dto.ApkTypeName;
             }
-            else if (token.TryGetPropertyValue("catName", out JsonNode catName) && !string.IsNullOrEmpty(catName.ToString()))
+            else if (!string.IsNullOrEmpty(dto.RssType))
             {
-                Description = catName.ToString();
+                Description = dto.RssType;
             }
-            else if (token.TryGetPropertyValue("apkTypeName", out JsonNode apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
+            else if (!string.IsNullOrEmpty(dto.SubTitle))
             {
-                Description = apkTypeName.ToString();
-            }
-            else if (token.TryGetPropertyValue("rss_type", out JsonNode rss_type) && !string.IsNullOrEmpty(rss_type.ToString()))
-            {
-                Description = rss_type.ToString();
-            }
-            else if (token.TryGetPropertyValue("subTitle", out JsonNode subTitle))
-            {
-                Description = subTitle.ToString();
+                Description = dto.SubTitle;
             }
 
-            if (token.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate))
-            {
-                EntityTemplate = entityTemplate.ToString();
-            }
+            EntityTemplate = dto.EntityTemplate;
 
-            if (token.TryGetPropertyValue("entities", out JsonNode entities) && entities.AsArray().Count > 0)
+            if (dto.Entities != null && dto.Entities.Count > 0)
             {
                 List<Entity> builder = new List<Entity>();
-                foreach (JsonNode item in entities.AsArray())
+                foreach (JsonNode item in dto.Entities)
                 {
                     JsonObject itemObj = item.AsObject();
                     if (itemObj.TryGetPropertyValue("entityType", out JsonNode entityType))
@@ -96,15 +89,15 @@ namespace CoolapkUWP.Models
                                 break;
 
                             case "user":
-                                builder.Add(new UserModel(itemObj));
+                                builder.Add(UserModel.FromJson(itemObj));
                                 break;
 
                             case "collection":
-                                builder.Add(new CollectionModel(itemObj));
+                                builder.Add(CollectionModel.FromJson(itemObj));
                                 break;
 
                             default:
-                                builder.Add(new IndexPageModel(itemObj));
+                                builder.Add(IndexPageModel.FromJson(itemObj));
                                 break;
                         }
                     }
@@ -115,15 +108,18 @@ namespace CoolapkUWP.Models
             }
             else { ShowEntities = false; }
 
-            if (token.TryGetPropertyValue("pic", out JsonNode pic) && !string.IsNullOrEmpty(pic.ToString()))
+            if (!string.IsNullOrEmpty(dto.Pic))
             {
-                Pic = new ImageModel(pic.ToString(), ImageType.OriginImage);
+                Pic = new ImageModel(dto.Pic, ImageType.OriginImage);
                 ShowPic = true;
             }
             else { ShowPic = false; }
 
             ShowTitle = !(string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(Url));
         }
+
+        public static IndexPageHasEntitiesModel FromJson(JsonObject json, EntityType type)
+            => new IndexPageHasEntitiesModel(JsonSerializer.Deserialize<IndexPageHasEntitiesDto>(json, DtoJson.Options), type);
 
         public override string ToString() => $"{Title} - {Description}";
     }

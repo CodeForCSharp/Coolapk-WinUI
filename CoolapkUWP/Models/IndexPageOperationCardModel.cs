@@ -1,12 +1,7 @@
-using CoolapkUWP.Helpers;
-using CoolapkUWP.Models.Feeds;
-using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
-using Microsoft.Extensions.Logging;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
-using System.Collections.Generic;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
 {
@@ -17,19 +12,17 @@ namespace CoolapkUWP.Models
         public string EntityTemplate { get; private set; }
         public OperationType OperationType { get; private set; }
 
-        public IndexPageOperationCardModel(JsonObject token, OperationType type) : base(token)
+        public IndexPageOperationCardModel(IndexPageOperationCardDto dto, OperationType type)
         {
-            OperationType = type;
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
-            {
-                Title = title.ToString();
-            }
+            OperationType = type;
+            Title = dto.Title;
 
             switch (type)
             {
-                case OperationType.ShowTitle when token.TryGetPropertyValue("url", out JsonNode v3) && !string.IsNullOrEmpty(v3.ToString()):
-                    Url = v3.ToString();
+                case OperationType.ShowTitle when !string.IsNullOrEmpty(dto.Url):
+                    Url = dto.Url;
                     break;
 
                 case OperationType.Refresh:
@@ -41,6 +34,9 @@ namespace CoolapkUWP.Models
                     break;
             }
         }
+
+        public static IndexPageOperationCardModel FromJson(JsonObject json, OperationType type)
+            => new IndexPageOperationCardModel(JsonSerializer.Deserialize<IndexPageOperationCardDto>(json, DtoJson.Options), type);
 
         public override string ToString() => Title;
     }

@@ -55,12 +55,12 @@ namespace CoolapkUWP.Models.Feeds
             }
 
             UserInfo = dto.UserInfo is JsonObject userInfo
-                ? new UserModel(userInfo)
-                : new UserModel(null);
+                ? UserModel.FromJson(userInfo)
+                : UserModel.FromJson(null);
 
             UserAction = dto.UserAction is JsonObject userAction
-                ? new UserAction(userAction)
-                : new UserAction(null);
+                ? UserAction.FromJson(userAction)
+                : UserAction.FromJson(null);
 
             ShareUrl = !string.IsNullOrEmpty(dto.ShareUrl)
                 ? dto.ShareUrl

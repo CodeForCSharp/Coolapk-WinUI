@@ -7,5 +7,9 @@ namespace CoolapkUWP.Data.Dtos
     {
         public string Follow { get; set; }
         public string Like { get; set; }
+        public string Favorite { get; set; }
+        public string Collect { get; set; }
+        public string FollowAuthor { get; set; }
+        public string AuthorFollowYou { get; set; }
     }
 }

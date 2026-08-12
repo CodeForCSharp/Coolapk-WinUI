@@ -88,7 +88,7 @@ namespace CoolapkUWP.Models.Pages
             {
                 FollowUsers = dto.RecentFollowList.Select(
                     x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
-                        ? new UserModel(userInfo.AsObject()) : null)
+                        ? UserModel.FromJson(userInfo.AsObject()) : null)
                     .Where(x => x != null).ToList();
             }
 

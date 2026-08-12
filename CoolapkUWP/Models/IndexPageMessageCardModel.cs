@@ -1,12 +1,11 @@
-using CoolapkUWP.Helpers;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
-using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
 {
@@ -17,54 +16,53 @@ namespace CoolapkUWP.Models
         public string Description { get; private set; }
         public List<Entity> Entities { get; private set; } = new List<Entity>();
 
-        public IndexPageMessageCardModel(JsonObject token) : base(token)
+        public IndexPageMessageCardModel(IndexPageMessageCardDto dto)
         {
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            Title = dto.Title;
+
+            if (!string.IsNullOrEmpty(dto.Description))
             {
-                Title = title.ToString();
+                Description = dto.Description;
+            }
+            else if (!string.IsNullOrEmpty(dto.ReleaseTime))
+            {
+                Description = $"发布日期：{dto.ReleaseTime}";
+            }
+            else if (!string.IsNullOrEmpty(dto.LinkTag))
+            {
+                Description = dto.LinkTag;
+            }
+            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
+            {
+                Description = $"{dto.HotNumTxt}热度";
+            }
+            else if (!string.IsNullOrEmpty(dto.Keywords))
+            {
+                Description = dto.Keywords;
+            }
+            else if (!string.IsNullOrEmpty(dto.CatName))
+            {
+                Description = dto.CatName;
+            }
+            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
+            {
+                Description = dto.ApkTypeName;
+            }
+            else if (!string.IsNullOrEmpty(dto.RssType))
+            {
+                Description = dto.RssType;
+            }
+            else if (!string.IsNullOrEmpty(dto.SubTitle))
+            {
+                Description = dto.SubTitle;
             }
 
-            if (token.TryGetPropertyValue("description", out JsonNode description) && !string.IsNullOrEmpty(description.ToString()))
-            {
-                Description = description.ToString();
-            }
-            else if (token.TryGetPropertyValue("release_time", out JsonNode release_time) && !string.IsNullOrEmpty(release_time.ToString()))
-            {
-                Description = $"发布日期：{release_time}";
-            }
-            else if (token.TryGetPropertyValue("link_tag", out JsonNode link_tag) && !string.IsNullOrEmpty(link_tag.ToString()))
-            {
-                Description = link_tag.ToString();
-            }
-            else if (token.TryGetPropertyValue("hot_num_txt", out JsonNode hot_num_txt) && !string.IsNullOrEmpty(hot_num_txt.ToString()))
-            {
-                Description = $"{hot_num_txt}热度";
-            }
-            else if (token.TryGetPropertyValue("keywords", out JsonNode keywords) && !string.IsNullOrEmpty(keywords.ToString()))
-            {
-                Description = keywords.ToString();
-            }
-            else if (token.TryGetPropertyValue("catName", out JsonNode catName) && !string.IsNullOrEmpty(catName.ToString()))
-            {
-                Description = catName.ToString();
-            }
-            else if (token.TryGetPropertyValue("apkTypeName", out JsonNode apkTypeName) && !string.IsNullOrEmpty(apkTypeName.ToString()))
-            {
-                Description = apkTypeName.ToString();
-            }
-            else if (token.TryGetPropertyValue("rss_type", out JsonNode rss_type) && !string.IsNullOrEmpty(rss_type.ToString()))
-            {
-                Description = rss_type.ToString();
-            }
-            else if (token.TryGetPropertyValue("subTitle", out JsonNode subTitle))
-            {
-                Description = subTitle.ToString();
-            }
-
-            if (token.TryGetPropertyValue("entities", out JsonNode entities) && entities.AsArray().Count > 0)
+            if (dto.Entities != null && dto.Entities.Count > 0)
             {
                 List<Entity> builder = new List<Entity>();
-                foreach (JsonNode item in entities.AsArray())
+                foreach (JsonNode item in dto.Entities)
                 {
                     JsonObject itemObj = item.AsObject();
                     if (itemObj.TryGetPropertyValue("entityType", out JsonNode entityType))
@@ -76,15 +74,15 @@ namespace CoolapkUWP.Models
                                 break;
 
                             case "user":
-                                builder.Add(new UserModel(itemObj));
+                                builder.Add(UserModel.FromJson(itemObj));
                                 break;
 
                             case "collection":
-                                builder.Add(new CollectionModel(itemObj));
+                                builder.Add(CollectionModel.FromJson(itemObj));
                                 break;
 
                             default:
-                                builder.Add(new IndexPageModel(itemObj));
+                                builder.Add(IndexPageModel.FromJson(itemObj));
                                 break;
                         }
                     }
@@ -94,6 +92,9 @@ namespace CoolapkUWP.Models
             }
             else { ShowEntities = false; }
         }
+
+        public static IndexPageMessageCardModel FromJson(JsonObject json)
+            => new IndexPageMessageCardModel(JsonSerializer.Deserialize<IndexPageMessageCardDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

@@ -35,7 +35,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject json)
         {
-            yield return new UserModel(json);
+            yield return UserModel.FromJson(json);
         }
     }
 

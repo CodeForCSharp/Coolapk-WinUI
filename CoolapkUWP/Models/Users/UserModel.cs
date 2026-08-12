@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Windows.ApplicationModel.Resources;
 
@@ -36,79 +39,57 @@ namespace CoolapkUWP.Models.Users
 
         public ImageModel Pic => UserAvatar;
 
-        public UserModel(JsonObject token) : base(token)
+        public UserModel(UserDto dto)
         {
-            if (token == null) { return; }
+            if (dto == null) { return; }
+
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+
+            UID = dto.Uid.ToInt32Safe();
+            Bio = dto.Bio;
 
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("uid", out JsonNode uid))
+            if (dto.Fans != null)
             {
-                UID = uid.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("bio", out JsonNode bio))
-            {
-                Bio = bio.ToString();
-            }
-
-            if (token.TryGetPropertyValue("fans", out JsonNode fans))
-            {
-                fansNum = fans.ToInt32Safe();
+                fansNum = dto.Fans.ToInt32Safe();
                 FansNum = $"{fansNum}{loader.GetString("Fan")}";
             }
 
-            if (token.TryGetPropertyValue("level", out JsonNode level))
+            Level = dto.Level.ToInt32Safe();
+
+            if (dto.Cover != null)
             {
-                Level = level.ToInt32Safe();
+                Cover = new ImageModel(dto.Cover, ImageType.OriginImage);
             }
 
-            if (token.TryGetPropertyValue("cover", out JsonNode cover))
+            Status = dto.Status.ToInt32Safe();
+            RegDate = dto.Regdate.ToInt32Safe();
+            UserName = dto.Username;
+
+            if (dto.Logintime != null)
             {
-                Cover = new ImageModel(cover.ToString(), ImageType.OriginImage);
+                LoginTime = $"{dto.Logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
             }
 
-            if (token.TryGetPropertyValue("status", out JsonNode status))
+            if (dto.Follow != null)
             {
-                Status = status.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("regdate", out JsonNode regdate))
-            {
-                RegDate = regdate.ToInt32Safe();
-            }
-
-            if (token.TryGetPropertyValue("username", out JsonNode username))
-            {
-                UserName = username.ToString();
-            }
-
-            if (token.TryGetPropertyValue("logintime", out JsonNode logintime))
-            {
-                LoginTime = $"{logintime.ToInt64Safe().ConvertUnixTimeStampToReadable()}活跃";
-            }
-
-            if (token.TryGetPropertyValue("follow", out JsonNode follow))
-            {
-                followNum = follow.ToInt32Safe();
+                followNum = dto.Follow.ToInt32Safe();
                 FollowNum = $"{followNum}{loader.GetString("Follow")}";
             }
 
-            if (token.TryGetPropertyValue("experience", out JsonNode experience))
+            Experience = dto.Experience.ToInt32Safe();
+
+            if (dto.UserAvatar != null)
             {
-                Experience = experience.ToInt32Safe();
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
-            {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
-            }
-
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status))
-            {
-                BlockStatus = block_status.ToInt32Safe();
-            }
+            BlockStatus = dto.BlockStatus.ToInt32Safe();
         }
+
+        public static UserModel FromJson(JsonObject json)
+            => new UserModel(json == null ? null : JsonSerializer.Deserialize<UserDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

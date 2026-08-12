@@ -77,7 +77,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { new UserModel((isFollowList ? o["fUserInfo"] : o["userInfo"]).AsObject()) },
+                    (o) => new Entity[] { UserModel.FromJson((isFollowList ? o["fUserInfo"] : o["userInfo"]).AsObject()) },
                     "fuid"))
                 { Title = $"{name}的{(isFollowList ? "关注" : "粉丝")}" };
         }
@@ -136,7 +136,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { new HistoryModel(o) },
+                    (o) => new Entity[] { HistoryModel.FromJson(o) },
                     "uid"))
             { Title = title };
         }

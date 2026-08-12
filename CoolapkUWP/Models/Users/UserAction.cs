@@ -1,5 +1,7 @@
-using CoolapkUWP.Helpers;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Windows.ApplicationModel.Resources;
 
@@ -36,42 +38,24 @@ namespace CoolapkUWP.Models.Users
 
         partial void OnAuthorFollowYouChanged(bool value) => OnFollowChanged();
 
-        public UserAction(JsonObject token) : base(token)
+        public UserAction(UserActionDto dto)
         {
-            if (token == null) { return; }
+            if (dto == null) { return; }
 
-            if (token.TryGetPropertyValue("like", out JsonNode like))
-            {
-                Like = like.ToInt32Safe() != 0;
-            }
+            InitializeEntity(null, null, null, null);
 
-            if (token.TryGetPropertyValue("favorite", out JsonNode favorite))
-            {
-                Favorite = favorite.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("follow", out JsonNode follow))
-            {
-                Follow = follow.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("collect", out JsonNode collect))
-            {
-                Collect = collect.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("followAuthor", out JsonNode followAuthor))
-            {
-                FollowAuthor = followAuthor.ToInt32Safe() != 0;
-            }
-
-            if (token.TryGetPropertyValue("authorFollowYou", out JsonNode authorFollowYou))
-            {
-                AuthorFollowYou = authorFollowYou.ToInt32Safe() != 0;
-            }
+            Like = dto.Like.ToInt32Safe() != 0;
+            Favorite = dto.Favorite.ToInt32Safe() != 0;
+            Follow = dto.Follow.ToInt32Safe() != 0;
+            Collect = dto.Collect.ToInt32Safe() != 0;
+            FollowAuthor = dto.FollowAuthor.ToInt32Safe() != 0;
+            AuthorFollowYou = dto.AuthorFollowYou.ToInt32Safe() != 0;
 
             OnFollowChanged();
         }
+
+        public static UserAction FromJson(JsonObject json)
+            => new UserAction(json == null ? null : JsonSerializer.Deserialize<UserActionDto>(json, DtoJson.Options));
 
         private void OnFollowChanged()
         {

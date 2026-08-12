@@ -216,14 +216,14 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { new UserModel(o["fUserInfo"].AsObject()) },
+                    (o) => new Entity[] { UserModel.FromJson(o["fUserInfo"].AsObject()) },
                     "fuid");
             }
         }
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
-            yield return new UserModel(jo);
+            yield return UserModel.FromJson(jo);
         }
     }
 
@@ -263,7 +263,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
-            yield return new TopicModel(jo);
+            yield return TopicModel.FromJson(jo);
         }
     }
 }

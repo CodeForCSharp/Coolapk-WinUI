@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
@@ -16,43 +19,25 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Cover;
 
-        public CollectionModel(JsonObject token) : base(token)
+        public CollectionModel(CollectionDto dto)
         {
-            if (token.TryGetPropertyValue("id", out JsonNode id))
-            {
-                ID = id.ToInt32Safe();
-            }
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            if (token.TryGetPropertyValue("item_num", out JsonNode item_num))
-            {
-                ItemNum = item_num.ToInt32Safe();
-            }
+            ID = dto.Id.ToInt32Safe();
+            ItemNum = dto.ItemNum.ToInt32Safe();
+            Title = dto.Title;
+            SubTitle = dto.SubTitle;
+            Url = dto.Url;
+            Description = dto.Description;
 
-            if (token.TryGetPropertyValue("title", out JsonNode title))
+            if (dto.CoverPic != null)
             {
-                Title = title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("subTitle", out JsonNode subTitle))
-            {
-                SubTitle = subTitle.ToString();
-            }
-
-            if (token.TryGetPropertyValue("url", out JsonNode url))
-            {
-                Url = url.ToString();
-            }
-
-            if (token.TryGetPropertyValue("description", out JsonNode description))
-            {
-                Description = description.ToString();
-            }
-
-            if (token.TryGetPropertyValue("cover_pic", out JsonNode cover_pic))
-            {
-                Cover = new ImageModel(cover_pic.ToString(), ImageType.OriginImage);
+                Cover = new ImageModel(dto.CoverPic, ImageType.OriginImage);
             }
         }
+
+        public static CollectionModel FromJson(JsonObject json)
+            => new CollectionModel(JsonSerializer.Deserialize<CollectionDto>(json, DtoJson.Options));
 
         public override string ToString() => $"{Title} - {Description}";
     }

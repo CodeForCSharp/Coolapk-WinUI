@@ -1,6 +1,8 @@
-using CoolapkUWP.Helpers;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
+using CoolapkUWP.Models.Users;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
 
 namespace CoolapkUWP.Models.Users
 {
@@ -10,24 +12,21 @@ namespace CoolapkUWP.Models.Users
         public bool IsFriend { get; private set; }
         public UserModel UserInfo { get; private set; }
 
-        public ContactModel(JsonObject token) : base(token)
+        public ContactModel(ContactDto dto)
         {
-            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
-            {
-                DateLine = dateline.ToInt32Safe();
-            }
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            if (token.TryGetPropertyValue("isfriend", out JsonNode isfriend))
-            {
-                IsFriend = Convert.ToBoolean(isfriend.ToInt32Safe());
-            }
+            DateLine = dto.Dateline.ToInt32Safe();
+            IsFriend = dto.Isfriend.ToInt32Safe() != 0;
 
-            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
+            if (dto.UserInfo is JsonObject userInfo)
             {
-                JsonObject userInfo = v1.AsObject();
-                UserInfo = new UserModel(userInfo);
+                UserInfo = UserModel.FromJson(userInfo);
             }
         }
+
+        public static ContactModel FromJson(JsonObject json)
+            => new ContactModel(JsonSerializer.Deserialize<ContactDto>(json, DtoJson.Options));
 
         public override string ToString() => UserInfo.ToString();
     }

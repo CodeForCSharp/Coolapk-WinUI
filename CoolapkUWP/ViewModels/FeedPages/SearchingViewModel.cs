@@ -210,7 +210,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
-            yield return new UserModel(jo);
+            yield return UserModel.FromJson(jo);
         }
     }
 
@@ -234,7 +234,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
         {
-            yield return new TopicModel(jo);
+            yield return TopicModel.FromJson(jo);
         }
     }
 }
