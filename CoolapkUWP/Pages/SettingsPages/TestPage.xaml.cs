@@ -103,6 +103,7 @@ namespace CoolapkUWP.Pages.SettingsPages
                     SettingsHelper.Set(SettingsHelper.SemaphoreSlimCount, result);
                     NetworkHelper.SetSemaphoreSlim(result);
                     ImageModel.SetSemaphoreSlim(result);
+                    ImageCache.SetDecodeSemaphore(result);
                 }
             }
         }

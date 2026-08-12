@@ -156,7 +156,7 @@ namespace CoolapkUWP.Models.Images
         [ObservableProperty]
         public partial bool IsLoading { get; private set; } = true;
 
-        public ImageModel(string uri, ImageType type) : this(uri, type, App.MainWindow.DispatcherQueue)
+        public ImageModel(string uri, ImageType type) : this(uri, type, WindowContext.DispatcherQueue)
         {
         }
 
@@ -189,11 +189,6 @@ namespace CoolapkUWP.Models.Images
                 }
             };
             ThemeHelper.UISettingChanged.Add(UISettingChanged);
-        }
-
-        ~ImageModel()
-        {
-            ThemeHelper.UISettingChanged.Remove(UISettingChanged);
         }
 
         public event TypedEventHandler<ImageModel, object> LoadStarted;
@@ -235,7 +230,7 @@ namespace CoolapkUWP.Models.Images
                         Pic = bitmapImage;
                         double PixelWidth = bitmapImage.PixelWidth;
                         double PixelHeight = bitmapImage.PixelHeight;
-                        Rect Bounds = await App.MainWindow.DispatcherQueue.AwaitableRunAsync(() => App.MainWindow.Bounds);
+                        Rect Bounds = await WindowContext.DispatcherQueue.AwaitableRunAsync(() => WindowContext.Bounds);
                         IsLongPic = PixelHeight * Bounds.Width > PixelWidth * Bounds.Height * 1.5
                                     && PixelHeight > PixelWidth * 1.5;
                         IsWidePic = PixelWidth * Bounds.Height > PixelHeight * Bounds.Width * 1.5

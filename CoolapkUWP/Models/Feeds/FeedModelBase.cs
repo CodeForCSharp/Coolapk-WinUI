@@ -314,7 +314,7 @@ namespace CoolapkUWP.Models.Feeds
                 SettingsHelper.LogManager.CreateLogger(nameof(FeedModelBase)).LogWarning(ex, ex.ExceptionToMessage());
             }
 
-            await App.MainWindow.DispatcherQueue.ResumeForegroundAsync();
+            await WindowContext.DispatcherQueue.ResumeForegroundAsync();
             if (!string.IsNullOrEmpty(expandedUrl))
             {
                 ExtraUrl = expandedUrl;
