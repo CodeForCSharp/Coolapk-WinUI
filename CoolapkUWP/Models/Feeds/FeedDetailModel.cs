@@ -35,14 +35,17 @@ namespace CoolapkUWP.Models.Feeds
             ReadNum = dto.ReadNum.ToInt32Safe();
             Title = dto.Title;
 
-            if (dto.TargetRow is JsonObject v)
+            if (dto.TargetRow != null)
             {
                 ShowDyhName = true;
 
-                DyhLogo = v.TryGetPropertyValue("logo", out JsonNode logo) ? new ImageModel(logo.ToString(), ImageType.Icon) : null;
-                DyhName = v.TryGetPropertyValue("title", out JsonNode dtitle) ? dtitle.ToString() : null;
-                DyhUrl = v.TryGetPropertyValue("url", out JsonNode url) ? url.ToString() : null;
-                DyhSubTitle = v.TryGetPropertyValue("subTitle", out JsonNode subTitle) ? subTitle.ToString() : null;
+                if (!string.IsNullOrEmpty(dto.TargetRow.Logo))
+                {
+                    DyhLogo = new ImageModel(dto.TargetRow.Logo, ImageType.Icon);
+                }
+                DyhName = dto.TargetRow.Title;
+                DyhUrl = dto.TargetRow.Url;
+                DyhSubTitle = dto.TargetRow.SubTitle;
             }
 
             if (!string.IsNullOrEmpty(dto.Ttitle) && !ShowDyhName)

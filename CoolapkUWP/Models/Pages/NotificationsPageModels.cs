@@ -48,11 +48,11 @@ namespace CoolapkUWP.Models.Pages
             }
         }
 
-        protected static string GetBlockStatus(JsonNode userInfo, ResourceLoader loader)
+        protected static string GetBlockStatus(NotificationUserInfoDto userInfo, ResourceLoader loader)
             => userInfo == null ? null
-                : userInfo["status"]?.ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                : userInfo["block_status"]?.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                : userInfo["block_status"]?.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2")
+                : userInfo.Status.ToInt32Safe() == -1 ? loader.GetString("Status-1")
+                : userInfo.BlockStatus.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
+                : userInfo.BlockStatus.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2")
                 : null;
 
         public override string ToString() => $"{UserName} - {Dateline}";
@@ -204,18 +204,18 @@ namespace CoolapkUWP.Models.Pages
 
             FeedMessage = dto.Message;
 
-            if (dto.MessageUserInfo is JsonObject messageUserInfo)
+            if (dto.MessageUserInfo != null)
             {
-                if (messageUserInfo.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
+                if (!string.IsNullOrEmpty(dto.MessageUserInfo.UserAvatar))
                 {
-                    UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
+                    UserAvatar = new ImageModel(dto.MessageUserInfo.UserAvatar, ImageType.BigAvatar);
                 }
 
-                BlockStatus = GetBlockStatus(messageUserInfo, loader);
+                BlockStatus = GetBlockStatus(dto.MessageUserInfo, loader);
 
-                if (messageUserInfo.TryGetPropertyValue("username", out JsonNode username))
+                if (!string.IsNullOrEmpty(dto.MessageUserInfo.Username))
                 {
-                    UserName = $"{username} {BlockStatus}";
+                    UserName = $"{dto.MessageUserInfo.Username} {BlockStatus}";
                 }
             }
 

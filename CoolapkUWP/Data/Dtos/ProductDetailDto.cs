@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+using System.Collections.Generic;
 
 namespace CoolapkUWP.Data.Dtos
 {
@@ -28,9 +28,9 @@ namespace CoolapkUWP.Data.Dtos
         public string OwnerStarAverageScore { get; set; }
         public string RatingAverageScore { get; set; }
         public string Logo { get; set; }
-        public JsonArray TagArr { get; set; }
-        public JsonArray RecentFollowList { get; set; }
-        public JsonArray CoverArr { get; set; }
+        public List<string> TagArr { get; set; }
+        public List<RecentFollowDto> RecentFollowList { get; set; }
+        public List<string> CoverArr { get; set; }
         public UserActionDto UserAction { get; set; }
     }
 }

@@ -64,7 +64,7 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.ReplyRows != null)
             {
-                ReplyRows = dto.ReplyRows.Select(item => SourceFeedReplyModel.FromJson(item.AsObject())).ToList();
+                ReplyRows = dto.ReplyRows.Select(item => new SourceFeedReplyModel(item)).ToList();
             }
 
             if (!string.IsNullOrEmpty(PicUri))

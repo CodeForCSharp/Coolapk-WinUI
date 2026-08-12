@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
-    /// 首页实体卡片(包含子实体列表)。
+    /// 首页实体卡片(包含子实体列表,元素类型运行时判定故保留原始 JSON)。
     /// </summary>
     public class IndexPageHasEntitiesDto : EntityDto
     {
@@ -19,7 +20,7 @@ namespace CoolapkUWP.Data.Dtos
         public string RssType { get; set; }
         public string SubTitle { get; set; }
         public string EntityTemplate { get; set; }
-        public JsonArray Entities { get; set; }
+        public List<JsonObject> Entities { get; set; }
         public string Pic { get; set; }
     }
 }

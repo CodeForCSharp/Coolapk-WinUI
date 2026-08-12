@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -15,13 +13,13 @@ namespace CoolapkUWP.Data.Dtos
         public string Dateline { get; set; }
         public string BlockStatus { get; set; }
         public string Status { get; set; }
-        public JsonNode UserInfo { get; set; }
+        public NotificationUserInfoDto UserInfo { get; set; }
         public string Username { get; set; }
         public string UserAvatar { get; set; }
 
         public string Note { get; set; }
         public string FromUserAvatar { get; set; }
-        public JsonNode FromUserInfo { get; set; }
+        public NotificationUserInfoDto FromUserInfo { get; set; }
         public string Fromusername { get; set; }
 
         public string ExtraTitle { get; set; }
@@ -32,11 +30,11 @@ namespace CoolapkUWP.Data.Dtos
         public string LikeUid { get; set; }
         public string LikeTime { get; set; }
         public string LikeAvatar { get; set; }
-        public JsonNode LikeUserInfo { get; set; }
+        public NotificationUserInfoDto LikeUserInfo { get; set; }
         public string LikeUsername { get; set; }
 
         public string Ukey { get; set; }
-        public JsonNode MessageUserInfo { get; set; }
+        public NotificationUserInfoDto MessageUserInfo { get; set; }
         public string IsTop { get; set; }
     }
 }

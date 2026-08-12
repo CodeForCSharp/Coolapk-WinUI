@@ -54,13 +54,13 @@ namespace CoolapkUWP.Models.Feeds
                 Url = $"/feed/{dto.Id.Replace("\"", string.Empty)}";
             }
 
-            UserInfo = dto.UserInfo is JsonObject userInfo
-                ? UserModel.FromJson(userInfo)
-                : UserModel.FromJson(null);
+            UserInfo = dto.UserInfo != null
+                ? new UserModel(dto.UserInfo)
+                : new UserModel(null);
 
-            UserAction = dto.UserAction is JsonObject userAction
-                ? UserAction.FromJson(userAction)
-                : UserAction.FromJson(null);
+            UserAction = dto.UserAction != null
+                ? new UserAction(dto.UserAction)
+                : new UserAction(null);
 
             ShareUrl = !string.IsNullOrEmpty(dto.ShareUrl)
                 ? dto.ShareUrl
@@ -101,10 +101,10 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.PicArr != null && dto.PicArr.Count > 0)
             {
-                PicArr = dto.PicArr.Select(
-                    x => !string.IsNullOrEmpty(x.ToString())
-                        ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
-                    .Where(x => x != null).ToList();
+                PicArr = dto.PicArr
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(x => new ImageModel(x, ImageType.SmallImage))
+                    .ToList();
 
                 foreach (ImageModel item in PicArr)
                 {

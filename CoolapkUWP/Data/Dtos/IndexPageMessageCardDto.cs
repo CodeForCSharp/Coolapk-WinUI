@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
-    /// 首页消息卡片。
+    /// 首页消息卡片(子实体元素类型运行时判定故保留原始 JSON)。
     /// </summary>
     public class IndexPageMessageCardDto : EntityDto
     {
@@ -17,6 +18,6 @@ namespace CoolapkUWP.Data.Dtos
         public string ApkTypeName { get; set; }
         public string RssType { get; set; }
         public string SubTitle { get; set; }
-        public JsonArray Entities { get; set; }
+        public List<JsonObject> Entities { get; set; }
     }
 }

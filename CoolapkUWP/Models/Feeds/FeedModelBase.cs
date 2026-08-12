@@ -125,34 +125,20 @@ namespace CoolapkUWP.Models.Feeds
                 ? dto.InfoHtml
                 : Dateline;
 
-            if (IsVoteFeed)
+            if (IsVoteFeed && dto.Vote != null)
             {
-                if (dto.Vote is JsonObject vote)
+                VoteDto vote = dto.Vote;
+
+                TotalVoteNum = vote.TotalVoteNum.ToInt32Safe();
+                TotalCommentNum = vote.TotalCommentNum.ToInt32Safe();
+                VoteStartTime = vote.StartTime?.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
+                VoteEndTime = vote.EndTime?.ToInt64Safe().ConvertUnixTimeStampToReadable(null);
+                VoteType = vote.Type.ToInt32Safe();
+                VoteTag = vote.LinkTag;
+
+                if (vote.Options != null)
                 {
-                    TotalVoteNum = vote.TryGetPropertyValue("total_vote_num", out JsonNode total_vote_num)
-                        ? total_vote_num.ToInt32Safe() : 0;
-
-                    TotalCommentNum = vote.TryGetPropertyValue("total_comment_num", out JsonNode total_comment_num)
-                        ? total_comment_num.ToInt32Safe() : 0;
-
-                    VoteStartTime = vote.TryGetPropertyValue("start_time", out JsonNode start_time)
-                        ? start_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null) : null;
-
-                    VoteEndTime = vote.TryGetPropertyValue("end_time", out JsonNode end_time)
-                        ? end_time.ToInt64Safe().ConvertUnixTimeStampToReadable(null) : null;
-
-                    VoteType = vote.TryGetPropertyValue("type", out JsonNode type)
-                        ? type.ToInt32Safe() : 0;
-
-                    VoteTag = vote.TryGetPropertyValue("link_tag", out JsonNode link_tag)
-                        ? link_tag.ToString() : null;
-
-                    if (vote.TryGetPropertyValue("options", out JsonNode options))
-                    {
-                        VoteRows = options.AsArray()
-                            .Select(item => new VoteItem(JsonSerializer.Deserialize<VoteItemDto>(item, DtoJson.Options)))
-                            .ToList();
-                    }
+                    VoteRows = vote.Options.Select(item => new VoteItem(item)).ToList();
                 }
             }
 
@@ -208,7 +194,7 @@ namespace CoolapkUWP.Models.Feeds
             if (dto.ReplyRows != null)
             {
                 ReplyRows = dto.ReplyRows
-                    .Select(item => SourceFeedReplyModel.FromJson(item.AsObject()))
+                    .Select(item => new SourceFeedReplyModel(item))
                     .ToList();
             }
 
@@ -312,7 +298,6 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
         }
-
         private async Task ExpandShortUrlAsync()
         {
             string expandedUrl = null;

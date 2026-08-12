@@ -147,23 +147,23 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.TagArr != null && dto.TagArr.Count > 0)
             {
-                TagArr = dto.TagArr.Select(x => x.ToString()).ToList();
+                TagArr = dto.TagArr.Where(x => x != null).ToList();
             }
 
             if (dto.RecentFollowList != null && dto.RecentFollowList.Count > 0)
             {
-                FollowUsers = dto.RecentFollowList.Select(
-                    x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
-                        ? UserModel.FromJson(userInfo.AsObject()) : null)
-                    .Where(x => x != null).ToList();
+                FollowUsers = dto.RecentFollowList
+                    .Where(x => x.UserInfo != null)
+                    .Select(x => new UserModel(x.UserInfo))
+                    .ToList();
             }
 
             if (dto.CoverArr != null && dto.CoverArr.Count > 0)
             {
-                CoverArr = dto.CoverArr.Select(
-                    x => !string.IsNullOrEmpty(x.ToString())
-                        ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
-                    .Where(x => x != null).ToList();
+                CoverArr = dto.CoverArr
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(x => new ImageModel(x, ImageType.SmallImage))
+                    .ToList();
 
                 foreach (ImageModel item in CoverArr)
                 {

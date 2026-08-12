@@ -86,10 +86,10 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.RecentFollowList != null && dto.RecentFollowList.Count > 0)
             {
-                FollowUsers = dto.RecentFollowList.Select(
-                    x => x.AsObject().TryGetPropertyValue("userInfo", out JsonNode userInfo)
-                        ? UserModel.FromJson(userInfo.AsObject()) : null)
-                    .Where(x => x != null).ToList();
+                FollowUsers = dto.RecentFollowList
+                    .Where(x => x.UserInfo != null)
+                    .Select(x => new UserModel(x.UserInfo))
+                    .ToList();
             }
 
             OnFollowChanged();

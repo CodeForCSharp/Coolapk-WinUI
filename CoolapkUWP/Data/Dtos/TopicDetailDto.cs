@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+using System.Collections.Generic;
 
 namespace CoolapkUWP.Data.Dtos
 {
@@ -17,6 +17,6 @@ namespace CoolapkUWP.Data.Dtos
         public string Description { get; set; }
         public string Intro { get; set; }
         public string Logo { get; set; }
-        public JsonArray RecentFollowList { get; set; }
+        public List<RecentFollowDto> RecentFollowList { get; set; }
     }
 }

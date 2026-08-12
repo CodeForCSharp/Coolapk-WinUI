@@ -35,13 +35,13 @@ namespace CoolapkUWP.Models.Feeds
 
             ID = dto.Id.ToInt32Safe();
 
-            UserInfo = dto.UserInfo is JsonObject userInfo
-                ? UserModel.FromJson(userInfo)
-                : UserModel.FromJson(null);
+            UserInfo = dto.UserInfo != null
+                ? new UserModel(dto.UserInfo)
+                : new UserModel(null);
 
-            UserAction = dto.UserAction is JsonObject userAction
-                ? UserAction.FromJson(userAction)
-                : UserAction.FromJson(null);
+            UserAction = dto.UserAction != null
+                ? new UserAction(dto.UserAction)
+                : new UserAction(null);
 
             IsFeedAuthor = dto.IsFeedAuthor.ToInt32Safe() == 1;
 
@@ -68,12 +68,12 @@ namespace CoolapkUWP.Models.Feeds
                 Message += $" <a href=\"{PicUri}\">{loader.GetString("SeePic")}</a>";
             }
 
-            if (dto.PicArr != null && dto.PicArr.Count > 0 && !string.IsNullOrEmpty(dto.PicArr[0].ToString()))
+            if (dto.PicArr != null && dto.PicArr.Count > 0 && !string.IsNullOrEmpty(dto.PicArr[0]))
             {
-                PicArr = dto.PicArr.Select(
-                    x => !string.IsNullOrEmpty(x.ToString())
-                        ? new ImageModel(x.ToString(), ImageType.SmallImage) : null)
-                    .Where(x => x != null).ToList();
+                PicArr = dto.PicArr
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(x => new ImageModel(x, ImageType.SmallImage))
+                    .ToList();
 
                 foreach (ImageModel item in PicArr)
                 {

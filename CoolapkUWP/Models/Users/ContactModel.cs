@@ -19,9 +19,9 @@ namespace CoolapkUWP.Models.Users
             DateLine = dto.Dateline.ToInt32Safe();
             IsFriend = dto.Isfriend.ToInt32Safe() != 0;
 
-            if (dto.UserInfo is JsonObject userInfo)
+            if (dto.UserInfo != null)
             {
-                UserInfo = UserModel.FromJson(userInfo);
+                UserInfo = new UserModel(dto.UserInfo);
             }
         }
 

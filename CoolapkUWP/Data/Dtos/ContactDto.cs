@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -9,6 +7,6 @@ namespace CoolapkUWP.Data.Dtos
     {
         public string Dateline { get; set; }
         public string Isfriend { get; set; }
-        public JsonNode UserInfo { get; set; }
+        public UserDto UserInfo { get; set; }
     }
 }

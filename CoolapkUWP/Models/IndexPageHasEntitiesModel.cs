@@ -75,9 +75,8 @@ namespace CoolapkUWP.Models
             if (dto.Entities != null && dto.Entities.Count > 0)
             {
                 List<Entity> builder = new List<Entity>();
-                foreach (JsonNode item in dto.Entities)
+                foreach (JsonObject itemObj in dto.Entities)
                 {
-                    JsonObject itemObj = item.AsObject();
                     if (itemObj.TryGetPropertyValue("entityType", out JsonNode entityType))
                     {
                         try { itemObj["entityForward"] = EntityTemplate; }
