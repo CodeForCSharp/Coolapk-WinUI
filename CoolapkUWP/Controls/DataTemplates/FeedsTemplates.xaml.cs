@@ -1,3 +1,4 @@
+using CoolapkUWP.Services;
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
@@ -94,7 +95,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                     break;
                 case "LikeButton":
                     DisabledCopy();
-                    _ = (element.Tag as ICanLike).ChangeLike();
+                    _ = FeedActionsService.ChangeLikeAsync(element.Tag as ICanLike);
                     break;
 
                 case "ReportButton":

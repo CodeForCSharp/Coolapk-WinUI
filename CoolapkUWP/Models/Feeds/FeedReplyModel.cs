@@ -75,17 +75,5 @@ namespace CoolapkUWP.Models.Feeds
 
         public static FeedReplyModel FromJson(JsonObject json, bool showReplyRow = true)
             => new FeedReplyModel(JsonSerializer.Deserialize<FeedReplyDto>(json, DtoJson.Options), showReplyRow);
-
-        public async Task ChangeLike()
-        {
-            UriType type = Liked ? UriType.PostFeedUnlike : UriType.PostFeedLike;
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, "Reply", ID), null, true);
-            if (!isSucceed) { return; }
-            Liked = !Liked;
-            if (result.ToInt32Safe() is int likenum && likenum >= 0)
-            {
-                LikeNum = likenum;
-            }
-        }
     }
 }

@@ -1,3 +1,4 @@
+using CoolapkUWP.Services;
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
@@ -56,7 +57,7 @@ namespace CoolapkUWP.Controls
                     _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(element.Tag.ToString()));
                     break;
                 case "FollowButton":
-                    _ = (element.Tag as ICanFollow).ChangeFollow();
+                    _ = FeedActionsService.ChangeFollowAsync(element.Tag as ICanFollow);
                     break;
                 default:
                     _ = this.OpenLinkAsync((sender as FrameworkElement).Tag as string);

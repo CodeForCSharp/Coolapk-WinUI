@@ -1,3 +1,4 @@
+using CoolapkUWP.Services;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Images;
@@ -164,13 +165,13 @@ namespace CoolapkUWP.Pages.FeedPages
                     _ = this.NavigateAsync(typeof(AdaptivePage), AdaptiveViewModel.GetUserListProvider(Provider.ID, false, Provider.Title));
                     break;
                 case "LikeButton":
-                    _ = (element.Tag as ICanLike).ChangeLike();
+                    _ = FeedActionsService.ChangeLikeAsync(element.Tag as ICanLike);
                     break;
                 case "ReportButton":
                     _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(element.Tag.ToString()));
                     break;
                 case "FollowButton":
-                    _ = (element.Tag as ICanFollow).ChangeFollow();
+                    _ = FeedActionsService.ChangeFollowAsync(element.Tag as ICanFollow);
                     break;
                 case "FollowsButton":
                     _ = this.NavigateAsync(typeof(AdaptivePage), AdaptiveViewModel.GetUserListProvider(Provider.ID, true, Provider.Title));

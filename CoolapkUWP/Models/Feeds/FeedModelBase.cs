@@ -347,28 +347,6 @@ namespace CoolapkUWP.Models.Feeds
                 ShowLinkSourceFeed = true;
             }
         }
-
-        public async Task ChangeLike()
-        {
-            UriType type = Liked ? UriType.PostFeedUnlike : UriType.PostFeedLike;
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, string.Empty, ID), null, true);
-            if (!isSucceed) { return; }
-            Liked = !Liked;
-            if (result.AsObject().TryGetPropertyValue("count", out JsonNode count))
-            {
-                LikeNum = count.ToInt32Safe();
-            }
-        }
-
-        public async Task ChangeFollow()
-        {
-            UriType type = Followed ? UriType.PostUserUnfollow : UriType.PostUserFollow;
-
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, UID), null, true);
-            if (!isSucceed) { return; }
-
-            Followed = !Followed;
-        }
     }
 
     public class VoteItem

@@ -38,7 +38,6 @@ namespace CoolapkUWP.Models
     {
         int ID { get; }
         bool Liked { get; set; }
-        Task ChangeLike();
     }
 
     public interface ICanStar
@@ -58,7 +57,6 @@ namespace CoolapkUWP.Models
     {
         int ID { get; }
         bool Followed { get; set; }
-        Task ChangeFollow();
     }
 
     public interface IUserModel
