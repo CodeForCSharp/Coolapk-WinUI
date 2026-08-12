@@ -20,7 +20,6 @@ namespace CoolapkUWP.Data.Dtos
         public long? Dateline { get; set; }
         public int Likenum { get; set; }
         public int Replynum { get; set; }
-        public int ReplyRowsMore { get; set; }
         public int ReplyRowsCount { get; set; }
         public List<FeedReplyDto> ReplyRows { get; set; }
     }

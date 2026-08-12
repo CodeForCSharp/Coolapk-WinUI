@@ -29,9 +29,7 @@ namespace CoolapkUWP.Helpers
     {
         public const int Duration = 3000;
         public static bool IsShowingProgressBar, IsShowingMessage;
-        public static DispatcherQueue ShellDispatcher { get; set; }
         public static List<string> MessageList { get; } = new List<string>();
-        public static bool HasTitleBar => App.MainWindow != null && !App.MainWindow.ExtendsContentIntoTitleBar;
     }
 
     internal static partial class UIHelper
@@ -379,13 +377,4 @@ namespace CoolapkUWP.Helpers
         }
     }
 
-    public enum MessageType
-    {
-        Message,
-        NoMore,
-        NoMoreReply,
-        NoMoreLikeUser,
-        NoMoreShare,
-        NoMoreHotReply,
-    }
 }

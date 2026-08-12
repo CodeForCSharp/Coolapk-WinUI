@@ -48,13 +48,6 @@ namespace CoolapkUWP.ViewModels.DataSource
             return newItems;
         }
 
-        protected void FireErrorEvent(int code)
-        {
-            DataRequestError?.Invoke(code);
-        }
-
-        public event EventHandler<int> DataRequestError;
-
         protected override bool HasMoreItemsOverride() => _hasMoreItems;
 
         protected abstract Task<IList<T>> LoadItemsAsync(uint count);

@@ -102,7 +102,6 @@ namespace CoolapkUWP.Pages
         {
             InitializeComponent();
             UIHelper.MainPage = this;
-            UIHelper.ShellDispatcher = DispatcherQueue;
             _ = (NotificationsModel.Instance?.Update());
             NotificationsModel = NotificationsModel.Instance;
             SearchBoxHolder.RegisterPropertyChangedCallback(Slot.IsStretchProperty, new DependencyPropertyChangedCallback(OnIsStretchProperty));

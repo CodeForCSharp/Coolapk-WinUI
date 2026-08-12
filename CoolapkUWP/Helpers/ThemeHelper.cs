@@ -88,15 +88,6 @@ namespace CoolapkUWP.Helpers
             };
         }
 
-        public static void Initialize(Window window)
-        {
-            if (window?.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ActualTheme;
-            }
-            UpdateSystemCaptionButtonColors(window);
-        }
-
         public static bool IsDarkTheme()
         {
             var theme = SettingsHelper.Get<ElementTheme>(SettingsHelper.SelectedAppTheme);

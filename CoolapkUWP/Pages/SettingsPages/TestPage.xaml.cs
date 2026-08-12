@@ -17,8 +17,6 @@ namespace CoolapkUWP.Pages.SettingsPages
 {
     public sealed partial class TestPage : Page, INotifyPropertyChanged
     {
-        internal const bool IsFeature2 = false;
-
         internal bool IsExtendsTitleBar
         {
             get => App.MainWindow.ExtendsContentIntoTitleBar;

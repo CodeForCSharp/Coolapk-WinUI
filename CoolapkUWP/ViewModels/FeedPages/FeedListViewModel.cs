@@ -52,14 +52,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
 
-        public void ChangeCopyMode(bool mode)
-        {
-            if (Detail != null)
-            {
-                Detail.IsCopyEnabled = mode;
-            }
-        }
-
         /// <summary>
         /// 拉取详情并转换为指定类型的详情模型。
         /// </summary>

@@ -136,7 +136,6 @@ namespace CoolapkUWP.ViewModels.DataSource
 
         public event EventHandler LoadMoreStarted;
         public event EventHandler LoadMoreCompleted;
-        public event EventHandler<double> LoadMoreProgressChanged;
 
         #region Overridable methods
 
@@ -150,7 +149,6 @@ namespace CoolapkUWP.ViewModels.DataSource
             for (int i = 0; i < items.Count; i++)
             {
                 Add(items[i]);
-                LoadMoreProgressChanged?.Invoke((double)(i + 1) / items.Count);
             }
         }
 

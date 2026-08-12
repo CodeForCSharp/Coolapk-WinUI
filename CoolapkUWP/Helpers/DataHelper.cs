@@ -41,43 +41,6 @@ namespace CoolapkUWP.Helpers
             return new string(charArray);
         }
 
-        public static string GetSizeString(this double size)
-        {
-            int index = 0;
-            while (index <= 11)
-            {
-                index++;
-                size /= 1024;
-                if (size > 0.7 && size < 716.8) { break; }
-                else if (size >= 716.8) { continue; }
-                else if (size <= 0.7)
-                {
-                    size *= 1024;
-                    index--;
-                    break;
-                }
-            }
-            string str = string.Empty;
-            switch (index)
-            {
-                case 0: str = "B"; break;
-                case 1: str = "KB"; break;
-                case 2: str = "MB"; break;
-                case 3: str = "GB"; break;
-                case 4: str = "TB"; break;
-                case 5: str = "PB"; break;
-                case 6: str = "EB"; break;
-                case 7: str = "ZB"; break;
-                case 8: str = "YB"; break;
-                case 9: str = "BB"; break;
-                case 10: str = "NB"; break;
-                case 11: str = "DB"; break;
-                default:
-                    break;
-            }
-            return $"{size:0.##}{str}";
-        }
-
         public static string GetNumString(this double num)
         {
             string str = string.Empty;

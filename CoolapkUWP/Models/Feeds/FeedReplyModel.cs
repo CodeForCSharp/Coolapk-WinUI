@@ -36,7 +36,6 @@ namespace CoolapkUWP.Models.Feeds
             }
         }
 
-        public int ReplyRowsMore { get; private set; }
         public int ReplyRowsCount { get; private set; }
 
         public string Dateline { get; private set; }
@@ -59,7 +58,6 @@ namespace CoolapkUWP.Models.Feeds
 
             LikeNum = dto.Likenum;
             ReplyNum = dto.Replynum;
-            ReplyRowsMore = dto.ReplyRowsMore;
             ReplyRowsCount = dto.ReplyRowsCount;
 
             if (dto.ReplyRows != null)

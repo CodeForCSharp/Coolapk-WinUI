@@ -136,7 +136,6 @@
                     <controls:Setting
                         x:Name="ExtensionSettings"
                         x:Uid="/TestPage/ExtensionSettings"
-                        x:Load="{x:Bind local:TestPage.IsFeature2}"
                         Click="Button_Click"
                         Icon="&#xE7B8;"
                         IsClickEnabled="True"

@@ -31,8 +31,6 @@ namespace CoolapkUWP.Helpers
 
         public static Type Get<Type>(string key) => LocalObject.Read<Type>(key);
         public static void Set<Type>(string key, Type value) => LocalObject.Save(key, value);
-        public static Task<Type> GetFile<Type>(string key) => LocalObject.ReadFileAsync<Type>($"Settings/{key}");
-        public static Task SetFile<Type>(string key, Type value) => LocalObject.CreateFileAsync($"Settings/{key}", value);
 
         public static void SetDefaultSettings()
         {
@@ -232,29 +230,6 @@ namespace CoolapkUWP.Helpers
         public void Clear() => _settings.Values.Clear();
 
         public bool KeyExists(string key) => _settings.Values.ContainsKey(key);
-
-        public async System.Threading.Tasks.Task<T> ReadFileAsync<T>(string key)
-        {
-            try
-            {
-                var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-                var file = await folder.GetFileAsync(key.Replace('/', '\\'));
-                string content = await Windows.Storage.FileIO.ReadTextAsync(file);
-                return _serializer.Deserialize<T>(content);
-            }
-            catch (Exception ex)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(SettingsHelper)).LogDebug(ex, ex.ExceptionToMessage());
-                return default;
-            }
-        }
-
-        public async System.Threading.Tasks.Task CreateFileAsync<T>(string key, T value)
-        {
-            var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            var file = await folder.CreateFileAsync(key.Replace('/', '\\'), Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(file, _serializer.Serialize(value));
-        }
     }
 
     public interface IObjectSerializer

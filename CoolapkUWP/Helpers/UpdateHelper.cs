@@ -11,7 +11,6 @@ namespace CoolapkUWP.Helpers
 {
     public static class UpdateHelper
     {
-        private const string KKPP_API = "https://v2.kkpp.cc/repos/{0}/{1}/releases/latest";
         private const string GITHUB_API = "https://api.github.com/repos/{0}/{1}/releases/latest";
 
         private static readonly JsonContext _jsonContext = JsonContext.Default;

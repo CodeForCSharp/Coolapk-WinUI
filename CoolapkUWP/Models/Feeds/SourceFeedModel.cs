@@ -25,7 +25,6 @@ namespace CoolapkUWP.Models.Feeds
 
         public bool IsVoteFeed { get; private set; }
         public bool IsRatingFeed { get; private set; }
-        public bool IsCoolPicture { get; private set; }
         public bool IsQuestionFeed { get; private set; }
 
         public string Url { get; private set; }

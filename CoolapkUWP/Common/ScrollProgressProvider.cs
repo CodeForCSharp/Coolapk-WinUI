@@ -221,20 +221,6 @@ namespace CoolapkUWP.Common
             }
         }
 
-        public CompositionPropertySet GetProgressPropertySet()
-        {
-            if (propSet == null) return null;
-
-            var compositor = Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread();
-            if (compositor == null) return null;
-
-            CompositionPropertySet _propSet = compositor.CreatePropertySet();
-            _propSet.InsertScalar("progress", (float)innerProgress);
-            _propSet.InsertScalar("threshold", (float)Threshold);
-            _propSet.StartAnimation("progress", progressBind);
-            _propSet.StartAnimation("threshold", thresholdBind);
-            return _propSet;
-        }
 
         #endregion Methods
 
