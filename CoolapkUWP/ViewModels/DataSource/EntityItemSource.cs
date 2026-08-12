@@ -61,15 +61,14 @@ namespace CoolapkUWP.ViewModels.DataSource
         protected override Task AddItemsAsync(IList<Entity> items)
         {
             if (items == null) { return Task.CompletedTask; }
+            List<Entity> filtered = new List<Entity>(items.Count);
             foreach (Entity item in items)
             {
-                if (!(item is NullEntity))
-                {
-                    Add(item);
-                    if (useSubProvider) { AddSubProvider(item); }
-                }
+                if (item is NullEntity) { continue; }
+                filtered.Add(item);
+                if (useSubProvider) { AddSubProvider(item); }
             }
-            return Task.CompletedTask;
+            return base.AddItemsAsync(filtered);
         }
 
         public virtual async Task Refresh(bool reset = false)

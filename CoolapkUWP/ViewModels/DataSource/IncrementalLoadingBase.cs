@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
@@ -38,7 +37,7 @@ namespace CoolapkUWP.ViewModels.DataSource
         {
             if (_busy)
             {
-                return Task.Run(() => new LoadMoreItemsResult { Count = 0 }).AsAsyncOperation();
+                return Task.FromResult(new LoadMoreItemsResult { Count = 0 }).AsAsyncOperation();
             }
 
             _busy = true;
@@ -125,7 +124,7 @@ namespace CoolapkUWP.ViewModels.DataSource
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnCollectionChanged(e);
-            Any = this.Any();
+            Any = Count > 0;
         }
 
         public delegate void EventHandler();
@@ -141,11 +140,17 @@ namespace CoolapkUWP.ViewModels.DataSource
         /// </summary>
         protected virtual Task AddItemsAsync(IList<T> items)
         {
-            if (items == null) { return Task.CompletedTask; }
-            for (int i = 0; i < items.Count; i++)
+            if (items == null || items.Count == 0) { return Task.CompletedTask; }
+
+            CheckReentrancy();
+            foreach (T item in items)
             {
-                Add(items[i]);
+                Items.Add(item);
             }
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+
             return Task.CompletedTask;
         }
 

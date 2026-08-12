@@ -124,12 +124,13 @@ namespace CoolapkUWP.ViewModels.FeedPages
         protected override Task AddItemsAsync(IList<Entity> items)
         {
             if (items == null) { return Task.CompletedTask; }
+            List<Entity> filtered = new List<Entity>(items.Count);
             foreach (Entity item in items)
             {
                 if (item is NullEntity) { continue; }
-                Add(item);
+                filtered.Add(item);
             }
-            return Task.CompletedTask;
+            return base.AddItemsAsync(filtered);
         }
     }
 }

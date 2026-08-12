@@ -9,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-using System.Linq;
-
 namespace CoolapkUWP.Helpers
 {
     public static class RequestHelper
@@ -117,10 +115,14 @@ namespace CoolapkUWP.Helpers
                     if (isSucceed)
                     {
                         UploadPicturePrepareResult data = result.Deserialize(_jsonContext.UploadPicturePrepareResult);
+                        Dictionary<string, UploadFileFragment> imageMap = new Dictionary<string, UploadFileFragment>();
+                        foreach (UploadFileFragment fragment in images)
+                        {
+                            imageMap[fragment.MD5] = fragment;
+                        }
                         foreach (UploadFileInfo info in data.FileInfo)
                         {
-                            UploadFileFragment image = images.FirstOrDefault((x) => x.MD5 == info.MD5);
-                            if (image == null) { continue; }
+                            if (!imageMap.TryGetValue(info.MD5, out UploadFileFragment image)) { continue; }
                             using (Stream stream = image.Bytes.GetStream())
                             {
                                 string response = await Task.Run(() => OSSUploadHelper.OssUpload(data.UploadPrepareInfo, info, stream, "image/png"));

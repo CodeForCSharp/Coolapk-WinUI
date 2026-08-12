@@ -261,7 +261,7 @@
                 </VisualState>
                 <VisualState>
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowHeight="0" MinWindowWidth="{x:Bind NavigationView.CompactModeThresholdWidth}" />
+                        <AdaptiveTrigger MinWindowHeight="0" MinWindowWidth="641" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="ProfileFlyout.Placement" Value="BottomEdgeAlignedRight" />

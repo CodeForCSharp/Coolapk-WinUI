@@ -2,13 +2,16 @@ using System.Text.RegularExpressions;
 
 namespace CoolapkUWP.Models.Update
 {
-    public class UserAgent
+    public partial class UserAgent
     {
         public string Header { get; set; }
         public string Manufacturer { get; set; }
         public string ProductName { get; set; }
         public string FullProductName { get; set; }
         public string OSVersion { get; set; }
+
+        [GeneratedRegex(@"\((#Build; .*?)\)")]
+        private static partial Regex BuildRegex();
 
         public static UserAgent Parse(string line)
         {
@@ -17,7 +20,7 @@ namespace CoolapkUWP.Models.Update
             if (index != -1)
             {
                 result.Header = line.Substring(0, index).Trim();
-                Match match = Regex.Match(line, @"\((#Build; .*?)\)");
+                Match match = BuildRegex().Match(line);
                 if (match.Success && match.Groups.Count >= 2)
                 {
                     string device = match.Groups[1].Value;

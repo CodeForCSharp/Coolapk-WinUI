@@ -29,6 +29,7 @@ namespace CoolapkUWP.Controls
         private double _topheight;
         private CompositionPropertySet _propSet;
         private ScrollProgressProvider _progressProvider;
+        private string _currentVisualState = string.Empty;
         private readonly bool HasGetElementVisual =
             SettingsHelper.Get<bool>(SettingsHelper.IsUseCompositor);
 
@@ -192,6 +193,8 @@ namespace CoolapkUWP.Controls
 
         protected override void OnApplyTemplate()
         {
+            _currentVisualState = string.Empty;
+
             if (_topHeader != null)
             {
                 _topHeader.SizeChanged -= TopHeader_SizeChanged;
@@ -257,9 +260,21 @@ namespace CoolapkUWP.Controls
 
         private void ProgressProvider_ProgressChanged(object sender, double args)
         {
-            _ = args == 1 || _progressProvider.Threshold == 0
-                ? VisualStateManager.GoToState(this, "OnThreshold", true)
-                : VisualStateManager.GoToState(this, "BeforeThreshold", true);
+            GoToState(args == 1 || _progressProvider.Threshold == 0 ? "OnThreshold" : "BeforeThreshold");
+        }
+
+        private void UpdateVisualState(double offset)
+        {
+            GoToState(offset >= _topheight || _topheight == 0 ? "OnThreshold" : "BeforeThreshold");
+        }
+
+        private void GoToState(string stateName)
+        {
+            if (stateName != _currentVisualState)
+            {
+                _currentVisualState = stateName;
+                _ = VisualStateManager.GoToState(this, stateName, true);
+            }
         }
 
         private void PivotHeader_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -329,9 +344,7 @@ namespace CoolapkUWP.Controls
                 _propSet = _propSet ?? Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread().CreatePropertySet();
                 _propSet.InsertScalar("height", (float)_topheight);
             }
-            _ = _scrollViewer.VerticalOffset >= _topheight || _topheight == 0
-                ? VisualStateManager.GoToState(this, "OnThreshold", true)
-                : VisualStateManager.GoToState(this, "BeforeThreshold", true);
+            UpdateVisualState(_scrollViewer.VerticalOffset);
         }
 
         private void ListViewHeader_Loaded(object sender, RoutedEventArgs e)
@@ -377,7 +390,7 @@ namespace CoolapkUWP.Controls
             public object Convert(object value, Type targetType, object parameter, string language)
             {
                 double offset = System.Convert.ToDouble(value);
-                UpdateVisualState(offset);
+                ShyHeaderListView.UpdateVisualState(offset);
                 double result = offset < ShyHeaderListView._topheight ? 0 : -ShyHeaderListView._topheight + offset;
                 return ConverterTools.Convert(result, targetType);
             }
@@ -387,13 +400,6 @@ namespace CoolapkUWP.Controls
                 double offset = System.Convert.ToDouble(value);
                 double result = offset + ShyHeaderListView._topheight;
                 return ConverterTools.Convert(result, targetType);
-            }
-
-            private void UpdateVisualState(double offset)
-            {
-                _ = offset >= ShyHeaderListView._topheight || ShyHeaderListView._topheight == 0
-                    ? VisualStateManager.GoToState(ShyHeaderListView, "OnThreshold", true)
-                    : VisualStateManager.GoToState(ShyHeaderListView, "BeforeThreshold", true);
             }
         }
     }

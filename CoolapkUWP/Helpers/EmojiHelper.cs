@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -19,7 +20,7 @@ namespace CoolapkUWP.Helpers
         }
 
         #region 旧表情
-        public static HashSet<string> OldEmojis = new HashSet<string>
+        public static readonly FrozenSet<string> OldEmojis = new HashSet<string>
         {
             "[doge]",
             "[doge原谅ta]",
@@ -87,11 +88,11 @@ namespace CoolapkUWP.Helpers
             "[酷币]",
             "[阴险]",
             "[难过]"
-        };
+        }.ToFrozenSet();
         #endregion
 
         #region 全部
-        public static HashSet<string> Emojis = new HashSet<string>
+        public static readonly FrozenSet<string> Emojis = new HashSet<string>
         {
             "[哈哈哈]",
             "[惊讶]",
@@ -543,11 +544,11 @@ namespace CoolapkUWP.Helpers
             "[酷币1]",
             "[酷币2]",
             "[酷币5]",
-        };
+        }.ToFrozenSet();
         #endregion
 
         #region 常规
-        public static string[] Normal = new string[]
+        public static readonly string[] Normal = new string[]
         {
             "[哈哈哈]",
             "[惊讶]",
@@ -659,7 +660,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region 酷币
-        public static string[] CoolCoins = new string[]
+        public static readonly string[] CoolCoins = new string[]
         {
             "[酷币]",
             "[酷币空]",
@@ -710,7 +711,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region 贴吧
-        public static string[] Funny = new string[]
+        public static readonly string[] Funny = new string[]
         {
             "(稽滑)",
             "(流汗滑稽)",
@@ -809,7 +810,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region 微博
-        public static string[] Doge = new string[]
+        public static readonly string[] Doge = new string[]
         {
             "[doge]",
             "[喵喵]",
@@ -858,7 +859,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region 微信
-        public static string[] Tradition = new string[]
+        public static readonly string[] Tradition = new string[]
         {
             "[笑哭再见]",
             "[捂脸]",
@@ -961,7 +962,7 @@ namespace CoolapkUWP.Helpers
         #endregion
 
         #region QQ
-        public static string[] Classic = new string[]
+        public static readonly string[] Classic = new string[]
         {
             "[呵呵]",
             "[撇嘴]",

@@ -12,7 +12,7 @@ using CommunityToolkit.WinUI;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
@@ -91,6 +91,8 @@ namespace CoolapkUWP.Controls.DataTemplates
             ClipboardHelper.SetText((sender as FrameworkElement).Tag.ToString());
         }
 
+        private static readonly ConditionalWeakTable<UserControl, FrameworkElement> BtnsPanelCache = new ConditionalWeakTable<UserControl, FrameworkElement>();
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             UserControl_SizeChanged(sender, null);
@@ -99,9 +101,13 @@ namespace CoolapkUWP.Controls.DataTemplates
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UserControl UserControl = sender as UserControl;
-            FrameworkElement StackPanel = UserControl.FindChild("BtnsPanel");
+            if (!BtnsPanelCache.TryGetValue(UserControl, out FrameworkElement BtnsPanel))
+            {
+                BtnsPanel = UserControl.FindChild("BtnsPanel");
+                BtnsPanelCache.Add(UserControl, BtnsPanel);
+            }
             double width = e is null ? UserControl.Width : e.NewSize.Width;
-            StackPanel?.SetValue(Grid.RowProperty, width > 600 ? 1 : 20);
+            BtnsPanel?.SetValue(Grid.RowProperty, width > 600 ? 1 : 20);
         }
 
         private void GridView_SelectionChanged(object sender, SelectionChangedEventArgs e) => (sender as GridView).SelectedIndex = -1;

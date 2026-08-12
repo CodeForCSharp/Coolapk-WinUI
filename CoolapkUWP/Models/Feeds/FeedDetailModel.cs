@@ -66,10 +66,9 @@ namespace CoolapkUWP.Models.Feeds
                 {
                     case "answer":
                         IsAnswerFeed = true;
-                        if (dto.ExtraData is JsonNode extraData)
+                        if (dto.ExtraData is JsonObject extraData)
                         {
-                            JsonObject j = JsonNode.Parse(extraData.ToJsonString()).AsObject();
-                            QuestionUrl = j.TryGetPropertyValue("questionUrl", out JsonNode questionUrl)
+                            QuestionUrl = extraData.TryGetPropertyValue("questionUrl", out JsonNode questionUrl)
                                 ? questionUrl.ToString() : null;
                         }
 

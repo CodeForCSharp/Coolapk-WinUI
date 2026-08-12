@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace CoolapkUWP.Models.Update
 {
-    public class APIVersion
+    public partial class APIVersion
     {
         public string Version { get; set; }
         public string VersionCode { get; set; }
@@ -13,9 +13,12 @@ namespace CoolapkUWP.Models.Update
             VersionCode = versionCode;
         }
 
+        [GeneratedRegex(@"\+CoolMarket/(.*)-universal")]
+        private static partial Regex CoolMarketRegex();
+
         public static APIVersion Parse(string line)
         {
-            Match match = Regex.Match(line, @"\+CoolMarket/(.*)-universal");
+            Match match = CoolMarketRegex().Match(line);
             if (match.Success && match.Groups.Count >= 2)
             {
                 string value = match.Groups[1].Value;

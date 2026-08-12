@@ -22,7 +22,7 @@ namespace CoolapkUWP.Common
         // Static constructor (one time only)
         static HtmlToText()
         {
-            _tags = new Dictionary<string, string>
+            _tags = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { "address", "\n" },
                 { "blockquote", "\n" },
@@ -57,7 +57,7 @@ namespace CoolapkUWP.Common
                 { "/pre", "\n" }
             };
 
-            _ignoreTags = new HashSet<string>
+            _ignoreTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "script",
                 "noscript",
@@ -87,23 +87,23 @@ namespace CoolapkUWP.Common
                     string tag = ParseTag(out _);
 
                     // Handle special tag cases
-                    if (tag == "body")
+                    if (string.Equals(tag, "body", StringComparison.OrdinalIgnoreCase))
                     {
                         // Discard content before <body>
                         _text.Clear();
                     }
-                    else if (tag == "/body")
+                    else if (string.Equals(tag, "/body", StringComparison.OrdinalIgnoreCase))
                     {
                         // Discard content after </body>
                         _pos = _html.Length;
                     }
-                    else if (tag == "pre")
+                    else if (string.Equals(tag, "pre", StringComparison.OrdinalIgnoreCase))
                     {
                         // Enter preformatted mode
                         _text.Preformatted = true;
                         EatWhitespaceToNextLine();
                     }
-                    else if (tag == "/pre")
+                    else if (string.Equals(tag, "/pre", StringComparison.OrdinalIgnoreCase))
                     {
                         // Exit preformatted mode
                         _text.Preformatted = false;
@@ -161,7 +161,7 @@ namespace CoolapkUWP.Common
                     MoveAhead();
                 }
 
-                tag = _html.Substring(start, _pos - start).ToLower();
+                tag = _html.Substring(start, _pos - start);
 
                 // Parse rest of tag
                 while (!EndOfText && Peek() != '>')
@@ -195,7 +195,7 @@ namespace CoolapkUWP.Common
                 if (Peek() == '<')
                 {
                     // Consume a tag
-                    if (ParseTag(out bool selfClosing) == endTag)
+                    if (string.Equals(ParseTag(out bool selfClosing), endTag, StringComparison.OrdinalIgnoreCase))
                     {
                         return;
                     }
@@ -388,8 +388,7 @@ namespace CoolapkUWP.Common
                 string line = _currLine.ToString().Trim();
 
                 // Determine if line contains non-space characters
-                string tmp = line.Replace(" ", string.Empty);
-                if (tmp.Length == 0)
+                if (string.IsNullOrWhiteSpace(line))
                 {
                     // An empty line
                     _emptyLines++;
