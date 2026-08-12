@@ -30,25 +30,11 @@ namespace CoolapkUWP.ViewModels.DataSource
             _ = await LoadMoreItemsAsync(20);
         }
 
-        protected DateTime _lastTime = DateTime.MinValue;
-
-        protected virtual bool IsInTime()
-        {
-            TimeSpan delta = DateTime.Now - _lastTime;
-            _lastTime = DateTime.Now;
-            return delta.TotalMilliseconds < 500;
-        }
-
         /// <summary>
         /// Special for WFun, as their items are paged.
         /// </summary>
         protected override async Task<IList<T>> LoadMoreItemsOverrideAsync(CancellationToken c, uint count)
         {
-            if (IsInTime())
-            {
-                return null;
-            }
-
             IList<T> newItems = await LoadItemsAsync(count);
 
             // Update page state.
