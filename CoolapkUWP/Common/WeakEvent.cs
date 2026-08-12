@@ -5,6 +5,11 @@ using System.Linq;
 
 namespace CoolapkUWP.Common
 {
+    /// <summary>
+    /// 弱引用事件：只弱引用订阅委托，订阅方（实例）被回收后自动失效。
+    /// 订阅方必须自行保留传给 <see cref="Add"/> / <see cref="Remove"/> 的委托实例
+    /// （通常存为字段），否则 GC 可能回收委托导致回调静默失效。
+    /// </summary>
     public partial class WeakEvent<TEventArgs> : IList<Action<TEventArgs>>
     {
         private class Method

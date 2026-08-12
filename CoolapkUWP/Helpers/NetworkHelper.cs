@@ -5,7 +5,6 @@ using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -215,32 +214,6 @@ namespace CoolapkUWP.Helpers
                     using (HttpResponseMessage response = await Client.SendAsync(request))
                     {
                         return await response.Content.ReadAsStringAsync();
-                    }
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
-                if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(ex, ex.ExceptionToMessage());
-                return null;
-            }
-        }
-
-        public static async Task<Stream> GetStreamAsync(Uri uri, string request = "XMLHttpRequest", bool isBackground = false)
-        {
-            try
-            {
-                using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, uri))
-                {
-                    httpRequest.AddRequestHeaders(request);
-                    using (HttpResponseMessage response = await Client.SendAsync(httpRequest))
-                    {
-                        return await response.Content.ReadAsStreamAsync();
                     }
                 }
             }

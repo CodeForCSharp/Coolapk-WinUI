@@ -86,8 +86,8 @@ namespace CoolapkUWP.Models.Feeds
                     ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
                     string readMore = "...<a href=\"" + url + "\">" + loader.GetString("ReadMore") + "</a>";
                     return message.Contains("</a>")
-                        ? message.Substring(0, 200) + readMore
-                        : message.Substring(0, 120) + readMore;
+                        ? TruncateHtml(message, 200) + readMore
+                        : TruncateHtml(message, 120) + readMore;
                 }
                 return message;
             }
@@ -95,11 +95,26 @@ namespace CoolapkUWP.Models.Feeds
             {
                 if (message.Length - 120 >= 7)
                 {
-                    return message.Substring(0, 120) + "...<a href=\"" + url + "\">";
+                    ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
+                    return TruncateHtml(message, 120) + "...<a href=\"" + url + "\">" + loader.GetString("ReadMore") + "</a>";
                 }
                 return message;
             }
             return message;
+        }
+
+        private static string TruncateHtml(string message, int maxLength)
+        {
+            if (message.Length <= maxLength) { return message; }
+
+            int cut = maxLength;
+            int lastOpen = message.LastIndexOf('<', cut - 1);
+            int lastClose = message.LastIndexOf('>', cut - 1);
+            if (lastOpen > lastClose)
+            {
+                cut = lastOpen;
+            }
+            return message.Substring(0, cut);
         }
     }
 }

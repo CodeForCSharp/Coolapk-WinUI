@@ -109,14 +109,13 @@ namespace CoolapkUWP.ViewModels.DataSource
 
                 await AddItemsAsync(items);
 
-                // We finished loading operation.
-                IsLoading = false;
-                LoadMoreCompleted?.Invoke();
-
                 return new LoadMoreItemsResult { Count = items == null ? 0 : (uint)items.Count };
             }
             finally
             {
+                // We finished (or failed) the loading operation.
+                IsLoading = false;
+                LoadMoreCompleted?.Invoke();
                 _busy = false;
             }
         }

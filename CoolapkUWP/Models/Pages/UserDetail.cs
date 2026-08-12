@@ -86,7 +86,7 @@ namespace CoolapkUWP.Models.Pages
                 int blockStatus = dto.BlockStatus.Value;
                 BlockStatus = blockStatus == -1 ? loader.GetString("BlockStatus-1")
                     : blockStatus == 2 ? loader.GetString("BlockStatus2") : "\0\0";
-                BlockStatus = BlockStatus.Substring(1, BlockStatus.Length - 2);
+                BlockStatus = BlockStatus.Length >= 2 ? BlockStatus.Substring(1, BlockStatus.Length - 2) : BlockStatus;
             }
 
             VerifyTitle = dto.VerifyTitle;

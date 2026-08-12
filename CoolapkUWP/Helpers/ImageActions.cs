@@ -64,18 +64,30 @@ namespace CoolapkUWP.Helpers
             if (dataPackage != null) { Clipboard.SetContentWithOptions(dataPackage, null); }
         }
 
+        private static DataTransferManager ShareManager;
+        private static TypedEventHandler<DataTransferManager, DataRequestedEventArgs> ShareHandler;
+
         public static async Task SharePicAsync(ImageModel image)
         {
             DataPackage dataPackage = await GetImageDataPackageAsync(image, "分享图片");
             if (dataPackage == null) { return; }
 
             DataTransferManager manager = DataTransferManager.GetForCurrentView();
+            if (ShareManager != null && ShareHandler != null)
+            {
+                ShareManager.DataRequested -= ShareHandler;
+                ShareHandler = null;
+            }
+
             TypedEventHandler<DataTransferManager, DataRequestedEventArgs> handler = null;
             handler = (_, args) =>
             {
                 args.Request.Data = dataPackage;
                 manager.DataRequested -= handler;
+                if (ShareHandler == handler) { ShareHandler = null; }
             };
+            ShareHandler = handler;
+            ShareManager = manager;
             manager.DataRequested += handler;
             DataTransferManager.ShowShareUI();
         }
@@ -86,16 +98,19 @@ namespace CoolapkUWP.Helpers
             if (imageFile == null) { return; }
 
             fileName ??= GetTitle(image.Uri);
+            int dot = fileName.LastIndexOf('.');
+            string baseName = dot > 0 ? fileName.Substring(0, dot) : fileName;
             FileSavePicker fileSavePicker = new FileSavePicker
             {
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                SuggestedFileName = fileName.Replace(fileName.Substring(fileName.LastIndexOf('.')), string.Empty)
+                SuggestedFileName = baseName
             };
             ((IInitializeWithWindow)(object)fileSavePicker).Initialize(App.WindowHandle);
 
-            string fileex = fileName.Substring(fileName.LastIndexOf('.') + 1);
+            string fileex = dot >= 0 ? fileName.Substring(dot + 1) : "png";
             int index = fileex.IndexOfAny(new char[] { '?', '%', '&' });
             fileex = fileex.Substring(0, index == -1 ? fileex.Length : index);
+            if (string.IsNullOrEmpty(fileex)) { fileex = "png"; }
             fileSavePicker.FileTypeChoices.Add($"{fileex}文件", new string[] { "." + fileex });
 
             StorageFile file = await fileSavePicker.PickSaveFileAsync();

@@ -181,7 +181,7 @@ namespace CoolapkUWP.Common
                 if (compositor != null && scrollPropertySet != null)
                 {
                     var exp = compositor.CreateExpressionAnimation(
-                        $"(prop.delayprogress >= 0) ? prop.delayprogress : clamp(-sv.Translation.Y, 0f, prop.threshold) / prop.threshold");
+                        $"(prop.delayprogress >= 0) ? prop.delayprogress : (prop.threshold > 0 ? clamp(-sv.Translation.Y, 0f, prop.threshold) / prop.threshold : 0)");
                     exp.SetReferenceParameter("sv", scrollPropertySet);
                     exp.SetReferenceParameter("prop", propSet);
 
@@ -207,17 +207,23 @@ namespace CoolapkUWP.Common
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
-            sv.ViewChanged += Sv_ViewChanged;
-            sv.ChangeView(null, Threshold * Progress, null, true);
-            await tcs.Task;
-
             void Sv_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
             {
                 if (!e.IsIntermediate)
                 {
-                    sv.ViewChanged -= Sv_ViewChanged;
-                    tcs.SetResult(true);
+                    tcs.TrySetResult(true);
                 }
+            }
+
+            sv.ViewChanged += Sv_ViewChanged;
+            try
+            {
+                sv.ChangeView(null, Threshold * Progress, null, true);
+                _ = await Task.WhenAny(tcs.Task, Task.Delay(1000));
+            }
+            finally
+            {
+                sv.ViewChanged -= Sv_ViewChanged;
             }
         }
 

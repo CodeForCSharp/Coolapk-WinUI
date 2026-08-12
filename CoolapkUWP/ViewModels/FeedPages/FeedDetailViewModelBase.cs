@@ -41,7 +41,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
             else
             {
-                await (ItemSource?.FirstOrDefault()?.ItemSource as EntityItemSource)?.Refresh(reset);
+                EntityItemSource source = ItemSource?.FirstOrDefault()?.ItemSource as EntityItemSource;
+                if (source != null) { await source.Refresh(reset); }
             }
         }
     }

@@ -80,7 +80,7 @@ namespace CoolapkUWP.Models.Feeds
                 {
                     case "vote":
                         IsVoteFeed = true;
-                        Url = Url.Replace("/feed/", "/vote/");
+                        Url = Url?.Replace("/feed/", "/vote/");
                         break;
                     case "rating":
                         IsRatingFeed = true;
@@ -88,7 +88,7 @@ namespace CoolapkUWP.Models.Feeds
                         break;
                     case "question":
                         IsQuestionFeed = true;
-                        Url = Url.Replace("/feed/", "/question/");
+                        Url = Url?.Replace("/feed/", "/question/");
                         break;
                 }
             }

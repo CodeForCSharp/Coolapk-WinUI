@@ -12,7 +12,7 @@ namespace CoolapkUWP.ViewModels.BrowserPages
     public partial class HTMLViewModel : ObservableObject, IViewModel
     {
         private readonly Uri uri;
-        private Action<UISettingChangedType> UISettingChanged;
+        private readonly Action<UISettingChangedType> UISettingChanged;
 
         [ObservableProperty]
         public partial string Title { get; private set; }

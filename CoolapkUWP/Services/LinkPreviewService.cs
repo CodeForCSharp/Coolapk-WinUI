@@ -50,9 +50,9 @@ namespace CoolapkUWP.Services
                                 dto.Dateline = long.TryParse(dateline.ToString(), out long datelineValue) ? datelineValue : 0L;
                             }
                             dto.MessageTitle = data.TryGetPropertyValue("message_title", out JsonNode message_title) ? message_title.ToString() : null;
-                            if (data.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr.AsArray().Count > 0 && picArr != null)
+                            if (data.TryGetPropertyValue("picArr", out JsonNode picArr) && picArr is JsonArray picArray && picArray.Count > 0)
                             {
-                                foreach (JsonNode item in picArr.AsArray())
+                                foreach (JsonNode item in picArray)
                                 {
                                     (dto.PicUris ??= new System.Collections.Generic.List<string>()).Add(item.ToString());
                                 }
