@@ -48,7 +48,7 @@ namespace CoolapkUWP.Controls.Dialogs
             (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetAppDetail, "com.coolapk.market"));
             if (isSucceed)
             {
-                AppModel model = new AppModel(result.AsObject());
+                AppModel model = AppModel.FromJson(result.AsObject());
                 if (!string.IsNullOrEmpty(model.VersionCode) && !string.IsNullOrEmpty(model.VersionName))
                 {
                     APIVersion = new APIVersion(model.VersionName, model.VersionCode);

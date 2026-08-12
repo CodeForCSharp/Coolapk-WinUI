@@ -1,26 +1,32 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models
 {
     public class SearchWord : Entity
     {
-        public string Glyph { get; set; }
-        public string Title { get; set; }
+        private readonly SearchWordDto _dto;
 
-        public SearchWord(JsonObject keys) : base(keys)
+        public string Glyph { get; }
+        public string Title => _dto.Title;
+
+        public SearchWord(SearchWordDto dto)
         {
-            if (keys.TryGetPropertyValue("logo", out JsonNode logo))
-            {
-                Glyph = logo.ToString().Contains("app") || logo.ToString().Contains("cube")
-                    ? "\uE719"
-                    : logo.ToString().Contains("xitongguanli") ? "\uE77B" : "\uE721";
-            }
+            _dto = dto;
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            if (keys.TryGetPropertyValue("title", out JsonNode title))
+            if (dto.Logo != null)
             {
-                Title = title.ToString();
+                Glyph = dto.Logo.Contains("app") || dto.Logo.Contains("cube")
+                    ? "\uE719"
+                    : dto.Logo.Contains("xitongguanli") ? "\uE77B" : "\uE721";
             }
         }
+
+        public static SearchWord FromJson(JsonObject json)
+            => new SearchWord(JsonSerializer.Deserialize<SearchWordDto>(json, DtoJson.Options));
 
         public override string ToString()
         {

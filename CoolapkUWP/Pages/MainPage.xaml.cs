@@ -134,8 +134,6 @@ namespace CoolapkUWP.Pages
             App.MainWindow?.SetTitleBar(DragRegion);
         }
 
-        private void AppWindow_Changed(object sender, object args) { }
-
         private void TitleBar_LayoutMetricsChanged(Microsoft.UI.Windowing.AppWindowTitleBar sender, object args) => UpdateAppTitle(sender);
 
         public string GetAppTitleFromSystem => Package.Current.DisplayName;
@@ -353,11 +351,11 @@ namespace CoolapkUWP.Pages
                             switch ((string)token["entityType"])
                             {
                                 case "apk":
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new AppModel(token as JsonObject)));
+                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(AppModel.FromJson(token as JsonObject)));
                                     break;
                                 case "searchWord":
                                 default:
-                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(new SearchWord(token as JsonObject)));
+                                    await DispatcherQueue.AwaitableRunAsync(() => observableCollection.Add(SearchWord.FromJson(token as JsonObject)));
                                     break;
                             }
                         }

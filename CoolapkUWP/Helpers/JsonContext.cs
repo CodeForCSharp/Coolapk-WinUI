@@ -1,4 +1,5 @@
 using CoolapkUWP.Common;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Models.Update;
 using CoolapkUWP.Models.Upload;
 using System.Text.Json.Serialization;
@@ -6,6 +7,8 @@ using System.Text.Json.Serialization;
 namespace CoolapkUWP.Helpers
 {
     [JsonSourceGenerationOptions(UseStringEnumConverter = true)]
+    [JsonSerializable(typeof(SearchWordDto))]
+    [JsonSerializable(typeof(AppDto))]
     [JsonSerializable(typeof(UpdateInfo))]
     [JsonSerializable(typeof(Asset))]
     [JsonSerializable(typeof(UploadPicturePrepareResult))]
