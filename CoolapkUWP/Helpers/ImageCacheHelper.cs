@@ -29,6 +29,9 @@ namespace CoolapkUWP.Helpers
         SmallAvatar = Avatar | Small,
     }
 
+    /// <summary>
+    /// 图片加载门面:负责 URL 清洗、缩略图规则与占位图,缓存实现见 <see cref="ImageCache"/>。
+    /// </summary>
     internal static partial class ImageCacheHelper
     {
         private static readonly Uri DarkNoPicUri = new Uri("ms-appx:/Assets/NoPic/img_placeholder_night.png");
@@ -38,12 +41,10 @@ namespace CoolapkUWP.Helpers
         private static BitmapImage WhiteNoPicMode { get; set; }
         internal static BitmapImage NoPic { get => ThemeHelper.IsDarkTheme() ? DarkNoPicMode : WhiteNoPicMode; }
 
-        internal static DispatcherQueue Dispatcher { get; } = App.MainWindow.DispatcherQueue;
-
         static ImageCacheHelper()
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromHours(8);
-            _ = Dispatcher.AwaitableRunAsync(() =>
+            _ = WindowContext.DispatcherQueue.AwaitableRunAsync(() =>
             {
                 DarkNoPicMode = new BitmapImage(DarkNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 };
                 WhiteNoPicMode = new BitmapImage(WhiteNoPicUri) { DecodePixelHeight = 768, DecodePixelWidth = 768 };

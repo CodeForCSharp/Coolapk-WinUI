@@ -1,6 +1,8 @@
 using CoolapkUWP.Helpers;
 using CommunityToolkit.WinUI.Helpers;
 using System;
+using System.Linq;
+using System.Security.Cryptography;
 using Windows.ApplicationModel;
 
 namespace CoolapkUWP.Common
@@ -12,6 +14,8 @@ namespace CoolapkUWP.Common
         private static readonly string mac = RandMacAddress();
         private static readonly string SystemManufacturer = string.Empty;
         private static readonly string SystemProductName = string.Empty;
+
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         public static string DeviceCode;
 
@@ -85,25 +89,16 @@ namespace CoolapkUWP.Common
 
         private static string RandMacAddress()
         {
-            Random rand = new Random();
-            string macAdress = string.Empty;
-            for (int i = 0; i < 6; i++)
-            {
-                macAdress += rand.Next(256).ToString("x2");
-                if (i != 5)
-                {
-                    macAdress += ":";
-                }
-            }
-            return macAdress;
+            byte[] bytes = new byte[6];
+            Rng.GetBytes(bytes);
+            return string.Join(":", bytes.Select(b => b.ToString("x2")));
         }
 
         private static string RandHexString(int n)
         {
-            Random rand = new Random();
             byte[] bytes = new byte[n];
-            rand.NextBytes(bytes);
-            return BitConverter.ToString(bytes).ToUpperInvariant().Replace("-", "");
+            Rng.GetBytes(bytes);
+            return Convert.ToHexString(bytes);
         }
     }
 

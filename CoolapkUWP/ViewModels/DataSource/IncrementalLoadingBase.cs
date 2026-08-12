@@ -147,14 +147,12 @@ namespace CoolapkUWP.ViewModels.DataSource
         {
             if (items == null) { return; }
             await Dispatcher.ResumeForegroundAsync();
-            foreach (T item in items)
+            for (int i = 0; i < items.Count; i++)
             {
-                Add(item);
-                InvokeProgressChanged(item, items);
+                Add(items[i]);
+                LoadMoreProgressChanged?.Invoke((double)(i + 1) / items.Count);
             }
         }
-
-        protected virtual void InvokeProgressChanged(T item, IList<T> items) => LoadMoreProgressChanged?.Invoke((double)(items.IndexOf(item) + 1) / items.Count);
 
         protected abstract Task<IList<T>> LoadMoreItemsOverrideAsync(CancellationToken c, uint count);
 
