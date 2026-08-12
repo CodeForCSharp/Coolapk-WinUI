@@ -28,6 +28,8 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(IndexPageMessageCardDto))]
     [JsonSerializable(typeof(IndexPageOperationCardDto))]
     [JsonSerializable(typeof(ContactDto))]
+    [JsonSerializable(typeof(NotificationNumbersDto))]
+    [JsonSerializable(typeof(NotificationDto))]
     [JsonSerializable(typeof(UpdateInfo))]
     [JsonSerializable(typeof(Asset))]
     [JsonSerializable(typeof(UploadPicturePrepareResult))]

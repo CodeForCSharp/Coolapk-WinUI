@@ -1,5 +1,8 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Threading.Tasks;
@@ -71,51 +74,24 @@ namespace CoolapkUWP.Models
             {
                 (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetNotificationNumbers), true);
                 if (!isSucceed) { return; }
-                ChangeNumber(result.AsObject());
+                ChangeNumber(JsonSerializer.Deserialize<NotificationNumbersDto>(result.AsObject(), DtoJson.Options));
             }
             catch { Clear(); }
         }
 
-        private void ChangeNumber(JsonObject token)
+        private void ChangeNumber(NotificationNumbersDto dto)
         {
-            if (token != null)
+            if (dto != null)
             {
-                if (token.TryGetPropertyValue("cloudInstall", out JsonNode cloudInstall) && cloudInstall != null)
-                {
-                    CloudInstall = token["cloudInstall"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("notification", out JsonNode notification) && notification != null)
-                {
-                    Notification = token["notification"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("badge", out JsonNode badge) && badge != null)
-                {
-                    BadgeNum = token["badge"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("contacts_follow", out JsonNode contacts_follow) && contacts_follow != null)
-                {
-                    FollowNum = token["contacts_follow"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("message", out JsonNode message) && message != null)
-                {
-                    MessageNum = token["message"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("atme", out JsonNode atme) && atme != null)
-                {
-                    AtMeNum = token["atme"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("atcommentme", out JsonNode atcommentme) && atcommentme != null)
-                {
-                    AtCommentMeNum = token["atcommentme"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("commentme", out JsonNode commentme) && commentme != null)
-                {
-                    CommentMeNum = token["commentme"].ToInt32Safe();
-                }
-                if (token.TryGetPropertyValue("feedlike", out JsonNode feedlike) && feedlike != null)
-                {
-                    FeedLikeNum = token["feedlike"].ToInt32Safe();
-                }
+                CloudInstall = dto.CloudInstall.ToInt32Safe();
+                Notification = dto.Notification.ToInt32Safe();
+                BadgeNum = dto.Badge.ToInt32Safe();
+                FollowNum = dto.ContactsFollow.ToInt32Safe();
+                MessageNum = dto.Message.ToInt32Safe();
+                AtMeNum = dto.Atme.ToInt32Safe();
+                AtCommentMeNum = dto.Atcommentme.ToInt32Safe();
+                CommentMeNum = dto.Commentme.ToInt32Safe();
+                FeedLikeNum = dto.Feedlike.ToInt32Safe();
             }
         }
     }

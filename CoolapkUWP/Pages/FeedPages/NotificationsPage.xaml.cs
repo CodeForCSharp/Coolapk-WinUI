@@ -81,7 +81,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new SimpleNotificationModel(o) },
+                                    (o) => new Entity[] { NotificationModelFactory.CreateSimple(o) },
                                     "id")));
                         break;
                     case "AtMe":
@@ -107,7 +107,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new AtCommentMeNotificationModel(o) },
+                                    (o) => new Entity[] { NotificationModelFactory.CreateAtCommentMe(o) },
                                     "id")));
                         break;
                     case "FeedLike":
@@ -120,7 +120,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new LikeNotificationModel(o) },
+                                    (o) => new Entity[] { NotificationModelFactory.CreateLike(o) },
                                     "id")));
                         break;
                     case "Follow":
@@ -133,7 +133,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new SimpleNotificationModel(o) },
+                                    (o) => new Entity[] { NotificationModelFactory.CreateSimple(o) },
                                     "id")));
                         break;
                     case "Message":
@@ -145,7 +145,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                         p,
                                         string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                         string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { new MessageNotificationModel(o) },
+                                    (o) => new Entity[] { NotificationModelFactory.CreateMessage(o) },
                                     "id")));
                         break;
                     default:

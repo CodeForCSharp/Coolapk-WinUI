@@ -4,6 +4,7 @@ using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
+using CoolapkUWP.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
@@ -181,7 +182,7 @@ namespace CoolapkUWP.Models.Feeds
                     }
                     else
                     {
-                        BuildLinkSourceFeed();
+                        _ = BuildLinkSourceFeedAsync();
                     }
 
                     if (!string.IsNullOrEmpty(dto.ExtraPic))
@@ -333,16 +334,16 @@ namespace CoolapkUWP.Models.Feeds
             {
                 ExtraUrl = expandedUrl;
             }
-            BuildLinkSourceFeed();
+            _ = BuildLinkSourceFeedAsync();
         }
 
-        private void BuildLinkSourceFeed()
+        private async Task BuildLinkSourceFeedAsync()
         {
             ExtraSubtitle = ExtraUrl.ValidateAndGetUri() is Uri ExtraUri && ExtraUri != null ? ExtraUri.Host : ExtraUrl;
 
             if (ExtraUrl.Contains("coolapk") && ExtraUrl.Contains("feed"))
             {
-                LinkSourceFeed = new LinkFeedModel(new Uri(ExtraUrl), LinkType.Coolapk);
+                LinkSourceFeed = new LinkFeedModel(await LinkPreviewService.LoadAsync(new Uri(ExtraUrl), LinkType.Coolapk), LinkType.Coolapk);
                 ShowLinkSourceFeed = true;
             }
             else if (ExtraUrl.Contains("bilibili") && ExtraUrl.Contains("t.bilibili"))
@@ -350,14 +351,14 @@ namespace CoolapkUWP.Models.Feeds
                 Regex GetID = new Regex(@"/t.*?/([\d|\w]+)");
                 Uri uri = UriHelper.GetLinkUri(UriType.GetBilibiliFeed, LinkType.Bilibili, GetID.Match(ExtraUrl).Groups[1].Value);
                 MultipartFormDataContent content = new MultipartFormDataContent { { new StringContent(GetID.Match(ExtraUrl).Groups[1].Value), "dynamic_id" } };
-                LinkSourceFeed = new LinkFeedModel(uri, LinkType.Bilibili, true, content);
+                LinkSourceFeed = new LinkFeedModel(await LinkPreviewService.LoadAsync(uri, LinkType.Bilibili, true, content), LinkType.Bilibili);
                 ShowLinkSourceFeed = true;
             }
             else if (ExtraUrl.Contains("ithome") && ExtraUrl.Contains("qcontent"))
             {
                 Regex GetID = new Regex(@"[%26|%3F]id%3D([\d|\w]+)");
                 Uri uri = UriHelper.GetLinkUri(UriType.GetITHomeFeed, LinkType.ITHome, GetID.Match(ExtraUrl).Groups[1].Value);
-                LinkSourceFeed = new LinkFeedModel(uri, LinkType.ITHome);
+                LinkSourceFeed = new LinkFeedModel(await LinkPreviewService.LoadAsync(uri, LinkType.ITHome), LinkType.ITHome);
                 ShowLinkSourceFeed = true;
             }
         }

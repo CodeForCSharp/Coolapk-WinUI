@@ -1,7 +1,10 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
 using HtmlAgilityPack;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
@@ -20,7 +23,37 @@ namespace CoolapkUWP.Models.Pages
 
         public ImageModel UserAvatar { get; protected set; }
 
-        protected NotificationModel(JsonObject token) : base(token) { }
+        protected NotificationModel(NotificationDto dto)
+        {
+            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
+        }
+
+        protected void ApplyCommon(NotificationDto dto)
+        {
+            ID = dto.Id.ToInt32Safe();
+
+            if (dto.Dateline != null)
+            {
+                Dateline = dto.Dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
+            }
+
+            if (!string.IsNullOrEmpty(dto.BlockStatus) && dto.BlockStatus != "0")
+            {
+                Dateline += " [已折叠]";
+            }
+
+            if (dto.Status == "-1")
+            {
+                Dateline += " [仅自己可见]";
+            }
+        }
+
+        protected static string GetBlockStatus(JsonNode userInfo, ResourceLoader loader)
+            => userInfo == null ? null
+                : userInfo["status"]?.ToInt32Safe() == -1 ? loader.GetString("Status-1")
+                : userInfo["block_status"]?.ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
+                : userInfo["block_status"]?.ToInt32Safe() == 2 ? loader.GetString("BlockStatus2")
+                : null;
 
         public override string ToString() => $"{UserName} - {Dateline}";
     }
@@ -29,61 +62,34 @@ namespace CoolapkUWP.Models.Pages
     {
         public string Note { get; private set; }
 
-        public SimpleNotificationModel(JsonObject token) : base(token)
+        public SimpleNotificationModel(NotificationDto dto) : base(dto)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
-            {
-                ID = id.ToInt32Safe();
-            }
+            ApplyCommon(dto);
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
-            {
-                UserUrl = url.ToString();
-            }
+            UserUrl = dto.Url;
 
-            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
-            {
-                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
-            }
-
-            if (token.TryGetPropertyValue("note", out JsonNode _note))
+            if (dto.Note != null)
             {
                 HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(_note.ToString());
+                doc.LoadHtml(dto.Note);
                 HtmlNodeCollection nodes = doc.DocumentNode.ChildNodes;
                 HtmlNode node = nodes.Last();
                 Note = doc.DocumentNode.InnerText;
                 Url = node.GetAttributeValue("href", string.Empty);
             }
 
-            if (token.TryGetPropertyValue("fromUserAvatar", out JsonNode fromUserAvatar))
+            if (dto.FromUserAvatar != null)
             {
-                UserAvatar = new ImageModel(fromUserAvatar.ToString(), ImageType.BigAvatar);
+                UserAvatar = new ImageModel(dto.FromUserAvatar, ImageType.BigAvatar);
             }
 
-            if (token.TryGetPropertyValue("fromUserInfo", out JsonNode v1))
-            {
-                JsonObject fromUserInfo = v1.AsObject();
-                BlockStatus = fromUserInfo["status"].ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                   : fromUserInfo["block_status"].ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                   : fromUserInfo["block_status"].ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : null;
-            }
+            BlockStatus = GetBlockStatus(dto.FromUserInfo, loader);
 
-            if (token.TryGetPropertyValue("fromusername", out JsonNode fromusername))
+            if (dto.Fromusername != null)
             {
-                UserName = $"{fromusername} {BlockStatus}";
-            }
-
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status) && block_status.ToString() != "0")
-            {
-                Dateline += " [已折叠]";
-            }
-
-            if (token.TryGetPropertyValue("status", out JsonNode status) && status.ToString() == "-1")
-            {
-                Dateline += " [仅自己可见]";
+                UserName = $"{dto.Fromusername} {BlockStatus}";
             }
         }
 
@@ -95,63 +101,33 @@ namespace CoolapkUWP.Models.Pages
         public string Message { get; private set; }
         public string FeedMessage { get; private set; }
 
-        public AtCommentMeNotificationModel(JsonObject token) : base(token)
+        public AtCommentMeNotificationModel(NotificationDto dto) : base(dto)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            ApplyCommon(dto);
+
+            Url = dto.Url;
+
+            if (dto.Uid != null)
             {
-                ID = id.ToInt32Safe();
+                UserUrl = $"/u/{dto.Uid}";
             }
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            FeedMessage = dto.ExtraTitle;
+
+            if (dto.UserAvatar != null)
             {
-                Url = url.ToString();
+                UserAvatar = new ImageModel(dto.UserAvatar, ImageType.BigAvatar);
             }
 
-            if (token.TryGetPropertyValue("uid", out JsonNode uid))
-            {
-                UserUrl = $"/u/{uid}";
-            }
+            Message = $"{(string.IsNullOrEmpty(dto.Rusername) ? string.Empty : $"回复<a href=\"/u/{dto.Ruid}\">{dto.Rusername}</a>: ")}{dto.Message}";
 
-            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
-            {
-                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
-            }
+            BlockStatus = GetBlockStatus(dto.UserInfo, loader);
 
-            if (token.TryGetPropertyValue("extra_title", out JsonNode extra_title))
+            if (dto.Username != null)
             {
-                FeedMessage = extra_title.ToString();
-            }
-
-            if (token.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
-            {
-                UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
-            }
-
-            Message = $"{(string.IsNullOrEmpty((string)token["rusername"]) ? string.Empty : $"回复<a href=\"/u/{(string)token["ruid"]}\">{(string)token["rusername"]}</a>: ")}{(string)token["message"]}";
-
-            if (token.TryGetPropertyValue("userInfo", out JsonNode v1))
-            {
-                JsonObject userInfo = v1.AsObject();
-                BlockStatus = userInfo["status"].ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                   : userInfo["block_status"].ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                   : userInfo["block_status"].ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : null;
-            }
-
-            if (token.TryGetPropertyValue("username", out JsonNode username))
-            {
-                UserName = $"{username} {BlockStatus}";
-            }
-
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status) && block_status.ToString() != "0")
-            {
-                Dateline += " [已折叠]";
-            }
-
-            if (token.TryGetPropertyValue("status", out JsonNode status) && status.ToString() == "-1")
-            {
-                Dateline += " [仅自己可见]";
+                UserName = $"{dto.Username} {BlockStatus}";
             }
         }
 
@@ -164,68 +140,46 @@ namespace CoolapkUWP.Models.Pages
 
         public SourceFeedModel FeedDetail { get; private set; }
 
-        public LikeNotificationModel(JsonObject token) : base(token)
+        public LikeNotificationModel(NotificationDto dto, JsonObject raw) : base(dto)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            ApplyCommon(dto);
+
+            Url = dto.Url;
+
+            if (!string.IsNullOrEmpty(dto.FeedTypeName))
             {
-                ID = id.ToInt32Safe();
+                Title = $"赞了你的{dto.FeedTypeName}";
+            }
+            else if (!string.IsNullOrEmpty(dto.InfoHtml))
+            {
+                Title = $"赞了你的{dto.InfoHtml}";
             }
 
-            if (token.TryGetPropertyValue("url", out JsonNode url))
+            if (dto.LikeUid != null)
             {
-                Url = url.ToString();
+                UserUrl = $"/u/{dto.LikeUid}";
             }
 
-            if (token.TryGetPropertyValue("feedTypeName", out JsonNode feedTypeName))
+            if (dto.LikeTime != null)
             {
-                Title = $"赞了你的{feedTypeName}";
-            }
-            else if (token.TryGetPropertyValue("infoHtml", out JsonNode infoHtml))
-            {
-                Title = $"赞了你的{infoHtml}";
+                Dateline = dto.LikeTime.ToInt64Safe().ConvertUnixTimeStampToReadable();
             }
 
-            if (token.TryGetPropertyValue("likeUid", out JsonNode likeUid))
+            if (dto.LikeAvatar != null)
             {
-                UserUrl = $"/u/{likeUid}";
+                UserAvatar = new ImageModel(dto.LikeAvatar, ImageType.BigAvatar);
             }
 
-            if (token.TryGetPropertyValue("likeTime", out JsonNode likeTime))
+            BlockStatus = GetBlockStatus(dto.LikeUserInfo, loader);
+
+            if (dto.LikeUsername != null)
             {
-                Dateline = likeTime.ToInt64Safe().ConvertUnixTimeStampToReadable();
+                UserName = $"{dto.LikeUsername} {BlockStatus}";
             }
 
-            if (token.TryGetPropertyValue("likeAvatar", out JsonNode likeAvatar))
-            {
-                UserAvatar = new ImageModel(likeAvatar.ToString(), ImageType.BigAvatar);
-            }
-
-            if (token.TryGetPropertyValue("likeUserInfo", out JsonNode v1))
-            {
-                JsonObject likeUserInfo = v1.AsObject();
-                BlockStatus = likeUserInfo["status"].ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                   : likeUserInfo["block_status"].ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                   : likeUserInfo["block_status"].ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : null;
-            }
-
-            if (token.TryGetPropertyValue("likeUsername", out JsonNode likeUsername))
-            {
-                UserName = $"{likeUsername} {BlockStatus}";
-            }
-
-            if (token.TryGetPropertyValue("block_status", out JsonNode block_status) && block_status.ToString() != "0")
-            {
-                Dateline += " [已折叠]";
-            }
-
-            if (token.TryGetPropertyValue("status", out JsonNode status) && status.ToString() == "-1")
-            {
-                Dateline += " [仅自己可见]";
-            }
-
-            FeedDetail = SourceFeedModel.FromJson(token);
+            FeedDetail = SourceFeedModel.FromJson(raw);
         }
 
         public override string ToString() => Title;
@@ -235,59 +189,55 @@ namespace CoolapkUWP.Models.Pages
     {
         public string FeedMessage { get; private set; }
 
-        public MessageNotificationModel(JsonObject token) : base(token)
+        public MessageNotificationModel(NotificationDto dto) : base(dto)
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
 
-            if (token.TryGetPropertyValue("id", out JsonNode id))
+            ApplyCommon(dto);
+
+            Url = dto.Ukey;
+
+            if (dto.Uid != null)
             {
-                ID = id.ToInt32Safe();
+                UserUrl = $"/u/{dto.Uid}";
             }
 
-            if (token.TryGetPropertyValue("ukey", out JsonNode ukey))
-            {
-                Url = ukey.ToString();
-            }
+            FeedMessage = dto.Message;
 
-            if (token.TryGetPropertyValue("uid", out JsonNode uid))
+            if (dto.MessageUserInfo is JsonObject messageUserInfo)
             {
-                UserUrl = $"/u/{uid}";
-            }
-
-            if (token.TryGetPropertyValue("dateline", out JsonNode dateline))
-            {
-                Dateline = dateline.ToInt64Safe().ConvertUnixTimeStampToReadable();
-            }
-
-            if (token.TryGetPropertyValue("message", out JsonNode message))
-            {
-                FeedMessage = message.ToString();
-            }
-
-            if (token.TryGetPropertyValue("messageUserInfo", out JsonNode v1))
-            {
-                JsonObject messageUserInfo = v1.AsObject();
-
                 if (messageUserInfo.TryGetPropertyValue("userAvatar", out JsonNode userAvatar))
                 {
                     UserAvatar = new ImageModel(userAvatar.ToString(), ImageType.BigAvatar);
                 }
 
-                BlockStatus = messageUserInfo["status"].ToInt32Safe() == -1 ? loader.GetString("Status-1")
-                   : messageUserInfo["block_status"].ToInt32Safe() == -1 ? loader.GetString("BlockStatus-1")
-                   : messageUserInfo["block_status"].ToInt32Safe() == 2 ? loader.GetString("BlockStatus2") : null;
+                BlockStatus = GetBlockStatus(messageUserInfo, loader);
 
                 if (messageUserInfo.TryGetPropertyValue("username", out JsonNode username))
                 {
                     UserName = $"{username} {BlockStatus}";
                 }
-
             }
 
-            if (token.TryGetPropertyValue("is_top", out JsonNode is_top) && is_top.ToInt32Safe() == 1)
+            if (dto.IsTop.ToInt32Safe() == 1)
             {
                 Dateline += " " + "[置顶]";
             }
         }
+    }
+
+    internal static class NotificationModelFactory
+    {
+        internal static SimpleNotificationModel CreateSimple(JsonObject json)
+            => new SimpleNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
+
+        internal static AtCommentMeNotificationModel CreateAtCommentMe(JsonObject json)
+            => new AtCommentMeNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
+
+        internal static LikeNotificationModel CreateLike(JsonObject json)
+            => new LikeNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options), json);
+
+        internal static MessageNotificationModel CreateMessage(JsonObject json)
+            => new MessageNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
     }
 }
