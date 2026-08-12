@@ -13,17 +13,6 @@ namespace CoolapkUWP.Models.Pages
 {
     internal partial class UserDetail : FeedListDetailBase, IUserModel, ICanFollow
     {
-        [ObservableProperty]
-        public partial bool Followed { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowGlyph { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowStatus { get; set; }
-
-        partial void OnFollowedChanged(bool value) => OnFollowChanged();
-
         int ICanFollow.ID => UID;
 
         public int UID { get; private set; }
@@ -122,7 +111,7 @@ namespace CoolapkUWP.Models.Pages
         public static UserDetail FromJson(JsonObject json)
             => new UserDetail(JsonSerializer.Deserialize<UserDetailDto>(json, DtoJson.Options));
 
-        private void OnFollowChanged()
+        protected override void OnFollowChanged()
         {
             if (UID.ToString() != SettingsHelper.Get<string>(SettingsHelper.Uid))
             {

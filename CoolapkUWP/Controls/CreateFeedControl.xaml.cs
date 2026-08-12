@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了“用户控件”项模板
@@ -32,6 +33,43 @@ namespace CoolapkUWP.Controls
 {
     public sealed partial class CreateFeedControl : Picker, INotifyPropertyChanged
     {
+        /// <summary>
+        /// 创建并显示回复/楼中楼输入框。
+        /// </summary>
+        public static void ShowReply(UIElement anchor, int replyID, CreateFeedType type)
+        {
+            new CreateFeedControl
+            {
+                ReplyID = replyID,
+                FeedType = type,
+                PopupTransitions = new TransitionCollection
+                {
+                    new EdgeUIThemeTransition
+                    {
+                        Edge = EdgeTransitionLocation.Bottom
+                    }
+                }
+            }.Show(anchor);
+        }
+
+        /// <summary>
+        /// 创建并显示动态发布输入框。
+        /// </summary>
+        public static void ShowCreateFeed(UIElement anchor)
+        {
+            new CreateFeedControl
+            {
+                FeedType = CreateFeedType.Feed,
+                PopupTransitions = new TransitionCollection
+                {
+                    new EdgeUIThemeTransition
+                    {
+                        Edge = EdgeTransitionLocation.Bottom
+                    }
+                }
+            }.Show(anchor);
+        }
+
         private AppBarToggleButton BoldButton;
         private AppBarToggleButton ItalicButton;
         private AppBarToggleButton UnderLineButton;

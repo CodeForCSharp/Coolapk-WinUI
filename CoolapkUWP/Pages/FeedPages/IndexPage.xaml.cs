@@ -1,9 +1,6 @@
 using CoolapkUWP.ViewModels.FeedPages;
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
@@ -14,51 +11,13 @@ namespace CoolapkUWP.Pages.FeedPages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class IndexPage : Page
+    public sealed partial class IndexPage : PivotPageBase
     {
-        private static int PivotIndex = 0;
-
-        private bool isLoaded;
-        private Func<bool, Task> Refresh;
-
         public IndexPage() => InitializeComponent();
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-            PivotIndex = Pivot.SelectedIndex;
-        }
+        protected override Pivot PivotControl => Pivot;
 
-        private void Pivot_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded)
-            {
-                Pivot.ItemsSource = GetMainItems();
-                Pivot.SelectedIndex = PivotIndex;
-                isLoaded = true;
-            }
-        }
-
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
-            if ((Pivot.SelectedItem as PivotItem).Content is Frame Frame && Frame.Content is null)
-            {
-                string url = MenuItem.Tag.ToString() == "V9_HOME_TAB_HEADLINE"
-                    ? "/main/indexV8"
-                    : MenuItem.Tag.ToString() == "V11_FIND_DYH"
-                        ? "/user/dyhSubscribe"
-                        : $"/page?url={MenuItem.Tag}";
-                _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(url));
-                Refresh = (reset) => _ = (Frame.Content as AdaptivePage).Refresh(reset);
-            }
-            else if ((Pivot.SelectedItem as PivotItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
-            {
-                Refresh = (reset) => _ = AdaptivePage.Refresh(reset);
-            }
-        }
-
-        public static ObservableCollection<PivotItem> GetMainItems()
+        protected override ObservableCollection<PivotItem> GetMainItems()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("IndexPage");
             ObservableCollection<PivotItem> items = new ObservableCollection<PivotItem>
@@ -75,12 +34,14 @@ namespace CoolapkUWP.Pages.FeedPages
             return items;
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        protected override void NavigateToPage(PivotItem item, Frame frame)
         {
-            if (Refresh != null)
-            {
-                _ = Refresh(true);
-            }
+            string url = item.Tag.ToString() == "V9_HOME_TAB_HEADLINE"
+                ? "/main/indexV8"
+                : item.Tag.ToString() == "V11_FIND_DYH"
+                    ? "/user/dyhSubscribe"
+                    : $"/page?url={item.Tag}";
+            _ = frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(url));
         }
     }
 }

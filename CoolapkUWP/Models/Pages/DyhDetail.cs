@@ -14,18 +14,7 @@ namespace CoolapkUWP.Models.Pages
     internal partial class DyhDetail : FeedListDetailBase, IHasDescription, ICanFollow
     {
         [ObservableProperty]
-        public partial bool Followed { get; set; }
-
-        [ObservableProperty]
         public partial string FollowNum { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowGlyph { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowStatus { get; set; }
-
-        partial void OnFollowedChanged(bool value) => OnFollowChanged();
 
         public int ID { get; private set; }
 
@@ -86,7 +75,7 @@ namespace CoolapkUWP.Models.Pages
             FollowNum = $"{num}{loader.GetString("SubscribeNum")}";
         }
 
-        private void OnFollowChanged()
+        protected override void OnFollowChanged()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
             FollowStatus = Followed ? loader.GetString("Unsubscribe") : loader.GetString("Subscribe");

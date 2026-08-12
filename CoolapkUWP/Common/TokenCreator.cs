@@ -9,13 +9,12 @@ namespace CoolapkUWP.Common
 {
     public class TokenCreator
     {
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private static readonly string guid = Guid.NewGuid().ToString();
         private static readonly string aid = RandHexString(16);
         private static readonly string mac = RandMacAddress();
         private static readonly string SystemManufacturer = string.Empty;
         private static readonly string SystemProductName = string.Empty;
-
-        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         public static string DeviceCode;
 

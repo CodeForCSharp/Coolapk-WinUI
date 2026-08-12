@@ -28,29 +28,7 @@ namespace CoolapkUWP.Controls.DataTemplates
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement element = sender as FrameworkElement;
-            ImageModel image = element.Tag as ImageModel;
-            switch (element.Name)
-            {
-                case "CopyButton":
-                    _ = ImageActions.CopyPicAsync(image);
-                    break;
-                case "SaveButton":
-                    _ = ImageActions.SavePicAsync(image);
-                    break;
-                case "ShareButton":
-                    _ = ImageActions.SharePicAsync(image);
-                    break;
-                case "RefreshButton":
-                    _ = image.Refresh();
-                    break;
-                case "ShowImageButton":
-                    _ = element.ShowImageAsync(image);
-                    break;
-                case "OriginButton":
-                    image.Type = ImageType.OriginImage;
-                    break;
-            }
+            ImageActions.HandleAppBarButtonClick(sender as FrameworkElement);
         }
 
         private async void Border_DragStarting(UIElement sender, DragStartingEventArgs args)

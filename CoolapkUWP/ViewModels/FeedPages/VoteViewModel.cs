@@ -1,71 +1,34 @@
 using CoolapkUWP.Controls;
-using CoolapkUWP.Helpers;
-using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
-using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
-using CoolapkUWP.ViewModels.Providers;
-using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public class VoteViewModel : FeedShellViewModel
+    public class VoteViewModel : FeedDetailViewModelBase
     {
         internal VoteViewModel(string id) : base(id) { }
 
-        public override async Task Refresh(bool reset = false)
+        protected override EntityItemSource BuildTabs(List<ShyHeaderItem> tabs)
         {
-            if (FeedDetail == null || reset)
+            if (FeedDetail.VoteType == 0)
             {
-                FeedDetail = await GetFeedDetailAsync(ID);
-                if (FeedDetail == null) { return; }
-                List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
-                Title = FeedDetail.Title;
-                if (FeedDetail.VoteType == 0)
+                EntityItemSource first = null;
+                foreach (VoteItem vote in FeedDetail.VoteRows)
                 {
-                    foreach (VoteItem vote in FeedDetail.VoteRows)
-                    {
-                        VoteItemSource VoteItemSource = new VoteItemSource(vote.ID.ToString(), vote.VoteID.ToString());
-                        VoteItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                        VoteItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
-                        ItemSource.Add(new ShyHeaderItem
-                        {
-                            Header = vote.Title,
-                            ItemSource = VoteItemSource
-                        });
-                    }
+                    EntityItemSource source = AddTab(tabs, vote.Title, new VoteItemSource(vote.ID.ToString(), vote.VoteID.ToString()));
+                    first ??= source;
                 }
-                else
-                {
-                    VoteItemSource VoteItemSource = new VoteItemSource(string.Empty, FeedDetail.ID.ToString());
-                    VoteItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                    VoteItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
-                    ItemSource.Add(new ShyHeaderItem
-                    {
-                        Header = "观点",
-                        ItemSource = VoteItemSource
-                    });
-                    if (!string.IsNullOrEmpty(FeedDetail.VoteTag))
-                    {
-                        TagItemSource TagItemSource = new TagItemSource(FeedDetail.VoteTag);
-                        TagItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                        TagItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
-                        ItemSource.Add(new ShyHeaderItem
-                        {
-                            Header = "话题",
-                            ItemSource = TagItemSource
-                        });
-                    }
-                }
-                base.ItemSource = ItemSource;
+                return first;
             }
-            await (ItemSource.FirstOrDefault()?.ItemSource as EntityItemSource)?.Refresh(reset);
+
+            EntityItemSource firstTab = AddTab(tabs, "观点", new VoteItemSource(string.Empty, FeedDetail.ID.ToString()));
+            if (!string.IsNullOrEmpty(FeedDetail.VoteTag))
+            {
+                AddTab(tabs, "话题", new TagItemSource(FeedDetail.VoteTag));
+            }
+            return firstTab;
         }
     }
 }

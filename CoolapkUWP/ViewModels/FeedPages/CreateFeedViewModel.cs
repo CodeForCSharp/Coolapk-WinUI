@@ -170,38 +170,21 @@ namespace CoolapkUWP.ViewModels.FeedPages
         }
     }
 
-    public partial class CreateUserItemSource : EntityItemSource
+    public partial class CreateUserItemSource : KeywordSearchItemSource
     {
-        private string keyword = string.Empty;
-        public string Keyword
-        {
-            get => keyword;
-            set
-            {
-                if (keyword != value)
-                {
-                    keyword = value;
-                    UpdateProvider(value);
-                }
-            }
-        }
+        public CreateUserItemSource(string keyword = " ") : base(keyword) { }
 
-        public CreateUserItemSource(string keyword = " ")
+        protected override void UpdateProvider()
         {
-            Keyword = keyword;
-        }
-
-        private void UpdateProvider(string keyword)
-        {
-            if (!string.IsNullOrWhiteSpace(keyword))
+            if (!string.IsNullOrWhiteSpace(Keyword))
             {
                 Provider = new CoolapkListProvider(
                     (p, firstItem, lastItem) =>
                     UriHelper.GetUri(
                         UriType.SearchCreateUsers,
-                        keyword,
+                        Keyword,
                         p,
-                        p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
+                        UriHelper.GetPagingArgs(p, firstItem, lastItem)),
                     GetEntities,
                     "uid");
             }
@@ -214,56 +197,33 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             "followList",
                             uid,
                             p,
-                            string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                            string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { UserModel.FromJson(o["fUserInfo"].AsObject()) },
+                            UriHelper.GetOptionalArg("firstItem", firstItem),
+                            UriHelper.GetOptionalArg("lastItem", lastItem)),
+                    o => new[] { UserModel.FromJson(o["fUserInfo"].AsObject()) },
                     "fuid");
             }
         }
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
-        {
-            yield return UserModel.FromJson(jo);
-        }
+        private IEnumerable<Entity> GetEntities(JsonObject jo) => new[] { UserModel.FromJson(jo) };
     }
 
-    public partial class CreateTopicItemSource : EntityItemSource
+    public partial class CreateTopicItemSource : KeywordSearchItemSource
     {
-        private string keyword = string.Empty;
-        public string Keyword
-        {
-            get => keyword;
-            set
-            {
-                if (keyword != value)
-                {
-                    keyword = value;
-                    UpdateProvider(value);
-                }
-            }
-        }
+        public CreateTopicItemSource(string keyword = " ") : base(keyword) { }
 
-        public CreateTopicItemSource(string keyword = " ")
-        {
-            Keyword = keyword;
-        }
-
-        private void UpdateProvider(string keyword)
+        protected override void UpdateProvider()
         {
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
                 UriHelper.GetUri(
                     UriType.SearchCreateTags,
-                    keyword,
+                    Keyword,
                     p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
+                    UriHelper.GetPagingArgs(p, firstItem, lastItem)),
                 GetEntities,
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
-        {
-            yield return TopicModel.FromJson(jo);
-        }
+        private IEnumerable<Entity> GetEntities(JsonObject jo) => new[] { TopicModel.FromJson(jo) };
     }
 }

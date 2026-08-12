@@ -1,9 +1,10 @@
-<Page
+<feedpages:PivotPageBase
     x:Class="CoolapkUWP.Pages.FeedPages.NotificationsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:feedpages="using:CoolapkUWP.Pages.FeedPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     NavigationCacheMode="Required"
@@ -98,4 +99,4 @@
             <Frame />
         </PivotItem>
     </Pivot>
-</Page>
+</feedpages:PivotPageBase>

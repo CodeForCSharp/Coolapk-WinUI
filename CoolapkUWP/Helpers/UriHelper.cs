@@ -132,6 +132,39 @@ namespace CoolapkUWP.Helpers
             return new Uri(BaseUri, u);
         }
 
+        /// <summary>
+        /// 拼接分页参数：仅在 p &gt; 1 时附加 firstItem/lastItem。
+        /// </summary>
+        public static string GetPagingArgs(int p, string firstItem, string lastItem)
+            => p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty;
+
+        /// <summary>
+        /// 拼接可选查询参数：值为空时返回空字符串。
+        /// </summary>
+        public static string GetOptionalArg(string name, string value)
+            => string.IsNullOrEmpty(value) ? string.Empty : $"&{name}={value}";
+
+        /// <summary>
+        /// 将首页卡片 URL 规范化为可请求的 dataList 页面地址。
+        /// </summary>
+        public static string NormalizePageUri(string uri)
+        {
+            if (uri.StartsWith("url="))
+            {
+                uri = uri.Replace("url=", string.Empty);
+            }
+
+            if (uri.IndexOf("/page", StringComparison.Ordinal) == -1 && (uri.StartsWith("#", StringComparison.Ordinal) || (!uri.Contains("/main/") && !uri.Contains("/user/") && !uri.Contains("/apk/") && !uri.Contains("/appForum/") && !uri.Contains("/picture/") && !uri.Contains("/topic/") && !uri.Contains("/discovery/"))))
+            {
+                uri = "/page/dataList?url=" + uri;
+            }
+            else if (uri.IndexOf("/page", StringComparison.Ordinal) == 0 && !uri.Contains("/page/dataList"))
+            {
+                uri = uri.Replace("/page", "/page/dataList");
+            }
+            return uri.Replace("#", "%23");
+        }
+
         private static string GetTemplate(UriType type)
         {
             switch (type)

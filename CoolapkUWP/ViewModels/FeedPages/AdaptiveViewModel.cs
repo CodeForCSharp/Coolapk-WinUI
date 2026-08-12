@@ -51,7 +51,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         internal AdaptiveViewModel(string uri)
         {
-            Uri = GetUri(uri);
+            if (uri.Contains("&title="))
+            {
+                const string Value = "&title=";
+                Title = uri.Substring(uri.LastIndexOf(Value, StringComparison.Ordinal) + Value.Length);
+            }
+            Uri = UriHelper.NormalizePageUri(uri);
             Provider = new CoolapkListProvider(
                 (p, _, __) => UriHelper.GetUri(UriType.GetIndexPage, Uri, IsIndexPage ? "?" : "&", p),
                 GetEntities,
@@ -163,30 +168,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         public bool IsEqual(AdaptiveViewModel other) => !string.IsNullOrWhiteSpace(Uri) ? Uri == other.Uri : Provider == other.Provider;
 
-        private string GetUri(string uri)
-        {
-            if (uri.Contains("&title="))
-            {
-                const string Value = "&title=";
-                Title = uri.Substring(uri.LastIndexOf(Value, StringComparison.Ordinal) + Value.Length);
-            }
-
-            if (uri.StartsWith("url="))
-            {
-                uri = uri.Replace("url=", string.Empty);
-            }
-
-            if (uri.IndexOf("/page", StringComparison.Ordinal) == -1 && (uri.StartsWith("#", StringComparison.Ordinal) || (!uri.Contains("/main/") && !uri.Contains("/user/") && !uri.Contains("/apk/") && !uri.Contains("/appForum/") && !uri.Contains("/picture/") && !uri.Contains("/topic/") && !uri.Contains("/discovery/"))))
-            {
-                uri = "/page/dataList?url=" + uri;
-            }
-            else if (uri.IndexOf("/page", StringComparison.Ordinal) == 0 && !uri.Contains("/page/dataList"))
-            {
-                uri = uri.Replace("/page", "/page/dataList");
-            }
-            return uri.Replace("#", "%23");
-        }
-
         private IEnumerable<Entity> GetEntities(JsonObject json)
         {
             if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
@@ -213,18 +194,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 yield return EntityTemplateSelector.GetEntity(json, IsHotFeedPage);
             }
             yield break;
-        }
-
-        protected override async Task AddItemsAsync(IList<Entity> items)
-        {
-            if (items == null) { return; }
-            await Dispatcher.ResumeForegroundAsync();
-            foreach (Entity item in items)
-            {
-                if (item is NullEntity) { continue; }
-                Add(item);
-                AddSubProvider(item);
-            }
         }
     }
 }

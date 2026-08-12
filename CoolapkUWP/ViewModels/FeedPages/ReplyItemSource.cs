@@ -2,15 +2,11 @@ using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
-using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
@@ -18,7 +14,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
     [WinRT.GeneratedBindableCustomProperty]
     public partial class ReplyItemSource : EntityItemSource, INotifyPropertyChanged, ICanComboBoxChangeSelectedIndex, ICanToggleChangeSelectedIndex
     {
-        public string ID;
         public List<string> ItemSource { get; private set; }
         private readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedShellPage");
 
@@ -31,7 +26,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (toggleIsOn != value)
                 {
                     toggleIsOn = value;
-                    SetProvider();
+                    _ = Refresh(true);
                     RaisePropertyChangedEvent();
                 }
             }
@@ -46,7 +41,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (replyListType != value)
                 {
                     replyListType = value;
-                    SetProvider();
+                    _ = Refresh(true);
                     RaisePropertyChangedEvent();
                 }
             }
@@ -67,37 +62,25 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
 
-        public ReplyItemSource(string id)
+        public ReplyItemSource(string id) : base(id)
         {
-            ID = id;
             ItemSource = new List<string>()
             {
                 loader.GetString("lastupdate_desc"),
                 loader.GetString("dateline_desc"),
                 loader.GetString("popular")
             };
-            SetProvider();
-        }
-
-        private async void SetProvider()
-        {
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
-                UriHelper.GetUri(
-                    UriType.GetFeedReplies,
-                    ID,
-                    ReplyListType,
-                    p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty,
-                    toggleIsOn ? 1 : 0),
-                GetEntities,
+                    UriHelper.GetUri(
+                        UriType.GetFeedReplies,
+                        id,
+                        ReplyListType,
+                        p,
+                        UriHelper.GetPagingArgs(p, firstItem, lastItem),
+                        toggleIsOn ? 1 : 0),
+                o => new[] { (string)o["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(o) : (Entity)new NullEntity() },
                 "id");
-            await Refresh(true);
-        }
-
-        private IEnumerable<Entity> GetEntities(JsonObject json)
-        {
-            yield return (string)json["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(json) : (Entity)new NullEntity();
         }
 
         public void SetComboBoxSelectedIndex(int value)
@@ -119,5 +102,4 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
     }
-
 }

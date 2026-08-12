@@ -69,6 +69,16 @@ namespace CoolapkUWP.Helpers
             return url.Trim('"').Replace("&quot;", string.Empty).Trim();
         }
 
+        /// <summary>
+        /// 为酷安图床的缩略图请求追加 .s.jpg 后缀（png 除外）。
+        /// </summary>
+        private static string AppendThumbnailSuffix(string url)
+        {
+            return url.Contains("coolapk.com") && !url.EndsWith(".png") && !url.EndsWith(".s.jpg")
+                ? url + ".s.jpg"
+                : url;
+        }
+
         internal static async Task<BitmapImage> GetImageAsync(ImageType type, string url, DispatcherQueue dispatcher, bool isForce = false, int decodePixelWidth = 0)
         {
             url = SanitizeUrl(url);
@@ -88,7 +98,7 @@ namespace CoolapkUWP.Helpers
             {
                 if (type.HasFlag(ImageType.Small))
                 {
-                    if (url.Contains("coolapk.com") && !url.EndsWith(".png") && !url.EndsWith(".s.jpg")) { url += ".s.jpg"; }
+                    url = AppendThumbnailSuffix(url);
                     uri = url.ValidateAndGetUri();
                 }
 
@@ -121,7 +131,7 @@ namespace CoolapkUWP.Helpers
             {
                 if (type.HasFlag(ImageType.Small))
                 {
-                    if (url.Contains("coolapk.com") && !url.EndsWith(".png") && !url.EndsWith(".s.jpg")) { url += ".s.jpg"; }
+                    url = AppendThumbnailSuffix(url);
                     uri = url.ValidateAndGetUri();
                 }
 

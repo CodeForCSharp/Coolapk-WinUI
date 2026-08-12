@@ -1,4 +1,5 @@
 using CoolapkUWP.Models.Images;
+using CommunityToolkit.WinUI;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -8,12 +9,42 @@ using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.Helpers
 {
     internal static class ImageActions
     {
         private static readonly Regex FileNameRegex = new Regex(@"[^/]+(?!.*/)");
+
+        /// <summary>
+        /// 根据按钮 Name 分发图片操作（复制/保存/分享/刷新/查看原图/预览）。
+        /// </summary>
+        public static void HandleAppBarButtonClick(FrameworkElement element)
+        {
+            ImageModel image = element.Tag as ImageModel;
+            switch (element.Name)
+            {
+                case "CopyButton":
+                    _ = CopyPicAsync(image);
+                    break;
+                case "SaveButton":
+                    _ = SavePicAsync(image);
+                    break;
+                case "ShareButton":
+                    _ = SharePicAsync(image);
+                    break;
+                case "RefreshButton":
+                    _ = image.Refresh();
+                    break;
+                case "ShowImageButton":
+                    _ = element.ShowImageAsync(image);
+                    break;
+                case "OriginButton":
+                    image.Type = ImageType.OriginImage;
+                    break;
+            }
+        }
 
         public static async Task<StorageFile> GetOriginImageFileAsync(ImageModel image)
         {

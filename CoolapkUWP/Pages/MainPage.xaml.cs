@@ -313,17 +313,7 @@ namespace CoolapkUWP.Pages
                     NavigationView.SelectedItem = NavigationView.FooterMenuItems.LastOrDefault();
                     break;
                 case "CreateFeed":
-                    new CreateFeedControl
-                    {
-                        FeedType = CreateFeedType.Feed,
-                        PopupTransitions = new TransitionCollection
-                        {
-                            new EdgeUIThemeTransition
-                            {
-                                Edge = EdgeTransitionLocation.Bottom
-                            }
-                        }
-                    }.Show(this);
+                    CreateFeedControl.ShowCreateFeed(this);
                     break;
             }
         }

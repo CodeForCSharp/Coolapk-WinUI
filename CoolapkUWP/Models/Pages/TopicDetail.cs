@@ -16,17 +16,6 @@ namespace CoolapkUWP.Models.Pages
 {
     internal partial class TopicDetail : FeedListDetailBase, IHasSubtitle, ICanFollow
     {
-        [ObservableProperty]
-        public partial bool Followed { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowGlyph { get; set; }
-
-        [ObservableProperty]
-        public partial string FollowStatus { get; set; }
-
-        partial void OnFollowedChanged(bool value) => OnFollowChanged();
-
         public int ID { get; private set; }
 
         public string Url { get; private set; }
@@ -98,7 +87,7 @@ namespace CoolapkUWP.Models.Pages
         public static TopicDetail FromJson(JsonObject json)
             => new TopicDetail(JsonSerializer.Deserialize<TopicDetailDto>(json, DtoJson.Options));
 
-        private void OnFollowChanged()
+        protected override void OnFollowChanged()
         {
             ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
             FollowStatus = Followed ? loader.GetString("Unfollow") : loader.GetString("Follow");

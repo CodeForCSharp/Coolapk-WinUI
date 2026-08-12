@@ -60,6 +60,28 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
 
+        /// <summary>
+        /// 拉取详情并转换为指定类型的详情模型。
+        /// </summary>
+        protected async Task<FeedListDetailBase> GetDetailAsync(UriType type, Func<JsonObject, FeedListDetailBase> fromJson)
+        {
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, ID), true);
+            if (!isSucceed) { return null; }
+
+            JsonObject token = result.AsObject();
+            return token != null ? fromJson(token) : null;
+        }
+
+        /// <summary>
+        /// 构建一个列表 Tab，并将其加入 <paramref name="tabs"/>。
+        /// </summary>
+        protected FeedListItemSource AddTab(List<ShyHeaderItem> tabs, string header, Func<int, string, string, Uri> getUri, string idName = "id")
+        {
+            FeedListItemSource itemSource = new FeedListItemSource(ID, new CoolapkListProvider(getUri, GetEntities, idName));
+            tabs.Add(new ShyHeaderItem { Header = header, ItemSource = itemSource });
+            return itemSource;
+        }
+
         public abstract Task<FeedListDetailBase> GetDetail();
 
         public abstract Task Refresh(bool reset = false);

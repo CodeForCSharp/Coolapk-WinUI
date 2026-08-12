@@ -1,6 +1,7 @@
 using CoolapkUWP.Services;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers.Controls;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Pages.BrowserPages;
@@ -67,55 +68,7 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void FeedButton_Click(object sender, RoutedEventArgs e)
         {
-            void DisabledCopy()
-            {
-                if ((sender as FrameworkElement).DataContext is ICanCopy i)
-                {
-                    i.IsCopyEnabled = false;
-                }
-            }
-
-            FrameworkElement element = sender as FrameworkElement;
-            switch (element.Name)
-            {
-                case "ReplyButton":
-                    DisabledCopy();
-                    if (element.Tag is FeedModelBase feed)
-                    {
-                        new CreateFeedControl
-                        {
-                            ReplyID = feed.ID,
-                            FeedType = CreateFeedType.Reply,
-                            PopupTransitions = new TransitionCollection
-                            {
-                                new EdgeUIThemeTransition
-                                {
-                                    Edge = EdgeTransitionLocation.Bottom
-                                }
-                            }
-                        }.Show(this);
-                    }
-                    break;
-
-                case "LikeButton":
-                    DisabledCopy();
-                    _ = FeedActionsService.ChangeLikeAsync(element.Tag as ICanLike);
-                    break;
-
-                case "ReportButton":
-                    DisabledCopy();
-                    _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(element.Tag.ToString()));
-                    break;
-
-                case "ShareButton":
-                    DisabledCopy();
-                    break;
-
-                default:
-                    DisabledCopy();
-                    _ = this.OpenLinkAsync((sender as FrameworkElement).Tag as string);
-                    break;
-            }
+            FeedCommandService.HandleFeedButtonClick(sender as FrameworkElement, this);
         }
 
         #region 界面模式切换
@@ -129,54 +82,19 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
         {
-            // Remove details content from it's parent panel.
-            if (HeaderControl.Parent != null)
-            {
-                (HeaderControl.Parent as Panel).Children.Remove(HeaderControl);
-            }
-            else
-            {
-                LeftGrid.Children.Remove(HeaderControl);
-                RightGrid.Children.Remove(HeaderControl);
-            }
-
-            if (DetailControl.Parent != null)
-            {
-                (DetailControl.Parent as Panel).Children.Remove(DetailControl);
-            }
-            else
-            {
-                Pane1Grid.Children.Remove(DetailControl);
-                Pane2Grid.Children.Remove(DetailControl);
-            }
-
-            if (BtnsPanel.Parent != null)
-            {
-                (BtnsPanel.Parent as Panel).Children.Remove(BtnsPanel);
-            }
-            else
-            {
-                LeftGrid.Children.Remove(BtnsPanel);
-                RightGrid.Children.Remove(BtnsPanel);
-            }
+            TwoPaneViewHelper.UpdateHeaderPane(HeaderControl, LeftGrid, RightGrid, sender.Mode);
+            TwoPaneViewHelper.UpdateHeaderPane(BtnsPanel, LeftGrid, RightGrid, sender.Mode);
+            TwoPaneViewHelper.UpdateDetailPane(DetailControl, Pane1Grid, Pane2Grid, sender.Mode);
 
             // Single pane
             if (sender.Mode == TwoPaneViewMode.SinglePane)
             {
                 ListControl.RefreshButtonVisibility = Visibility.Collapsed;
-                // Add the details content to Pane1.
-                RightGrid.Children.Add(HeaderControl);
-                RightGrid.Children.Add(BtnsPanel);
-                Pane2Grid.Children.Add(DetailControl);
             }
             // Dual pane.
             else
             {
                 ListControl.RefreshButtonVisibility = Visibility.Visible;
-                // Put details content in Pane2.
-                LeftGrid.Children.Add(HeaderControl);
-                LeftGrid.Children.Add(BtnsPanel);
-                Pane1Grid.Children.Add(DetailControl);
             }
         }
 

@@ -2,29 +2,24 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Pages;
+using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using CoolapkUWP.ViewModels.Providers;
-using System;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
-// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
+// https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了"空白页"项模板
 
 namespace CoolapkUWP.Pages.FeedPages
 {
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class NotificationsPage : Page, INotifyPropertyChanged
+    public sealed partial class NotificationsPage : PivotPageBase
     {
-        private static int PivotIndex = 0;
-
-        private bool isLoaded;
-        private Func<bool, Task> RefreshTask;
-
         private NotificationsModel _notificationsModel = NotificationsModel.Instance;
         public NotificationsModel NotificationsModel
         {
@@ -39,135 +34,109 @@ namespace CoolapkUWP.Pages.FeedPages
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
-        }
-
         public NotificationsPage() => InitializeComponent();
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-            PivotIndex = Pivot.SelectedIndex;
-        }
+        protected override Pivot PivotControl => Pivot;
 
-        private void Pivot_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded)
-            {
-                Pivot.SelectedIndex = PivotIndex;
-                isLoaded = true;
-            }
-            _ = (NotificationsModel?.Update());
-        }
+        protected override ObservableCollection<PivotItem> GetMainItems() => null;
 
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        protected override void OnPivotLoaded() => _ = NotificationsModel?.Update();
+
+        protected override void NavigateToPage(PivotItem item, Frame frame)
         {
-            PivotItem MenuItem = Pivot.SelectedItem as PivotItem;
-            if ((Pivot.SelectedItem as PivotItem).Content is Frame Frame && Frame.Content is null)
+            switch (item.Tag.ToString())
             {
-                switch ((Pivot.SelectedItem as PivotItem).Tag.ToString())
-                {
-                    case "CommentMe":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetNotifications,
-                                        "list",
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { NotificationModelFactory.CreateSimple(o) },
-                                    "id")));
-                        break;
-                    case "AtMe":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetNotifications,
-                                        "atMeList",
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { FeedModel.FromJson(o) },
-                                    "id")));
-                        break;
-                    case "AtCommentMe":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetNotifications,
-                                        "atCommentMeList",
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { NotificationModelFactory.CreateAtCommentMe(o) },
-                                    "id")));
-                        break;
-                    case "FeedLike":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetNotifications,
-                                        "feedLikeList",
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { NotificationModelFactory.CreateLike(o) },
-                                    "id")));
-                        break;
-                    case "Follow":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetNotifications,
-                                        "contactsFollowList",
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { NotificationModelFactory.CreateSimple(o) },
-                                    "id")));
-                        break;
-                    case "Message":
-                        _ = Frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
-                            new CoolapkListProvider(
-                                (p, firstItem, lastItem) =>
-                                    UriHelper.GetUri(
-                                        UriType.GetChats,
-                                        p,
-                                        string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
-                                        string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                    (o) => new Entity[] { NotificationModelFactory.CreateMessage(o) },
-                                    "id")));
-                        break;
-                    default:
-                        break;
-                }
-                RefreshTask = (reset) => (Frame.Content as AdaptivePage).Refresh(reset);
-            }
-            else if ((Pivot.SelectedItem as PivotItem).Content is Frame __ && __.Content is AdaptivePage AdaptivePage)
-            {
-                RefreshTask = (reset) => AdaptivePage.Refresh(reset);
+                case "CommentMe":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetNotifications,
+                                    "list",
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { NotificationModelFactory.CreateSimple(o) },
+                            "id")));
+                    break;
+                case "AtMe":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetNotifications,
+                                    "atMeList",
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { FeedModel.FromJson(o) },
+                            "id")));
+                    break;
+                case "AtCommentMe":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetNotifications,
+                                    "atCommentMeList",
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { NotificationModelFactory.CreateAtCommentMe(o) },
+                            "id")));
+                    break;
+                case "FeedLike":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetNotifications,
+                                    "feedLikeList",
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { NotificationModelFactory.CreateLike(o) },
+                            "id")));
+                    break;
+                case "Follow":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetNotifications,
+                                    "contactsFollowList",
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { NotificationModelFactory.CreateSimple(o) },
+                            "id")));
+                    break;
+                case "Message":
+                    frame.Navigate(typeof(AdaptivePage), new AdaptiveViewModel(
+                        new CoolapkListProvider(
+                            (p, firstItem, lastItem) =>
+                                UriHelper.GetUri(
+                                    UriType.GetChats,
+                                    p,
+                                    UriHelper.GetOptionalArg("firstItem", firstItem),
+                                    UriHelper.GetOptionalArg("lastItem", lastItem)),
+                            o => new[] { NotificationModelFactory.CreateMessage(o) },
+                            "id")));
+                    break;
+                default:
+                    break;
             }
         }
 
         private async Task Refresh(bool reset = false)
         {
             await NotificationsModel?.Update();
-            if (RefreshTask != null)
+            if (refresh != null)
             {
-                await RefreshTask(reset);
+                await refresh(reset);
             }
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
+        protected override void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
     }
 }

@@ -2,12 +2,8 @@ using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Pages;
 using CoolapkUWP.Pages.FeedPages;
-using CoolapkUWP.ViewModels.DataSource;
-using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
@@ -16,9 +12,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
     {
         internal class DyhViewModel : FeedListViewModel
         {
-            public FeedListItemSource AllItemSource { get; private set; }
-            public FeedListItemSource SquareItemSource { get; private set; }
-
             internal DyhViewModel(string id) : base(id, FeedListType.DyhPageList) { }
 
             public override async Task Refresh(bool reset = false)
@@ -31,52 +24,13 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (ItemSource == null)
                 {
                     List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
-                    if (AllItemSource == null || AllItemSource.ID != ID)
-                    {
-                        CoolapkListProvider Provider = new CoolapkListProvider(
-                            (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetDyhFeeds, ID, "all", p, string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}", string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                            GetEntities,
-                            idName);
-                        AllItemSource = new FeedListItemSource(ID, Provider);
-                        ItemSource.Add(new ShyHeaderItem
-                        {
-                            Header = "精选",
-                            ItemSource = AllItemSource
-                        });
-                    }
-                    if (SquareItemSource == null || SquareItemSource.ID != ID)
-                    {
-                        CoolapkListProvider Provider = new CoolapkListProvider(
-                            (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetTagFeeds, ID, "square", p, string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}", string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                            GetEntities,
-                            idName);
-                        SquareItemSource = new FeedListItemSource(ID, Provider);
-                        ItemSource.Add(new ShyHeaderItem
-                        {
-                            Header = "广场",
-                            ItemSource = SquareItemSource
-                        });
-                    }
+                    AddTab(ItemSource, "精选", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetDyhFeeds, ID, "all", p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
+                    AddTab(ItemSource, "广场", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetTagFeeds, ID, "square", p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
                     base.ItemSource = ItemSource;
                 }
             }
 
-            public override async Task<FeedListDetailBase> GetDetail()
-            {
-                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetDyhDetail, ID), true);
-                if (!isSucceed) { return null; }
-
-                JsonObject token = result.AsObject();
-                FeedListDetailBase detail = null;
-
-                if (token != null)
-                {
-                    detail = DyhDetail.FromJson(token);
-                }
-
-                return detail;
-            }
-
+            public override Task<FeedListDetailBase> GetDetail() => GetDetailAsync(UriType.GetDyhDetail, DyhDetail.FromJson);
         }
-}
+    }
 }

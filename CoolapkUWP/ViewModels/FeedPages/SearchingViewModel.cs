@@ -6,6 +6,7 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Nodes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -85,6 +86,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
     {
         public string Keyword;
 
+        private static readonly string[] FeedTypes =
+            { "all", "feed", "feedArticle", "rating", "picture", "question", "answer", "video", "ershou", "vote" };
+
+        private static readonly string[] SortTypes =
+            { "default", "hot", "reply" };
+
         private int searchFeedTypeComboBoxSelectedIndex = 0;
         public int SearchFeedTypeComboBoxSelectedIndex
         {
@@ -114,38 +121,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
         public SearchFeedItemSource(string keyword)
         {
             Keyword = keyword;
-            string feedType = string.Empty;
-            string sortType = string.Empty;
-            switch (SearchFeedTypeComboBoxSelectedIndex)
-            {
-                case 0: feedType = "all"; break;
-                case 1: feedType = "feed"; break;
-                case 2: feedType = "feedArticle"; break;
-                case 3: feedType = "rating"; break;
-                case 4: feedType = "picture"; break;
-                case 5: feedType = "question"; break;
-                case 6: feedType = "answer"; break;
-                case 7: feedType = "video"; break;
-                case 8: feedType = "ershou"; break;
-                case 9: feedType = "vote"; break;
-            }
-            switch (SearchFeedSortTypeComboBoxSelectedIndex)
-            {
-                case 0: sortType = "default"; break;
-                case 1: sortType = "hot"; break;
-                case 2: sortType = "reply"; break;
-            }
-            Provider = new CoolapkListProvider(
-                (p, firstItem, lastItem) =>
-                UriHelper.GetUri(
-                    UriType.SearchFeeds,
-                    feedType,
-                    sortType,
-                    Keyword,
-                    p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
-                GetEntities,
-                "id");
+            UpdateProvider();
         }
 
         private IEnumerable<Entity> GetEntities(JsonObject jo)
@@ -155,27 +131,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         private void UpdateProvider()
         {
-            string feedType = string.Empty;
-            string sortType = string.Empty;
-            switch (SearchFeedTypeComboBoxSelectedIndex)
-            {
-                case 0: feedType = "all"; break;
-                case 1: feedType = "feed"; break;
-                case 2: feedType = "feedArticle"; break;
-                case 3: feedType = "rating"; break;
-                case 4: feedType = "picture"; break;
-                case 5: feedType = "question"; break;
-                case 6: feedType = "answer"; break;
-                case 7: feedType = "video"; break;
-                case 8: feedType = "ershou"; break;
-                case 9: feedType = "vote"; break;
-            }
-            switch (SearchFeedSortTypeComboBoxSelectedIndex)
-            {
-                case 0: sortType = "default"; break;
-                case 1: sortType = "hot"; break;
-                case 2: sortType = "reply"; break;
-            }
+            string feedType = FeedTypes[Math.Clamp(SearchFeedTypeComboBoxSelectedIndex, 0, FeedTypes.Length - 1)];
+            string sortType = SortTypes[Math.Clamp(SearchFeedSortTypeComboBoxSelectedIndex, 0, SortTypes.Length - 1)];
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
                 UriHelper.GetUri(
@@ -184,7 +141,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     sortType,
                     Keyword,
                     p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
+                    UriHelper.GetPagingArgs(p, firstItem, lastItem)),
                 GetEntities,
                 "id");
         }
@@ -194,23 +151,18 @@ namespace CoolapkUWP.ViewModels.FeedPages
     {
         public string Keyword;
 
-        public SearchUserItemSource(string keyword)
+        public SearchUserItemSource(string keyword) : base(keyword)
         {
             Keyword = keyword;
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
-                UriHelper.GetUri(
-                    UriType.SearchUsers,
-                    Keyword,
-                    p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
-                GetEntities,
+                    UriHelper.GetUri(
+                        UriType.SearchUsers,
+                        Keyword,
+                        p,
+                        UriHelper.GetPagingArgs(p, firstItem, lastItem)),
+                o => new[] { UserModel.FromJson(o) },
                 "uid");
-        }
-
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
-        {
-            yield return UserModel.FromJson(jo);
         }
     }
 
@@ -218,23 +170,18 @@ namespace CoolapkUWP.ViewModels.FeedPages
     {
         public string Keyword;
 
-        public SearchTopicItemSource(string keyword)
+        public SearchTopicItemSource(string keyword) : base(keyword)
         {
             Keyword = keyword;
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
-                UriHelper.GetUri(
-                    UriType.SearchTags,
-                    Keyword,
-                    p,
-                    p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
-                GetEntities,
+                    UriHelper.GetUri(
+                        UriType.SearchTags,
+                        Keyword,
+                        p,
+                        UriHelper.GetPagingArgs(p, firstItem, lastItem)),
+                o => new[] { TopicModel.FromJson(o) },
                 "id");
-        }
-
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
-        {
-            yield return TopicModel.FromJson(jo);
         }
     }
 }

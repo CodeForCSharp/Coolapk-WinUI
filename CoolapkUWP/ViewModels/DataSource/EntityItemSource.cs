@@ -16,9 +16,28 @@ namespace CoolapkUWP.ViewModels.DataSource
         protected CoolapkListProvider Provider;
         protected CoolapkListProvider SubProvider;
 
-        public EntityItemSource() : base(App.MainWindow.DispatcherQueue) { }
+        /// <summary>当前列表所属的实体 ID，用于区分不同数据源。</summary>
+        public string ID { get; }
+
+        /// <summary>是否在添加条目时展开子提供器（首页 Tab 卡片等），列表型数据源应关闭。</summary>
+        private readonly bool useSubProvider;
+
+        public EntityItemSource() : this(App.MainWindow.DispatcherQueue) { }
 
         public EntityItemSource(DispatcherQueue dispatcher) : base(dispatcher) { }
+
+        protected EntityItemSource(string id) : this(App.MainWindow.DispatcherQueue)
+        {
+            ID = id;
+        }
+
+        protected EntityItemSource(string id, CoolapkListProvider provider, bool useSubProvider = true)
+            : this(App.MainWindow.DispatcherQueue)
+        {
+            ID = id;
+            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            this.useSubProvider = useSubProvider;
+        }
 
         protected override async Task<IList<Entity>> LoadItemsAsync(uint count)
         {
@@ -49,7 +68,7 @@ namespace CoolapkUWP.ViewModels.DataSource
                 if (!(item is NullEntity))
                 {
                     Add(item);
-                    AddSubProvider(item);
+                    if (useSubProvider) { AddSubProvider(item); }
                 }
             }
         }
@@ -82,31 +101,15 @@ namespace CoolapkUWP.ViewModels.DataSource
             if (item is IndexPageHasEntitiesModel model
                 && model.EntitiesType == EntityType.TabLink)
             {
-                string Uri = GetUri((model.Entities.Where((x) => x is IndexPageModel).FirstOrDefault() as IndexPageModel).Url);
+                IndexPageModel indexPage = model.Entities.Where((x) => x is IndexPageModel).FirstOrDefault() as IndexPageModel;
+                if (indexPage == null) { return; }
+                string Uri = UriHelper.NormalizePageUri(indexPage.Url);
                 SubProvider = new CoolapkListProvider(
                     (p, _, __) => UriHelper.GetUri(UriType.GetIndexPage, Uri, Uri.Contains("?") ? "&" : "?", p),
                     Provider.GetEntities,
                     "entityId");
                 _currentPage = 1;
             }
-        }
-
-        private string GetUri(string uri)
-        {
-            if (uri.StartsWith("url="))
-            {
-                uri = uri.Replace("url=", string.Empty);
-            }
-
-            if (uri.IndexOf("/page", StringComparison.Ordinal) == -1 && (uri.StartsWith("#", StringComparison.Ordinal) || (!uri.Contains("/main/") && !uri.Contains("/user/") && !uri.Contains("/apk/") && !uri.Contains("/appForum/") && !uri.Contains("/picture/") && !uri.Contains("/topic/") && !uri.Contains("/discovery/"))))
-            {
-                uri = "/page/dataList?url=" + uri;
-            }
-            else if (uri.IndexOf("/page", StringComparison.Ordinal) == 0 && !uri.Contains("/page/dataList"))
-            {
-                uri = uri.Replace("/page", "/page/dataList");
-            }
-            return uri.Replace("#", "%23");
         }
     }
 }

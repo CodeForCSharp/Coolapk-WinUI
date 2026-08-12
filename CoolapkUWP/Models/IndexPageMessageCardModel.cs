@@ -22,42 +22,19 @@ namespace CoolapkUWP.Models
 
             Title = dto.Title;
 
-            if (!string.IsNullOrEmpty(dto.Description))
-            {
-                Description = dto.Description;
-            }
-            else if (!string.IsNullOrEmpty(dto.ReleaseTime))
-            {
-                Description = $"发布日期：{dto.ReleaseTime}";
-            }
-            else if (!string.IsNullOrEmpty(dto.LinkTag))
-            {
-                Description = dto.LinkTag;
-            }
-            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
-            {
-                Description = $"{dto.HotNumTxt}热度";
-            }
-            else if (!string.IsNullOrEmpty(dto.Keywords))
-            {
-                Description = dto.Keywords;
-            }
-            else if (!string.IsNullOrEmpty(dto.CatName))
-            {
-                Description = dto.CatName;
-            }
-            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
-            {
-                Description = dto.ApkTypeName;
-            }
-            else if (!string.IsNullOrEmpty(dto.RssType))
-            {
-                Description = dto.RssType;
-            }
-            else if (!string.IsNullOrEmpty(dto.SubTitle))
-            {
-                Description = dto.SubTitle;
-            }
+            Description = DescriptionResolver.Resolve(
+                dto.Description,
+                dto.ReleaseTime,
+                dto.LinkTag,
+                dto.HotNumTxt,
+                dto.Keywords,
+                dto.CatName,
+                dto.ApkTypeName,
+                null,
+                dto.RssType,
+                dto.SubTitle,
+                "发布日期：",
+                "热度");
 
             if (dto.Entities != null && dto.Entities.Count > 0)
             {

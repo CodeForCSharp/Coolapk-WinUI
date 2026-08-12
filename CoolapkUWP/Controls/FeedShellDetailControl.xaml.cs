@@ -67,31 +67,12 @@ namespace CoolapkUWP.Controls
 
         private async void DeviceHyperlink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
         {
-            UIHelper.ShowProgressBar();
-            string device = (sender.Inlines.FirstOrDefault().ElementStart.VisualParent.DataContext as FeedModelBase).DeviceTitle;
-            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetailByName, device), true);
-            UIHelper.HideProgressBar();
-            if (!isSucceed) { return; }
-
-            ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);
-
-            if (!string.IsNullOrEmpty(dto.Id))
-            {
-                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, dto.Id);
-
-                if (provider != null)
-                {
-                    _ = this.NavigateAsync(typeof(FeedListPage), provider);
-                }
-            }
+            await ProductService.NavigateToProductAsync(this, sender);
         }
 
         private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement element = sender as FrameworkElement;
-            DataPackage dp = new DataPackage();
-            dp.SetText(element.Tag.ToString());
-            Clipboard.SetContent(dp);
+            ClipboardHelper.SetText((sender as FrameworkElement).Tag.ToString());
         }
 
         private void Flyout_Opened(object sender, object _)

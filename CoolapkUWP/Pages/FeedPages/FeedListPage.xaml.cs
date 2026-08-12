@@ -1,5 +1,6 @@
 using CoolapkUWP.Services;
 using CoolapkUWP.Helpers;
+using CoolapkUWP.Helpers.Controls;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Pages.BrowserPages;
@@ -101,38 +102,15 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void FlipView_Loaded(object sender, RoutedEventArgs e)
         {
+            FrameworkElement element = sender as FrameworkElement;
             if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode))
             {
-                if ((sender as FrameworkElement).Parent is FrameworkElement parent)
+                if (element.Parent is FrameworkElement parent)
                 { parent.Visibility = Visibility.Collapsed; }
             }
             else
             {
-                FlipView view = sender as FlipView;
-                view.MaxHeight = view.ActualWidth / 3;
-                DispatcherTimer timer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromSeconds(20)
-                };
-                timer.Tick += (o, a) =>
-                {
-                    if (view.SelectedIndex != -1)
-                    {
-                        if (view.SelectedIndex + 1 >= view.Items.Count)
-                        {
-                            while (view.SelectedIndex > 0)
-                            {
-                                view.SelectedIndex -= 1;
-                            }
-                        }
-                        else
-                        {
-                            view.SelectedIndex += 1;
-                        }
-                    }
-                };
-                view.Unloaded += (_, __) => timer.Stop();
-                timer.Start();
+                FlipViewHelper.EnableAutoPlay(element as FlipView);
             }
         }
 
@@ -183,28 +161,7 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            ImageModel image = (sender as FrameworkElement).Tag as ImageModel;
-            switch ((sender as FrameworkElement).Name)
-            {
-                case "CopyButton":
-                    _ = ImageActions.CopyPicAsync(image);
-                    break;
-                case "SaveButton":
-                    _ = ImageActions.SavePicAsync(image);
-                    break;
-                case "ShareButton":
-                    _ = ImageActions.SharePicAsync(image);
-                    break;
-                case "RefreshButton":
-                    _ = image.Refresh();
-                    break;
-                case "ShowImageButton":
-                    _ = this.ShowImageAsync(image);
-                    break;
-                case "OriginButton":
-                    image.Type = ImageType.OriginImage;
-                    break;
-            }
+            ImageActions.HandleAppBarButtonClick(sender as FrameworkElement);
         }
 
         private async void Image_DragStarting(UIElement sender, DragStartingEventArgs args)
@@ -235,44 +192,20 @@ namespace CoolapkUWP.Pages.FeedPages
 
         private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
         {
-            // Remove details content from it's parent panel.
-            if (HeaderControl.Parent != null)
-            {
-                (HeaderControl.Parent as Panel).Children.Remove(HeaderControl);
-            }
-            else
-            {
-                LeftGrid.Children.Remove(HeaderControl);
-                RightGrid.Children.Remove(HeaderControl);
-            }
-
-            if (DetailControl.Parent != null)
-            {
-                (DetailControl.Parent as Panel).Children.Remove(DetailControl);
-            }
-            else
-            {
-                Pane1Grid.Children.Remove(DetailControl);
-                Pane2Grid.Children.Remove(DetailControl);
-            }
+            TwoPaneViewHelper.UpdateHeaderPane(HeaderControl, LeftGrid, RightGrid, sender.Mode);
+            TwoPaneViewHelper.UpdateDetailPane(DetailControl, Pane1Grid, Pane2Grid, sender.Mode);
 
             // Single pane
             if (sender.Mode == TwoPaneViewMode.SinglePane)
             {
                 ListRefreshButton.Visibility = Visibility.Collapsed;
                 HeaderRefreshButton.Visibility = Visibility.Visible;
-                // Add the details content to Pane1.
-                RightGrid.Children.Add(HeaderControl);
-                Pane2Grid.Children.Add(DetailControl);
             }
             // Dual pane.
             else
             {
                 ListRefreshButton.Visibility = Visibility.Visible;
                 HeaderRefreshButton.Visibility = Visibility.Collapsed;
-                // Put details content in Pane2.
-                LeftGrid.Children.Add(HeaderControl);
-                Pane1Grid.Children.Add(DetailControl);
             }
         }
 

@@ -76,46 +76,19 @@ namespace CoolapkUWP.Models
                 Url = dto.Url;
             }
 
-            if (!string.IsNullOrEmpty(dto.Description))
-            {
-                Description = dto.Description;
-            }
-            else if (!string.IsNullOrEmpty(dto.ReleaseTime))
-            {
-                Description = $"{loader.GetString("ReleaseTime")}{dto.ReleaseTime}";
-            }
-            else if (!string.IsNullOrEmpty(dto.LinkTag))
-            {
-                Description = dto.LinkTag;
-            }
-            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
-            {
-                Description = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
-            }
-            else if (!string.IsNullOrEmpty(dto.Keywords))
-            {
-                Description = dto.Keywords;
-            }
-            else if (!string.IsNullOrEmpty(dto.CatName))
-            {
-                Description = dto.CatName;
-            }
-            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
-            {
-                Description = dto.ApkTypeName;
-            }
-            else if (!string.IsNullOrEmpty(dto.TypeName))
-            {
-                Description = dto.TypeName;
-            }
-            else if (!string.IsNullOrEmpty(dto.RssType))
-            {
-                Description = dto.RssType;
-            }
-            else if (!string.IsNullOrEmpty(dto.SubTitle))
-            {
-                Description = dto.SubTitle;
-            }
+            Description = DescriptionResolver.Resolve(
+                dto.Description,
+                dto.ReleaseTime,
+                dto.LinkTag,
+                dto.HotNumTxt,
+                dto.Keywords,
+                dto.CatName,
+                dto.ApkTypeName,
+                dto.TypeName,
+                dto.RssType,
+                dto.SubTitle,
+                loader.GetString("ReleaseTime"),
+                loader.GetString("HotNum"));
 
             if (!string.IsNullOrEmpty(dto.CoverPic))
             {

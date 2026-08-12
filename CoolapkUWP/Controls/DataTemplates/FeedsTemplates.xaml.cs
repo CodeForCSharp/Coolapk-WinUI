@@ -78,109 +78,17 @@ namespace CoolapkUWP.Controls.DataTemplates
 
         private void FeedButton_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement element = sender as FrameworkElement;
-
-            void DisabledCopy()
-            {
-                if (element.DataContext is ICanCopy i)
-                {
-                    i.IsCopyEnabled = false;
-                }
-            }
-
-            switch (element.Name)
-            {
-                case "MakeReplyButton":
-                    DisabledCopy();
-                    break;
-                case "LikeButton":
-                    DisabledCopy();
-                    _ = FeedActionsService.ChangeLikeAsync(element.Tag as ICanLike);
-                    break;
-
-                case "ReportButton":
-                    DisabledCopy();
-                    _ = element.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(element.Tag.ToString()));
-                    break;
-
-                case "ReplyButton":
-                    DisabledCopy();
-                    if (element.Tag is FeedModelBase feed)
-                    {
-                        new CreateFeedControl
-                        {
-                            ReplyID = feed.ID,
-                            FeedType = CreateFeedType.Reply,
-                            PopupTransitions = new TransitionCollection
-                            {
-                                new EdgeUIThemeTransition
-                                {
-                                    Edge = EdgeTransitionLocation.Bottom
-                                }
-                            }
-                        }.Show(element);
-                    }
-                    else if (element.Tag is FeedReplyModel reply)
-                    {
-                        new CreateFeedControl
-                        {
-                            ReplyID = reply.ID,
-                            FeedType = CreateFeedType.ReplyReply,
-                            PopupTransitions = new TransitionCollection
-                            {
-                                new EdgeUIThemeTransition
-                                {
-                                    Edge = EdgeTransitionLocation.Bottom
-                                }
-                            }
-                        }.Show(element);
-                    }
-                    DisabledCopy();
-                    break;
-
-                case "ShareButton":
-                    DisabledCopy();
-                    break;
-
-                case "ChangeButton":
-                    DisabledCopy();
-                    //UIHelper.NavigateInSplitPane(typeof(AdaptivePage), new ViewModels.AdaptivePage.ViewModel((sender as FrameworkElement).Tag as string, ViewModels.AdaptivePage.ListType.FeedInfo, "changeHistory"));
-                    break;
-
-                default:
-                    DisabledCopy();
-                    _ = element.OpenLinkAsync((sender as FrameworkElement).Tag as string);
-                    break;
-            }
+            FeedCommandService.HandleFeedButtonClick(sender as FrameworkElement, sender as FrameworkElement);
         }
 
         private async void DeviceHyperlink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
         {
-            UIHelper.ShowProgressBar();
-            string device = (sender.Inlines.FirstOrDefault().ElementStart.VisualParent.DataContext as FeedModelBase).DeviceTitle;
-            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetailByName, device), true);
-            UIHelper.HideProgressBar();
-            if (!isSucceed) { return; }
-
-            ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);
-
-            if (!string.IsNullOrEmpty(dto.Id))
-            {
-                FeedListViewModel provider = FeedListViewModel.GetProvider(FeedListType.ProductPageList, dto.Id);
-
-                if (provider != null)
-                {
-                    _ = sender.NavigateAsync(typeof(FeedListPage), provider);
-                }
-            }
+            await ProductService.NavigateToProductAsync(sender, sender);
         }
 
         private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement element = sender as FrameworkElement;
-            DataPackage dp = new DataPackage();
-            dp.SetText(element.Tag.ToString());
-            Clipboard.SetContent(dp);
+            ClipboardHelper.SetText((sender as FrameworkElement).Tag.ToString());
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

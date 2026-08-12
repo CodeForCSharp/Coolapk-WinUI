@@ -8,9 +8,7 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
@@ -43,58 +41,33 @@ namespace CoolapkUWP.ViewModels.FeedPages
                                 {
                                     if (!string.IsNullOrEmpty(entity.Url))
                                     {
-                                        CoolapkListProvider Provider = new CoolapkListProvider(
-                                            (p, firstItem, lastItem) => UriHelper.GetUri(UriType.DataList, entity.Url.Replace("#", "%23").Replace("/", "%2F").Replace("?", "%3F").Replace("=", "%3D").Replace("&", "%26"), $"&page={p}" + (string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}") + (string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}")),
+                                        FeedListItemSource tab = new FeedListItemSource(ID, new CoolapkListProvider(
+                                            (p, firstItem, lastItem) => UriHelper.GetUri(UriType.DataList, entity.Url.Replace("#", "%23").Replace("/", "%2F").Replace("?", "%3F").Replace("=", "%3D").Replace("&", "%26"), $"&page={p}" + UriHelper.GetOptionalArg("firstItem", firstItem) + UriHelper.GetOptionalArg("lastItem", lastItem)),
                                             GetEntities,
-                                            "id");
-                                        FeedListItemSource FeedListItemSource = new FeedListItemSource(ID, Provider);
-                                        ShyHeaderItem ShyHeaderItem = new ShyHeaderItem { ItemSource = FeedListItemSource };
+                                            "id"));
+                                        ShyHeaderItem headerItem = new ShyHeaderItem { ItemSource = tab };
                                         if (!string.IsNullOrEmpty(entity.Title))
                                         {
-                                            ShyHeaderItem.Header = entity.Title;
+                                            headerItem.Header = entity.Title;
                                         }
-                                        ItemSource.Add(ShyHeaderItem);
+                                        ItemSource.Add(headerItem);
                                     }
                                 }
                                 this.ItemSource = ItemSource;
-                                break;
+                                return;
                             }
                         }
                         if (ItemSource == null)
                         {
                             List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
-                            CoolapkListProvider Provider = new CoolapkListProvider(
-                                (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetCollectionContents, ID, p, string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}", string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                                GetEntities,
-                                "id");
-                            FeedListItemSource FeedListItemSource = new FeedListItemSource(ID, Provider);
-                            ShyHeaderItem ShyHeaderItem = new ShyHeaderItem
-                            {
-                                ItemSource = FeedListItemSource,
-                                Header = Detail is CollectionDetail CollectionDetail && CollectionDetail.ItemNum > 0 ? $"全部({CollectionDetail.ItemNum})" : (object)$"全部"
-                            };
-                            ItemSource.Add(ShyHeaderItem);
+                            AddTab(ItemSource, Detail is CollectionDetail CollectionDetail && CollectionDetail.ItemNum > 0 ? $"全部({CollectionDetail.ItemNum})" : "全部", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetCollectionContents, ID, p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
                             this.ItemSource = ItemSource;
                         }
                     }
                 }
             }
-            public override async Task<FeedListDetailBase> GetDetail()
-            {
-                (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionDetail, ID), true);
-                if (!isSucceed) { return null; }
 
-                JsonObject token = result.AsObject();
-                FeedListDetailBase detail = null;
-
-                if (token != null)
-                {
-                    detail = CollectionDetail.FromJson(token);
-                }
-
-                return detail;
-            }
+            public override Task<FeedListDetailBase> GetDetail() => GetDetailAsync(UriType.GetCollectionDetail, CollectionDetail.FromJson);
         }
     }
-
 }
