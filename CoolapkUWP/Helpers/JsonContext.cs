@@ -35,6 +35,7 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(DyhRowDto))]
     [JsonSerializable(typeof(RecentFollowDto))]
     [JsonSerializable(typeof(CollectionContentsDto))]
+    [JsonSerializable(typeof(System.Collections.Generic.List<CollectionContentsDto>))]
     [JsonSerializable(typeof(SelectorEntityDto))]
     [JsonSerializable(typeof(UpdateInfo))]
     [JsonSerializable(typeof(Asset))]

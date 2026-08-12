@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Windows.Storage.Streams;
 
@@ -123,10 +124,8 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
-                using (JsonDocument doc = JsonDocument.Parse(str))
-                {
-                    return JsonSerializer.Serialize(doc.RootElement, new JsonSerializerOptions { WriteIndented = true });
-                }
+                JsonNode node = JsonNode.Parse(str);
+                return node?.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) ?? str;
             }
             catch (Exception ex)
             {
