@@ -3,7 +3,8 @@ using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
-using HtmlAgilityPack;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Linq;
@@ -72,12 +73,11 @@ namespace CoolapkUWP.Models.Pages
 
             if (dto.Note != null)
             {
-                HtmlDocument doc = new HtmlDocument();
-                doc.LoadHtml(dto.Note);
-                HtmlNodeCollection nodes = doc.DocumentNode.ChildNodes;
-                HtmlNode node = nodes.Last();
-                Note = doc.DocumentNode.InnerText;
-                Url = node.GetAttributeValue("href", string.Empty);
+                HtmlParser parser = new HtmlParser();
+                var doc = parser.ParseDocument(dto.Note);
+                INode node = doc.Body.ChildNodes.Last();
+                Note = doc.Body.TextContent;
+                Url = node is IElement element ? element.GetAttribute("href") ?? string.Empty : string.Empty;
             }
 
             if (dto.FromUserAvatar != null)

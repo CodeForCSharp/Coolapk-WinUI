@@ -1,7 +1,8 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Converters;
 using CoolapkUWP.Models.Images;
-using HtmlAgilityPack;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using CommunityToolkit.WinUI.Converters;
 using System;
 using System.Collections.Generic;
@@ -107,8 +108,8 @@ namespace CoolapkUWP.Controls
         private void GetTextBlock()
         {
             RichTextBlock.Blocks.Clear();
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(Text.Replace("<!--break-->", string.Empty));
+            HtmlParser parser = new HtmlParser();
+            var doc = parser.ParseDocument(Text.Replace("<!--break-->", string.Empty));
             Paragraph paragraph = new Paragraph { LineHeight = FontSize + 10 };
             List<ImageModel> imageArrayBuider = new List<ImageModel>();
             void NewLine()
@@ -127,7 +128,7 @@ namespace CoolapkUWP.Controls
                 {
                     Child = image,
                     Margin = new Thickness(0, 0, 0, -4),
-                    VerticalAlignment = VerticalAlignment.Center
+                    VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center
                 };
                 viewbox.SetBinding(WidthProperty, new Binding
                 {
@@ -139,13 +140,13 @@ namespace CoolapkUWP.Controls
                 container.Child = viewbox;
                 paragraph.Inlines.Add(container);
             }
-            HtmlNodeCollection nodes = doc.DocumentNode.ChildNodes;
-            foreach (HtmlNode node in nodes)
+            INodeList nodes = doc.Body.ChildNodes;
+            foreach (INode node in nodes)
             {
                 switch (node.NodeType)
                 {
-                    case HtmlNodeType.Text:
-                        string[] list = EmojisRegex.Split(node.InnerText);
+                    case NodeType.Text:
+                        string[] list = EmojisRegex.Split(node.TextContent);
                         foreach (string item in list)
                         {
                             if (string.IsNullOrEmpty(item)) { continue; }
@@ -180,14 +181,15 @@ namespace CoolapkUWP.Controls
                             }
                         }
                         break;
-                    case HtmlNodeType.Element:
-                        string content = node.InnerText;
-                        switch (node.OriginalName)
+                    case NodeType.Element:
+                        IElement element = (IElement)node;
+                        string content = element.TextContent;
+                        switch (element.LocalName)
                         {
                             case "a":
-                                string tag = node.GetAttributeValue("t", string.Empty);
-                                string href = node.GetAttributeValue("href", string.Empty);
-                                string type = node.GetAttributeValue("type", string.Empty);
+                                string tag = element.GetAttribute("t") ?? string.Empty;
+                                string href = element.GetAttribute("href") ?? string.Empty;
+                                string type = element.GetAttribute("type") ?? string.Empty;
                                 Hyperlink hyperlink = new Hyperlink { UnderlineStyle = UnderlineStyle.None };
                                 if (!string.IsNullOrEmpty(href))
                                 {
@@ -211,10 +213,10 @@ namespace CoolapkUWP.Controls
                                 break;
 
                             case "img":
-                                string alt = node.GetAttributeValue("alt", string.Empty);
-                                string src = node.GetAttributeValue("src", string.Empty);
-                                int width = Convert.ToInt32(node.GetAttributeValue("width", "-1").Replace("\"", string.Empty));
-                                int height = Convert.ToInt32(node.GetAttributeValue("height", "-1").Replace("\"", string.Empty));
+                                string alt = element.GetAttribute("alt") ?? string.Empty;
+                                string src = element.GetAttribute("src") ?? string.Empty;
+                                int width = Convert.ToInt32((element.GetAttribute("width") ?? "-1").Replace("\"", string.Empty));
+                                int height = Convert.ToInt32((element.GetAttribute("height") ?? "-1").Replace("\"", string.Empty));
 
                                 ImageModel imageModel;
                                 Image image = new Image();
@@ -238,7 +240,7 @@ namespace CoolapkUWP.Controls
                                     {
                                         Child = image,
                                         Margin = new Thickness(0, 0, 0, -4),
-                                        VerticalAlignment = VerticalAlignment.Center
+                                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center
                                     };
                                     viewbox.SetBinding(WidthProperty, new Binding
                                     {
@@ -263,14 +265,14 @@ namespace CoolapkUWP.Controls
 
                                     Grid IsGIFPanel = new Grid
                                     {
-                                        VerticalAlignment = VerticalAlignment.Top,
-                                        HorizontalAlignment = HorizontalAlignment.Left
+                                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top,
+                                        HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left
                                     };
 
                                     Grid PicSizePanel = new Grid
                                     {
-                                        VerticalAlignment = VerticalAlignment.Top,
-                                        HorizontalAlignment = HorizontalAlignment.Right
+                                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top,
+                                        HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right
                                     };
 
                                     Border GIFBorder = new Border
@@ -336,7 +338,7 @@ namespace CoolapkUWP.Controls
                                     {
                                         Child = image,
                                         Margin = new Thickness(0, 0, 0, -4),
-                                        VerticalAlignment = VerticalAlignment.Center
+                                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center
                                     };
                                     if (width != -1) { viewbox.MaxWidth = width; }
                                     if (height != -1) { viewbox.MaxHeight = height; }
@@ -373,7 +375,7 @@ namespace CoolapkUWP.Controls
                                     Margin = new Thickness(4, 0, 4, -4),
                                     CornerRadius = new CornerRadius(4),
                                     BorderThickness = new Thickness(1),
-                                    VerticalAlignment = VerticalAlignment.Center,
+                                    VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
                                     BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"],
                                 };
                                 TextBlock textBlock = new TextBlock

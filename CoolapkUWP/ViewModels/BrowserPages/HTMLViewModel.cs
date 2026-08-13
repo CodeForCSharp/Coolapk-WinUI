@@ -1,7 +1,7 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
-using HtmlAgilityPack;
+using AngleSharp.Html.Parser;
 using System.Text.Json.Nodes;
 using System;
 using System.Threading.Tasks;
@@ -88,9 +88,9 @@ namespace CoolapkUWP.ViewModels.BrowserPages
                     (isSucceed, result) = await RequestHelper.GetStringAsync(uri);
                     if (isSucceed && !string.IsNullOrWhiteSpace(result))
                     {
-                        HtmlDocument doc = new HtmlDocument();
-                        doc.LoadHtml(result);
-                        string content = doc.DocumentNode.ChildNodes.FindFirst("html")?.ChildNodes.FindFirst("body")?.InnerHtml;
+                        HtmlParser parser = new HtmlParser();
+                        var doc = parser.ParseDocument(result);
+                        string content = doc.Body.InnerHtml;
                         if (!string.IsNullOrEmpty(content))
                         {
                             RawHTML = content;
