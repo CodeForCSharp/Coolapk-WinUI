@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Windows.UI;
@@ -110,8 +111,23 @@ namespace CoolapkUWP.Models.Feeds
         public ImageModel MediaPic { get; private set; }
         public SourceFeedModel SourceFeed { get; private set; }
 
-        [ObservableProperty]
-        public partial LinkFeedModel LinkSourceFeed { get; set; }
+        private LinkFeedModel _linkSourceFeed;
+        public LinkFeedModel LinkSourceFeed
+        {
+            get
+            {
+                EnsureLinkSourceFeedLoaded();
+                return _linkSourceFeed;
+            }
+            private set
+            {
+                if (!ReferenceEquals(_linkSourceFeed, value))
+                {
+                    _linkSourceFeed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public List<VoteItem> VoteRows { get; private set; } = new List<VoteItem>();
         public List<RelationRowsItem> RelationRows { get; private set; } = new List<RelationRowsItem>();
@@ -168,15 +184,6 @@ namespace CoolapkUWP.Models.Feeds
                 if (dto.ExtraUrl != null)
                 {
                     ExtraUrl = dto.ExtraUrl;
-
-                    if (ExtraUrl.Contains("b23.tv") || ExtraUrl.Contains("t.cn"))
-                    {
-                        _ = ExpandShortUrlAsync();
-                    }
-                    else
-                    {
-                        _ = BuildLinkSourceFeedAsync();
-                    }
 
                     if (!string.IsNullOrEmpty(dto.ExtraPic))
                     {
@@ -305,6 +312,34 @@ namespace CoolapkUWP.Models.Feeds
                 }
             }
         }
+        private int _linkSourceFeedLoadState;
+
+        private void EnsureLinkSourceFeedLoaded()
+        {
+            if (string.IsNullOrEmpty(ExtraUrl)) { return; }
+            if (Interlocked.CompareExchange(ref _linkSourceFeedLoadState, 1, 0) != 0) { return; }
+            _ = LoadLinkSourceFeedAsync();
+        }
+
+        private async Task LoadLinkSourceFeedAsync()
+        {
+            try
+            {
+                if (ExtraUrl.Contains("b23.tv") || ExtraUrl.Contains("t.cn"))
+                {
+                    await ExpandShortUrlAsync();
+                }
+                else
+                {
+                    await BuildLinkSourceFeedAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(FeedModelBase)).LogWarning(ex, ex.ExceptionToMessage());
+            }
+        }
+
         private async Task ExpandShortUrlAsync()
         {
             string expandedUrl = null;
