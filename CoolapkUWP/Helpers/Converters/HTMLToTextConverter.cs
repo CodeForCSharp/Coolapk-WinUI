@@ -7,6 +7,7 @@ namespace CoolapkUWP.Helpers.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if (value == null) { return null; }
             string result = value.ToString().CSStoString();
             return ConverterTools.Convert(result, targetType);
         }
