@@ -13,9 +13,9 @@ namespace CoolapkUWP.ViewModels.Providers
         private string _firstItem, _lastItem;
         private readonly Func<int, string, string, Uri> _getUri;
 
-        public Func<JsonObject, IEnumerable<Entity>> GetEntities { get; }
+        public Func<JsonArray, IEnumerable<Entity>> GetEntities { get; }
 
-        public CoolapkListProvider(Func<int, string, string, Uri> getUri, Func<JsonObject, IEnumerable<Entity>> getEntities, string idName)
+        public CoolapkListProvider(Func<int, string, string, Uri> getUri, Func<JsonArray, IEnumerable<Entity>> getEntities, string idName)
         {
             _getUri = getUri ?? throw new ArgumentNullException(nameof(getUri));
             GetEntities = getEntities ?? throw new ArgumentNullException(nameof(getEntities));
@@ -37,16 +37,14 @@ namespace CoolapkUWP.ViewModels.Providers
                 _firstItem = RequestHelper.GetId(array[0], _idName);
             }
             _lastItem = RequestHelper.GetId(array[^1], _idName);
-            foreach (JsonNode item in array)
-            {
-                IEnumerable<Entity> entities = GetEntities(item.AsObject());
-                if (entities == null) { continue; }
 
-                foreach (Entity entity in entities)
-                {
-                    if (entity == null) { continue; }
-                    models.Add(entity);
-                }
+            IEnumerable<Entity> entities = GetEntities(array);
+            if (entities == null) { return; }
+
+            foreach (Entity entity in entities)
+            {
+                if (entity == null) { continue; }
+                models.Add(entity);
             }
         }
     }

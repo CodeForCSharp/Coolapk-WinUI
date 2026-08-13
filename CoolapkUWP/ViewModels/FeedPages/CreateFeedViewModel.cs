@@ -1,4 +1,6 @@
 using CoolapkUWP.Common;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Upload;
@@ -199,12 +201,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             UriHelper.GetOptionalArg("firstItem", firstItem),
                             UriHelper.GetOptionalArg("lastItem", lastItem)),
-                    o => new[] { UserModel.FromJson(o["fUserInfo"].AsObject()) },
+                    a => a.Select(o => UserModel.FromJson(o["fUserInfo"].AsObject())),
                     "fuid");
             }
         }
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo) => new[] { UserModel.FromJson(jo) };
+        private IEnumerable<Entity> GetEntities(JsonArray array) => DtoJson.DeserializeList<UserDto>(array).Select(d => new UserModel(d));
     }
 
     public partial class CreateTopicItemSource : KeywordSearchItemSource
@@ -224,6 +226,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 "id");
         }
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo) => new[] { TopicModel.FromJson(jo) };
+        private IEnumerable<Entity> GetEntities(JsonArray array) => DtoJson.DeserializeList<TopicDto>(array).Select(d => new TopicModel(d));
     }
 }

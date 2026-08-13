@@ -1,4 +1,6 @@
 using CoolapkUWP.Controls.DataTemplates;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
@@ -9,6 +11,7 @@ using CommunityToolkit.WinUI;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 
@@ -82,7 +85,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { UserModel.FromJson((isFollowList ? o["fUserInfo"] : o["userInfo"]).AsObject()) },
+                    (a) => a.Select(o => UserModel.FromJson((isFollowList ? o["fUserInfo"] : o["userInfo"]).AsObject())),
                     "fuid"))
                 { Title = $"{name}的{(isFollowList ? "关注" : "粉丝")}" };
         }
@@ -100,7 +103,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                                 id,
                                 p,
                                 p > 1 ? $"&firstItem={firstItem}&lastItem={lastItem}" : string.Empty),
-                        (o) => new Entity[] { FeedReplyModel.FromJson(o) },
+                        (a) => DtoJson.DeserializeList<FeedReplyDto>(a).Select(d => new FeedReplyModel(d)),
                         "uid"))
                 { Title = $"热门回复" }
                 : new AdaptiveViewModel(
@@ -111,7 +114,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                                 id,
                                 p,
                                 p > 1 ? $"&lastItem={lastItem}" : string.Empty),
-                        (o) => new Entity[] { FeedReplyModel.FromJson(o, false) },
+                        (a) => DtoJson.DeserializeList<FeedReplyDto>(a).Select(d => new FeedReplyModel(d, false)),
                         "uid"))
                 { Title = $"回复({reply.ReplyNum})" };
         }
@@ -141,7 +144,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                             p,
                             string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                             string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}"),
-                    (o) => new Entity[] { HistoryModel.FromJson(o) },
+                    (a) => DtoJson.DeserializeList<HistoryDto>(a).Select(d => new HistoryModel(d)),
                     "uid"))
             { Title = title };
         }
@@ -160,7 +163,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                                 string.IsNullOrEmpty(firstItem) ? string.Empty : $"&firstItem={firstItem}",
                                 string.IsNullOrEmpty(lastItem) ? string.Empty : $"&lastItem={lastItem}",
                                 branch),
-                        (o) => new Entity[] { FeedModel.FromJson(o) },
+                        (a) => DtoJson.DeserializeList<FeedDto>(a).Select(d => new FeedModel(d)),
                         "uid"));
         }
 
@@ -168,30 +171,34 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         public bool IsEqual(AdaptiveViewModel other) => !string.IsNullOrWhiteSpace(Uri) ? Uri == other.Uri : Provider == other.Provider;
 
-        private IEnumerable<Entity> GetEntities(JsonObject json)
+        private IEnumerable<Entity> GetEntities(JsonArray array)
         {
-            if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
+            foreach (JsonNode node in array)
             {
-                JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
-                string pageTitle = (string)j["pageTitle"];
-                _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
-                yield return null;
-            }
-            else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }
-            else if (tt?.ToString() == "feedCoolPictureGridCard")
-            {
-                foreach (JsonNode item in json["entities"]?.AsArray())
+                JsonObject json = node.AsObject();
+                if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
                 {
-                    Entity entity = EntityTemplateSelector.GetEntity(item.AsObject(), IsHotFeedPage);
-                    if (entity != null)
+                    JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
+                    string pageTitle = (string)j["pageTitle"];
+                    _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
+                    yield return null;
+                }
+                else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }
+                else if (tt?.ToString() == "feedCoolPictureGridCard")
+                {
+                    foreach (JsonNode item in json["entities"]?.AsArray())
                     {
-                        yield return entity;
+                        Entity entity = EntityTemplateSelector.GetEntity(item.AsObject(), IsHotFeedPage);
+                        if (entity != null)
+                        {
+                            yield return entity;
+                        }
                     }
                 }
-            }
-            else
-            {
-                yield return EntityTemplateSelector.GetEntity(json, IsHotFeedPage);
+                else
+                {
+                    yield return EntityTemplateSelector.GetEntity(json, IsHotFeedPage);
+                }
             }
             yield break;
         }

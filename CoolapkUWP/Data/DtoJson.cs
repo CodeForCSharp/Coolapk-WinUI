@@ -1,6 +1,8 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Data.Dtos;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Data
@@ -17,5 +19,11 @@ namespace CoolapkUWP.Data
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
             Converters = { new LenientStringConverter(), new LenientNumberConverterFactory() }
         };
+
+        /// <summary>
+        /// 一次性反序列化整个数组，避免逐节点对每个元素反复做"序列化 + 再解析"的往返。
+        /// </summary>
+        public static List<T> DeserializeList<T>(JsonNode node)
+            => JsonSerializer.Deserialize<List<T>>(node, Options) ?? new List<T>();
     }
 }

@@ -82,9 +82,12 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         public bool IsEqual(FeedListViewModel other) => ListType == other.ListType && ID == other.ID;
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
+        private IEnumerable<Entity> GetEntities(JsonArray array)
         {
-            yield return EntityTemplateSelector.GetEntity(jo);
+            foreach (JsonNode item in array)
+            {
+                yield return EntityTemplateSelector.GetEntity(item.AsObject());
+            }
         }
     }
 }

@@ -1,3 +1,5 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
@@ -6,6 +8,7 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using CoolapkUWP.ViewModels.Providers;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -56,7 +59,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { NotificationModelFactory.CreateSimple(o) },
+                            a => a.Select(o => NotificationModelFactory.CreateSimple(o.AsObject())),
                             "id")));
                     break;
                 case "AtMe":
@@ -69,7 +72,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { FeedModel.FromJson(o) },
+                            a => DtoJson.DeserializeList<FeedDto>(a).Select(d => new FeedModel(d)),
                             "id")));
                     break;
                 case "AtCommentMe":
@@ -82,7 +85,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { NotificationModelFactory.CreateAtCommentMe(o) },
+                            a => a.Select(o => NotificationModelFactory.CreateAtCommentMe(o.AsObject())),
                             "id")));
                     break;
                 case "FeedLike":
@@ -95,7 +98,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { NotificationModelFactory.CreateLike(o) },
+                            a => a.Select(o => NotificationModelFactory.CreateLike(o.AsObject())),
                             "id")));
                     break;
                 case "Follow":
@@ -108,7 +111,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { NotificationModelFactory.CreateSimple(o) },
+                            a => a.Select(o => NotificationModelFactory.CreateSimple(o.AsObject())),
                             "id")));
                     break;
                 case "Message":
@@ -120,7 +123,7 @@ namespace CoolapkUWP.Pages.FeedPages
                                     p,
                                     UriHelper.GetOptionalArg("firstItem", firstItem),
                                     UriHelper.GetOptionalArg("lastItem", lastItem)),
-                            o => new[] { NotificationModelFactory.CreateMessage(o) },
+                            a => a.Select(o => NotificationModelFactory.CreateMessage(o.AsObject())),
                             "id")));
                     break;
                 default:

@@ -7,6 +7,7 @@ using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
@@ -79,7 +80,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                         p,
                         UriHelper.GetPagingArgs(p, firstItem, lastItem),
                         toggleIsOn ? 1 : 0),
-                o => new[] { (string)o["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(o) : (Entity)new NullEntity() },
+                a => a.Select(o => (string)o["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(o.AsObject()) : (Entity)new NullEntity()),
                 "id");
         }
 

@@ -1,3 +1,5 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
@@ -9,6 +11,7 @@ using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 
@@ -124,10 +127,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             UpdateProvider();
         }
 
-        private IEnumerable<Entity> GetEntities(JsonObject jo)
-        {
-            yield return FeedModel.FromJson(jo);
-        }
+        private IEnumerable<Entity> GetEntities(JsonArray array) => DtoJson.DeserializeList<FeedDto>(array).Select(d => new FeedModel(d));
 
         private void UpdateProvider()
         {
@@ -161,7 +161,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                         Keyword,
                         p,
                         UriHelper.GetPagingArgs(p, firstItem, lastItem)),
-                o => new[] { UserModel.FromJson(o) },
+                a => DtoJson.DeserializeList<UserDto>(a).Select(d => new UserModel(d)),
                 "uid");
         }
     }
@@ -180,7 +180,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                         Keyword,
                         p,
                         UriHelper.GetPagingArgs(p, firstItem, lastItem)),
-                o => new[] { TopicModel.FromJson(o) },
+                a => DtoJson.DeserializeList<TopicDto>(a).Select(d => new TopicModel(d)),
                 "id");
         }
     }

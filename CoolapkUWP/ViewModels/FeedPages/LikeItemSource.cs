@@ -1,3 +1,5 @@
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Users;
@@ -5,6 +7,7 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
@@ -17,7 +20,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     id,
                     p,
                     UriHelper.GetPagingArgs(p, firstItem, lastItem)),
-            o => new[] { UserModel.FromJson(o) },
+            a => DtoJson.DeserializeList<UserDto>(a).Select(d => new UserModel(d)),
             "uid")) { }
     }
 }
