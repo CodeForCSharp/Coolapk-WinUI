@@ -34,69 +34,29 @@ namespace CoolapkUWP.Helpers
 
         public static void SetDefaultSettings()
         {
-            if (!LocalObject.KeyExists(Uid))
+            SetDefault(Uid, string.Empty);
+            SetDefault(Token, string.Empty);
+            SetDefault(UserName, string.Empty);
+            SetDefault(CustomUA, UserAgent.Parse(NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString()));
+            SetDefault(IsUseAPI2, true);
+            SetDefault(CustomAPI, new APIVersion("9.2.2", "1905301"));
+            SetDefault(IsCustomUA, false);
+            SetDefault(APIVersion, Common.APIVersions.V13);
+            SetDefault(UpdateDate, new DateTime());
+            SetDefault(IsNoPicsMode, false);
+            SetDefault(TokenVersion, Common.TokenVersions.TokenV2);
+            SetDefault(IsUseCompositor, true);
+            SetDefault(CurrentLanguage, LanguageHelper.AutoLanguageCode);
+            SetDefault(SelectedAppTheme, ElementTheme.Default);
+            SetDefault(SemaphoreSlimCount, Environment.ProcessorCount);
+            SetDefault(IsDisplayOriginPicture, false);
+        }
+
+        private static void SetDefault<T>(string key, T value)
+        {
+            if (!LocalObject.KeyExists(key))
             {
-                LocalObject.Save(Uid, string.Empty);
-            }
-            if (!LocalObject.KeyExists(Token))
-            {
-                LocalObject.Save(Token, string.Empty);
-            }
-            if (!LocalObject.KeyExists(UserName))
-            {
-                LocalObject.Save(UserName, string.Empty);
-            }
-            if (!LocalObject.KeyExists(CustomUA))
-            {
-                LocalObject.Save(CustomUA, UserAgent.Parse(NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString()));
-            }
-            if (!LocalObject.KeyExists(IsUseAPI2))
-            {
-                LocalObject.Save(IsUseAPI2, true);
-            }
-            if (!LocalObject.KeyExists(CustomAPI))
-            {
-                LocalObject.Save(CustomAPI, new APIVersion("9.2.2", "1905301"));
-            }
-            if (!LocalObject.KeyExists(IsCustomUA))
-            {
-                LocalObject.Save(IsCustomUA, false);
-            }
-            if (!LocalObject.KeyExists(APIVersion))
-            {
-                LocalObject.Save(APIVersion, Common.APIVersions.V13);
-            }
-            if (!LocalObject.KeyExists(UpdateDate))
-            {
-                LocalObject.Save(UpdateDate, new DateTime());
-            }
-            if (!LocalObject.KeyExists(IsNoPicsMode))
-            {
-                LocalObject.Save(IsNoPicsMode, false);
-            }
-            if (!LocalObject.KeyExists(TokenVersion))
-            {
-                LocalObject.Save(TokenVersion, Common.TokenVersions.TokenV2);
-            }
-            if (!LocalObject.KeyExists(IsUseCompositor))
-            {
-                LocalObject.Save(IsUseCompositor, true);
-            }
-            if (!LocalObject.KeyExists(CurrentLanguage))
-            {
-                LocalObject.Save(CurrentLanguage, LanguageHelper.AutoLanguageCode);
-            }
-            if (!LocalObject.KeyExists(SelectedAppTheme))
-            {
-                LocalObject.Save(SelectedAppTheme, ElementTheme.Default);
-            }
-            if (!LocalObject.KeyExists(SemaphoreSlimCount))
-            {
-                LocalObject.Save(SemaphoreSlimCount, Environment.ProcessorCount);
-            }
-            if (!LocalObject.KeyExists(IsDisplayOriginPicture))
-            {
-                LocalObject.Save(IsDisplayOriginPicture, false);
+                LocalObject.Save(key, value);
             }
         }
     }
