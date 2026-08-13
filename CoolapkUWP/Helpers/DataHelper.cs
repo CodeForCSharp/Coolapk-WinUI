@@ -73,14 +73,22 @@ namespace CoolapkUWP.Helpers
             catch (Exception ex)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(DataHelper)).LogWarning(ex, ex.ExceptionToMessage());
-                string s = str.Replace("<br>", "\n").Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<br/>", "\n").Replace("<p>", "").Replace("</p>", "\n").Replace("&nbsp;", " ").Replace("<br />", "").Replace("<br />", "");
-                while (s.IndexOf("<a", StringComparison.Ordinal) > 0)
-                {
-                    s = s.Replace(@"<a href=""" + Regex.Split(Regex.Split(s, @"<a href=""")[1], @""">")[0] + @""">", "");
-                    s = s.Replace("</a>", "");
-                }
-                return s;
+                return StripHtmlTags(str);
             }
+        }
+
+        private static string StripHtmlTags(string html)
+        {
+            string s = html
+                .Replace("<br />", "\n")
+                .Replace("<br/>", "\n")
+                .Replace("<br>", "\n")
+                .Replace("</p>", "\n")
+                .Replace("<p>", string.Empty)
+                .Replace("&nbsp;", " ");
+
+            s = Regex.Replace(s, @"<a\b[^>]*>", string.Empty);
+            return s.Replace("</a>", string.Empty);
         }
 
         public static string ConvertJsonString(this string str)
