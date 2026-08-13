@@ -78,32 +78,19 @@ namespace CoolapkUWP.Helpers
             };
         }
 
-        public static bool IsDarkTheme()
-        {
-            var theme = SettingsHelper.Get<ElementTheme>(SettingsHelper.SelectedAppTheme);
-            if (theme != ElementTheme.Default) { return theme == ElementTheme.Dark; }
+        public static bool IsDarkTheme() => IsDarkTheme(SettingsHelper.Get<ElementTheme>(SettingsHelper.SelectedAppTheme));
 
-            try
-            {
-                using var key = Microsoft.Win32.Registry.CurrentUser
-                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
-                return key?.GetValue("AppsUseLightTheme") is int v && v == 0;
-            }
-            catch (Exception ex)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage());
-                return false;
-            }
+        public static bool IsDarkTheme(ElementTheme theme)
+        {
+            if (theme != ElementTheme.Default) { return theme == ElementTheme.Dark; }
+            return IsSystemDarkTheme();
         }
 
-        public static bool IsDarkTheme(ElementTheme ActualTheme)
+        private static bool IsSystemDarkTheme()
         {
-            if (ActualTheme != ElementTheme.Default) { return ActualTheme == ElementTheme.Dark; }
-
             try
             {
-                using var key = Microsoft.Win32.Registry.CurrentUser
-                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+                using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
                 return key?.GetValue("AppsUseLightTheme") is int v && v == 0;
             }
             catch (Exception ex)
@@ -115,48 +102,47 @@ namespace CoolapkUWP.Helpers
 
         public static void UpdateSystemCaptionButtonColors()
         {
-            bool IsDark = IsDarkTheme();
-            bool IsHighContrast = false;
-            try { IsHighContrast = new AccessibilitySettings().HighContrast; }
-            catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage()); }
-    
-            var ForegroundColor = IsDark || IsHighContrast ? Colors.White : Colors.Black;
-            var BackgroundColor = IsHighContrast ? Microsoft.UI.ColorHelper.FromArgb(255, 0, 0, 0) : IsDark ? Microsoft.UI.ColorHelper.FromArgb(255, 32, 32, 32) : Microsoft.UI.ColorHelper.FromArgb(255, 243, 243, 243);
-
-            _ = (CurrentApplicationWindow?.DispatcherQueue)?.EnqueueAsync(() =>
-            {
-                if (CurrentApplicationWindow != null)
-                {
-                    bool ExtendViewIntoTitleBar = CurrentApplicationWindow.ExtendsContentIntoTitleBar;
-                    AppWindowTitleBar TitleBar = CurrentApplicationWindow.AppWindow.TitleBar;
-                    TitleBar.ForegroundColor = TitleBar.ButtonForegroundColor = ForegroundColor;
-                    TitleBar.BackgroundColor = TitleBar.InactiveBackgroundColor = BackgroundColor;
-                    TitleBar.ButtonBackgroundColor = TitleBar.ButtonInactiveBackgroundColor = ExtendViewIntoTitleBar ? Colors.Transparent : BackgroundColor;
-                }
-            });
+            bool isDark = IsDarkTheme();
+            bool isHighContrast = IsHighContrast();
+            Window window = CurrentApplicationWindow;
+            _ = window?.DispatcherQueue.EnqueueAsync(() => ApplyCaptionButtonColors(window, isDark, isHighContrast));
         }
 
         public static void UpdateSystemCaptionButtonColors(Window window)
         {
             _ = window?.DispatcherQueue.EnqueueAsync(() =>
             {
-                bool IsDark = window?.Content is FrameworkElement rootElement ? IsDarkTheme(rootElement.RequestedTheme) : IsDarkTheme();
-                bool IsHighContrast = false;
-                try { IsHighContrast = new AccessibilitySettings().HighContrast; }
-                catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage()); }
-    
-                var ForegroundColor = IsDark || IsHighContrast ? Colors.White : Colors.Black;
-                var BackgroundColor = IsHighContrast ? Microsoft.UI.ColorHelper.FromArgb(255, 0, 0, 0) : IsDark ? Microsoft.UI.ColorHelper.FromArgb(255, 32, 32, 32) : Microsoft.UI.ColorHelper.FromArgb(255, 243, 243, 243);
-
-                if (window != null)
-                {
-                    bool ExtendViewIntoTitleBar = window.ExtendsContentIntoTitleBar;
-                    AppWindowTitleBar TitleBar = window.AppWindow.TitleBar;
-                    TitleBar.ForegroundColor = TitleBar.ButtonForegroundColor = ForegroundColor;
-                    TitleBar.BackgroundColor = TitleBar.InactiveBackgroundColor = BackgroundColor;
-                    TitleBar.ButtonBackgroundColor = TitleBar.ButtonInactiveBackgroundColor = ExtendViewIntoTitleBar ? Colors.Transparent : BackgroundColor;
-                }
+                bool isDark = window.Content is FrameworkElement rootElement
+                    ? IsDarkTheme(rootElement.RequestedTheme)
+                    : IsDarkTheme();
+                ApplyCaptionButtonColors(window, isDark, IsHighContrast());
             });
+        }
+
+        private static bool IsHighContrast()
+        {
+            try { return new AccessibilitySettings().HighContrast; }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ThemeHelper)).LogDebug(ex, ex.ExceptionToMessage());
+                return false;
+            }
+        }
+
+        private static void ApplyCaptionButtonColors(Window window, bool isDark, bool isHighContrast)
+        {
+            if (window == null) { return; }
+
+            var foregroundColor = isDark || isHighContrast ? Colors.White : Colors.Black;
+            var backgroundColor = isHighContrast
+                ? Microsoft.UI.ColorHelper.FromArgb(255, 0, 0, 0)
+                : isDark ? Microsoft.UI.ColorHelper.FromArgb(255, 32, 32, 32) : Microsoft.UI.ColorHelper.FromArgb(255, 243, 243, 243);
+
+            bool extendViewIntoTitleBar = window.ExtendsContentIntoTitleBar;
+            AppWindowTitleBar titleBar = window.AppWindow.TitleBar;
+            titleBar.ForegroundColor = titleBar.ButtonForegroundColor = foregroundColor;
+            titleBar.BackgroundColor = titleBar.InactiveBackgroundColor = backgroundColor;
+            titleBar.ButtonBackgroundColor = titleBar.ButtonInactiveBackgroundColor = extendViewIntoTitleBar ? Colors.Transparent : backgroundColor;
         }
     }
 
