@@ -24,10 +24,10 @@ namespace CoolapkUWP.Services
         /// </summary>
         public static async Task NavigateToProductAsync(DependencyObject host, Hyperlink sender)
         {
-            UIHelper.ShowProgressBar();
+            ProgressBarHelper.ShowProgressBar();
             string device = (sender.Inlines.FirstOrDefault()?.ElementStart?.VisualParent?.DataContext as FeedModelBase)?.DeviceTitle;
             (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetProductDetailByName, device), true);
-            UIHelper.HideProgressBar();
+            ProgressBarHelper.HideProgressBar();
             if (!isSucceed) { return; }
 
             ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);

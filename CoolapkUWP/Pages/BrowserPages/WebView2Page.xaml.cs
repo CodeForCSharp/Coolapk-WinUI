@@ -61,7 +61,7 @@ namespace CoolapkUWP.Pages.BrowserPages
 
         private void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            UIHelper.ShowProgressBar();
+            ProgressBarHelper.ShowProgressBar();
         }
 
         private async void WebView_NavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
@@ -75,7 +75,7 @@ namespace CoolapkUWP.Pages.BrowserPages
                 Provider.IsLoginPage = true;
             }
             Provider.Title = sender.CoreWebView2.DocumentTitle;
-            UIHelper.HideProgressBar();
+            ProgressBarHelper.HideProgressBar();
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs args)
@@ -97,12 +97,12 @@ namespace CoolapkUWP.Pages.BrowserPages
                     Frame.Navigating -= OnFrameNavigating;
                     Frame.GoBack();
                 }
-                UIHelper.ShowMessage(loader.GetString("LoginSuccessfully"));
+                MessageHelper.ShowMessage(loader.GetString("LoginSuccessfully"));
             }
             else
             {
                 WebView.Source = new Uri(UriHelper.LoginUri);
-                UIHelper.ShowMessage(loader.GetString("CannotGetToken"));
+                MessageHelper.ShowMessage(loader.GetString("CannotGetToken"));
             }
         }
 
@@ -170,7 +170,7 @@ namespace CoolapkUWP.Pages.BrowserPages
 
         private async void ManualLoginButton_Click(object sender, RoutedEventArgs e)
         {
-            UIHelper.ShowProgressBar();
+            ProgressBarHelper.ShowProgressBar();
             LoginDialog dialog = new LoginDialog();
             ContentDialogResult result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
@@ -179,7 +179,7 @@ namespace CoolapkUWP.Pages.BrowserPages
             }
             else
             {
-                UIHelper.HideProgressBar();
+                ProgressBarHelper.HideProgressBar();
             }
         }
 

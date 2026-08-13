@@ -32,6 +32,11 @@ namespace CoolapkUWP
         internal static nint WindowHandle { get; private set; }
         internal static Window MainWindow { get; private set; }
 
+        /// <summary>
+        /// 当前主窗口根 Frame 中承载的 <see cref="MainPage"/> 实例，供 UI 服务（消息/进度/导航）定位界面。
+        /// </summary>
+        internal static MainPage MainPage => (MainWindow?.Content as Frame)?.Content as MainPage;
+
         public App()
         {
             InitializeComponent();

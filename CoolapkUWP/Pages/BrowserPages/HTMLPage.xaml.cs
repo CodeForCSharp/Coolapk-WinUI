@@ -32,7 +32,7 @@ namespace CoolapkUWP.Pages.BrowserPages
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            UIHelper.MainPage.FindDescendant<WebViewContentControl>().IsWebView = true;
+            App.MainPage.FindDescendant<WebViewContentControl>().IsWebView = true;
             if (e.Parameter is HTMLViewModel ViewModel)
             {
                 Provider = ViewModel;
@@ -43,7 +43,7 @@ namespace CoolapkUWP.Pages.BrowserPages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            UIHelper.MainPage.FindDescendant<WebViewContentControl>().IsWebView = false;
+            App.MainPage.FindDescendant<WebViewContentControl>().IsWebView = false;
         }
 
         private void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)

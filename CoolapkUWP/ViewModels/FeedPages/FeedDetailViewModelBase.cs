@@ -21,8 +21,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected EntityItemSource AddTab(List<ShyHeaderItem> tabs, string header, EntityItemSource source)
         {
-            source.LoadMoreStarted += UIHelper.ShowProgressBar;
-            source.LoadMoreCompleted += UIHelper.HideProgressBar;
+            source.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+            source.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
             tabs.Add(new ShyHeaderItem { Header = header, ItemSource = source });
             return source;
         }

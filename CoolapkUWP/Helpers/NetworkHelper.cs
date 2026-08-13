@@ -219,7 +219,7 @@ namespace CoolapkUWP.Helpers
             catch (HttpRequestException e)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
-                if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
+                if (!isBackground) { MessageHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }
             catch (Exception ex)
@@ -245,7 +245,7 @@ namespace CoolapkUWP.Helpers
             catch (HttpRequestException e)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
-                if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
+                if (!isBackground) { MessageHelper.ShowHttpExceptionMessage(e); }
                 return null;
             }
             catch (Exception ex)
@@ -300,7 +300,7 @@ namespace CoolapkUWP.Helpers
             catch (HttpRequestException e)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(NetworkHelper)).LogError(e, e.ExceptionToMessage());
-                if (!isBackground) { UIHelper.ShowHttpExceptionMessage(e); }
+                if (!isBackground) { MessageHelper.ShowHttpExceptionMessage(e); }
                 return result;
             }
             catch (Exception ex)

@@ -64,7 +64,7 @@ namespace CoolapkUWP.ViewModels.BrowserPages
 
         private async Task Load_HTML(Uri uri)
         {
-            UIHelper.ShowProgressBar();
+            ProgressBarHelper.ShowProgressBar();
             (bool isSucceed, string result) = await RequestHelper.GetStringAsync(uri, "XMLHttpRequest");
             if (isSucceed)
             {
@@ -98,7 +98,7 @@ namespace CoolapkUWP.ViewModels.BrowserPages
                     }
                 }
             }
-            UIHelper.HideProgressBar();
+            ProgressBarHelper.HideProgressBar();
         }
 
         public async Task GetHtmlAsync(string html, string theme)

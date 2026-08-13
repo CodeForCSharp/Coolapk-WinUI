@@ -130,14 +130,14 @@ namespace CoolapkUWP.ViewModels.FeedPages
         {
             IList<string> results = new List<string>();
             if (!Pictures.Any()) { return results; }
-            UIHelper.ShowMessage("上传图片");
+            MessageHelper.ShowMessage("上传图片");
             List<UploadFileFragment> fragments = new List<UploadFileFragment>();
             foreach (WriteableBitmap pic in Pictures)
             {
                 fragments.Add(await UploadFileFragment.FromWriteableBitmap(pic));
             }
             results = await RequestHelper.UploadImages(fragments);
-            UIHelper.ShowMessage($"上传了 {results.Count} 张图片");
+            MessageHelper.ShowMessage($"上传了 {results.Count} 张图片");
             return results;
         }
 

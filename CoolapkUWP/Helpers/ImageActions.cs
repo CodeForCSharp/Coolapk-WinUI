@@ -53,7 +53,7 @@ namespace CoolapkUWP.Helpers
             StorageFile file = await ImageCacheHelper.GetImageFileAsync(ImageType.OriginImage, image.Uri);
             if (file == null)
             {
-                UIHelper.ShowMessage(ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError"));
+                MessageHelper.ShowMessage(ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError"));
             }
             return file;
         }

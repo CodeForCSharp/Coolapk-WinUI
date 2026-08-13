@@ -102,7 +102,6 @@ namespace CoolapkUWP.Pages
         public MainPage()
         {
             InitializeComponent();
-            UIHelper.MainPage = this;
             _ = (NotificationsModel.Instance?.Update());
             NotificationsModel = NotificationsModel.Instance;
             SearchBoxHolder.RegisterPropertyChangedCallback(Slot.IsStretchProperty, new DependencyPropertyChangedCallback(OnIsStretchProperty));
@@ -218,7 +217,7 @@ namespace CoolapkUWP.Pages
                     NavigationView.SelectedItem = SelectedItem;
                 }
             }
-            UIHelper.HideProgressBar();
+            ProgressBarHelper.HideProgressBar();
         }
 
         private void NavigationViewControl_PaneClosing(NavigationView sender, NavigationViewPaneClosingEventArgs args)

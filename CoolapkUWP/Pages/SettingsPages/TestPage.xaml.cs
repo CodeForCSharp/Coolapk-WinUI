@@ -128,7 +128,7 @@ namespace CoolapkUWP.Pages.SettingsPages
             {
                 if (progressValue != value)
                 {
-                    UIHelper.ShowProgressBar(value);
+                    ProgressBarHelper.ShowProgressBar(value);
                     progressValue = value;
                 }
             }
@@ -143,9 +143,9 @@ namespace CoolapkUWP.Pages.SettingsPages
                 if (isShowProgressRing != value)
                 {
                     if (value)
-                        UIHelper.ShowProgressBar();
+                        ProgressBarHelper.ShowProgressBar();
                     else
-                        UIHelper.HideProgressBar();
+                        ProgressBarHelper.HideProgressBar();
                     isShowProgressRing = value;
                 }
             }

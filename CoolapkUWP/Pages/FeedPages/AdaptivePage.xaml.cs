@@ -40,12 +40,12 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 if (Provider != null)
                 {
-                    Provider.LoadMoreStarted -= UIHelper.ShowProgressBar;
-                    Provider.LoadMoreCompleted -= UIHelper.HideProgressBar;
+                    Provider.LoadMoreStarted -= ProgressBarHelper.ShowProgressBar;
+                    Provider.LoadMoreCompleted -= ProgressBarHelper.HideProgressBar;
                 }
                 Provider = ViewModel;
-                Provider.LoadMoreStarted += UIHelper.ShowProgressBar;
-                Provider.LoadMoreCompleted += UIHelper.HideProgressBar;
+                Provider.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+                Provider.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
                 await Refresh(true);
             }
         }
@@ -53,8 +53,8 @@ namespace CoolapkUWP.Pages.FeedPages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            Provider.LoadMoreStarted -= UIHelper.ShowProgressBar;
-            Provider.LoadMoreCompleted -= UIHelper.HideProgressBar;
+            Provider.LoadMoreStarted -= ProgressBarHelper.ShowProgressBar;
+            Provider.LoadMoreCompleted -= ProgressBarHelper.HideProgressBar;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)

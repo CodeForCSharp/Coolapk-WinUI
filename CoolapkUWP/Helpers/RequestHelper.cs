@@ -24,12 +24,12 @@ namespace CoolapkUWP.Helpers
             catch (Exception ex)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
-                UIHelper.ShowMessage("加载失败");
+                MessageHelper.ShowMessage("加载失败");
                 return (false, null);
             }
             if (!token.TryGetPropertyValue("data", out JsonNode data) && token.TryGetPropertyValue("message", out JsonNode message))
             {
-                UIHelper.ShowMessage(message.ToString());
+                MessageHelper.ShowMessage(message.ToString());
                 return (false, null);
             }
             else { return (data != null && !string.IsNullOrWhiteSpace(data.ToString()), data); }
@@ -40,7 +40,7 @@ namespace CoolapkUWP.Helpers
             string results = await NetworkHelper.GetStringAsync(uri, request, isBackground);
             if (string.IsNullOrWhiteSpace(results))
             {
-                UIHelper.ShowMessage("加载失败");
+                MessageHelper.ShowMessage("加载失败");
                 return (false, results);
             }
             else { return (true, results); }
@@ -55,13 +55,13 @@ namespace CoolapkUWP.Helpers
             catch (Exception ex)
             {
                 SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
-                UIHelper.ShowMessage("加载失败");
+                MessageHelper.ShowMessage("加载失败");
                 return (false, null);
             }
             if (!token.TryGetPropertyValue("data", out JsonNode data) && token.TryGetPropertyValue("message", out JsonNode message))
             {
                 bool _isSucceed = token.TryGetPropertyValue("error", out JsonNode error) && error.ToInt32Safe() == 0;
-                UIHelper.ShowMessage(message.ToString());
+                MessageHelper.ShowMessage(message.ToString());
                 return (_isSucceed, token);
             }
             else
@@ -77,7 +77,7 @@ namespace CoolapkUWP.Helpers
             string json = await NetworkHelper.PostAsync(uri, content, isBackground);
             if (string.IsNullOrEmpty(json))
             {
-                UIHelper.ShowMessage("加载失败");
+                MessageHelper.ShowMessage("加载失败");
                 return (false, null);
             }
             else { return (true, json); }
@@ -141,7 +141,7 @@ namespace CoolapkUWP.Helpers
                                     catch (Exception ex)
                                     {
                                         SettingsHelper.LogManager.CreateLogger(nameof(RequestHelper)).LogError(ex, ex.ExceptionToMessage());
-                                        UIHelper.ShowMessage("上传失败");
+                                        MessageHelper.ShowMessage("上传失败");
                                         continue;
                                     }
                                 }

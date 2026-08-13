@@ -44,8 +44,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (SearchFeedItemSource == null)
                 {
                     SearchFeedItemSource = new SearchFeedItemSource(Title);
-                    SearchFeedItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                    SearchFeedItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
+                    SearchFeedItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+                    SearchFeedItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
                 }
                 else if (SearchFeedItemSource.Keyword != Title)
                 {
@@ -54,8 +54,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (SearchUserItemSource == null)
                 {
                     SearchUserItemSource = new SearchUserItemSource(Title);
-                    SearchUserItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                    SearchUserItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
+                    SearchUserItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+                    SearchUserItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
                 }
                 else if (SearchUserItemSource.Keyword != Title)
                 {
@@ -64,8 +64,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (SearchTopicItemSource == null)
                 {
                     SearchTopicItemSource = new SearchTopicItemSource(Title);
-                    SearchTopicItemSource.LoadMoreStarted += UIHelper.ShowProgressBar;
-                    SearchTopicItemSource.LoadMoreCompleted += UIHelper.HideProgressBar;
+                    SearchTopicItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+                    SearchTopicItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
                 }
                 else if (SearchTopicItemSource.Keyword != Title)
                 {

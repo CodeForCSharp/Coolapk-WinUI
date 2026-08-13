@@ -201,7 +201,7 @@ namespace CoolapkUWP.Controls
 
         private void CreateDataContent()
         {
-            UIHelper.ShowProgressBar();
+            ProgressBarHelper.ShowProgressBar();
             InputBox.Document.GetText(TextGetOptions.UseObjectText, out string contentText);
             contentText = contentText.Replace("\r", "\r\n");
             if (string.IsNullOrWhiteSpace(contentText)) { return; }
@@ -217,8 +217,8 @@ namespace CoolapkUWP.Controls
                 pics = await Provider.UploadPic();
                 if (pics.Count != Provider.Pictures.Count)
                 {
-                    UIHelper.ShowMessage("图片上传失败");
-                    UIHelper.HideProgressBar();
+                    MessageHelper.ShowMessage("图片上传失败");
+                    ProgressBarHelper.HideProgressBar();
                     return;
                 }
             }
@@ -246,8 +246,8 @@ namespace CoolapkUWP.Controls
                 pics = await Provider.UploadPic();
                 if (pics.Count != Provider.Pictures.Count)
                 {
-                    UIHelper.ShowMessage("图片上传失败");
-                    UIHelper.HideProgressBar();
+                    MessageHelper.ShowMessage("图片上传失败");
+                    ProgressBarHelper.HideProgressBar();
                     return;
                 }
             }
@@ -294,19 +294,19 @@ namespace CoolapkUWP.Controls
             }
             catch (CoolapkMessageException cex)
             {
-                UIHelper.ShowMessage(cex.Message);
+                MessageHelper.ShowMessage(cex.Message);
                 if (cex.MessageStatus == CoolapkMessageException.RequestCaptcha)
                 {
                     //CaptchaDialog dialog = new CaptchaDialog();
                     //_ = await dialog.ShowAsync();
                 }
             }
-            UIHelper.HideProgressBar();
+            ProgressBarHelper.HideProgressBar();
         }
 
         private void SendSuccessful()
         {
-            UIHelper.ShowMessage(ResourceLoader.GetForViewIndependentUse("CreateFeedControl").GetString("SendSuccessed"));
+            MessageHelper.ShowMessage(ResourceLoader.GetForViewIndependentUse("CreateFeedControl").GetString("SendSuccessed"));
             InputBox.Document.SetText(TextSetOptions.None, string.Empty);
             Provider.Pictures.Clear();
             Hide();

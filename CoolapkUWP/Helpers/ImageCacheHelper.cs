@@ -148,14 +148,14 @@ namespace CoolapkUWP.Helpers
                     catch (Exception)
                     {
                         string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                        UIHelper.ShowMessage(str);
+                        MessageHelper.ShowMessage(str);
                         return null;
                     }
                 }
                 catch (Exception)
                 {
                     string str = ResourceLoader.GetForViewIndependentUse().GetString("ImageLoadError");
-                    UIHelper.ShowMessage(str);
+                    MessageHelper.ShowMessage(str);
                     return null;
                 }
             }
