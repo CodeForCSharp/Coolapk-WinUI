@@ -19,7 +19,7 @@ namespace CoolapkUWP.Models.Images
     [INotifyPropertyChanged]
     public partial class ImageModel : IPic
     {
-        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(Math.Max(1, SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount)));
 
         private readonly Action<UISettingChangedType> UISettingChanged;
 
@@ -177,8 +177,7 @@ namespace CoolapkUWP.Models.Images
 
         public static void SetSemaphoreSlim(int initialCount)
         {
-            semaphoreSlim.Dispose();
-            semaphoreSlim = new SemaphoreSlim(initialCount);
+            Interlocked.Exchange(ref semaphoreSlim, new SemaphoreSlim(Math.Max(1, initialCount)));
         }
 
         private long loadGeneration;

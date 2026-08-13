@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Data;
+using CoolapkUWP.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace CoolapkUWP.ViewModels.DataSource
 {
@@ -110,6 +112,15 @@ namespace CoolapkUWP.ViewModels.DataSource
                 await AddItemsAsync(items);
 
                 return new LoadMoreItemsResult { Count = items == null ? 0 : (uint)items.Count };
+            }
+            catch (OperationCanceledException)
+            {
+                return new LoadMoreItemsResult { Count = 0 };
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(IncrementalLoadingBase<T>)).LogError(ex, ex.ExceptionToMessage());
+                return new LoadMoreItemsResult { Count = 0 };
             }
             finally
             {

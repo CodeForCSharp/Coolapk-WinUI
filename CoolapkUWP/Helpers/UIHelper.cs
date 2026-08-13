@@ -8,11 +8,13 @@ using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Launcher = Windows.System.Launcher;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -27,8 +29,9 @@ namespace CoolapkUWP.Helpers
     internal static partial class UIHelper
     {
         public const int Duration = 3000;
-        public static bool IsShowingProgressBar, IsShowingMessage;
-        public static List<string> MessageList { get; } = new List<string>();
+        public static bool IsShowingProgressBar;
+        private static int isShowingMessage;
+        public static ConcurrentQueue<string> MessageList { get; } = new ConcurrentQueue<string>();
     }
 
     internal static partial class UIHelper
@@ -80,31 +83,57 @@ namespace CoolapkUWP.Helpers
 
         public static void ShowMessage(string message)
         {
-            MessageList.Add(message);
-            if (!IsShowingMessage)
+            MessageList.Enqueue(message);
+            if (Interlocked.Exchange(ref isShowingMessage, 1) == 0)
             {
-                IsShowingMessage = true;
-                _ = MainPage?.DispatcherQueue.EnqueueAsync(async () =>
+                DispatcherQueue dispatcher = MainPage?.DispatcherQueue;
+                if (dispatcher != null)
                 {
-                    while (MessageList.Any())
+                    _ = dispatcher.EnqueueAsync(ShowMessagesCoreAsync);
+                }
+                else
+                {
+                    while (MessageList.TryDequeue(out _)) { }
+                    Interlocked.Exchange(ref isShowingMessage, 0);
+                }
+            }
+        }
+
+        private static async Task ShowMessagesCoreAsync()
+        {
+            try
+            {
+                while (MessageList.TryDequeue(out string current))
+                {
+                    if (MainPage != null && !string.IsNullOrEmpty(current))
                     {
-                        if (MainPage != null)
-                        {
-                            if (!string.IsNullOrEmpty(MessageList[0]))
-                            {
-                                string messages = $"[{MessageList.Count}] {MessageList[0].Replace("\n", " ")}";
-                                MainPage.ShowMessage(messages);
-                                await Task.Delay(Duration);
-                            }
-                            MessageList.RemoveAt(0);
-                            if (MessageList.Count == 0)
-                            {
-                                MainPage.ShowMessage();
-                            }
-                        }
+                        string messages = $"[{MessageList.Count + 1}] {current.Replace("\n", " ")}";
+                        MainPage.ShowMessage(messages);
+                        await Task.Delay(Duration);
                     }
-                    IsShowingMessage = false;
-                });
+                    if (MessageList.IsEmpty)
+                    {
+                        MainPage?.ShowMessage();
+                    }
+                }
+            }
+            finally
+            {
+                Interlocked.Exchange(ref isShowingMessage, 0);
+            }
+
+            if (!MessageList.IsEmpty && Interlocked.CompareExchange(ref isShowingMessage, 1, 0) == 0)
+            {
+                DispatcherQueue dispatcher = MainPage?.DispatcherQueue;
+                if (dispatcher != null)
+                {
+                    _ = dispatcher.EnqueueAsync(ShowMessagesCoreAsync);
+                }
+                else
+                {
+                    while (MessageList.TryDequeue(out _)) { }
+                    Interlocked.Exchange(ref isShowingMessage, 0);
+                }
             }
         }
 

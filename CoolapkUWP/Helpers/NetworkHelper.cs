@@ -28,9 +28,9 @@ namespace CoolapkUWP.Helpers
 
         static NetworkHelper()
         {
-            semaphoreSlim = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));
+            semaphoreSlim = new SemaphoreSlim(Math.Max(1, SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount)));
             ThemeHelper.UISettingChanged.Add((arg) => Client?.DefaultRequestHeaders?.ReplaceDarkMode());
-            ClientHandler = new HttpClientHandler();
+            ClientHandler = new HttpClientHandler { CookieContainer = new CookieContainer() };
             Client = new HttpClient(ClientHandler);
             SetRequestHeaders();
             SetLoginCookie();
@@ -38,8 +38,7 @@ namespace CoolapkUWP.Helpers
 
         public static void SetSemaphoreSlim(int initialCount)
         {
-            semaphoreSlim.Dispose();
-            semaphoreSlim = new SemaphoreSlim(initialCount);
+            Interlocked.Exchange(ref semaphoreSlim, new SemaphoreSlim(Math.Max(1, initialCount)));
         }
 
         public static void SetLoginCookie()

@@ -47,12 +47,11 @@ namespace CoolapkUWP.Common
         private readonly ConcurrentDictionary<string, Task<BitmapImage>> _inflightDecodes = new ConcurrentDictionary<string, Task<BitmapImage>>();
         private readonly ConcurrentDictionary<string, Task<StorageFile>> _inflightDownloads = new ConcurrentDictionary<string, Task<StorageFile>>();
 
-        private static SemaphoreSlim _decodeSemaphore = new SemaphoreSlim(SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount));
+        private static SemaphoreSlim _decodeSemaphore = new SemaphoreSlim(Math.Max(1, SettingsHelper.Get<int>(SettingsHelper.SemaphoreSlimCount)));
 
         public static void SetDecodeSemaphore(int initialCount)
         {
-            _decodeSemaphore.Dispose();
-            _decodeSemaphore = new SemaphoreSlim(initialCount);
+            Interlocked.Exchange(ref _decodeSemaphore, new SemaphoreSlim(Math.Max(1, initialCount)));
         }
 
         public ImageCache()
