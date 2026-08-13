@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,9 +7,13 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class DyhRowDto
     {
+        [JsonPropertyName("logo")]
         public string Logo { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("url")]
         public string Url { get; set; }
+        [JsonPropertyName("subTitle")]
         public string SubTitle { get; set; }
     }
 }

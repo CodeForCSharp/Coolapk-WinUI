@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,7 +7,9 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class IndexPageOperationCardDto : EntityDto
     {
+        [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("url")]
         public string Url { get; set; }
     }
 }

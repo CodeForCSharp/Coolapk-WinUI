@@ -10,7 +10,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Microsoft.UI.Xaml;
@@ -30,18 +29,8 @@ namespace CoolapkUWP
 
     public sealed partial class App : Application
     {
-        [DllImport("user32.dll")]
-        private static extern bool SetProcessDpiAwarenessContext(int dpiFlag);
-
-        private const int DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = -4;
-
         internal static nint WindowHandle { get; private set; }
         internal static Window MainWindow { get; private set; }
-
-        static App()
-        {
-            SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-        }
 
         public App()
         {
@@ -72,8 +61,6 @@ namespace CoolapkUWP
             }
 
             MainWindow.Activate();
-
-            RequestWIFIAccess();
         }
 
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -94,25 +81,6 @@ namespace CoolapkUWP
                 SettingsHelper.LogManager.CreateLogger(nameof(App)).LogCritical(args.Exception, args.Exception.ExceptionToMessage());
             }
             args.Handled = true;
-        }
-
-        private async void RequestWIFIAccess()
-        {
-            try
-            {
-                var WIFIData = Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Create("wifiData");
-                switch (WIFIData.CheckAccess())
-                {
-                    case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedByUser:
-                    case Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus.DeniedBySystem:
-                        await WIFIData.RequestAccessAsync();
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                SettingsHelper.LogManager.CreateLogger(nameof(App)).LogWarning(ex, ex.ExceptionToMessage());
-            }
         }
 
         private void Application_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)

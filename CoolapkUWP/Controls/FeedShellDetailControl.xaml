@@ -88,7 +88,7 @@
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.IsFeedArticle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <local:ImageEx
-                    Model="{x:Bind FeedDetail.MessageCover}"
+                    Model="{x:Bind FeedDetail.MessageCover, Mode=OneWay}"
                     Stretch="UniformToFill"
                     Tag="{x:Bind FeedDetail.MessageCover, Mode=OneWay}"
                     Tapped="OnTapped"
@@ -174,7 +174,7 @@
                         VerticalAlignment="Center"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
                         <local:ImageEx
-                            Model="{x:Bind FeedDetail.TopicLogo}"
+                            Model="{x:Bind FeedDetail.TopicLogo, Mode=OneWay}"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
                             Stretch="UniformToFill" />
                     </Border>
@@ -225,7 +225,7 @@
                         VerticalAlignment="Center"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
                         <local:ImageEx
-                            Model="{x:Bind FeedDetail.DyhLogo}"
+                            Model="{x:Bind FeedDetail.DyhLogo, Mode=OneWay}"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
                             Stretch="UniformToFill" />
                     </Border>
@@ -508,7 +508,7 @@
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <local:ImageEx
-                    Model="{x:Bind FeedDetail.ExtraPic}"
+                    Model="{x:Bind FeedDetail.ExtraPic, Mode=OneWay}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Stretch="UniformToFill" />
                 <Grid
@@ -533,7 +533,7 @@
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         Visibility="{x:Bind FeedDetail.ExtraPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                         <local:ImageEx
-                            Model="{x:Bind FeedDetail.ExtraPic}"
+                            Model="{x:Bind FeedDetail.ExtraPic, Mode=OneWay}"
                             CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Stretch="UniformToFill" />
                     </Border>
@@ -601,7 +601,7 @@
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Visibility="{x:Bind FeedDetail.MediaUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <local:ImageEx
-                    Model="{x:Bind FeedDetail.MediaPic}"
+                    Model="{x:Bind FeedDetail.MediaPic, Mode=OneWay}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Stretch="UniformToFill" />
                 <Grid
@@ -626,7 +626,7 @@
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                         <local:ImageEx
-                            Model="{x:Bind FeedDetail.MediaPic}"
+                            Model="{x:Bind FeedDetail.MediaPic, Mode=OneWay}"
                             CornerRadius="{ThemeResource OverlayCornerRadius}"
                             Stretch="UniformToFill" />
                     </Border>

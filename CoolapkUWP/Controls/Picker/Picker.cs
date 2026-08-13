@@ -61,7 +61,8 @@ namespace CoolapkUWP.Controls
 
             _popup = new Popup
             {
-                Child = _rootGrid
+                Child = _rootGrid,
+                XamlRoot = element?.XamlRoot ?? App.MainWindow?.Content?.XamlRoot
             };
             _rootGrid.Children.Add(this);
 

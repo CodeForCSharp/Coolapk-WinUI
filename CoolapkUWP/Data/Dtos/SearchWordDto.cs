@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,12 +7,18 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class SearchWordDto
     {
+        [JsonPropertyName("logo")]
         public string Logo { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
+        [JsonPropertyName("entityId")]
         public string EntityId { get; set; }
+        [JsonPropertyName("entityType")]
         public string EntityType { get; set; }
+        [JsonPropertyName("entityForward")]
         public string EntityForward { get; set; }
+        [JsonPropertyName("entityFixed")]
         public string EntityFixed { get; set; }
     }
 }

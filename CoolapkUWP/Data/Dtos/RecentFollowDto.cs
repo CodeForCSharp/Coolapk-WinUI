@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,6 +7,7 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class RecentFollowDto
     {
+        [JsonPropertyName("userInfo")]
         public UserDto UserInfo { get; set; }
     }
 }

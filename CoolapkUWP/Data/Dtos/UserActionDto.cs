@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,11 +7,17 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class UserActionDto
     {
+        [JsonPropertyName("follow")]
         public int Follow { get; set; }
+        [JsonPropertyName("like")]
         public int Like { get; set; }
+        [JsonPropertyName("favorite")]
         public int Favorite { get; set; }
+        [JsonPropertyName("collect")]
         public int Collect { get; set; }
+        [JsonPropertyName("followAuthor")]
         public int FollowAuthor { get; set; }
+        [JsonPropertyName("authorFollowYou")]
         public int AuthorFollowYou { get; set; }
     }
 }

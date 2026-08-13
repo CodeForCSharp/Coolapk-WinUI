@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CoolapkUWP.Data.Dtos
 {
     /// <summary>
@@ -5,9 +7,13 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class NotificationUserInfoDto
     {
+        [JsonPropertyName("status")]
         public int Status { get; set; }
+        [JsonPropertyName("block_status")]
         public int BlockStatus { get; set; }
+        [JsonPropertyName("username")]
         public string Username { get; set; }
+        [JsonPropertyName("userAvatar")]
         public string UserAvatar { get; set; }
     }
 }

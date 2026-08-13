@@ -11,6 +11,7 @@
     <AssemblyCopyright>Copyright © 2017 - 2026 Coolapk UWP Project. All Rights Reserved.</AssemblyCopyright>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <UseWinUI>true</UseWinUI>

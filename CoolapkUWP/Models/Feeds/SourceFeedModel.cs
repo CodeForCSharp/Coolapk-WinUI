@@ -16,7 +16,7 @@ namespace CoolapkUWP.Models.Feeds
     public partial class SourceFeedModel : Entity
     {
         [ObservableProperty]
-        public partial bool ShowUser { get; set; }
+        public partial bool ShowUser { get; set; } = true;
 
         [ObservableProperty]
         public partial bool IsCopyEnabled { get; set; }

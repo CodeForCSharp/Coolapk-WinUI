@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CoolapkUWP.Data.Dtos
 {
@@ -7,7 +8,9 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class CollectionContentsDto
     {
+        [JsonPropertyName("entityTemplate")]
         public string EntityTemplate { get; set; }
+        [JsonPropertyName("entities")]
         public List<SelectorEntityDto> Entities { get; set; }
     }
 
@@ -16,7 +19,9 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class SelectorEntityDto
     {
+        [JsonPropertyName("url")]
         public string Url { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
     }
 }

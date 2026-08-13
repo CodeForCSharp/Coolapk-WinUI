@@ -66,7 +66,7 @@ namespace CoolapkUWP.Models.Feeds
         }
 
         [ObservableProperty]
-        public partial bool ShowButtons { get; set; }
+        public partial bool ShowButtons { get; set; } = true;
 
         int ICanFollow.ID => UID;
 
