@@ -27,7 +27,7 @@ namespace CoolapkUWP.Controls
     /// </summary>
     public sealed partial class TextBlockEx : UserControl
     {
-        public const string AuthorBorder = "<div class=\"author-border\"/>";
+        public const string AuthorBorder = "<div class=\"author-border\"></div>";
         private static readonly Regex EmojisRegex = new Regex(@"(\[\S*?\]|#\(\S*?\))");
         private static readonly FontSizeToHeightConverter SharedFontSizeToHeightConverter = new FontSizeToHeightConverter();
         private static readonly BoolToVisibilityConverter SharedBoolToVisibilityConverter = new BoolToVisibilityConverter();
