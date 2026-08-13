@@ -67,6 +67,26 @@ namespace CoolapkUWP.Controls.DataTemplates
         }
     }
 
+    public sealed partial class DetailTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate Others { get; set; }
+        public DataTemplate DyhDetail { get; set; }
+        public DataTemplate UserDetail { get; set; }
+        public DataTemplate TopicDetail { get; set; }
+        public DataTemplate ProductDetail { get; set; }
+        public DataTemplate CollectionDetail { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            if (item is DyhDetail) { return DyhDetail; }
+            if (item is UserDetail) { return UserDetail; }
+            if (item is TopicDetail) { return TopicDetail; }
+            if (item is ProductDetail) { return ProductDetail; }
+            if (item is CollectionDetail) { return CollectionDetail; }
+            return Others;
+        }
+    }
+
     public sealed partial class ItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Feed { get; set; }

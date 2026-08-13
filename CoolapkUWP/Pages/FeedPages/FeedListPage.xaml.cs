@@ -69,8 +69,6 @@ namespace CoolapkUWP.Pages.FeedPages
             }
         }
 
-        public DataTemplate DetailDataTemplate { get; private set; }
-
         public FeedListPage() => InitializeComponent();
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -81,6 +79,8 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 Provider = ViewModel;
                 await Refresh(true);
+                DataTemplateSelector selector = Resources["DetailTemplateSelector"] as DataTemplateSelector;
+                DetailControl.ContentTemplate = selector?.SelectTemplate(DetailControl.Content);
             }
         }
 
@@ -198,12 +198,14 @@ namespace CoolapkUWP.Pages.FeedPages
             // Single pane
             if (sender.Mode == TwoPaneViewMode.SinglePane)
             {
+                HeaderControl.Visibility = Visibility.Visible;
                 ListRefreshButton.Visibility = Visibility.Collapsed;
                 HeaderRefreshButton.Visibility = Visibility.Visible;
             }
             // Dual pane.
             else
             {
+                HeaderControl.Visibility = Visibility.Collapsed;
                 ListRefreshButton.Visibility = Visibility.Visible;
                 HeaderRefreshButton.Visibility = Visibility.Collapsed;
             }

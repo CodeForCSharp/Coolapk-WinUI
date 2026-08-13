@@ -122,6 +122,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <muxc:PersonPicture
                                         Width="56"
@@ -130,9 +131,19 @@
                                         VerticalAlignment="Top"
                                         DisplayName="{x:Bind UserName, Mode=OneWay}"
                                         ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="8,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                        Text="{x:Bind UserName, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis" />
                                     <Button
                                         x:Name="FollowButton"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         Height="32"
                                         HorizontalAlignment="Right"
                                         Click="Button_Click"
@@ -1204,6 +1215,14 @@
                 List="{StaticResource ListDefaultTemplate}"
                 Others="{StaticResource Empty}"
                 User="{StaticResource UserTemplate}" />
+            <templates:DetailTemplateSelector
+                x:Key="DetailTemplateSelector"
+                CollectionDetail="{StaticResource CollectionDetailCard}"
+                DyhDetail="{StaticResource DyhDetailCard}"
+                Others="{StaticResource Empty}"
+                ProductDetail="{StaticResource ProductDetailCard}"
+                TopicDetail="{StaticResource TopicDetailCard}"
+                UserDetail="{StaticResource UserDetailCard}" />
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
@@ -1255,8 +1274,7 @@
                                 x:Name="DetailControl"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
-                                Content="{x:Bind Provider.Detail, Mode=OneWay}"
-                                ContentTemplate="{x:Bind DetailDataTemplate, Mode=OneWay}" />
+                                Content="{x:Bind Provider.Detail, Mode=OneWay}" />
                         </Grid>
                     </ScrollViewer>
                 </Grid>
