@@ -113,7 +113,15 @@ namespace CoolapkUWP.Helpers
 
         public override void Send(SendOrPostCallback d, object state)
         {
-            _syncContext.Send(WrapCallback(d), state);
+            SendOrPostCallback callback = WrapCallback(d);
+            try
+            {
+                _syncContext.Send(callback, state);
+            }
+            catch (NotSupportedException)
+            {
+                _syncContext.Post(callback, state);
+            }
         }
 
 
