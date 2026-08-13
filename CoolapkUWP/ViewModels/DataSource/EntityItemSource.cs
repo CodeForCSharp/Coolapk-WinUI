@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.ViewModels.DataSource
 {
-    public abstract partial class EntityItemSource : DataSourceBase<Entity>
+    public abstract partial class EntityItemSource : DataSourceBase
     {
         protected CoolapkListProvider Provider;
         protected CoolapkListProvider SubProvider;
@@ -58,17 +58,17 @@ namespace CoolapkUWP.ViewModels.DataSource
             return Models;
         }
 
-        protected override Task AddItemsAsync(IList<Entity> items)
+        protected override void AddItems(IList<Entity> items)
         {
-            if (items == null) { return Task.CompletedTask; }
-            List<Entity> filtered = new List<Entity>(items.Count);
-            foreach (Entity item in items)
+            if (items != null && useSubProvider)
             {
-                if (item is NullEntity) { continue; }
-                filtered.Add(item);
-                if (useSubProvider) { AddSubProvider(item); }
+                foreach (Entity item in items)
+                {
+                    if (item is NullEntity) { continue; }
+                    AddSubProvider(item);
+                }
             }
-            return base.AddItemsAsync(filtered);
+            base.AddItems(items);
         }
 
         public virtual async Task Refresh(bool reset = false)

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
-    public partial class ProfileFlyoutViewModel : DataSourceBase<Entity>, IViewModel
+    public partial class ProfileFlyoutViewModel : DataSourceBase, IViewModel
     {
         private readonly CoolapkListProvider Provider;
 
@@ -122,18 +122,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 await Provider.GetEntity(Models, _currentPage++);
             }
             return Models;
-        }
-
-        protected override Task AddItemsAsync(IList<Entity> items)
-        {
-            if (items == null) { return Task.CompletedTask; }
-            List<Entity> filtered = new List<Entity>(items.Count);
-            foreach (Entity item in items)
-            {
-                if (item is NullEntity) { continue; }
-                filtered.Add(item);
-            }
-            return base.AddItemsAsync(filtered);
         }
     }
 }
