@@ -9,6 +9,7 @@ using CoolapkUWP.Models.Users;
 using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using CommunityToolkit.WinUI;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
@@ -196,9 +197,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 JsonObject json = node.AsObject();
                 if (json.TryGetPropertyValue("entityTemplate", out JsonNode t) && t?.ToString() == "configCard")
                 {
-                    JsonObject j = JsonNode.Parse((string)json["extraData"]).AsObject();
-                    string pageTitle = (string)j["pageTitle"];
-                    _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
+                    ApplyConfigCard(json);
                     yield return null;
                 }
                 else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tabLink) && tabLink?.ToString() == "iconTabLinkGridCard")
@@ -224,6 +223,30 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 }
             }
             yield break;
+        }
+
+        /// <summary>
+        /// 解析 configCard 卡片：仅在有 pageTitle 时更新页面标题，避免无标题的配置卡片（如 withRanking）
+        /// 把已显示的标题清空；同时兼容缺失或非法的 extraData。
+        /// </summary>
+        private void ApplyConfigCard(JsonObject json)
+        {
+            try
+            {
+                string extraData = (string)json["extraData"];
+                if (string.IsNullOrEmpty(extraData)) { return; }
+
+                JsonObject config = JsonNode.Parse(extraData)?.AsObject();
+                string pageTitle = (string)config?["pageTitle"];
+                if (!string.IsNullOrEmpty(pageTitle))
+                {
+                    _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
+                }
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(AdaptiveViewModel)).LogWarning(ex, ex.ExceptionToMessage());
+            }
         }
 
         /// <summary>

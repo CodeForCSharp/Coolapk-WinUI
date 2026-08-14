@@ -45,8 +45,10 @@
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="1"
+                Margin="0,3,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="12"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 MaxLines="1"
                 TextTrimming="CharacterEllipsis">

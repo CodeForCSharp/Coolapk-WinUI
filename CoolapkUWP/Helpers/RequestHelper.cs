@@ -85,15 +85,17 @@ namespace CoolapkUWP.Helpers
 
         public static string GetId(JsonNode token, string _idName)
         {
-            return token == null
-                ? string.Empty
-                : token.AsObject().TryGetPropertyValue(_idName, out JsonNode jToken)
-                    ? jToken.ToString()
-                    : token.AsObject().TryGetPropertyValue("entityId", out JsonNode v1)
-                        ? v1.ToString()
-                        : token.AsObject().TryGetPropertyValue("id", out JsonNode v2)
-                            ? v2.ToString()
-                            : throw new ArgumentException(nameof(_idName));
+            if (token == null) { return string.Empty; }
+
+            JsonObject obj = token.AsObject();
+
+            // 列表首项可能是无 entityId 的装饰卡片（如 configCard），此时返回空字符串即可，
+            // 不应抛异常导致整页加载失败。
+            if (obj.TryGetPropertyValue(_idName, out JsonNode jToken) && !string.IsNullOrEmpty(jToken?.ToString())) { return jToken.ToString(); }
+            if (obj.TryGetPropertyValue("entityId", out JsonNode v1) && !string.IsNullOrEmpty(v1?.ToString())) { return v1.ToString(); }
+            if (obj.TryGetPropertyValue("id", out JsonNode v2) && !string.IsNullOrEmpty(v2?.ToString())) { return v2.ToString(); }
+
+            return string.Empty;
         }
 
         public static async Task<List<string>> UploadImages(IEnumerable<UploadFileFragment> images)
