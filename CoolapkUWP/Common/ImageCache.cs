@@ -39,9 +39,13 @@ namespace CoolapkUWP.Common
         private Task _maintainTask;
         private readonly HttpClient _httpClient;
 
+        // 强缓存会被 UI 线程（读）与后台解码线程（写）同时访问，所有访问均需持有 _cacheLock。
+        private readonly object _cacheLock = new object();
         private readonly Dictionary<string, BitmapImage> _strongCache = new Dictionary<string, BitmapImage>();
         private readonly LinkedList<string> _lru = new LinkedList<string>();
         private readonly Dictionary<string, LinkedListNode<string>> _lruNodes = new Dictionary<string, LinkedListNode<string>>();
+        // 按文件名聚合的宽度索引：fileName -> (decodePixelWidth -> cacheKey)，用于 O(宽度数) 查找最佳已缓存尺寸。
+        private readonly Dictionary<string, SortedDictionary<int, string>> _cacheKeysByFile = new Dictionary<string, SortedDictionary<int, string>>();
         private long _strongCacheBytes;
 
         private readonly ConcurrentDictionary<string, Task<BitmapImage>> _inflightDecodes = new ConcurrentDictionary<string, Task<BitmapImage>>();
@@ -110,7 +114,7 @@ namespace CoolapkUWP.Common
 
             if (_inflightDecodes.TryGetValue(key, out Task<BitmapImage> pending)) { return await pending; }
 
-            Task<BitmapImage> task = LoadAndCacheAsync(uri, decodePixelWidth, key);
+            Task<BitmapImage> task = LoadAndCacheAsync(uri, fileName, decodePixelWidth, key);
             _inflightDecodes[key] = task;
             try
             {
@@ -122,27 +126,27 @@ namespace CoolapkUWP.Common
             }
         }
 
-        private async Task<BitmapImage> LoadAndCacheAsync(Uri uri, int decodePixelWidth, string key)
+        private async Task<BitmapImage> LoadAndCacheAsync(Uri uri, string fileName, int decodePixelWidth, string key)
         {
             StorageFile file = await GetFileFromCacheAsync(uri);
-            BitmapImage bitmap = await DecodeAndCacheAsync(file, decodePixelWidth, key);
+            BitmapImage bitmap = await DecodeAndCacheAsync(file, fileName, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
 
             await file.DeleteAsync();
             StorageFile fresh = await GetFileFromCacheAsync(uri);
-            bitmap = await DecodeAndCacheAsync(fresh, decodePixelWidth, key);
+            bitmap = await DecodeAndCacheAsync(fresh, fileName, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
 
             await fresh.DeleteAsync();
             return null;
         }
 
-        private async Task<BitmapImage> DecodeAndCacheAsync(StorageFile file, int decodePixelWidth, string key)
+        private async Task<BitmapImage> DecodeAndCacheAsync(StorageFile file, string fileName, int decodePixelWidth, string key)
         {
             BitmapImage bitmap = await DecodeImageAsync(file, decodePixelWidth);
             if (bitmap != null)
             {
-                AddToStrongCache(key, bitmap);
+                AddToStrongCache(fileName, decodePixelWidth, key, bitmap);
             }
             return bitmap;
         }
@@ -154,15 +158,16 @@ namespace CoolapkUWP.Common
             {
                 try
                 {
-                    (int width, int height) = await GetDecodeDimensionsAsync(file, decodePixelWidth);
                     var bitmap = new BitmapImage();
-                    if (width > 0 && height > 0)
+                    using (IRandomAccessStream stream = await file.OpenReadAsync())
                     {
-                        bitmap.DecodePixelWidth = width;
-                        bitmap.DecodePixelHeight = height;
-                    }
-                    using (var stream = await file.OpenReadAsync())
-                    {
+                        (int width, int height) = await GetDecodeDimensionsAsync(stream, decodePixelWidth);
+                        if (width > 0 && height > 0)
+                        {
+                            bitmap.DecodePixelWidth = width;
+                            bitmap.DecodePixelHeight = height;
+                        }
+                        stream.Seek(0);
                         await bitmap.SetSourceAsync(stream);
                     }
                     return bitmap;
@@ -179,9 +184,8 @@ namespace CoolapkUWP.Common
             }
         }
 
-        private static async Task<(int Width, int Height)> GetDecodeDimensionsAsync(StorageFile file, int decodePixelWidth)
+        private static async Task<(int Width, int Height)> GetDecodeDimensionsAsync(IRandomAccessStream stream, int decodePixelWidth)
         {
-            using var stream = await file.OpenReadAsync();
             BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
             int sourceWidth = (int)decoder.PixelWidth;
             int sourceHeight = (int)decoder.PixelHeight;
@@ -216,47 +220,66 @@ namespace CoolapkUWP.Common
 
         private BitmapImage GetFromStrongCache(string key)
         {
-            if (_strongCache.TryGetValue(key, out BitmapImage bitmap))
+            lock (_cacheLock)
             {
-                TouchLru(key);
-                return bitmap;
+                if (_strongCache.TryGetValue(key, out BitmapImage bitmap))
+                {
+                    TouchLru(key);
+                    return bitmap;
+                }
+                return null;
             }
-            return null;
         }
 
         private BitmapImage GetBestFromStrongCache(string fileName, int decodePixelWidth)
         {
-            string bestKey = null;
-            int bestWidth = int.MaxValue;
-            BitmapImage best = null;
-            foreach (KeyValuePair<string, BitmapImage> entry in _strongCache)
+            lock (_cacheLock)
             {
-                if (!entry.Key.StartsWith(fileName + "|", StringComparison.Ordinal)) { continue; }
-                if (!int.TryParse(entry.Key.Substring(fileName.Length + 1), out int width)) { continue; }
-                if (width < decodePixelWidth || width >= bestWidth) { continue; }
-                bestKey = entry.Key;
-                bestWidth = width;
-                best = entry.Value;
+                if (!_cacheKeysByFile.TryGetValue(fileName, out SortedDictionary<int, string> byWidth))
+                {
+                    return null;
+                }
+
+                // 升序遍历，取第一个宽度 >= 目标宽度的缓存（即最小可用尺寸）。
+                foreach (KeyValuePair<int, string> entry in byWidth)
+                {
+                    if (entry.Key < decodePixelWidth) { continue; }
+                    if (_strongCache.TryGetValue(entry.Value, out BitmapImage bitmap))
+                    {
+                        TouchLru(entry.Value);
+                        return bitmap;
+                    }
+                }
+                return null;
             }
-            if (best != null && bestKey != null) { TouchLru(bestKey); }
-            return best;
         }
 
-        private void AddToStrongCache(string key, BitmapImage bitmap)
+        private void AddToStrongCache(string fileName, int decodePixelWidth, string key, BitmapImage bitmap)
         {
-            if (_strongCache.ContainsKey(key))
+            lock (_cacheLock)
             {
-                TouchLru(key);
-                return;
+                if (_strongCache.ContainsKey(key))
+                {
+                    TouchLru(key);
+                    return;
+                }
+
+                long size = EstimateBytes(bitmap);
+                if (size <= 0 || size > MaxCacheableImageBytes) { return; }
+
+                _strongCache[key] = bitmap;
+                _lruNodes[key] = _lru.AddFirst(key);
+                _strongCacheBytes += size;
+
+                if (!_cacheKeysByFile.TryGetValue(fileName, out SortedDictionary<int, string> byWidth))
+                {
+                    byWidth = new SortedDictionary<int, string>();
+                    _cacheKeysByFile[fileName] = byWidth;
+                }
+                byWidth[decodePixelWidth] = key;
+
+                EvictStrongCacheIfNeeded();
             }
-
-            long size = EstimateBytes(bitmap);
-            if (size <= 0 || size > MaxCacheableImageBytes) { return; }
-
-            _strongCache[key] = bitmap;
-            _lruNodes[key] = _lru.AddFirst(key);
-            _strongCacheBytes += size;
-            EvictStrongCacheIfNeeded();
         }
 
         private void TouchLru(string key)
@@ -273,11 +296,27 @@ namespace CoolapkUWP.Common
             while (_strongCacheBytes > MemoryCacheMaxBytes && _lru.Count > 0)
             {
                 LinkedListNode<string> node = _lru.Last;
-                BitmapImage victim = _strongCache[node.Value];
-                _strongCache.Remove(node.Value);
-                _lruNodes.Remove(node.Value);
+                string key = node.Value;
+                BitmapImage victim = _strongCache[key];
+                _strongCache.Remove(key);
+                _lruNodes.Remove(key);
                 _lru.RemoveLast();
                 _strongCacheBytes -= EstimateBytes(victim);
+                RemoveFromFileIndex(key);
+            }
+        }
+
+        private void RemoveFromFileIndex(string key)
+        {
+            int separator = key.LastIndexOf('|');
+            if (separator <= 0) { return; }
+            string fileName = key.Substring(0, separator);
+            if (!int.TryParse(key.Substring(separator + 1), out int width)) { return; }
+
+            if (_cacheKeysByFile.TryGetValue(fileName, out SortedDictionary<int, string> byWidth))
+            {
+                byWidth.Remove(width);
+                if (byWidth.Count == 0) { _cacheKeysByFile.Remove(fileName); }
             }
         }
 
@@ -494,10 +533,14 @@ namespace CoolapkUWP.Common
                 await file.DeleteAsync();
             }
 
-            _strongCache.Clear();
-            _lru.Clear();
-            _lruNodes.Clear();
-            _strongCacheBytes = 0;
+            lock (_cacheLock)
+            {
+                _strongCache.Clear();
+                _lru.Clear();
+                _lruNodes.Clear();
+                _cacheKeysByFile.Clear();
+                _strongCacheBytes = 0;
+            }
         }
     }
 }

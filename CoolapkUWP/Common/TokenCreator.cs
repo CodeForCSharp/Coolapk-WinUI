@@ -20,6 +20,12 @@ namespace CoolapkUWP.Common
 
         private readonly TokenVersions TokenVersion;
 
+        // token 依赖的时戳为整数秒（ConvertDateTimeToUnixTimeStamp 会四舍五入到秒），
+        // 故同一秒内结果完全一致，可按秒缓存以避开每请求一次的 BCrypt。
+        private readonly object _tokenLock = new object();
+        private long _cachedSecond = -1;
+        private string _cachedToken;
+
         static TokenCreator()
         {
             DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"CoolapkUWP {Package.Current.Id.Version.ToFormattedString()}");
@@ -32,22 +38,29 @@ namespace CoolapkUWP.Common
         /// </summary>
         public string GetToken()
         {
-            switch (TokenVersion)
+            long second = (long)DateTime.Now.ConvertDateTimeToUnixTimeStamp();
+
+            lock (_tokenLock)
             {
-                case TokenVersions.TokenV1:
-                    return GetCoolapkAppToken();
-                default:
-                case TokenVersions.TokenV2:
-                    return GetTokenWithDeviceCode(DeviceCode);
+                if (second == _cachedSecond)
+                {
+                    return _cachedToken;
+                }
+
+                _cachedToken = TokenVersion == TokenVersions.TokenV1
+                    ? GetCoolapkAppToken(second)
+                    : GetTokenWithDeviceCode(DeviceCode, second);
+                _cachedSecond = second;
+                return _cachedToken;
             }
         }
 
         /// <summary>
         /// GetTokenWithDeviceCode Generate a token with your device code
         /// </summary>
-        private string GetTokenWithDeviceCode(string deviceCode)
+        private string GetTokenWithDeviceCode(string deviceCode, long second)
         {
-            string timeStamp = DateTime.Now.ConvertDateTimeToUnixTimeStamp().ToString();
+            string timeStamp = second.ToString();
 
             string base64TimeStamp = timeStamp.GetBase64(true);
             string md5TimeStamp = timeStamp.GetMD5();
@@ -66,12 +79,11 @@ namespace CoolapkUWP.Common
             return appToken;
         }
 
-        private static string GetCoolapkAppToken()
+        private static string GetCoolapkAppToken(long second)
         {
-            double timeStamp = DateTime.Now.ConvertDateTimeToUnixTimeStamp();
-            string hex_timeStamp = $"0x{Convert.ToString((int)timeStamp, 16)}";
+            string hex_timeStamp = $"0x{Convert.ToString(second, 16)}";
             // 时间戳加密
-            string md5_timeStamp = $"{timeStamp}".GetMD5();
+            string md5_timeStamp = $"{second}".GetMD5();
             string token = $"token://com.coolapk.market/c67ef5943784d09750dcfbb31020f0ab?{md5_timeStamp}${guid}&com.coolapk.market";
             string md5_token = token.GetBase64().GetMD5();
             string appToken = $"{md5_token}{guid}{hex_timeStamp}";
