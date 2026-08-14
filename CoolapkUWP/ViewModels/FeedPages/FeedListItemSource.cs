@@ -9,6 +9,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
     public partial class FeedListItemSource : EntityItemSource
     {
         public FeedListItemSource(string id, CoolapkListProvider provider)
-            : base(id, provider, useSubProvider: false) { }
+            : base(id, provider) { }
     }
 }

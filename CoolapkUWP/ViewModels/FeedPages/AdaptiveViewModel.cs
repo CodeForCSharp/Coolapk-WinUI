@@ -1,3 +1,4 @@
+using CoolapkUWP.Controls;
 using CoolapkUWP.Controls.DataTemplates;
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
@@ -52,7 +53,24 @@ namespace CoolapkUWP.ViewModels.FeedPages
             }
         }
 
-        internal AdaptiveViewModel(string uri)
+        private List<ShyHeaderItem> tabs;
+        public List<ShyHeaderItem> Tabs
+        {
+            get => tabs;
+            private set
+            {
+                if (tabs != value)
+                {
+                    tabs = value;
+                    RaisePropertyChangedEvent();
+                    RaisePropertyChangedEvent(nameof(HasTabs));
+                }
+            }
+        }
+
+        public bool HasTabs => Tabs != null && Tabs.Count > 0;
+
+        internal AdaptiveViewModel(string uri) : base()
         {
             if (uri.Contains("&title="))
             {
@@ -183,6 +201,11 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     _ = Dispatcher.EnqueueAsync(() => Title = pageTitle);
                     yield return null;
                 }
+                else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tabLink) && tabLink?.ToString() == "iconTabLinkGridCard")
+                {
+                    BuildTabs(json);
+                    yield return null;
+                }
                 else if (json.TryGetPropertyValue("entityTemplate", out JsonNode tt) && tt?.ToString() == "fabCard") { yield return null; }
                 else if (tt?.ToString() == "feedCoolPictureGridCard")
                 {
@@ -201,6 +224,44 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 }
             }
             yield break;
+        }
+
+        /// <summary>
+        /// 将 TabLink 卡片（iconTabLinkGridCard）的子 tab 展开为独立的 <see cref="ShyHeaderItem"/> 列表，
+        /// 供 ShyHeaderListView 渲染顶部可切换的 tab 栏。
+        /// 注意：本方法在后台线程被调用，只能解析纯数据；ShyHeaderItem 是 DependencyObject，必须在 UI 线程创建。
+        /// </summary>
+        private void BuildTabs(JsonObject json)
+        {
+            if (json["entities"] is not JsonArray entities || entities.Count == 0) { return; }
+
+            List<(string title, string url)> tabs = new List<(string title, string url)>();
+            foreach (JsonNode node in entities)
+            {
+                JsonObject tab = node.AsObject();
+                string title = (string)tab["title"];
+                string url = (string)tab["url"];
+                if (string.IsNullOrEmpty(url)) { continue; }
+                tabs.Add((title, url));
+            }
+
+            if (tabs.Count > 0)
+            {
+                _ = Dispatcher.EnqueueAsync(() =>
+                {
+                    List<ShyHeaderItem> items = new List<ShyHeaderItem>();
+                    foreach ((string title, string url) in tabs)
+                    {
+                        string normalized = UriHelper.NormalizePageUri(url);
+                        FeedListItemSource source = new FeedListItemSource(title, new CoolapkListProvider(
+                            (p, _, __) => UriHelper.GetUri(UriType.GetIndexPage, normalized, normalized.Contains("?") ? "&" : "?", p),
+                            GetEntities,
+                            "entityId"));
+                        items.Add(new ShyHeaderItem { Header = title, ItemSource = source });
+                    }
+                    Tabs = items;
+                });
+            }
         }
     }
 }

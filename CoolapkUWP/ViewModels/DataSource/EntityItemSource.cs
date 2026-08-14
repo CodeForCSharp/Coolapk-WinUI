@@ -3,7 +3,6 @@ using CoolapkUWP.Models;
 using CoolapkUWP.ViewModels.Providers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -13,13 +12,9 @@ namespace CoolapkUWP.ViewModels.DataSource
     public abstract partial class EntityItemSource : DataSourceBase
     {
         protected CoolapkListProvider Provider;
-        protected CoolapkListProvider SubProvider;
 
         /// <summary>当前列表所属的实体 ID，用于区分不同数据源。</summary>
         public string ID { get; }
-
-        /// <summary>是否在添加条目时展开子提供器（首页 Tab 卡片等），列表型数据源应关闭。</summary>
-        private readonly bool useSubProvider;
 
         public EntityItemSource() : this(App.MainWindow.DispatcherQueue) { }
 
@@ -30,12 +25,11 @@ namespace CoolapkUWP.ViewModels.DataSource
             ID = id;
         }
 
-        protected EntityItemSource(string id, CoolapkListProvider provider, bool useSubProvider = true)
+        protected EntityItemSource(string id, CoolapkListProvider provider)
             : this(App.MainWindow.DispatcherQueue)
         {
             ID = id;
             Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-            this.useSubProvider = useSubProvider;
         }
 
         protected override async Task<IList<Entity>> LoadItemsAsync(uint count)
@@ -45,30 +39,10 @@ namespace CoolapkUWP.ViewModels.DataSource
             {
                 int temp = Models.Count;
                 if (Models.Count > 0) { _currentPage++; }
-                if (SubProvider == null)
-                {
-                    await Provider?.GetEntity(Models, _currentPage);
-                }
-                else
-                {
-                    await SubProvider.GetEntity(Models, _currentPage);
-                }
+                await Provider?.GetEntity(Models, _currentPage);
                 if (Models.Count <= 0 || Models.Count <= temp) { break; }
             }
             return Models;
-        }
-
-        protected override void AddItems(IList<Entity> items)
-        {
-            if (items != null && useSubProvider)
-            {
-                foreach (Entity item in items)
-                {
-                    if (item is NullEntity) { continue; }
-                    AddSubProvider(item);
-                }
-            }
-            base.AddItems(items);
         }
 
         public virtual async Task Refresh(bool reset = false)
@@ -90,24 +64,7 @@ namespace CoolapkUWP.ViewModels.DataSource
             _hasMoreItems = true;
 
             Clear();
-            SubProvider = null;
             _ = await LoadMoreItemsAsync(20);
-        }
-
-        protected virtual void AddSubProvider(Entity item)
-        {
-            if (item is IndexPageHasEntitiesModel model
-                && model.EntitiesType == EntityType.TabLink)
-            {
-                IndexPageModel indexPage = model.Entities.Where((x) => x is IndexPageModel).FirstOrDefault() as IndexPageModel;
-                if (indexPage == null) { return; }
-                string Uri = UriHelper.NormalizePageUri(indexPage.Url);
-                SubProvider = new CoolapkListProvider(
-                    (p, _, __) => UriHelper.GetUri(UriType.GetIndexPage, Uri, Uri.Contains("?") ? "&" : "?", p),
-                    Provider.GetEntities,
-                    "entityId");
-                _currentPage = 1;
-            }
         }
     }
 }

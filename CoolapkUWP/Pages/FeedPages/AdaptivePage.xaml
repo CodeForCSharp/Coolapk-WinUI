@@ -72,14 +72,41 @@
             x:Name="RefreshContainer"
             Grid.Row="1"
             RefreshRequested="RefreshContainer_RefreshRequested">
-            <ListView
-                x:Name="ListView"
-                ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
-                ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
-                ItemTemplateSelector="{StaticResource CardTemplateSelector}"
-                ItemsSource="{x:Bind Provider, Mode=OneWay}"
-                ShowsScrollingPlaceholders="False"
-                Style="{StaticResource DefaultCardListViewStyle}" />
+            <Grid>
+                <ListView
+                    x:Name="ListView"
+                    ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
+                    ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+                    ItemTemplateSelector="{StaticResource CardTemplateSelector}"
+                    ItemsSource="{x:Bind Provider, Mode=OneWay}"
+                    ShowsScrollingPlaceholders="False"
+                    Style="{StaticResource DefaultCardListViewStyle}"
+                    Visibility="{x:Bind Provider.HasTabs, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                <controls:ShyHeaderListView
+                    x:Name="ShyHeaderListView"
+                    HeaderHeight="42"
+                    ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
+                    ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+                    ItemTemplateSelector="{StaticResource CardTemplateSelector}"
+                    ShowsScrollingPlaceholders="False"
+                    ShyHeaderItemSource="{x:Bind Provider.Tabs, Mode=OneWay}"
+                    Visibility="{x:Bind Provider.HasTabs, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                    <controls:ShyHeaderListView.TopHeader>
+                        <ListView
+                            ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+                            ItemTemplateSelector="{StaticResource CardTemplateSelector}"
+                            ItemsSource="{x:Bind Provider, Mode=OneWay}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.HorizontalScrollMode="Disabled"
+                            ScrollViewer.IsHorizontalRailEnabled="False"
+                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollMode="Disabled"
+                            SelectionMode="None"
+                            ShowsScrollingPlaceholders="False"
+                            Visibility="{x:Bind Provider.Any, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                    </controls:ShyHeaderListView.TopHeader>
+                </controls:ShyHeaderListView>
+            </Grid>
         </muxc:RefreshContainer>
     </Grid>
 </Page>

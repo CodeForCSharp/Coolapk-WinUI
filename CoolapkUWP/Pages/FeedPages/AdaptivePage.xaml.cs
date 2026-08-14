@@ -1,4 +1,5 @@
 using CoolapkUWP.Helpers;
+using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.FeedPages;
 using CommunityToolkit.WinUI;
 using System.ComponentModel;
@@ -63,7 +64,17 @@ namespace CoolapkUWP.Pages.FeedPages
             Provider.IsShowTitle = page is MainPage;
         }
 
-        public async Task Refresh(bool reset = false) => await Provider.Refresh(reset);
+        public async Task Refresh(bool reset = false)
+        {
+            if (Provider.HasTabs && ShyHeaderListView.ItemsSource is EntityItemSource source)
+            {
+                await source.Refresh(reset);
+            }
+            else
+            {
+                await Provider.Refresh(reset);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
