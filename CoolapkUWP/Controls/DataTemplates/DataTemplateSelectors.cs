@@ -242,6 +242,8 @@ namespace CoolapkUWP.Controls.DataTemplates
                 case "topic": return TopicModel.FromJson(json);
                 case "history": return HistoryModel.FromJson(json);
                 case "collection": return CollectionModel.FromJson(json);
+                case "product": return ProductModel.FromJson(json);
+                case "productBrand": return IndexPageModel.FromJson(json);
                 case "entity_type_user_card_manager": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
                 default:
                     if (json.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && !string.IsNullOrEmpty(entityTemplate.ToString()))

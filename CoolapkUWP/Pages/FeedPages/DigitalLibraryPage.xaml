@@ -1,0 +1,75 @@
+<Page
+    x:Class="CoolapkUWP.Pages.FeedPages.DigitalLibraryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctrl="using:CoolapkUWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:CoolapkUWP.Models"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="CategoryTemplate" x:DataType="x:String">
+            <TextBlock
+                Padding="20,14"
+                MaxWidth="160"
+                Text="{x:Bind}"
+                TextTrimming="CharacterEllipsis" />
+        </DataTemplate>
+        <DataTemplate x:Key="DeviceTemplate" x:DataType="models:ProductModel">
+            <Grid
+                Padding="12,10"
+                KeyDown="Device_KeyDown"
+                Tag="{x:Bind Url, Mode=OneWay}"
+                Tapped="Device_Tapped">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Width="44"
+                    Height="44"
+                    VerticalAlignment="Center"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <ctrl:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Stretch="UniformToFill" />
+                </Border>
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        FontWeight="SemiBold"
+                        Text="{x:Bind Title, Mode=OneWay}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        Margin="0,3,0,0"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind HotNum, Mode=OneWay}"
+                        Visibility="{x:Bind HotNum, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ListView
+            x:Name="CategoryList"
+            Grid.Column="0"
+            ItemTemplate="{StaticResource CategoryTemplate}"
+            SelectionChanged="CategoryList_SelectionChanged"
+            SelectionMode="Single" />
+        <ListView
+            x:Name="DeviceList"
+            Grid.Column="1"
+            ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+            ItemTemplate="{StaticResource DeviceTemplate}"
+            SelectionMode="None"
+            ShowsScrollingPlaceholders="False" />
+    </Grid>
+</Page>

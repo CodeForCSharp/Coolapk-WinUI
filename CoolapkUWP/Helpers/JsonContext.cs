@@ -14,6 +14,7 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(UserDetailDto))]
     [JsonSerializable(typeof(CollectionDetailDto))]
     [JsonSerializable(typeof(ProductDetailDto))]
+    [JsonSerializable(typeof(ProductDto))]
     [JsonSerializable(typeof(ProfileDetailDto))]
     [JsonSerializable(typeof(UserActionDto))]
     [JsonSerializable(typeof(FeedDto))]

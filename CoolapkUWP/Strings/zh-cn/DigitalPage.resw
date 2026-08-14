@@ -117,22 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="apk" xml:space="preserve">
-    <value>應用</value>
+  <data name="DigitalLibrary" xml:space="preserve">
+    <value>数码库</value>
   </data>
-  <data name="circle" xml:space="preserve">
-    <value>好友</value>
+  <data name="DigitalHome" xml:space="preserve">
+    <value>数码</value>
   </data>
-  <data name="product" xml:space="preserve">
-    <value>數碼</value>
+  <data name="Phone" xml:space="preserve">
+    <value>手机</value>
   </data>
-  <data name="question" xml:space="preserve">
-    <value>問題</value>
+  <data name="Ranking" xml:space="preserve">
+    <value>排行榜</value>
   </data>
-  <data name="topic" xml:space="preserve">
-    <value>話題</value>
+  <data name="Rom" xml:space="preserve">
+    <value>系统</value>
   </data>
-  <data name="V9_HOME_TAB_FOLLOW" xml:space="preserve">
-    <value>全部</value>
+  <data name="Computer" xml:space="preserve">
+    <value>电脑</value>
   </data>
 </root>

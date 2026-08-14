@@ -57,7 +57,8 @@ namespace CoolapkUWP.Data.Dtos
             protected override bool TryParse(string value, out int result)
                 => int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
 
-            protected override int ReadNumber(ref Utf8JsonReader reader) => reader.GetInt32();
+            protected override int ReadNumber(ref Utf8JsonReader reader)
+                => reader.TryGetInt32(out int result) ? result : 0;
         }
 
         private sealed class LongConverter : NumberConverter<long>
@@ -65,7 +66,8 @@ namespace CoolapkUWP.Data.Dtos
             protected override bool TryParse(string value, out long result)
                 => long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
 
-            protected override long ReadNumber(ref Utf8JsonReader reader) => reader.GetInt64();
+            protected override long ReadNumber(ref Utf8JsonReader reader)
+                => reader.TryGetInt64(out long result) ? result : 0;
         }
 
         private sealed class DoubleConverter : NumberConverter<double>
@@ -73,7 +75,8 @@ namespace CoolapkUWP.Data.Dtos
             protected override bool TryParse(string value, out double result)
                 => double.TryParse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out result);
 
-            protected override double ReadNumber(ref Utf8JsonReader reader) => reader.GetDouble();
+            protected override double ReadNumber(ref Utf8JsonReader reader)
+                => reader.TryGetDouble(out double result) ? result : 0;
         }
     }
 }

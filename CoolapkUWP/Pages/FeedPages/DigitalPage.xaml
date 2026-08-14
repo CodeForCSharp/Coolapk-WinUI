@@ -1,5 +1,5 @@
 <feedpages:PivotPageBase
-    x:Class="CoolapkUWP.Pages.FeedPages.CirclePage"
+    x:Class="CoolapkUWP.Pages.FeedPages.DigitalPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:feedpages="using:CoolapkUWP.Pages.FeedPages"
@@ -14,7 +14,7 @@
         <Pivot.RightHeader>
             <Button
                 x:Name="RefreshButton"
-                x:Uid="/CirclePage/RefreshButton"
+                x:Uid="/DigitalPage/RefreshButton"
                 VerticalAlignment="Center"
                 Click="RefreshButton_Click"
                 Content="&#xE72C;"

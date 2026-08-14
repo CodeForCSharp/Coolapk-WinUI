@@ -87,7 +87,7 @@ namespace CoolapkUWP.Pages
         {
             ("Find", typeof(FindPage)),
             ("Home", typeof(IndexPage)),
-            ("Circle", typeof(CirclePage)),
+            ("Digital", typeof(DigitalPage)),
             ("Settings", typeof(SettingsPage)),
             ("Notifications", typeof(NotificationsPage))
         };
