@@ -111,6 +111,8 @@ namespace CoolapkUWP.Data.Dtos
         public int ReadNum { get; set; }
         [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("editor_title")]
+        public string EditorTitle { get; set; }
         [JsonPropertyName("targetRow")]
         public DyhRowDto TargetRow { get; set; }
         [JsonPropertyName("extraData")]

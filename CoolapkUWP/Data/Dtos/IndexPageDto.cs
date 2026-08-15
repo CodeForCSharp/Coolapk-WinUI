@@ -29,6 +29,12 @@ namespace CoolapkUWP.Data.Dtos
         public string RssType { get; set; }
         [JsonPropertyName("product_num")]
         public string ProductNum { get; set; }
+        [JsonPropertyName("star_average_score")]
+        public string StarAverageScore { get; set; }
+        [JsonPropertyName("score_num")]
+        public string ScoreNum { get; set; }
+        [JsonPropertyName("commentnum")]
+        public string CommentNum { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
         [JsonPropertyName("video_playback_url")]

@@ -106,6 +106,7 @@ namespace CoolapkUWP.Models.Feeds
         public string VoteEndTime { get; private set; }
         public string VoteStartTime { get; private set; }
         public string MediaSubtitle { get; private set; }
+        public string EditorTitle { get; private set; }
 
         public ImageModel ExtraPic { get; private set; }
         public ImageModel MediaPic { get; private set; }
@@ -135,6 +136,7 @@ namespace CoolapkUWP.Models.Feeds
 
         public FeedModelBase(FeedDto dto) : base(dto)
         {
+            EditorTitle = dto.EditorTitle;
             LikeNum = dto.Likenum;
             ReplyNum = dto.Replynum;
             StarNum = dto.Favnum;

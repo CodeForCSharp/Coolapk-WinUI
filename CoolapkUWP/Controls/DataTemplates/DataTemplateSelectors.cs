@@ -29,6 +29,10 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate MessageNotify { get; set; }
         public DataTemplate GridScrollCard { get; set; }
         public DataTemplate ImageTextScrollCard { get; set; }
+        public DataTemplate IconLongTitleGridCard { get; set; }
+        public DataTemplate IconGridCard { get; set; }
+        public DataTemplate IconListCard { get; set; }
+        public DataTemplate FeedListCard { get; set; }
         public DataTemplate LiveTopic { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
@@ -38,6 +42,10 @@ namespace CoolapkUWP.Controls.DataTemplates
             else if (item is FeedReplyModel) { return FeedReply; }
             else if (item is LiveTopicModel) { return LiveTopic; }
             else if (item is IndexPageMessageCardModel) { return MessageCard; }
+            else if (item is IconLongTitleGridCardModel) { return IconLongTitleGridCard; }
+            else if (item is IconGridCardModel) { return IconGridCard; }
+            else if (item is IconListCardModel) { return IconListCard; }
+            else if (item is FeedListCardModel) { return FeedListCard; }
             else if (item is IndexPageHasEntitiesModel IndexPageHasEntitiesModel)
             {
                 switch (IndexPageHasEntitiesModel.EntitiesType)
@@ -157,6 +165,24 @@ namespace CoolapkUWP.Controls.DataTemplates
         }
     }
 
+    public sealed partial class IconListItemSelector : DataTemplateSelector
+    {
+        public DataTemplate Feed { get; set; }
+        public DataTemplate User { get; set; }
+        public DataTemplate List { get; set; }
+        public DataTemplate Icon { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            if (item is FeedModel) { return Feed; }
+            else if (item is UserModel) { return User; }
+            else if (item is CollectionModel) { return List; }
+            return Icon;
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+    }
+
     public sealed partial class ProfileCardTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Others { get; set; }
@@ -256,20 +282,20 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "feed": return FeedModel.FromJson(json, isHotFeedPage ? FeedDisplayMode.IsFirstPageFeed : FeedDisplayMode.Normal);
                             case "imageSquareScrollCard":
                             case "iconScrollCard":
-                            case "iconGridCard":
                             case "feedScrollCard":
                             case "imageTextScrollCard":
                             case "colorfulFatScrollCard":
                             case "colorfulScrollCard":
-                            case "iconLongTitleGridCard":
                             case "linkCard":
                             case "iconButtonGridCard":
                             case "apkScrollCardWithBackground":
                             case "imageScrollCard":
                             case "apkScrollCard":
-                            //case "iconListCard":
                             //case "listCard":
                             case "gridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Others);
+                            case "iconLongTitleGridCard": return IconLongTitleGridCardModel.FromJson(json);
+                            case "iconGridCard": return IconGridCardModel.FromJson(json);
+                            case "iconListCard": return IconListCardModel.FromJson(json);
                             case "iconMiniLinkGridCard":
                             case "iconMiniGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.GridLink);
                             //case "listCard": //return IndexPageHasEntitiesModel.FromJson(jo, EntityType.Others);
@@ -283,10 +309,10 @@ namespace CoolapkUWP.Controls.DataTemplates
                                     : null;
                             case "iconLinkGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.IconLink);
                             case "feedGroupListCard":
-                            case "feedListCard":
                             case "imageTextGridCard":
                             case "apkListCard":
                             case "textLinkListCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TextLinks);
+                            case "feedListCard": return FeedListCardModel.FromJson(json);
                             case "textCard":
                             case "messageCard": return IndexPageMessageCardModel.FromJson(json);
                             case "refreshCard": return IndexPageOperationCardModel.FromJson(json, OperationType.Refresh);

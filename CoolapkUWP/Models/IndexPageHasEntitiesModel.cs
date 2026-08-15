@@ -16,6 +16,7 @@ namespace CoolapkUWP.Models
     {
         public string Url { get; private set; }
         public string Title { get; private set; }
+        public string SubTitle { get; private set; }
         public bool ShowPic { get; private set; }
         public bool ShowTitle { get; private set; }
         public ImageModel Pic { get; private set; }
@@ -32,6 +33,7 @@ namespace CoolapkUWP.Models
             EntitiesType = type;
             Title = dto.Title;
             Url = dto.Url;
+            SubTitle = dto.SubTitle;
 
             Description = DescriptionResolver.Resolve(
                 dto.Description,
@@ -58,24 +60,7 @@ namespace CoolapkUWP.Models
                     {
                         try { itemObj["entityForward"] = EntityTemplate; }
                         catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(IndexPageModel)).LogWarning(ex, ex.ExceptionToMessage()); }
-                        switch (entityType.ToString())
-                        {
-                            case "feed":
-                                builder.Add(FeedModel.FromJson(itemObj));
-                                break;
-
-                            case "user":
-                                builder.Add(UserModel.FromJson(itemObj));
-                                break;
-
-                            case "collection":
-                                builder.Add(CollectionModel.FromJson(itemObj));
-                                break;
-
-                            default:
-                                builder.Add(IndexPageModel.FromJson(itemObj));
-                                break;
-                        }
+                        builder.Add(CreateEntity(itemObj, entityType.ToString()));
                     }
                 }
 
@@ -96,6 +81,24 @@ namespace CoolapkUWP.Models
 
         public static IndexPageHasEntitiesModel FromJson(JsonObject json, EntityType type)
             => new IndexPageHasEntitiesModel(JsonSerializer.Deserialize<IndexPageHasEntitiesDto>(json, DtoJson.Options), type);
+
+        protected virtual Entity CreateEntity(JsonObject itemObj, string entityType)
+        {
+            switch (entityType)
+            {
+                case "feed":
+                    return FeedModel.FromJson(itemObj);
+
+                case "user":
+                    return UserModel.FromJson(itemObj);
+
+                case "collection":
+                    return CollectionModel.FromJson(itemObj);
+
+                default:
+                    return IndexPageModel.FromJson(itemObj);
+            }
+        }
 
         public override string ToString() => $"{Title} - {Description}";
     }

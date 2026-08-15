@@ -1207,9 +1207,13 @@
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
                 Feed="{StaticResource FeedDefaultTemplate}"
+                FeedListCard="{StaticResource FeedListCardTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
                 GridScrollCard="{StaticResource GridScrollCardTemplate}"
+                IconGridCard="{StaticResource IconGridCardTemplate}"
                 IconLinks="{StaticResource IconLinksTemplate}"
+                IconListCard="{StaticResource IconListCardTemplate}"
+                IconLongTitleGridCard="{StaticResource IconLongTitleGridCardTemplate}"
                 ImageTextScrollCard="{StaticResource ImageTextScrollCardTemplate}"
                 Images="{StaticResource ImageCardTemplate}"
                 List="{StaticResource ListDefaultTemplate}"
