@@ -67,6 +67,47 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate x:Key="LiveTopicTemplate" x:DataType="models:LiveTopicModel">
+        <Grid
+            Padding="12,10"
+            KeyDown="OnKeyDown"
+            Tag="{x:Bind Url, Mode=OneWay}"
+            Tapped="OnTapped">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Width="128"
+                Height="72"
+                VerticalAlignment="Center"
+                CornerRadius="{ThemeResource OverlayCornerRadius}">
+                <ctrl:ImageEx
+                    Model="{x:Bind Pic}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Stretch="UniformToFill" />
+            </Border>
+            <StackPanel
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                VerticalAlignment="Center">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    MaxLines="2"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    Margin="0,4,0,0"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    MaxLines="1"
+                    Text="{x:Bind Description, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate x:Key="ListDefaultTemplate" x:DataType="models:IHasDescription">
         <Grid
             Padding="0,8"

@@ -29,12 +29,14 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate MessageNotify { get; set; }
         public DataTemplate GridScrollCard { get; set; }
         public DataTemplate ImageTextScrollCard { get; set; }
+        public DataTemplate LiveTopic { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
             if (item is FeedModel) { return Feed; }
             else if (item is UserModel) { return User; }
             else if (item is FeedReplyModel) { return FeedReply; }
+            else if (item is LiveTopicModel) { return LiveTopic; }
             else if (item is IndexPageMessageCardModel) { return MessageCard; }
             else if (item is IndexPageHasEntitiesModel IndexPageHasEntitiesModel)
             {
@@ -244,6 +246,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                 case "collection": return CollectionModel.FromJson(json);
                 case "product": return ProductModel.FromJson(json);
                 case "productBrand": return IndexPageModel.FromJson(json);
+                case "liveTopic": return LiveTopicModel.FromJson(json);
                 case "entity_type_user_card_manager": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
                 default:
                     if (json.TryGetPropertyValue("entityTemplate", out JsonNode entityTemplate) && !string.IsNullOrEmpty(entityTemplate.ToString()))

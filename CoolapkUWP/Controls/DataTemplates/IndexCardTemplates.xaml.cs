@@ -23,7 +23,8 @@ namespace CoolapkUWP.Controls.DataTemplates
             }
         }
 
-        private void FlipView_SizeChanged(object sender, SizeChangedEventArgs e) => (sender as FrameworkElement).MaxHeight = e.NewSize.Width / 3;
+        private void FlipView_SizeChanged(object sender, SizeChangedEventArgs e)
+            => (sender as FrameworkElement).MaxHeight = e.NewSize.Width * 240 / 1080;
 
         private void FlipView_Loaded(object sender, RoutedEventArgs e)
         {

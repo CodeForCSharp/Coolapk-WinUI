@@ -117,26 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="V11_FIND_COOLPIC" xml:space="preserve">
-    <value>Coolpic</value>
-  </data>
-  <data name="V11_FIND_DYH" xml:space="preserve">
-    <value>KanKan</value>
-  </data>
-  <data name="V11_HOME_MEIHUA" xml:space="preserve">
-    <value>Beautify</value>
-  </data>
-  <data name="V11_HOME_TAB_JC" xml:space="preserve">
-    <value>Tutorials</value>
-  </data>
-  <data name="V11_HOME_TAB_NEWS" xml:space="preserve">
-    <value>Newsflash</value>
+  <data name="V9_HOME_TAB_FOLLOW" xml:space="preserve">
+    <value>Following</value>
   </data>
   <data name="V9_HOME_TAB_HEADLINE" xml:space="preserve">
     <value>Headline</value>
   </data>
   <data name="V9_HOME_TAB_RANKING" xml:space="preserve">
     <value>Leaderboard</value>
+  </data>
+  <data name="V11_HOME_TAB_NEWS" xml:space="preserve">
+    <value>Newsflash</value>
+  </data>
+  <data name="V11_VERTICAL_TOPIC" xml:space="preserve">
+    <value>Topics</value>
+  </data>
+  <data name="V11_HOME_NEW" xml:space="preserve">
+    <value>New Phones</value>
+  </data>
+  <data name="V13_IOSHOME_OPENSHOW" xml:space="preserve">
+    <value>Unboxing</value>
+  </data>
+  <data name="V13_HOME_SHEYING" xml:space="preserve">
+    <value>Photography</value>
+  </data>
+  <data name="V11_HOME_TAB_JC" xml:space="preserve">
+    <value>Tutorials</value>
+  </data>
+  <data name="V11_HOME_CAR" xml:space="preserve">
+    <value>Cars</value>
+  </data>
+  <data name="V9_HOME_TAB_SHIPIN" xml:space="preserve">
+    <value>Videos</value>
+  </data>
+  <data name="V11_HOME_MEIHUA" xml:space="preserve">
+    <value>Beautify</value>
+  </data>
+  <data name="V9_HOME_TAB_LIVE" xml:space="preserve">
+    <value>Live</value>
   </data>
   <data name="V9_HOME_TAB_WENDA" xml:space="preserve">
     <value>Q&amp;A</value>

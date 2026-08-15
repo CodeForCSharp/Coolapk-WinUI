@@ -33,6 +33,7 @@
                 Images="{StaticResource ImageCardTemplate}"
                 LikeNotify="{StaticResource LikeNotificationCardTemplate}"
                 List="{StaticResource ListDefaultTemplate}"
+                LiveTopic="{StaticResource LiveTopicTemplate}"
                 LoginCard="{StaticResource LoginCardTemplate}"
                 MessageCard="{StaticResource MessageCardTemplate}"
                 MessageNotify="{StaticResource MessageNotificationCardTemplate}"

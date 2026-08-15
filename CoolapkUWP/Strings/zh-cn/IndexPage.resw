@@ -117,26 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="V11_FIND_COOLPIC" xml:space="preserve">
-    <value>酷图</value>
-  </data>
-  <data name="V11_FIND_DYH" xml:space="preserve">
-    <value>看看号</value>
-  </data>
-  <data name="V11_HOME_MEIHUA" xml:space="preserve">
-    <value>美化</value>
-  </data>
-  <data name="V11_HOME_TAB_JC" xml:space="preserve">
-    <value>教程</value>
-  </data>
-  <data name="V11_HOME_TAB_NEWS" xml:space="preserve">
-    <value>快讯</value>
+  <data name="V9_HOME_TAB_FOLLOW" xml:space="preserve">
+    <value>关注</value>
   </data>
   <data name="V9_HOME_TAB_HEADLINE" xml:space="preserve">
     <value>头条</value>
   </data>
   <data name="V9_HOME_TAB_RANKING" xml:space="preserve">
     <value>热榜</value>
+  </data>
+  <data name="V11_HOME_TAB_NEWS" xml:space="preserve">
+    <value>快讯</value>
+  </data>
+  <data name="V11_VERTICAL_TOPIC" xml:space="preserve">
+    <value>话题</value>
+  </data>
+  <data name="V11_HOME_NEW" xml:space="preserve">
+    <value>新机</value>
+  </data>
+  <data name="V13_IOSHOME_OPENSHOW" xml:space="preserve">
+    <value>开箱</value>
+  </data>
+  <data name="V13_HOME_SHEYING" xml:space="preserve">
+    <value>摄影</value>
+  </data>
+  <data name="V11_HOME_TAB_JC" xml:space="preserve">
+    <value>教程</value>
+  </data>
+  <data name="V11_HOME_CAR" xml:space="preserve">
+    <value>汽车</value>
+  </data>
+  <data name="V9_HOME_TAB_SHIPIN" xml:space="preserve">
+    <value>视频</value>
+  </data>
+  <data name="V11_HOME_MEIHUA" xml:space="preserve">
+    <value>美化</value>
+  </data>
+  <data name="V9_HOME_TAB_LIVE" xml:space="preserve">
+    <value>直播</value>
   </data>
   <data name="V9_HOME_TAB_WENDA" xml:space="preserve">
     <value>问答</value>
