@@ -21,9 +21,8 @@ namespace CoolapkUWP.Models.Pages
         public double NextLevelPercentage { get; private set; }
         public string NextLevelNowExperience { get; private set; }
 
-        public ProfileDetailModel(ProfileDetailDto dto)
+        public ProfileDetailModel(ProfileDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             if (dto.UserAvatar != null)
             {

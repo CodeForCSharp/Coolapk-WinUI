@@ -12,9 +12,8 @@ namespace CoolapkUWP.Models
         public string EntityTemplate { get; private set; }
         public OperationType OperationType { get; private set; }
 
-        public IndexPageOperationCardModel(IndexPageOperationCardDto dto, OperationType type)
+        public IndexPageOperationCardModel(IndexPageOperationCardDto dto, OperationType type) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             OperationType = type;
             Title = dto.Title;

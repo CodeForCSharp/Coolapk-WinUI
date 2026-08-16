@@ -42,8 +42,6 @@ namespace CoolapkUWP.Models.Users
         {
             if (dto == null) { return; }
 
-            InitializeEntity(null, null, null, null);
-
             Like = dto.Like != 0;
             Favorite = dto.Favorite != 0;
             Follow = dto.Follow != 0;

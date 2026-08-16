@@ -40,9 +40,8 @@ namespace CoolapkUWP.Models.Feeds
 
         public List<ImageModel> PicArr { get; private set; } = new List<ImageModel>();
 
-        public SourceFeedModel(FeedDto dto)
+        public SourceFeedModel(FeedDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             if (!string.IsNullOrEmpty(dto.Url))
             {

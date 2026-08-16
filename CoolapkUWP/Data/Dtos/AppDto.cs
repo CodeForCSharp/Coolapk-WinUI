@@ -5,7 +5,7 @@ namespace CoolapkUWP.Data.Dtos
     /// <summary>
     /// 应用(App)条目,用于搜索建议、应用详情等场景。字段与酷安 API 响应一致。
     /// </summary>
-    public class AppDto
+    public class AppDto : EntityDto
     {
         [JsonPropertyName("url")]
         public string Url { get; set; }
@@ -33,14 +33,5 @@ namespace CoolapkUWP.Data.Dtos
         public string Logo { get; set; }
         [JsonPropertyName("lastupdate")]
         public string Lastupdate { get; set; }
-
-        [JsonPropertyName("entityId")]
-        public string EntityId { get; set; }
-        [JsonPropertyName("entityType")]
-        public string EntityType { get; set; }
-        [JsonPropertyName("entityForward")]
-        public string EntityForward { get; set; }
-        [JsonPropertyName("entityFixed")]
-        public string EntityFixed { get; set; }
     }
 }

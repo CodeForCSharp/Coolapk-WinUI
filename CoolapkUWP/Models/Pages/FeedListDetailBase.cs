@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CoolapkUWP.Data.Dtos;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models.Pages
@@ -25,7 +26,7 @@ namespace CoolapkUWP.Models.Pages
         /// </summary>
         protected abstract void OnFollowChanged();
 
-        protected FeedListDetailBase() { EntityFixed = true; }
+        protected FeedListDetailBase(EntityDto dto) : base(dto) { }
     }
 
 }

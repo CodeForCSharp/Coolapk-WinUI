@@ -19,9 +19,8 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Cover;
 
-        public CollectionModel(CollectionDto dto)
+        public CollectionModel(CollectionDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             ItemNum = dto.ItemNum;

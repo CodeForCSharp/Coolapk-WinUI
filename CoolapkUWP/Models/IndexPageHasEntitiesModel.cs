@@ -1,9 +1,7 @@
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
-using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -26,9 +24,8 @@ namespace CoolapkUWP.Models
         public EntityType EntitiesType { get; private set; }
         public List<Entity> Entities { get; private set; } = new List<Entity>();
 
-        public IndexPageHasEntitiesModel(IndexPageHasEntitiesDto dto, EntityType type)
+        public IndexPageHasEntitiesModel(IndexPageHasEntitiesDto dto, EntityType type) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             EntitiesType = type;
             Title = dto.Title;
@@ -70,22 +67,7 @@ namespace CoolapkUWP.Models
             => new IndexPageHasEntitiesModel(DtoJson.Deserialize<IndexPageHasEntitiesDto>(json), type);
 
         protected virtual Entity CreateEntity(JsonObject itemObj, string entityType)
-        {
-            switch (entityType)
-            {
-                case "feed":
-                    return FeedModel.FromJson(itemObj);
-
-                case "user":
-                    return UserModel.FromJson(itemObj);
-
-                case "collection":
-                    return CollectionModel.FromJson(itemObj);
-
-                default:
-                    return IndexPageModel.FromJson(itemObj);
-            }
-        }
+            => EntityFactory.CreateNested(entityType, itemObj);
 
         public override string ToString() => $"{Title} - {Description}";
     }

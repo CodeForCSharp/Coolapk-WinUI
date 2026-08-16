@@ -43,9 +43,8 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/u/{UID}";
 
-        internal UserDetail(UserDetailDto dto)
+        internal UserDetail(UserDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             UID = dto.Uid;
             FeedNum = dto.Feed;

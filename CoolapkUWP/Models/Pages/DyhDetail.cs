@@ -30,9 +30,8 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/dyh/{ID}";
 
-        internal DyhDetail(DyhDetailDto dto)
+        internal DyhDetail(DyhDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             Followed = dto.UserAction?.Follow == 1;

@@ -19,9 +19,8 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Logo;
 
-        public TopicModel(TopicDto dto)
+        public TopicModel(TopicDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             if (!string.IsNullOrEmpty(dto.Url))
             {

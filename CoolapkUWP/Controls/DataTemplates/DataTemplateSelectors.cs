@@ -116,44 +116,30 @@ namespace CoolapkUWP.Controls.DataTemplates
         {
             if (item is UserModel user)
             {
-                return user.EntityForward == "iconScrollCard" ? MiniUser : User;
+                return user.Layout == EntityLayout.Mini ? MiniUser : User;
             }
             else if (item is SourceFeedModel feed)
             {
-                return feed.EntityForward == "imageTextScrollCard" ? FeedImageText : Feed;
+                return feed.Layout == EntityLayout.FeedImageText ? FeedImageText : Feed;
             }
             else if (item is CollectionModel collection)
             {
-                return collection.EntityForward == "iconMiniGridCard" ? MiniIconLink : List;
+                return collection.Layout == EntityLayout.Mini ? MiniIconLink : List;
             }
             else if (item is FeedReplyModel) { return FeedReply; }
-            else if (item is IndexPageModel IndexPageModel)
+            else if (item is IndexPageModel indexPage)
             {
-                switch (IndexPageModel?.EntityType ?? string.Empty)
+                switch (indexPage.Kind)
                 {
-                    case "imageSquare":
-                    case "icon":
-                    case "iconMiniLink":
-                    case "recentHistory":
-                    case "iconMini":
-                    case "IconLink":
-                    case "dyh":
-                    case "apk":
-                    case "appForum":
-                    case "picCategory":
-                    case "product":
-                    case "entity":
-                    case "topic":
-                        switch ((item as IndexPageModel).EntityForward)
+                    case EntityKind.Icon:
+                        return indexPage.Layout switch
                         {
-                            case "imageSquareScrollCard": return SquareLinkCard;
-                            case "apkListCard":
-                            case "feedListCard": return List;
-                            default: return IconLink;
-                        }
-                    case "iconButton":
-                    case "link": return Link;
-                    case "imageText": return ImageText;
+                            EntityLayout.SquareLink => SquareLinkCard,
+                            EntityLayout.List => List,
+                            _ => IconLink,
+                        };
+                    case EntityKind.Link: return Link;
+                    case EntityKind.ImageText: return ImageText;
                     default: return Empty;
                 }
             }
@@ -226,15 +212,13 @@ namespace CoolapkUWP.Controls.DataTemplates
             {
                 return History;
             }
-            else if (item is IndexPageModel IndexPageModel)
+            else if (item is IndexPageModel indexPage)
             {
-                switch (IndexPageModel?.EntityType)
+                switch (indexPage.Kind)
                 {
-                    case "topic":
-                    case "recentHistory": return IconLink;
-                    case "textLink": return TextLink;
-                    case "collection":
-                    case "history": return History;
+                    case EntityKind.Icon: return IconLink;
+                    case EntityKind.TextLink: return TextLink;
+                    case EntityKind.History: return History;
                     default: return Empty;
                 }
             }

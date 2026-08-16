@@ -24,9 +24,8 @@ namespace CoolapkUWP.Models.Pages
 
         public ImageModel UserAvatar { get; protected set; }
 
-        protected NotificationModel(NotificationDto dto)
+        protected NotificationModel(NotificationDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
         }
 
         protected void ApplyCommon(NotificationDto dto)

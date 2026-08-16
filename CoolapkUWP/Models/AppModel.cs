@@ -23,10 +23,9 @@ namespace CoolapkUWP.Models
 
         public ImageModel Pic => Logo;
 
-        public AppModel(AppDto dto)
+        public AppModel(AppDto dto) : base(dto)
         {
             _dto = dto;
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             Title = !string.IsNullOrEmpty(dto.Title)
                 ? dto.Title

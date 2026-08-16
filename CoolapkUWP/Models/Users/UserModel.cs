@@ -39,11 +39,9 @@ namespace CoolapkUWP.Models.Users
 
         public ImageModel Pic => UserAvatar;
 
-        public UserModel(UserDto dto)
+        public UserModel(UserDto dto) : base(dto)
         {
             if (dto == null) { return; }
-
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             UID = dto.Uid;
             Bio = dto.Bio;

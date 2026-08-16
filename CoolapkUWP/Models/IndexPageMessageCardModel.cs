@@ -1,8 +1,5 @@
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
-using CoolapkUWP.Models.Feeds;
-using CoolapkUWP.Models.Images;
-using CoolapkUWP.Models.Users;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
@@ -16,9 +13,8 @@ namespace CoolapkUWP.Models
         public string Description { get; private set; }
         public List<Entity> Entities { get; private set; } = new List<Entity>();
 
-        public IndexPageMessageCardModel(IndexPageMessageCardDto dto)
+        public IndexPageMessageCardModel(IndexPageMessageCardDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             Title = dto.Title;
             Description = dto.Description;
@@ -30,24 +26,7 @@ namespace CoolapkUWP.Models
                 {
                     if (itemObj.TryGetPropertyValue("entityType", out JsonNode entityType))
                     {
-                        switch (entityType.ToString())
-                        {
-                            case "feed":
-                                builder.Add(FeedModel.FromJson(itemObj));
-                                break;
-
-                            case "user":
-                                builder.Add(UserModel.FromJson(itemObj));
-                                break;
-
-                            case "collection":
-                                builder.Add(CollectionModel.FromJson(itemObj));
-                                break;
-
-                            default:
-                                builder.Add(IndexPageModel.FromJson(itemObj));
-                                break;
-                        }
+                        builder.Add(EntityFactory.CreateNested(entityType.ToString(), itemObj));
                     }
                 }
                 Entities = builder;

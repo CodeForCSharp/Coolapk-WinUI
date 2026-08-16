@@ -34,9 +34,8 @@ namespace CoolapkUWP.Models.Pages
         public ImageModel Cover { get; private set; }
         public ImageModel UserAvatar { get; private set; }
 
-        internal CollectionDetail(CollectionDetailDto dto)
+        internal CollectionDetail(CollectionDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             Followed = dto.UserAction?.Follow == 1;

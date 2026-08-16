@@ -24,9 +24,8 @@ namespace CoolapkUWP.Models
         public double Star4Fill { get; private set; }
         public double Star5Fill { get; private set; }
 
-        public IndexPageModel(IndexPageDto dto)
+        public IndexPageModel(IndexPageDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             EntityTemplate = dto.EntityTemplate;
             Title = dto.Title;

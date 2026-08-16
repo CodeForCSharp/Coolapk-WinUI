@@ -20,9 +20,8 @@ namespace CoolapkUWP.Models
         public ImageModel Pic { get; private set; }
         public string Url => $"/product/{ID}";
 
-        public ProductModel(ProductDto dto)
+        public ProductModel(ProductDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             Title = dto.Title;

@@ -19,9 +19,8 @@ namespace CoolapkUWP.Models
         public ImageModel Pic { get; private set; }
         public string Url => $"/live/{ID}";
 
-        public LiveTopicModel(LiveTopicDto dto)
+        public LiveTopicModel(LiveTopicDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             Title = dto.Title;

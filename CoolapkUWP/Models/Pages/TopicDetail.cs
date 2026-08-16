@@ -32,9 +32,8 @@ namespace CoolapkUWP.Models.Pages
 
         public List<UserModel> FollowUsers { get; private set; } = new List<UserModel>();
 
-        internal TopicDetail(TopicDetailDto dto)
+        internal TopicDetail(TopicDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
             Url = dto.Url;

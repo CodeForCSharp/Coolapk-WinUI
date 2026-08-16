@@ -58,9 +58,8 @@ namespace CoolapkUWP.Models.Pages
 
         public List<ImageModel> CoverArr { get; private set; } = new List<ImageModel>();
 
-        internal ProductDetail(ProductDetailDto dto)
+        internal ProductDetail(ProductDetailDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             ID = dto.Id;
 

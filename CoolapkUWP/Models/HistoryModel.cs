@@ -14,9 +14,8 @@ namespace CoolapkUWP.Models
         public ImageModel Pic { get; private set; }
         public string Description { get; private set; }
 
-        public HistoryModel(HistoryDto dto)
+        public HistoryModel(HistoryDto dto) : base(dto)
         {
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             Title = dto.Title;
             Url = dto.Url;

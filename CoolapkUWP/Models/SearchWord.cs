@@ -12,10 +12,9 @@ namespace CoolapkUWP.Models
         public string Glyph { get; }
         public string Title => _dto.Title;
 
-        public SearchWord(SearchWordDto dto)
+        public SearchWord(SearchWordDto dto) : base(dto)
         {
             _dto = dto;
-            InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             if (dto.Logo != null)
             {
