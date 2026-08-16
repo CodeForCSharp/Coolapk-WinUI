@@ -32,6 +32,9 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate IconGridCard { get; set; }
         public DataTemplate IconListCard { get; set; }
         public DataTemplate FeedListCard { get; set; }
+        public DataTemplate ListCard { get; set; }
+        public DataTemplate ColorfulScrollCard { get; set; }
+        public DataTemplate IconMiniGridCard { get; set; }
         public DataTemplate LiveTopic { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
@@ -45,6 +48,9 @@ namespace CoolapkUWP.Controls.DataTemplates
             else if (item is IconGridCardModel) { return IconGridCard; }
             else if (item is IconListCardModel) { return IconListCard; }
             else if (item is FeedListCardModel) { return FeedListCard; }
+            else if (item is ListCardModel) { return ListCard; }
+            else if (item is ColorfulScrollCardModel) { return ColorfulScrollCard; }
+            else if (item is IconMiniGridCardModel) { return IconMiniGridCard; }
             else if (item is IndexPageHasEntitiesModel IndexPageHasEntitiesModel)
             {
                 switch (IndexPageHasEntitiesModel.EntitiesType)
@@ -268,7 +274,6 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "feedScrollCard":
                             case "imageTextScrollCard":
                             case "colorfulFatScrollCard":
-                            case "colorfulScrollCard":
                             case "linkCard":
                             case "iconButtonGridCard":
                             case "apkScrollCardWithBackground":
@@ -279,7 +284,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "iconGridCard": return IconGridCardModel.FromJson(json);
                             case "iconListCard": return IconListCardModel.FromJson(json);
                             case "iconMiniLinkGridCard":
-                            case "iconMiniGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.GridLink);
+                            case "iconMiniGridCard": return IconMiniGridCardModel.FromJson(json);
                             case "headCard":
                             case "imageCarouselCard_1":
                             case "imageCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Image);
@@ -293,6 +298,8 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "apkListCard":
                             case "textLinkListCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TextLinks);
                             case "feedListCard": return FeedListCardModel.FromJson(json);
+                            case "listCard": return ListCardModel.FromJson(json);
+                            case "colorfulScrollCard": return ColorfulScrollCardModel.FromJson(json);
                             case "textCard":
                             case "messageCard": return IndexPageMessageCardModel.FromJson(json);
                             case "refreshCard": return IndexPageOperationCardModel.FromJson(json, OperationType.Refresh);

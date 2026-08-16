@@ -5,6 +5,8 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了"用户控件"项模板
 
@@ -60,6 +62,17 @@ namespace CoolapkUWP.Controls.DataTemplates
         {
             FrameworkElement element = sender as FrameworkElement;
             CardNavigationService.HandleCardTap(element, element.Tag);
+        }
+
+        private async void ColorfulItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Border { Tag: string uri } border || string.IsNullOrEmpty(uri)) { return; }
+
+            Color? color = await ImageColorHelper.GetDominantColorAsync(uri);
+            if (color is Color c)
+            {
+                border.Background = new SolidColorBrush(Color.FromArgb(0x8C, c.R, c.G, c.B));
+            }
         }
     }
 }

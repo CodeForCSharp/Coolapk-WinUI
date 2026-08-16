@@ -18,6 +18,7 @@ namespace CoolapkUWP.Models
         public ImageModel Pic { get; private set; }
         public string StarAverageScore { get; private set; }
         public string CommentNum { get; private set; }
+        public string RatingTotalNumTxt { get; private set; }
         public double Star1Fill { get; private set; }
         public double Star2Fill { get; private set; }
         public double Star3Fill { get; private set; }
@@ -31,6 +32,7 @@ namespace CoolapkUWP.Models
             Title = dto.Title;
             StarAverageScore = dto.StarAverageScore;
             CommentNum = dto.CommentNum;
+            RatingTotalNumTxt = dto.RatingTotalNumTxt;
             SubTitle = dto.SubTitle;
             Description = dto.Description;
 

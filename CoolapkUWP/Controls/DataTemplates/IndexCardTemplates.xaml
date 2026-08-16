@@ -497,6 +497,202 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate x:Key="ColorfulScrollCardItemTemplate" x:DataType="models:IndexPageModel">
+        <Button
+            Padding="0"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            Click="Button_Click"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{x:Bind}">
+            <Border
+                x:Name="ColorfulItemBorder"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="{ThemeResource ControlCornerRadius}"
+                Loaded="ColorfulItem_Loaded"
+                Tag="{x:Bind Pic.Uri}">
+                <Grid Width="88" Padding="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="64" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="0"
+                    Width="64"
+                    Height="64"
+                    HorizontalAlignment="Center"
+                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Stretch="UniformToFill" />
+                </Border>
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
+                    MaxLines="2"
+                    FontSize="12"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="4">
+                    <TextBlock
+                        FontSize="11"
+                        FontWeight="Bold"
+                        Text="{x:Bind StarAverageScore, Mode=OneWay}"
+                        Visibility="{x:Bind StarAverageScore, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        Visibility="{x:Bind RatingTotalNumTxt, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind RatingTotalNumTxt, Mode=OneWay}" />
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="人点评" />
+                    </StackPanel>
+                </StackPanel>
+                </Grid>
+            </Border>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ColorfulScrollCardTemplate" x:DataType="models:ColorfulScrollCardModel">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                KeyDown="Grid_KeyDown"
+                Tag="{x:Bind}"
+                Tapped="Grid_Tapped">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="SubTitleText"
+                    Grid.Column="1"
+                    Margin="0,0,8,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{x:Bind SubTitle, Mode=OneWay}"
+                    Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <FontIcon
+                    Grid.Column="2"
+                    Margin="0,0,8,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;" />
+            </Grid>
+            <muxc:ItemsRepeaterScrollHost
+                x:Name="EntitiesHost"
+                Grid.Row="1"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <ScrollViewer
+                    Padding="8,0,8,0"
+                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalScrollMode="Auto"
+                    VerticalScrollMode="Disabled">
+                    <muxc:ItemsRepeater
+                        ItemTemplate="{StaticResource ColorfulScrollCardItemTemplate}"
+                        ItemsSource="{x:Bind Entities, Mode=OneWay}">
+                        <muxc:ItemsRepeater.Layout>
+                            <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
+                        </muxc:ItemsRepeater.Layout>
+                    </muxc:ItemsRepeater>
+                </ScrollViewer>
+            </muxc:ItemsRepeaterScrollHost>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IconMiniGridItemTemplate" x:DataType="models:IndexPageModel">
+        <Button
+            Padding="0"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            Click="Button_Click"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{x:Bind}">
+            <Grid Padding="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    CornerRadius="4">
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="4"
+                        Stretch="UniformToFill" />
+                </Border>
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    MaxLines="1"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis" />
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="IconMiniGridCardTemplate" x:DataType="models:IconMiniGridCardModel">
+        <Grid>
+            <muxc:ItemsRepeater
+                Margin="8,0,8,8"
+                HorizontalAlignment="Stretch"
+                ItemTemplate="{StaticResource IconMiniGridItemTemplate}"
+                ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <muxc:ItemsRepeater.Layout>
+                    <muxc:UniformGridLayout
+                        MinColumnSpacing="8"
+                        MinItemWidth="160"
+                        MinRowSpacing="8" />
+                </muxc:ItemsRepeater.Layout>
+            </muxc:ItemsRepeater>
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate x:Key="IconLongTitleGridCardTemplate" x:DataType="models:IconLongTitleGridCardModel">
         <Grid>
             <Grid.RowDefinitions>
@@ -753,6 +949,67 @@
                     FontSize="16"
                     Glyph="&#xE72A;"
                     Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+            </Grid>
+            <muxc:ItemsRepeater
+                Grid.Row="1"
+                Margin="8,0,8,8"
+                HorizontalAlignment="Stretch"
+                ItemTemplate="{StaticResource IconListItemSelector}"
+                ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <muxc:ItemsRepeater.Layout>
+                    <muxc:StackLayout Spacing="8" />
+                </muxc:ItemsRepeater.Layout>
+            </muxc:ItemsRepeater>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ListCardTemplate" x:DataType="models:ListCardModel">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                KeyDown="Grid_KeyDown"
+                Tag="{x:Bind}"
+                Tapped="Grid_Tapped">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="SubTitleText"
+                    Grid.Column="1"
+                    Margin="0,0,8,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{x:Bind SubTitle, Mode=OneWay}"
+                    Visibility="{x:Bind SubTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <FontIcon
+                    Grid.Column="2"
+                    Margin="0,0,8,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;" />
             </Grid>
             <muxc:ItemsRepeater
                 Grid.Row="1"

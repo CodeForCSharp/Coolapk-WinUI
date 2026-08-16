@@ -1206,6 +1206,7 @@
             </DataTemplate>
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
+                ColorfulScrollCard="{StaticResource ColorfulScrollCardTemplate}"
                 Feed="{StaticResource FeedDefaultTemplate}"
                 FeedListCard="{StaticResource FeedListCardTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
@@ -1214,9 +1215,11 @@
                 IconLinks="{StaticResource IconLinksTemplate}"
                 IconListCard="{StaticResource IconListCardTemplate}"
                 IconLongTitleGridCard="{StaticResource IconLongTitleGridCardTemplate}"
+                IconMiniGridCard="{StaticResource IconMiniGridCardTemplate}"
                 ImageTextScrollCard="{StaticResource ImageTextScrollCardTemplate}"
                 Images="{StaticResource ImageCardTemplate}"
                 List="{StaticResource ListDefaultTemplate}"
+                ListCard="{StaticResource ListCardTemplate}"
                 Others="{StaticResource Empty}"
                 User="{StaticResource UserTemplate}" />
             <templates:DetailTemplateSelector
