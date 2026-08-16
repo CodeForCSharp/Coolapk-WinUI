@@ -67,7 +67,7 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static DyhDetail FromJson(JsonObject json)
-            => new DyhDetail(JsonSerializer.Deserialize<DyhDetailDto>(json, DtoJson.Options));
+            => new DyhDetail(DtoJson.Deserialize<DyhDetailDto>(json));
 
         internal void SetFollowNum(int num)
         {

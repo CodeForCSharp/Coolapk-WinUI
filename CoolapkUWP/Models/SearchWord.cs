@@ -26,7 +26,7 @@ namespace CoolapkUWP.Models
         }
 
         public static SearchWord FromJson(JsonObject json)
-            => new SearchWord(JsonSerializer.Deserialize<SearchWordDto>(json, DtoJson.Options));
+            => new SearchWord(DtoJson.Deserialize<SearchWordDto>(json));
 
         public override string ToString()
         {

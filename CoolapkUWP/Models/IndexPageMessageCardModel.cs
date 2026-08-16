@@ -21,20 +21,7 @@ namespace CoolapkUWP.Models
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
             Title = dto.Title;
-
-            Description = DescriptionResolver.Resolve(
-                dto.Description,
-                dto.ReleaseTime,
-                dto.LinkTag,
-                dto.HotNumTxt,
-                dto.Keywords,
-                dto.CatName,
-                dto.ApkTypeName,
-                null,
-                dto.RssType,
-                dto.SubTitle,
-                "发布日期：",
-                "热度");
+            Description = dto.Description;
 
             if (dto.Entities != null && dto.Entities.Count > 0)
             {
@@ -70,7 +57,7 @@ namespace CoolapkUWP.Models
         }
 
         public static IndexPageMessageCardModel FromJson(JsonObject json)
-            => new IndexPageMessageCardModel(JsonSerializer.Deserialize<IndexPageMessageCardDto>(json, DtoJson.Options));
+            => new IndexPageMessageCardModel(DtoJson.Deserialize<IndexPageMessageCardDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

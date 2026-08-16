@@ -41,7 +41,7 @@ namespace CoolapkUWP.Models
         }
 
         public static HistoryModel FromJson(JsonObject json)
-            => new HistoryModel(JsonSerializer.Deserialize<HistoryDto>(json, DtoJson.Options));
+            => new HistoryModel(DtoJson.Deserialize<HistoryDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

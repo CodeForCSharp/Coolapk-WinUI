@@ -89,7 +89,7 @@ namespace CoolapkUWP.Models.Feeds
         }
 
         public static new FeedDetailModel FromJson(JsonObject json)
-            => new FeedDetailModel(JsonSerializer.Deserialize<FeedDto>(json, DtoJson.Options));
+            => new FeedDetailModel(DtoJson.Deserialize<FeedDto>(json));
 
         private static string BuildMessageRawOutput(string raw, string imageField, bool articleStyle)
         {

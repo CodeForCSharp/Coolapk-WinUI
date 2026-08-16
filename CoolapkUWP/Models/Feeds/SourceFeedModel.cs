@@ -118,7 +118,7 @@ namespace CoolapkUWP.Models.Feeds
         }
 
         public static SourceFeedModel FromJson(JsonObject json)
-            => new SourceFeedModel(JsonSerializer.Deserialize<FeedDto>(json, DtoJson.Options));
+            => new SourceFeedModel(DtoJson.Deserialize<FeedDto>(json));
 
         public override string ToString() => Message;
     }

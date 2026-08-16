@@ -56,15 +56,5 @@ namespace CoolapkUWP.ViewModels.DataSource
                 _ = await LoadMoreItemsAsync(20);
             }
         }
-
-        public override async Task Reset()
-        {
-            //reset
-            _currentPage = 1;
-            _hasMoreItems = true;
-
-            Clear();
-            _ = await LoadMoreItemsAsync(20);
-        }
     }
 }

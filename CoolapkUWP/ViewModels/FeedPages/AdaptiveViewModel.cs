@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
@@ -35,7 +36,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (title != value)
                 {
                     title = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(Title)));
                 }
             }
         }
@@ -49,7 +50,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (isShowTitle != value)
                 {
                     isShowTitle = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsShowTitle)));
                 }
             }
         }
@@ -63,8 +64,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (tabs != value)
                 {
                     tabs = value;
-                    RaisePropertyChangedEvent();
-                    RaisePropertyChangedEvent(nameof(HasTabs));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(Tabs)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(HasTabs)));
                 }
             }
         }

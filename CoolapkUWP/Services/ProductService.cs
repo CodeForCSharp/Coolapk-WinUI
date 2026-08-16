@@ -30,7 +30,7 @@ namespace CoolapkUWP.Services
             ProgressBarHelper.HideProgressBar();
             if (!isSucceed) { return; }
 
-            ProductDetailDto dto = JsonSerializer.Deserialize<ProductDetailDto>(result, DtoJson.Options);
+            ProductDetailDto dto = DtoJson.Deserialize<ProductDetailDto>(result);
 
             if (dto.Id > 0)
             {

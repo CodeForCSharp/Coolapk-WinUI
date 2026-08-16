@@ -45,7 +45,7 @@ namespace CoolapkUWP.Models
         }
 
         public static LiveTopicModel FromJson(JsonObject json)
-            => new LiveTopicModel(JsonSerializer.Deserialize<LiveTopicDto>(json, DtoJson.Options));
+            => new LiveTopicModel(DtoJson.Deserialize<LiveTopicDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

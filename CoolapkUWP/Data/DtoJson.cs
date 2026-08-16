@@ -21,6 +21,12 @@ namespace CoolapkUWP.Data
         };
 
         /// <summary>
+        /// 单个节点反序列化为指定 DTO。
+        /// </summary>
+        public static TDto Deserialize<TDto>(JsonNode node)
+            => JsonSerializer.Deserialize<TDto>(node, Options);
+
+        /// <summary>
         /// 一次性反序列化整个数组，避免逐节点对每个元素反复做"序列化 + 再解析"的往返。
         /// </summary>
         public static List<T> DeserializeList<T>(JsonNode node)

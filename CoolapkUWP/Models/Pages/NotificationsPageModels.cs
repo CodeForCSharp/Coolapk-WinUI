@@ -229,15 +229,15 @@ namespace CoolapkUWP.Models.Pages
     internal static class NotificationModelFactory
     {
         internal static SimpleNotificationModel CreateSimple(JsonObject json)
-            => new SimpleNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
+            => new SimpleNotificationModel(DtoJson.Deserialize<NotificationDto>(json));
 
         internal static AtCommentMeNotificationModel CreateAtCommentMe(JsonObject json)
-            => new AtCommentMeNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
+            => new AtCommentMeNotificationModel(DtoJson.Deserialize<NotificationDto>(json));
 
         internal static LikeNotificationModel CreateLike(JsonObject json)
-            => new LikeNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options), json);
+            => new LikeNotificationModel(DtoJson.Deserialize<NotificationDto>(json), json);
 
         internal static MessageNotificationModel CreateMessage(JsonObject json)
-            => new MessageNotificationModel(JsonSerializer.Deserialize<NotificationDto>(json, DtoJson.Options));
+            => new MessageNotificationModel(DtoJson.Deserialize<NotificationDto>(json));
     }
 }

@@ -67,7 +67,7 @@ namespace CoolapkUWP.Models.Pages
 
             Astro = dto.Astro;
 
-            int gender = dto.Gender.ToInt32Safe();
+            int gender = dto.Gender;
             Gender = gender == 1 ? "♂"
                     : gender == 0 ? "♀"
                     : string.Empty;
@@ -109,7 +109,7 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static UserDetail FromJson(JsonObject json)
-            => new UserDetail(JsonSerializer.Deserialize<UserDetailDto>(json, DtoJson.Options));
+            => new UserDetail(DtoJson.Deserialize<UserDetailDto>(json));
 
         protected override void OnFollowChanged()
         {

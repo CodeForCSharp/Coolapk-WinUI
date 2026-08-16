@@ -51,7 +51,7 @@ namespace CoolapkUWP.Models
         }
 
         public static AppModel FromJson(JsonObject json)
-            => new AppModel(JsonSerializer.Deserialize<AppDto>(json, DtoJson.Options));
+            => new AppModel(DtoJson.Deserialize<AppDto>(json));
 
         public override string ToString() => Title;
     }

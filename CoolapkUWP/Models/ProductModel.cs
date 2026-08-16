@@ -67,7 +67,7 @@ namespace CoolapkUWP.Models
         }
 
         public static ProductModel FromJson(JsonObject json)
-            => new ProductModel(JsonSerializer.Deserialize<ProductDto>(json, DtoJson.Options));
+            => new ProductModel(DtoJson.Deserialize<ProductDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

@@ -37,7 +37,7 @@ namespace CoolapkUWP.Models
         }
 
         public static CollectionModel FromJson(JsonObject json)
-            => new CollectionModel(JsonSerializer.Deserialize<CollectionDto>(json, DtoJson.Options));
+            => new CollectionModel(DtoJson.Deserialize<CollectionDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

@@ -55,7 +55,7 @@ namespace CoolapkUWP.Models.Users
         }
 
         public static UserAction FromJson(JsonObject json)
-            => new UserAction(json == null ? null : JsonSerializer.Deserialize<UserActionDto>(json, DtoJson.Options));
+            => new UserAction(DtoJson.Deserialize<UserActionDto>(json));
 
         private void OnFollowChanged()
         {

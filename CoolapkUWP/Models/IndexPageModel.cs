@@ -5,7 +5,6 @@ using CoolapkUWP.Models.Images;
 using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
 {
@@ -29,12 +28,12 @@ namespace CoolapkUWP.Models
         {
             InitializeEntity(dto.EntityId, dto.EntityType, dto.EntityForward, dto.EntityFixed);
 
-            ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedListPage");
-
             EntityTemplate = dto.EntityTemplate;
             Title = dto.Title;
             StarAverageScore = dto.StarAverageScore;
             CommentNum = dto.CommentNum;
+            SubTitle = dto.SubTitle;
+            Description = dto.Description;
 
             if (double.TryParse(StarAverageScore, out double score))
             {
@@ -46,47 +45,6 @@ namespace CoolapkUWP.Models
                 Star5Fill = Math.Max(0, Math.Min(1, score - 4));
             }
 
-            if (!string.IsNullOrEmpty(dto.SubTitle))
-            {
-                SubTitle = dto.SubTitle;
-            }
-            else if (!string.IsNullOrEmpty(dto.HotNumTxt))
-            {
-                SubTitle = $"{dto.HotNumTxt}{loader.GetString("HotNum")}";
-            }
-            else if (!string.IsNullOrEmpty(dto.LinkTag))
-            {
-                SubTitle = dto.LinkTag;
-            }
-            else if (!string.IsNullOrEmpty(dto.ApkTypeName))
-            {
-                SubTitle = dto.ApkTypeName;
-            }
-            else if (!string.IsNullOrEmpty(dto.TypeName))
-            {
-                SubTitle = dto.TypeName;
-            }
-            else if (!string.IsNullOrEmpty(dto.Keywords))
-            {
-                SubTitle = dto.Keywords;
-            }
-            else if (!string.IsNullOrEmpty(dto.CatName))
-            {
-                SubTitle = dto.CatName;
-            }
-            else if (!string.IsNullOrEmpty(dto.RssType))
-            {
-                SubTitle = dto.RssType;
-            }
-            else if (!string.IsNullOrEmpty(dto.ProductNum))
-            {
-                SubTitle = $"{dto.ProductNum}{loader.GetString("ProductNum")}";
-            }
-            else if (!string.IsNullOrEmpty(dto.Description))
-            {
-                SubTitle = dto.Description;
-            }
-
             if (!string.IsNullOrEmpty(dto.VideoPlaybackUrl))
             {
                 Url = dto.VideoPlaybackUrl;
@@ -95,20 +53,6 @@ namespace CoolapkUWP.Models
             {
                 Url = dto.Url;
             }
-
-            Description = DescriptionResolver.Resolve(
-                dto.Description,
-                dto.ReleaseTime,
-                dto.LinkTag,
-                dto.HotNumTxt,
-                dto.Keywords,
-                dto.CatName,
-                dto.ApkTypeName,
-                dto.TypeName,
-                dto.RssType,
-                dto.SubTitle,
-                loader.GetString("ReleaseTime"),
-                loader.GetString("HotNum"));
 
             if (!string.IsNullOrEmpty(dto.CoverPic))
             {
@@ -129,7 +73,7 @@ namespace CoolapkUWP.Models
         }
 
         public static IndexPageModel FromJson(JsonObject json)
-            => new IndexPageModel(JsonSerializer.Deserialize<IndexPageDto>(json, DtoJson.Options));
+            => new IndexPageModel(DtoJson.Deserialize<IndexPageDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

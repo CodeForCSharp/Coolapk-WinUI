@@ -88,7 +88,7 @@ namespace CoolapkUWP.Models
         }
 
         public static TopicModel FromJson(JsonObject json)
-            => new TopicModel(JsonSerializer.Deserialize<TopicDto>(json, DtoJson.Options));
+            => new TopicModel(DtoJson.Deserialize<TopicDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

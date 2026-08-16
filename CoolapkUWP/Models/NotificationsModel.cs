@@ -74,7 +74,7 @@ namespace CoolapkUWP.Models
             {
                 (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetNotificationNumbers), true);
                 if (!isSucceed) { return; }
-                ChangeNumber(JsonSerializer.Deserialize<NotificationNumbersDto>(result.AsObject(), DtoJson.Options));
+                ChangeNumber(DtoJson.Deserialize<NotificationNumbersDto>(result.AsObject()));
             }
             catch { Clear(); }
         }

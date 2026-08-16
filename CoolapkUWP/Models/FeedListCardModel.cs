@@ -12,7 +12,7 @@ namespace CoolapkUWP.Models
             : base(dto, global::CoolapkUWP.Models.EntityType.Others) { }
 
         public static FeedListCardModel FromJson(JsonObject json)
-            => new FeedListCardModel(JsonSerializer.Deserialize<IndexPageHasEntitiesDto>(json, DtoJson.Options));
+            => new FeedListCardModel(DtoJson.Deserialize<IndexPageHasEntitiesDto>(json));
 
         protected override Entity CreateEntity(JsonObject itemObj, string entityType)
             => FeedModel.FromJson(itemObj);

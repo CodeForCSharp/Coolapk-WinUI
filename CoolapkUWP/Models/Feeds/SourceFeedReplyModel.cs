@@ -85,7 +85,7 @@ namespace CoolapkUWP.Models.Feeds
         }
 
         public static SourceFeedReplyModel FromJson(JsonObject json)
-            => new SourceFeedReplyModel(JsonSerializer.Deserialize<FeedReplyDto>(json, DtoJson.Options));
+            => new SourceFeedReplyModel(DtoJson.Deserialize<FeedReplyDto>(json));
 
         private static string GetAuthorString(bool isFeedAuthor) => isFeedAuthor ? TextBlockEx.AuthorBorder : string.Empty;
 

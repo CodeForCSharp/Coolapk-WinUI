@@ -6,6 +6,7 @@ using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
@@ -25,7 +26,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (isLogin != value)
                 {
                     isLogin = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsLogin)));
                 }
             }
         }
@@ -39,7 +40,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 if (profileDetail != value)
                 {
                     profileDetail = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ProfileDetail)));
                 }
             }
         }

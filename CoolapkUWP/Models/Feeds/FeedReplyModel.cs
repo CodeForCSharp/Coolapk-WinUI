@@ -72,6 +72,6 @@ namespace CoolapkUWP.Models.Feeds
         }
 
         public static FeedReplyModel FromJson(JsonObject json, bool showReplyRow = true)
-            => new FeedReplyModel(JsonSerializer.Deserialize<FeedReplyDto>(json, DtoJson.Options), showReplyRow);
+            => new FeedReplyModel(DtoJson.Deserialize<FeedReplyDto>(json), showReplyRow);
     }
 }

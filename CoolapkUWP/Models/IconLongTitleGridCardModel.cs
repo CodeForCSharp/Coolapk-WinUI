@@ -11,6 +11,6 @@ namespace CoolapkUWP.Models
             : base(dto, global::CoolapkUWP.Models.EntityType.Others) { }
 
         public static IconLongTitleGridCardModel FromJson(JsonObject json)
-            => new IconLongTitleGridCardModel(JsonSerializer.Deserialize<IndexPageHasEntitiesDto>(json, DtoJson.Options));
+            => new IconLongTitleGridCardModel(DtoJson.Deserialize<IndexPageHasEntitiesDto>(json));
     }
 }

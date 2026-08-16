@@ -34,20 +34,7 @@ namespace CoolapkUWP.Models
             Title = dto.Title;
             Url = dto.Url;
             SubTitle = dto.SubTitle;
-
-            Description = DescriptionResolver.Resolve(
-                dto.Description,
-                dto.ReleaseTime,
-                dto.LinkTag,
-                dto.HotNumTxt,
-                dto.Keywords,
-                dto.CatName,
-                dto.ApkTypeName,
-                null,
-                dto.RssType,
-                dto.SubTitle,
-                "发布日期：",
-                "热度");
+            Description = dto.Description;
 
             EntityTemplate = dto.EntityTemplate;
 
@@ -80,7 +67,7 @@ namespace CoolapkUWP.Models
         }
 
         public static IndexPageHasEntitiesModel FromJson(JsonObject json, EntityType type)
-            => new IndexPageHasEntitiesModel(JsonSerializer.Deserialize<IndexPageHasEntitiesDto>(json, DtoJson.Options), type);
+            => new IndexPageHasEntitiesModel(DtoJson.Deserialize<IndexPageHasEntitiesDto>(json), type);
 
         protected virtual Entity CreateEntity(JsonObject itemObj, string entityType)
         {

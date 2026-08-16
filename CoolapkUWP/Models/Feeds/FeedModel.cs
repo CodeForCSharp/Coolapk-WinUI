@@ -1,6 +1,5 @@
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CoolapkUWP.Models.Feeds
@@ -11,22 +10,14 @@ namespace CoolapkUWP.Models.Feeds
         public bool ShowLikes { get; private set; } = true;
         public bool ShowDateline { get; private set; } = true;
 
-        internal enum FeedDisplayMode
+        public FeedModel(FeedDto dto, bool isFirstPageFeed = false) : base(dto)
         {
-            Normal = 0,
-            NotShowDyhName = 0x02,
-            IsFirstPageFeed = 0x01,
-            NotShowMessageTitle = 0x04
-        }
-
-        public FeedModel(FeedDto dto, FeedDisplayMode mode = FeedDisplayMode.Normal) : base(dto)
-        {
-            ShowLikes = !(EntityType == "forwardFeed");
-            ShowDateline = mode != FeedDisplayMode.IsFirstPageFeed;
+            ShowLikes = EntityType != "forwardFeed";
+            ShowDateline = !isFirstPageFeed;
             IsStickTop = dto.IsStickTop == 1;
         }
 
-        public static FeedModel FromJson(JsonObject json, FeedDisplayMode mode = FeedDisplayMode.Normal)
-            => new FeedModel(JsonSerializer.Deserialize<FeedDto>(json, DtoJson.Options), mode);
+        public static FeedModel FromJson(JsonObject json, bool isFirstPageFeed = false)
+            => new FeedModel(DtoJson.Deserialize<FeedDto>(json), isFirstPageFeed);
     }
 }

@@ -34,7 +34,7 @@ namespace CoolapkUWP.Data.Dtos
         [JsonPropertyName("astro")]
         public string Astro { get; set; }
         [JsonPropertyName("gender")]
-        public string Gender { get; set; }
+        public int Gender { get; set; }
         [JsonPropertyName("displayUsername")]
         public string DisplayUsername { get; set; }
         [JsonPropertyName("logintime")]

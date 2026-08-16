@@ -31,7 +31,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                     (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(UriType.GetCollectionContents, ID, "1", ""), true);
                     if (isSucceed)
                     {
-                        List<CollectionContentsDto> contents = JsonSerializer.Deserialize<List<CollectionContentsDto>>(result, DtoJson.Options);
+                        List<CollectionContentsDto> contents = DtoJson.DeserializeList<CollectionContentsDto>(result);
                         foreach (CollectionContentsDto item in contents ?? new List<CollectionContentsDto>())
                         {
                             if (item.EntityTemplate == "selectorLinkCard" && item.Entities != null)

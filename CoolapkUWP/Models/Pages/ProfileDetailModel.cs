@@ -48,6 +48,6 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static ProfileDetailModel FromJson(JsonObject json)
-            => new ProfileDetailModel(JsonSerializer.Deserialize<ProfileDetailDto>(json, DtoJson.Options));
+            => new ProfileDetailModel(DtoJson.Deserialize<ProfileDetailDto>(json));
     }
 }

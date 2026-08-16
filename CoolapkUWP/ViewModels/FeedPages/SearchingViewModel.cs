@@ -102,7 +102,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             set
             {
                 searchFeedTypeComboBoxSelectedIndex = value;
-                RaisePropertyChangedEvent();
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SearchFeedTypeComboBoxSelectedIndex)));
                 UpdateProvider();
                 _ = Refresh(true);
             }
@@ -115,7 +115,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
             set
             {
                 searchFeedSortTypeComboBoxSelectedIndex = value;
-                RaisePropertyChangedEvent();
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SearchFeedSortTypeComboBoxSelectedIndex)));
                 UpdateProvider();
                 _ = Refresh(true);
             }

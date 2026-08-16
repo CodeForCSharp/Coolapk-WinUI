@@ -5,7 +5,6 @@ using CoolapkUWP.Models.Users;
 using System.Text.Json.Nodes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using static CoolapkUWP.Models.Feeds.FeedModel;
 
 namespace CoolapkUWP.Controls.DataTemplates
 {
@@ -265,7 +264,7 @@ namespace CoolapkUWP.Controls.DataTemplates
             switch ((string)json["entityType"])
             {
                 case "feed":
-                case "discovery": return FeedModel.FromJson(json, isHotFeedPage ? FeedDisplayMode.IsFirstPageFeed : FeedDisplayMode.Normal);
+                case "discovery": return FeedModel.FromJson(json, isHotFeedPage);
                 case "user": return UserModel.FromJson(json);
                 case "topic": return TopicModel.FromJson(json);
                 case "history": return HistoryModel.FromJson(json);
@@ -279,7 +278,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                     {
                         switch (entityTemplate.ToString())
                         {
-                            case "feed": return FeedModel.FromJson(json, isHotFeedPage ? FeedDisplayMode.IsFirstPageFeed : FeedDisplayMode.Normal);
+                            case "feed": return FeedModel.FromJson(json, isHotFeedPage);
                             case "imageSquareScrollCard":
                             case "iconScrollCard":
                             case "feedScrollCard":
@@ -291,18 +290,15 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "apkScrollCardWithBackground":
                             case "imageScrollCard":
                             case "apkScrollCard":
-                            //case "listCard":
                             case "gridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Others);
                             case "iconLongTitleGridCard": return IconLongTitleGridCardModel.FromJson(json);
                             case "iconGridCard": return IconGridCardModel.FromJson(json);
                             case "iconListCard": return IconListCardModel.FromJson(json);
                             case "iconMiniLinkGridCard":
                             case "iconMiniGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.GridLink);
-                            //case "listCard": //return IndexPageHasEntitiesModel.FromJson(jo, EntityType.Others);
                             case "headCard":
-                            case "imageCarouselCard_1": //return new IndexPageHasEntitiesViewModel(jo, EntitiesType.Image_1);
+                            case "imageCarouselCard_1":
                             case "imageCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Image);
-                            //case "apkImageCard":
                             case "configCard":
                                 return json.TryGetPropertyValue("url", out JsonNode url) && url.ToString().Length >= 5
                                     ? IndexPageHasEntitiesModel.FromJson(json, EntityType.IconLink)

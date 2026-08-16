@@ -76,7 +76,7 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static CollectionDetail FromJson(JsonObject json)
-            => new CollectionDetail(JsonSerializer.Deserialize<CollectionDetailDto>(json, DtoJson.Options));
+            => new CollectionDetail(DtoJson.Deserialize<CollectionDetailDto>(json));
 
         internal void SetFollowNum(int num)
         {

@@ -89,7 +89,7 @@ namespace CoolapkUWP.Models.Users
         }
 
         public static UserModel FromJson(JsonObject json)
-            => new UserModel(json == null ? null : JsonSerializer.Deserialize<UserDto>(json, DtoJson.Options));
+            => new UserModel(DtoJson.Deserialize<UserDto>(json));
 
         public override string ToString() => $"{Title} - {Description}";
     }

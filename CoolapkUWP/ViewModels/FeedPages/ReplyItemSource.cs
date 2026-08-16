@@ -28,7 +28,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 {
                     toggleIsOn = value;
                     _ = Refresh(true);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ToggleIsOn)));
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 {
                     replyListType = value;
                     _ = Refresh(true);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReplyListType)));
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 {
                     comboBoxSelectedIndex = value;
                     SetComboBoxSelectedIndex(value);
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ComboBoxSelectedIndex)));
                 }
             }
         }

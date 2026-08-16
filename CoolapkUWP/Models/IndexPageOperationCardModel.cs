@@ -36,7 +36,7 @@ namespace CoolapkUWP.Models
         }
 
         public static IndexPageOperationCardModel FromJson(JsonObject json, OperationType type)
-            => new IndexPageOperationCardModel(JsonSerializer.Deserialize<IndexPageOperationCardDto>(json, DtoJson.Options), type);
+            => new IndexPageOperationCardModel(DtoJson.Deserialize<IndexPageOperationCardDto>(json), type);
 
         public override string ToString() => Title;
     }

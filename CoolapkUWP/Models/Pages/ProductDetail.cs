@@ -164,7 +164,7 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static ProductDetail FromJson(JsonObject json)
-            => new ProductDetail(JsonSerializer.Deserialize<ProductDetailDto>(json, DtoJson.Options));
+            => new ProductDetail(DtoJson.Deserialize<ProductDetailDto>(json));
 
         protected override void OnFollowChanged()
         {

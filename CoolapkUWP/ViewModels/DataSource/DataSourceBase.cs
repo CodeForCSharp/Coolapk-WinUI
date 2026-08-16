@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +33,7 @@ namespace CoolapkUWP.ViewModels.DataSource
                 if (any != value)
                 {
                     any = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(Any)));
                 }
             }
         }
@@ -48,18 +47,8 @@ namespace CoolapkUWP.ViewModels.DataSource
                 if (isLoading != value)
                 {
                     isLoading = value;
-                    RaisePropertyChangedEvent();
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsLoading)));
                 }
-            }
-        }
-
-        protected override event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChangedEvent([CallerMemberName] string name = null)
-        {
-            if (name != null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
         }
 

@@ -85,7 +85,7 @@ namespace CoolapkUWP.Models.Pages
         }
 
         public static TopicDetail FromJson(JsonObject json)
-            => new TopicDetail(JsonSerializer.Deserialize<TopicDetailDto>(json, DtoJson.Options));
+            => new TopicDetail(DtoJson.Deserialize<TopicDetailDto>(json));
 
         protected override void OnFollowChanged()
         {
