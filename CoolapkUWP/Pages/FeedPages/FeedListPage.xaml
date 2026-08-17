@@ -1207,6 +1207,7 @@
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
                 ColorfulScrollCard="{StaticResource ColorfulScrollCardTemplate}"
+                CapsuleListCard="{StaticResource CapsuleListCardTemplate}"
                 Feed="{StaticResource FeedDefaultTemplate}"
                 FeedListCard="{StaticResource FeedListCardTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
@@ -1221,6 +1222,9 @@
                 List="{StaticResource ListDefaultTemplate}"
                 ListCard="{StaticResource ListCardTemplate}"
                 Others="{StaticResource Empty}"
+                ProductTimelineListCard="{StaticResource ProductTimelineListCardTemplate}"
+                Rating="{StaticResource IconListFeedItemRatingTemplate}"
+                SortSelectCard="{StaticResource SortSelectCardTemplate}"
                 User="{StaticResource UserTemplate}" />
             <templates:DetailTemplateSelector
                 x:Key="DetailTemplateSelector"

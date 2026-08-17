@@ -25,6 +25,7 @@
                 x:Key="CardTemplateSelector"
                 AtCommentMe="{StaticResource AtCommentMeCardTemplate}"
                 ColorfulScrollCard="{StaticResource ColorfulScrollCardTemplate}"
+                CapsuleListCard="{StaticResource CapsuleListCardTemplate}"
                 CommentMe="{StaticResource SimpleNotificationCardTemplate}"
                 Feed="{StaticResource FeedDefaultTemplate}"
                 FeedListCard="{StaticResource FeedListCardTemplate}"
@@ -45,7 +46,10 @@
                 MessageCard="{StaticResource MessageCardTemplate}"
                 MessageNotify="{StaticResource MessageNotificationCardTemplate}"
                 Others="{StaticResource Empty}"
+                ProductTimelineListCard="{StaticResource ProductTimelineListCardTemplate}"
+                Rating="{StaticResource IconListFeedItemRatingTemplate}"
                 RefreshCard="{StaticResource RefreshCardTemplate}"
+                SortSelectCard="{StaticResource SortSelectCardTemplate}"
                 SubtitleList="{StaticResource SubtitleListDefaultTemplate}"
                 TitleCard="{StaticResource TitleCardTemplate}"
                 User="{StaticResource UserTemplate}" />

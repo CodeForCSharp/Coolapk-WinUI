@@ -1,5 +1,7 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Controls;
+using CoolapkUWP.Models;
+using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Services;
 using System;
 using Microsoft.UI.Xaml;
@@ -62,6 +64,55 @@ namespace CoolapkUWP.Controls.DataTemplates
         {
             FrameworkElement element = sender as FrameworkElement;
             CardNavigationService.HandleCardTap(element, element.Tag);
+        }
+
+        private void RatingCard_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter || e.Key == Windows.System.VirtualKey.Space)
+            {
+                if (sender is FrameworkElement element)
+                {
+                    CardNavigationService.HandleCardTap(element, element.Tag);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void RatingCard_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (e.OriginalSource is Microsoft.UI.Xaml.Controls.Image)
+            {
+                e.Handled = true;
+                return;
+            }
+            if (sender is FrameworkElement element)
+            {
+                CardNavigationService.HandleCardTap(element, element.Tag);
+            }
+            e.Handled = true;
+        }
+
+        private void RatingTargetRow_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element
+                && element.Tag is SourceFeedModel feed
+                && !string.IsNullOrEmpty(feed.TargetRowUrl))
+            {
+                e.Handled = true;
+                CardNavigationService.HandleCardTap(element, feed.TargetRowUrl);
+            }
+        }
+
+        private void SortOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.Tag is SortSelectOptionModel option)
+            {
+                if (option.Parent is SortSelectCardModel card)
+                {
+                    card.SelectedIndex = option.Index;
+                }
+                CardNavigationService.HandleCardTap(element, option);
+            }
         }
 
         private async void ColorfulItem_Loaded(object sender, RoutedEventArgs e)

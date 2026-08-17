@@ -10,14 +10,15 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <templates:FeedsTemplates />
-                <templates:OtherDataTemplates />
+                <templates:IndexCardTemplates />
             </ResourceDictionary.MergedDictionaries>
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
                 Feed="{StaticResource FeedDefaultTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
                 Others="{StaticResource Empty}"
+                Rating="{StaticResource IconListFeedItemRatingTemplate}"
+                CapsuleListCard="{StaticResource CapsuleListCardTemplate}"
                 User="{StaticResource UserTemplate}" />
         </ResourceDictionary>
     </UserControl.Resources>

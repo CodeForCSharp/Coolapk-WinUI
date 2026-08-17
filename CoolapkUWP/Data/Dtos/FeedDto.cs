@@ -35,6 +35,12 @@ namespace CoolapkUWP.Data.Dtos
         public List<string> PicArr { get; set; }
         [JsonPropertyName("star")]
         public int Star { get; set; }
+        [JsonPropertyName("rating_score")]
+        public int RatingScore { get; set; }
+        [JsonPropertyName("v4_rating_message")]
+        public string V4RatingMessage { get; set; }
+        [JsonPropertyName("rating_item_info")]
+        public System.Text.Json.Nodes.JsonArray RatingItemInfo { get; set; }
 
         // FeedModelBase
         [JsonPropertyName("likenum")]

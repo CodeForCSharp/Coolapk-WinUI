@@ -26,6 +26,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate MessageCard { get; set; }
         public DataTemplate SubtitleList { get; set; }
         public DataTemplate MessageNotify { get; set; }
+        public DataTemplate Rating { get; set; }
         public DataTemplate GridScrollCard { get; set; }
         public DataTemplate ImageTextScrollCard { get; set; }
         public DataTemplate IconLongTitleGridCard { get; set; }
@@ -35,11 +36,14 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate ListCard { get; set; }
         public DataTemplate ColorfulScrollCard { get; set; }
         public DataTemplate IconMiniGridCard { get; set; }
+        public DataTemplate ProductTimelineListCard { get; set; }
+        public DataTemplate SortSelectCard { get; set; }
+        public DataTemplate CapsuleListCard { get; set; }
         public DataTemplate LiveTopic { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is FeedModel) { return Feed; }
+            if (item is FeedModel feed) { return feed.IsRatingFeed ? Rating : Feed; }
             else if (item is UserModel) { return User; }
             else if (item is FeedReplyModel) { return FeedReply; }
             else if (item is LiveTopicModel) { return LiveTopic; }
@@ -51,6 +55,9 @@ namespace CoolapkUWP.Controls.DataTemplates
             else if (item is ListCardModel) { return ListCard; }
             else if (item is ColorfulScrollCardModel) { return ColorfulScrollCard; }
             else if (item is IconMiniGridCardModel) { return IconMiniGridCard; }
+            else if (item is ProductTimelineListCardModel) { return ProductTimelineListCard; }
+            else if (item is SortSelectCardModel) { return SortSelectCard; }
+            else if (item is CapsuleListCardModel) { return CapsuleListCard; }
             else if (item is IndexPageHasEntitiesModel IndexPageHasEntitiesModel)
             {
                 switch (IndexPageHasEntitiesModel.EntitiesType)
@@ -117,6 +124,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate SubtitleList { get; set; }
         public DataTemplate FeedImageText { get; set; }
         public DataTemplate SquareLinkCard { get; set; }
+        public DataTemplate Rating { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
@@ -126,6 +134,7 @@ namespace CoolapkUWP.Controls.DataTemplates
             }
             else if (item is SourceFeedModel feed)
             {
+                if (feed.IsRatingFeed) { return Rating; }
                 return feed.Layout == EntityLayout.FeedImageText ? FeedImageText : Feed;
             }
             else if (item is CollectionModel collection)
@@ -162,13 +171,48 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate User { get; set; }
         public DataTemplate List { get; set; }
         public DataTemplate Icon { get; set; }
+        public DataTemplate Rating { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is FeedModel) { return Feed; }
+            if (item is FeedModel feed)
+            {
+                return feed.IsRatingFeed ? Rating : Feed;
+            }
             else if (item is UserModel) { return User; }
             else if (item is CollectionModel) { return List; }
             return Icon;
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+    }
+
+    public sealed partial class IconGridItemSelector : DataTemplateSelector
+    {
+        public DataTemplate Icon { get; set; }
+        public DataTemplate User { get; set; }
+        public DataTemplate List { get; set; }
+        public DataTemplate Empty { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            if (item is UserModel) { return User; }
+            if (item is CollectionModel) { return List; }
+            if (item is IndexPageModel) { return Icon; }
+            return Empty;
+        }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+    }
+
+    public sealed partial class FeedListItemSelector : DataTemplateSelector
+    {
+        public DataTemplate Feed { get; set; }
+        public DataTemplate Rating { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            return item is FeedModel feed && feed.IsRatingFeed ? Rating : Feed;
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
@@ -285,6 +329,9 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "iconListCard": return IconListCardModel.FromJson(json);
                             case "iconMiniLinkGridCard":
                             case "iconMiniGridCard": return IconMiniGridCardModel.FromJson(json);
+                            case "productTimelineListCard": return ProductTimelineListCardModel.FromJson(json);
+                            case "sortSelectCard": return SortSelectCardModel.FromJson(json);
+                            case "capsuleListCard": return CapsuleListCardModel.FromJson(json);
                             case "headCard":
                             case "imageCarouselCard_1":
                             case "imageCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Image);

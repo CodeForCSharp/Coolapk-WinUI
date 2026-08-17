@@ -15,5 +15,11 @@ namespace CoolapkUWP.Data.Dtos
         public string Url { get; set; }
         [JsonPropertyName("subTitle")]
         public string SubTitle { get; set; }
+        [JsonPropertyName("star_average_score")]
+        public string StarAverageScore { get; set; }
+        [JsonPropertyName("star_total_count")]
+        public int StarTotalCount { get; set; }
+        [JsonPropertyName("targetType")]
+        public string TargetType { get; set; }
     }
 }

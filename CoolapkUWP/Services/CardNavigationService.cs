@@ -1,5 +1,6 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
+using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.Pages.FeedPages;
 using CoolapkUWP.ViewModels.BrowserPages;
@@ -23,6 +24,12 @@ namespace CoolapkUWP.Services
             if (tag is string str)
             {
                 OpenUrlOrSpecial(host, str);
+                return true;
+            }
+            if (tag is SourceFeedModel feed)
+            {
+                if (string.IsNullOrEmpty(feed.Url)) { return false; }
+                OpenUrlOrSpecial(host, feed.Url);
                 return true;
             }
             if (tag is IHasTitle model)

@@ -23,6 +23,7 @@
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
                 ColorfulScrollCard="{StaticResource ColorfulScrollCardTemplate}"
+                CapsuleListCard="{StaticResource CapsuleListCardTemplate}"
                 Feed="{StaticResource FeedDefaultTemplate}"
                 FeedListCard="{StaticResource FeedListCardTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
@@ -39,7 +40,10 @@
                 LoginCard="{StaticResource LoginCardTemplate}"
                 MessageCard="{StaticResource MessageCardTemplate}"
                 Others="{StaticResource Empty}"
+                ProductTimelineListCard="{StaticResource ProductTimelineListCardTemplate}"
+                Rating="{StaticResource IconListFeedItemRatingTemplate}"
                 RefreshCard="{StaticResource RefreshCardTemplate}"
+                SortSelectCard="{StaticResource SortSelectCardTemplate}"
                 SubtitleList="{StaticResource SubtitleListDefaultTemplate}"
                 TitleCard="{StaticResource TitleCardTemplate}"
                 User="{StaticResource UserTemplate}" />

@@ -30,6 +30,7 @@
         List="{StaticResource ListDefaultTemplate}"
         MiniIconLink="{StaticResource MiniIconLinkTemplate}"
         MiniUser="{StaticResource MiniUserTemplate}"
+        Rating="{StaticResource IconListFeedItemRatingTemplate}"
         SquareLinkCard="{StaticResource SquareLinkCardTemplate}"
         SubtitleList="{StaticResource SubtitleListDefaultTemplate}"
         User="{StaticResource ListDefaultTemplate}" />
@@ -39,7 +40,20 @@
         Feed="{StaticResource IconListFeedItemTemplate}"
         Icon="{StaticResource IconListItemTemplate}"
         List="{StaticResource ListDefaultTemplate}"
+        Rating="{StaticResource IconListFeedItemRatingTemplate}"
         User="{StaticResource UserTemplate}" />
+
+    <templates:IconGridItemSelector
+        x:Key="IconGridItemSelector"
+        Empty="{StaticResource Empty}"
+        Icon="{StaticResource IconGridItemTemplate}"
+        List="{StaticResource ListDefaultTemplate}"
+        User="{StaticResource UserTemplate}" />
+
+    <templates:FeedListItemSelector
+        x:Key="FeedListItemSelector"
+        Feed="{StaticResource FeedListItemTemplate}"
+        Rating="{StaticResource IconListFeedItemRatingTemplate}" />
 
     <!--  一级卡片  -->
 
@@ -830,7 +844,7 @@
                 Grid.Row="1"
                 Margin="8,0,8,8"
                 HorizontalAlignment="Stretch"
-                ItemTemplate="{StaticResource IconGridItemTemplate}"
+                ItemTemplate="{StaticResource IconGridItemSelector}"
                 ItemsSource="{x:Bind Entities, Mode=OneWay}"
                 Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
@@ -1023,6 +1037,251 @@
                 </muxc:ItemsRepeater.Layout>
             </muxc:ItemsRepeater>
         </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ProductTimelineListCardTemplate" x:DataType="models:ProductTimelineListCardModel">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid
+                x:Name="TitleGrid"
+                Grid.Row="0"
+                Height="40"
+                Margin="12,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                KeyDown="Grid_KeyDown"
+                Tag="{x:Bind}"
+                Tapped="Grid_Tapped">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="TitleText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="SubTitleText"
+                    Grid.Column="1"
+                    Margin="0,0,8,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="更多"
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                <FontIcon
+                    Grid.Column="2"
+                    Margin="0,0,8,0"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    Glyph="&#xE72A;"
+                    Visibility="{x:Bind Url, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+            </Grid>
+            <ItemsControl
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                ItemTemplate="{StaticResource ProductTimelineItemTemplate}"
+                ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="0" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ProductTimelineItemTemplate" x:DataType="models:ProductModel">
+        <Button
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            Click="Button_Click"
+            Padding="0"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{x:Bind}">
+            <Grid MinHeight="72" Padding="40,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="104" />
+                    <ColumnDefinition Width="64" />
+                    <ColumnDefinition Width="58" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Grid.Column="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="2">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Text="{x:Bind ReleaseDateShort, Mode=OneWay}"
+                        TextAlignment="Center"
+                        Visibility="{x:Bind ReleaseDateShort, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="13"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ReleaseDateYear, Mode=OneWay}"
+                        TextAlignment="Center"
+                        Visibility="{x:Bind ReleaseDateYear, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                </StackPanel>
+                <Grid Grid.Column="1">
+                    <Rectangle
+                        Width="2"
+                        Margin="20,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        Fill="{ThemeResource ControlStrokeColorDefaultBrush}" />
+                    <Ellipse
+                        Width="10"
+                        Height="10"
+                        Margin="16,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Fill="{ThemeResource ControlStrokeColorDefaultBrush}" />
+                </Grid>
+                <Border
+                    Grid.Column="2"
+                    Width="48"
+                    Height="48"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    CornerRadius="{ThemeResource ControlCornerRadius}">
+                    <control:ImageEx
+                        Model="{x:Bind Pic}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Stretch="UniformToFill" />
+                </Border>
+                <TextBlock
+                    Grid.Column="3"
+                    Margin="32,0,16,0"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    LineHeight="20"
+                    MaxLines="2"
+                    Text="{x:Bind Title, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+                <StackPanel
+                    Grid.Column="4"
+                    Margin="8,0,4,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="4">
+                    <FontIcon
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="14"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Glyph="&#xE19F;" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind HotNum, Mode=OneWay}" />
+                </StackPanel>
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SortSelectCardTemplate" x:DataType="models:SortSelectCardModel">
+        <Grid Padding="32,0,20,0" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="{x:Bind Title, Mode=OneWay}"
+                TextTrimming="CharacterEllipsis"
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+            <Border
+                Grid.Column="1"
+                Padding="3"
+                VerticalAlignment="Center"
+                Background="{ThemeResource SubtleFillColorTertiaryBrush}"
+                CornerRadius="32">
+                <ItemsControl
+                    ItemTemplate="{StaticResource SortSelectOptionTemplate}"
+                    ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                    Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SortSelectOptionTemplate" x:DataType="models:SortSelectOptionModel">
+        <Button
+            Background="Transparent"
+            Click="SortOptionButton_Click"
+            Padding="0"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{x:Bind}">
+            <Border
+                Padding="24,11"
+                Background="{x:Bind PillBackground, Mode=OneWay}"
+                CornerRadius="28">
+                <TextBlock
+                    Foreground="{x:Bind PillForeground, Mode=OneWay}"
+                    Text="{x:Bind Title, Mode=OneWay}" />
+            </Border>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CapsuleListCardTemplate" x:DataType="models:CapsuleListCardModel">
+        <Grid Padding="12,12,8,4">
+            <ItemsControl
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                ItemTemplate="{StaticResource HotSearchItemTemplate}"
+                ItemsSource="{x:Bind Entities, Mode=OneWay}"
+                Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="HotSearchItemTemplate" x:DataType="models:HotSearchModel">
+        <Button
+            Margin="0,0,8,8"
+            Background="Transparent"
+            Click="Button_Click"
+            Padding="0"
+            Style="{ThemeResource TransparentButtonStyle}"
+            Tag="{x:Bind}">
+            <Border
+                Padding="12,5"
+                Background="{ThemeResource SubtleFillColorTertiaryBrush}"
+                CornerRadius="20">
+                <TextBlock
+                    FontSize="12"
+                    Text="{x:Bind Title, Mode=OneWay}" />
+            </Border>
+        </Button>
     </DataTemplate>
 
     <DataTemplate x:Key="IconListItemTemplate" x:DataType="models:IndexPageModel">
@@ -1221,6 +1480,286 @@
         </Button>
     </DataTemplate>
 
+    <DataTemplate x:Key="IconListFeedItemRatingTemplate" x:DataType="feedmodels:FeedModelBase">
+        <UserControl
+            x:Name="RatingCardRoot"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource SystemControlTransparentBrush}"
+            HorizontalContentAlignment="Stretch"
+            IsTabStop="True"
+            KeyDown="RatingCard_KeyDown"
+            Padding="0"
+            Tag="{x:Bind}"
+            Tapped="RatingCard_Tapped">
+            <Grid Padding="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <muxc:PersonPicture
+                        Grid.Column="0"
+                        Width="36"
+                        Height="36"
+                        VerticalAlignment="Center"
+                        DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
+                        ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="{x:Bind UserInfo.UserName, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis" />
+                        <StackPanel
+                            Margin="0,2,0,0"
+                            Orientation="Horizontal"
+                            Spacing="4">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind Dateline, Mode=OneWay}" />
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE8EA;"
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind DeviceTitle, Mode=OneWay}"
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="0,0,0,6"
+                    Orientation="Horizontal"
+                    Spacing="4">
+                    <Border
+                        Padding="3,1"
+                        VerticalAlignment="Center"
+                        Background="#FFF1FF"
+                        BorderBrush="#A866E5"
+                        BorderThickness="1"
+                        CornerRadius="3">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="10"
+                                Foreground="#A866E5"
+                                Glyph="&#xE8EA;" />
+                            <TextBlock
+                                FontSize="11"
+                                Foreground="#A866E5"
+                                Text="机主评分" />
+                        </StackPanel>
+                    </Border>
+                    <ItemsControl
+                        VerticalAlignment="Center"
+                        ItemTemplate="{StaticResource RatingStarTemplate}"
+                        ItemsSource="{x:Bind OverallStars, Mode=OneWay}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Border
+                        Padding="1,0"
+                        VerticalAlignment="Center"
+                        Background="#FFF1DF"
+                        CornerRadius="8"
+                        Visibility="{x:Bind OverallRatingDescriptor, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="1">
+                            <TextBlock
+                                FontSize="14"
+                                Text="&#x1F60D;" />
+                            <TextBlock
+                                Margin="0,0,4,0"
+                                FontSize="11"
+                                Foreground="#E48720"
+                                Text="{x:Bind OverallRatingDescriptor, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Margin="0,0,0,8"
+                    FontSize="11"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    LineHeight="16"
+                    Text="{x:Bind RatingItemsText, Mode=OneWay}"
+                    TextWrapping="WrapWholeWords"
+                    Visibility="{x:Bind RatingItemsText, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+
+                <Border
+                    Grid.Row="3"
+                    Margin="0,0,0,6"
+                    Padding="4,2"
+                    HorizontalAlignment="Left"
+                    Background="#159B55"
+                    CornerRadius="4"
+                    Visibility="{x:Bind FeedTypeName, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="White"
+                        Text="{x:Bind FeedTypeName, Mode=OneWay}" />
+                </Border>
+
+                <control:TextBlockEx
+                    Grid.Row="4"
+                    Margin="0,0,0,8"
+                    HorizontalAlignment="Left"
+                    Text="{x:Bind Message, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind Message, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+
+                <Border
+                    Grid.Row="5"
+                    Margin="0,0,0,8"
+                    Padding="10"
+                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                    CornerRadius="8"
+                    Tag="{x:Bind}"
+                    Tapped="RatingTargetRow_Tapped"
+                    Visibility="{x:Bind TargetRowTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            Grid.Column="0"
+                            Width="48"
+                            Height="48"
+                            VerticalAlignment="Center"
+                            CornerRadius="{ThemeResource ControlCornerRadius}">
+                            <control:ImageEx
+                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                Model="{x:Bind TargetRowLogo, Mode=OneWay}"
+                                Stretch="UniformToFill" />
+                        </Border>
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="12,0,8,0"
+                            VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind TargetRowTitle, Mode=OneWay}" />
+                            <StackPanel
+                                Margin="0,2,0,0"
+                                Orientation="Horizontal"
+                                Spacing="2">
+                                <TextBlock
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="{x:Bind TargetRowStarTotalCount, Mode=OneWay}" />
+                                <TextBlock
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="人 点评" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="2"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Right"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Text="{x:Bind TargetRowStarAverageScore, Mode=OneWay}" />
+                            <ItemsControl
+                                Margin="0,2,0,0"
+                                ItemTemplate="{StaticResource RatingStarSmallTemplate}"
+                                ItemsSource="{x:Bind TargetStars, Mode=OneWay}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="1" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="6" Margin="0,2,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        Grid.Column="0"
+                        HorizontalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Glyph="&#xE8E1;" />
+                    <FontIcon
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Glyph="&#xE90A;" />
+                    <FontIcon
+                        Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Glyph="&#xE72D;" />
+                </Grid>
+            </Grid>
+        </UserControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RatingStarTemplate" x:DataType="x:Boolean">
+        <Border
+            Width="16"
+            Height="16"
+            Background="#FFB91C"
+            CornerRadius="3">
+            <FontIcon
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="10"
+                Foreground="White"
+                Glyph="&#xE735;" />
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RatingStarSmallTemplate" x:DataType="x:Boolean">
+        <Border
+            Width="16"
+            Height="16"
+            Background="#FFB91C"
+            CornerRadius="3">
+            <FontIcon
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="10"
+                Foreground="White"
+                Glyph="&#xE735;" />
+        </Border>
+    </DataTemplate>
+
     <DataTemplate x:Key="FeedListCardTemplate" x:DataType="models:FeedListCardModel">
         <Grid>
             <Grid.RowDefinitions>
@@ -1283,7 +1822,7 @@
                 Grid.Row="1"
                 Margin="8,0,8,8"
                 HorizontalAlignment="Stretch"
-                ItemTemplate="{StaticResource FeedListItemTemplate}"
+                ItemTemplate="{StaticResource FeedListItemSelector}"
                 ItemsSource="{x:Bind Entities, Mode=OneWay}"
                 Visibility="{x:Bind ShowEntities, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
