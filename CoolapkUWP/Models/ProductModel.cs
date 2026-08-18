@@ -5,6 +5,7 @@ using CoolapkUWP.Models.Images;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.Models
@@ -12,7 +13,7 @@ namespace CoolapkUWP.Models
     /// <summary>
     /// 数码产品列表条目(排行榜等)，展示 logo、标题、价格区间与评分。
     /// </summary>
-    public class ProductModel : Entity, IHasDescription
+    public class ProductModel : Entity, IHasDescription, IStarRating
     {
         private static readonly Regex ReleaseDateRegex = new Regex(
             @"^(?<year>\d{4})年(?<month>\d{1,2})月(?:(?<day>\d{1,2})日)?",
@@ -27,6 +28,23 @@ namespace CoolapkUWP.Models
         public string ReleaseDateYear { get; private set; }
         public string Url => $"/product/{ID}";
 
+        /// <summary>评分(0-10，如 "9.3")。</summary>
+        public string RatingScore { get; private set; }
+
+        /// <summary>讨论数。</summary>
+        public string CommentNum { get; private set; }
+
+        /// <summary>琥珀色星星集合：按评分(0-10 换算 0-5 星)取整填充。</summary>
+        public List<bool> TargetStars { get; } = new List<bool>();
+
+        /// <summary>右侧分数榜分数(如续航分/影像分)，未设置时用星级评分。</summary>
+        public string RightScore { get; private set; }
+
+        /// <summary>右侧分数榜标签(如 "续航分"/"小时")。</summary>
+        public string RightLabel { get; private set; }
+
+        private readonly Dictionary<string, string> _scores = new Dictionary<string, string>();
+
         public ProductModel(ProductDto dto) : base(dto)
         {
 
@@ -35,9 +53,29 @@ namespace CoolapkUWP.Models
 
             Description = BuildDescription(dto);
 
+            _scores["v4_score_item_1_owner_average_score"] = dto.V4ScoreItem1OwnerAverageScore;
+            _scores["v4_score_item_2_owner_average_score"] = dto.V4ScoreItem2OwnerAverageScore;
+            _scores["v4_score_item_3_owner_average_score"] = dto.V4ScoreItem3OwnerAverageScore;
+            _scores["v4_score_item_4_owner_average_score"] = dto.V4ScoreItem4OwnerAverageScore;
+            _scores["v4_score_item_5_owner_average_score"] = dto.V4ScoreItem5OwnerAverageScore;
+            _scores["v4_score_item_6_owner_average_score"] = dto.V4ScoreItem6OwnerAverageScore;
+            _scores["subtab_all_endurance_score"] = dto.SubtabAllEnduranceScore;
+
             if (!string.IsNullOrEmpty(dto.HotNumTxt))
             {
                 HotNum = $"{dto.HotNumTxt}{ResourceLoader.GetForViewIndependentUse("FeedListPage").GetString("HotNum")}";
+            }
+
+            if (double.TryParse(dto.RatingAverageScore, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double score) && score > 0)
+            {
+                RatingScore = dto.RatingAverageScore;
+                int stars = System.Math.Max(0, System.Math.Min(5, (int)System.Math.Round(score / 2)));
+                for (int i = 0; i < stars; i++) { TargetStars.Add(true); }
+            }
+
+            if (!string.IsNullOrEmpty(dto.FeedCommentNumTxt))
+            {
+                CommentNum = dto.FeedCommentNumTxt;
             }
 
             if (!string.IsNullOrEmpty(dto.Logo))
@@ -46,6 +84,18 @@ namespace CoolapkUWP.Models
             }
 
             ParseReleaseDate(dto.ReleaseTime);
+        }
+
+        /// <summary>
+        /// 设置右侧分数榜的分数与标签(由榜单 URL 的 rightTopField/rightBottomText 指定)。
+        /// </summary>
+        public void SetRankingRight(string field, string label)
+        {
+            if (!string.IsNullOrEmpty(field) && _scores.TryGetValue(field, out string value))
+            {
+                RightScore = value;
+            }
+            RightLabel = label;
         }
 
         private void ParseReleaseDate(string raw)

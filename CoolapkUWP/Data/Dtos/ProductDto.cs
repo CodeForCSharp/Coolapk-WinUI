@@ -21,6 +21,8 @@ namespace CoolapkUWP.Data.Dtos
         public string PriceCurrency { get; set; }
         [JsonPropertyName("rating_average_score")]
         public string RatingAverageScore { get; set; }
+        [JsonPropertyName("feed_comment_num_txt")]
+        public string FeedCommentNumTxt { get; set; }
         [JsonPropertyName("hot_num_txt")]
         public string HotNumTxt { get; set; }
         [JsonPropertyName("release_time")]
@@ -29,5 +31,20 @@ namespace CoolapkUWP.Data.Dtos
         public string Description { get; set; }
         [JsonPropertyName("url")]
         public string Url { get; set; }
+
+        [JsonPropertyName("v4_score_item_1_owner_average_score")]
+        public string V4ScoreItem1OwnerAverageScore { get; set; }
+        [JsonPropertyName("v4_score_item_2_owner_average_score")]
+        public string V4ScoreItem2OwnerAverageScore { get; set; }
+        [JsonPropertyName("v4_score_item_3_owner_average_score")]
+        public string V4ScoreItem3OwnerAverageScore { get; set; }
+        [JsonPropertyName("v4_score_item_4_owner_average_score")]
+        public string V4ScoreItem4OwnerAverageScore { get; set; }
+        [JsonPropertyName("v4_score_item_5_owner_average_score")]
+        public string V4ScoreItem5OwnerAverageScore { get; set; }
+        [JsonPropertyName("v4_score_item_6_owner_average_score")]
+        public string V4ScoreItem6OwnerAverageScore { get; set; }
+        [JsonPropertyName("subtab_all_endurance_score")]
+        public string SubtabAllEnduranceScore { get; set; }
     }
 }

@@ -40,6 +40,10 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 _ = frame.Navigate(typeof(DigitalLibraryPage));
             }
+            else if (tag == "V10_CHANNEL_SMB_TOP")
+            {
+                _ = frame.Navigate(typeof(RankingPage));
+            }
             else
             {
                 string url = tag.StartsWith("/", StringComparison.Ordinal) ? tag : $"/page?url={tag}";

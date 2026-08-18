@@ -23,6 +23,16 @@ namespace CoolapkUWP.Data.Dtos
         public string Commentnum { get; set; }
         [JsonPropertyName("rating_total_num")]
         public string RatingTotalNum { get; set; }
+        [JsonPropertyName("star_average_score")]
+        public string StarAverageScore { get; set; }
+        [JsonPropertyName("star_total_count")]
+        public string StarTotalCount { get; set; }
+        [JsonPropertyName("rating_average_score")]
+        public string RatingAverageScore { get; set; }
+        [JsonPropertyName("hot_num_txt")]
+        public string HotNumTxt { get; set; }
+        [JsonPropertyName("commentnum_txt")]
+        public string CommentNumTxt { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
         [JsonPropertyName("newtitle")]

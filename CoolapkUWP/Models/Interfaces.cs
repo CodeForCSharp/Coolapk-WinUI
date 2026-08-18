@@ -1,5 +1,6 @@
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -10,6 +11,21 @@ namespace CoolapkUWP.Models
         string Uri { get; }
         ImageType Type { get; }
         BitmapImage Pic { get; }
+    }
+
+    /// <summary>
+    /// 榜单条目(产品/话题)：logo、标题、热度、讨论数与琥珀色星级评分。
+    /// </summary>
+    public interface IStarRating
+    {
+        ImageModel Pic { get; }
+        string Title { get; }
+        string HotNum { get; }
+        string CommentNum { get; }
+        string RatingScore { get; }
+        List<bool> TargetStars { get; }
+        string RightScore { get; }
+        string RightLabel { get; }
     }
 
     public interface IHasTitle
