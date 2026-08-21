@@ -29,6 +29,8 @@ namespace CoolapkUWP.Data.Dtos
         public string FeedType { get; set; }
         [JsonPropertyName("dateline")]
         public long? Dateline { get; set; }
+        [JsonPropertyName("dateline_text")]
+        public string DatelineText { get; set; }
         [JsonPropertyName("pic")]
         public string Pic { get; set; }
         [JsonPropertyName("picArr")]
@@ -57,6 +59,10 @@ namespace CoolapkUWP.Data.Dtos
         public string FeedTypeName { get; set; }
         [JsonPropertyName("infoHtml")]
         public string InfoHtml { get; set; }
+        [JsonPropertyName("fromname")]
+        public string Fromname { get; set; }
+        [JsonPropertyName("fromid")]
+        public string Fromid { get; set; }
         [JsonPropertyName("vote")]
         public VoteDto Vote { get; set; }
         [JsonPropertyName("question_answer_num")]

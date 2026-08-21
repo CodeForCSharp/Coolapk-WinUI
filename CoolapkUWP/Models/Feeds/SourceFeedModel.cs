@@ -131,7 +131,10 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.Dateline != null)
             {
-                Dateline = dto.Dateline.Value.ConvertUnixTimeStampToReadable();
+                // 优先使用服务器返回的相对时间（如 "53分钟前"、"1月15日"），与官方客户端一致
+                Dateline = !string.IsNullOrEmpty(dto.DatelineText)
+                    ? dto.DatelineText
+                    : dto.Dateline.Value.ConvertUnixTimeStampToReadable();
             }
 
             if (dto.PicArr != null && dto.PicArr.Count > 0)

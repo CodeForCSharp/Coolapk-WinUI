@@ -93,6 +93,18 @@ namespace CoolapkUWP.Models.Feeds
         public string VoteTag { get; private set; }
         public string InfoHTML { get; private set; }
 
+        /// <summary>动态来源（如 "头条推荐"），非酷安来源时显示"来自{Fromname}"。</summary>
+        public string Fromname { get; private set; }
+
+        /// <summary>是否显示"已编辑"标记（change_count &gt; 0）。</summary>
+        public bool IsEdited { get; private set; }
+
+        /// <summary>可绑定的来源文本：" 来自头条推荐"；酷安来源或为空时不显示。</summary>
+        public string FromText => !string.IsNullOrEmpty(Fromname) && Fromname != "酷安" ? $" 来自{Fromname}" : string.Empty;
+
+        /// <summary>可绑定的已编辑文本：" 已编辑"。</summary>
+        public string EditedText => IsEdited ? " 已编辑" : string.Empty;
+
         [ObservableProperty]
         public partial string ExtraUrl { get; set; }
 
@@ -134,6 +146,11 @@ namespace CoolapkUWP.Models.Feeds
         public List<RelationRowsItem> RelationRows { get; private set; } = new List<RelationRowsItem>();
         public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
 
+        /// <summary>热评区只展示第一条评论。</summary>
+        public SourceFeedReplyModel HotReply => ReplyRows.Count > 0 ? ReplyRows[0] : null;
+
+        public bool HasHotReply => HotReply != null;
+
         public FeedModelBase(FeedDto dto) : base(dto)
         {
             EditorTitle = dto.EditorTitle;
@@ -149,6 +166,9 @@ namespace CoolapkUWP.Models.Feeds
             InfoHTML = !string.IsNullOrEmpty(dto.InfoHtml)
                 ? dto.InfoHtml
                 : Dateline;
+
+            Fromname = dto.Fromname;
+            IsEdited = dto.ChangeCount > 0;
 
             if (IsVoteFeed && dto.Vote != null)
             {
@@ -217,7 +237,6 @@ namespace CoolapkUWP.Models.Feeds
             string location = dto.Location;
             string ttitle = dto.Ttitle;
             string dyhName = dto.DyhName;
-            int changeCount = dto.ChangeCount;
             int status = dto.Status;
             int blockStatus = dto.BlockStatus;
 
@@ -226,7 +245,6 @@ namespace CoolapkUWP.Models.Feeds
                 (!string.IsNullOrEmpty(ttitle)) |
                 (!string.IsNullOrEmpty(dyhName)) |
                 (dto.RelationRows is JsonArray relationRows && relationRows.Count > 0) |
-                (changeCount > 0) |
                 (status == -1) |
                 (blockStatus != 0);
 
@@ -269,15 +287,6 @@ namespace CoolapkUWP.Models.Feeds
                                 title: (string)item["title"],
                                 logo: (string)item["logo"]));
                     }
-                }
-
-                if (changeCount > 0)
-                {
-                    builder.Add(
-                        new RelationRowsItem(
-                            url: $"/feed/changeHistoryList?id={ID}",
-                            title: $"已编辑{changeCount}次",
-                            icon: "\uE70F"));
                 }
 
                 if (status == -1)

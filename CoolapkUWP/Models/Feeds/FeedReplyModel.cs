@@ -15,7 +15,10 @@ namespace CoolapkUWP.Models.Feeds
     public partial class FeedReplyModel : SourceFeedReplyModel, ICanLike, ICanReply, ICanCopy
     {
         [ObservableProperty]
-        public partial int LikeNum { get; set; }
+        public new partial int LikeNum { get; set; }
+
+        /// <summary>是否展示点赞数徽章（评论列表页使用，基础值来自 LikeNum）。</summary>
+        public new bool ShowLikeBadge => LikeNum > 0;
 
         [ObservableProperty]
         public partial int ReplyNum { get; set; }

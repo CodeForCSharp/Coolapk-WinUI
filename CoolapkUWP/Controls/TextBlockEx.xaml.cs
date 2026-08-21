@@ -31,6 +31,7 @@ namespace CoolapkUWP.Controls
         private static readonly Regex EmojisRegex = new Regex(@"(\[\S*?\]|#\(\S*?\))");
         private static readonly FontSizeToHeightConverter SharedFontSizeToHeightConverter = new FontSizeToHeightConverter();
         private static readonly BoolToVisibilityConverter SharedBoolToVisibilityConverter = new BoolToVisibilityConverter();
+        private static readonly SolidColorBrush TopicLinkBrush = new SolidColorBrush(Color.FromArgb(255, 15, 157, 88));
         private readonly ResourceLoader _loader = ResourceLoader.GetForViewIndependentUse("Feed");
 
         public static readonly DependencyProperty TextProperty =
@@ -190,7 +191,16 @@ namespace CoolapkUWP.Controls
                                 string tag = element.GetAttribute("t") ?? string.Empty;
                                 string href = element.GetAttribute("href") ?? string.Empty;
                                 string type = element.GetAttribute("type") ?? string.Empty;
+                                string cls = element.GetAttribute("class") ?? string.Empty;
                                 Hyperlink hyperlink = new Hyperlink { UnderlineStyle = UnderlineStyle.None };
+                                // 话题标签 / @提及 / 查看更多 使用酷安绿色，与官方客户端一致
+                                bool isTopicLink = cls.Contains("feed-link-tag") || content.StartsWith("#");
+                                bool isMentionLink = type == "user-detail" || content.StartsWith("@");
+                                bool isReadMoreLink = content == "查看更多" || content == _loader.GetString("ReadMore");
+                                if (isTopicLink || isMentionLink || isReadMoreLink)
+                                {
+                                    hyperlink.Foreground = TopicLinkBrush;
+                                }
                                 if (!string.IsNullOrEmpty(href))
                                 {
                                     hyperlink.Click += (sender, e) => _ = this.OpenLinkAsync(href);

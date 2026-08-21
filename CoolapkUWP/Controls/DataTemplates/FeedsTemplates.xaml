@@ -22,8 +22,6 @@
         <UserControl
             x:Name="Root"
             Background="{StaticResource SystemControlTransparentBrush}"
-            Loaded="UserControl_Loaded"
-            SizeChanged="UserControl_SizeChanged"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnRootTapped">
             <UserControl.Resources>
@@ -100,9 +98,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+
                 <StackPanel
                     x:Name="StickUp"
                     Grid.Row="0"
@@ -121,11 +118,14 @@
                         Foreground="Red"
                         IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}" />
                 </StackPanel>
-                <StackPanel
-                    x:Name="UserBar"
-                    Grid.Row="1"
-                    Orientation="Horizontal"
-                    Visibility="{x:Bind ShowUser, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+
+                <!--  头部：头像 + 用户名 + 时间行（来源/设备/已编辑）+ 右上角箭头  -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                     <Button
                         Margin="0,4"
                         Padding="0"
@@ -139,126 +139,119 @@
                             DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
                             ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
                     </Button>
-                    <Grid Margin="8,0" VerticalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        Spacing="2">
                         <TextBlock
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            FontSize="15"
                             IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
                             Text="{x:Bind UserInfo.UserName, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis" />
-                        <TextBlock
-                            Grid.Row="1"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                            TextTrimming="CharacterEllipsis"
-                            Visibility="{x:Bind ShowDateline, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
-                            <Run Text="{x:Bind InfoHTML, Mode=OneWay}" />
-                            <Run Text="{x:Bind Info, Mode=OneWay}" />
-                            <Hyperlink
-                                Click="DeviceHyperlink_Click"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                UnderlineStyle="None">
-                                <Run Text="{x:Bind DeviceTitle, Mode=OneWay}" />
-                            </Hyperlink>
-                        </TextBlock>
-                        <TextBlock
-                            Grid.Row="1"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                            TextTrimming="CharacterEllipsis"
-                            Visibility="{x:Bind ShowDateline, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                            <Run Text="{x:Bind Dateline, Mode=OneWay}" />
-                            <Run Text="{x:Bind Info, Mode=OneWay}" />
-                            <Hyperlink
-                                Click="DeviceHyperlink_Click"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                UnderlineStyle="None">
-                                <Run Text="{x:Bind DeviceTitle, Mode=OneWay}" />
-                            </Hyperlink>
-                        </TextBlock>
-                    </Grid>
-                </StackPanel>
-                <controls:StackPanel
-                    x:Name="BtnsPanel"
-                    Grid.Row="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal"
-                    Spacing="2"
-                    Visibility="{x:Bind ShowButtons, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                    <Button
-                        x:Name="LikeButton"
-                        x:Uid="/Feed/LikeButton"
-                        Height="32"
-                        Click="FeedButton_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}"
-                        Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                Glyph="&#xE8E1;"
-                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Glyph="&#xE8E1;"
-                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
-                            <TextBlock Margin="8,0,0,0" Text="{x:Bind LikeNum, Mode=OneWay}" />
-                        </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="ReplyButton"
-                        x:Uid="/Feed/ReplyButton"
-                        Height="32"
-                        Click="FeedButton_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}"
-                        Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
                             <TextBlock
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind Dateline, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind FromText, Mode=OneWay}" />
+                            <FontIcon
+                                Margin="6,0,0,0"
+                                FontSize="12"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Glyph="&#xE8EA;"
+                                VerticalAlignment="Center" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind DeviceTitle, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind EditedText, Mode=OneWay}" />
                         </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="ShareButton"
-                        x:Uid="/Feed/ShareButton"
-                        Height="32"
-                        Click="FeedButton_Click"
-                        Flyout="{StaticResource QRCodeFlyout}"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind ShareUrl, Mode=OneWay}"
-                        Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal">
+                    </StackPanel>
+                    <controls:StackPanel
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="2">
+                        <Button
+                            x:Name="LikeButton"
+                            x:Uid="/Feed/LikeButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                    Glyph="&#xE8E1;"
+                                    Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                <FontIcon
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    Glyph="&#xE8E1;"
+                                    Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind LikeNum, Mode=OneWay}" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="ReplyButton"
+                            x:Uid="/Feed/ReplyButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="ShareButton"
+                            x:Uid="/Feed/ShareButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Flyout="{StaticResource QRCodeFlyout}"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind ShareUrl, Mode=OneWay}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
-                            <TextBlock
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind ShareNum, Mode=OneWay}" />
-                        </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="MoreButton"
-                        x:Uid="/Feed/MoreButton"
-                        Height="32"
-                        Flyout="{StaticResource MoreFlyout}"
-                        Style="{StaticResource TransparentButtonStyle}">
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE10C;" />
-                    </Button>
-                </controls:StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="MoreButton"
+                            x:Uid="/Feed/MoreButton"
+                            Height="32"
+                            Flyout="{StaticResource MoreFlyout}"
+                            Style="{StaticResource TransparentButtonStyle}">
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE10C;" />
+                        </Button>
+                    </controls:StackPanel>
+                </Grid>
+
                 <TextBlock
                     x:Name="MessageTitle"
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Margin="4"
                     HorizontalAlignment="Left"
                     FontSize="16"
@@ -267,8 +260,9 @@
                     Text="{x:Bind MessageTitle, Mode=OneWay}"
                     TextWrapping="Wrap"
                     Visibility="{x:Bind MessageTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+
                 <controls:StackPanel
-                    Grid.Row="4"
+                    Grid.Row="3"
                     Margin="4"
                     Spacing="4">
                     <Grid Margin="0,-4" Visibility="{x:Bind IsRatingFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
@@ -313,8 +307,10 @@
                         Text="{x:Bind Message, Mode=OneWay}"
                         Visibility="{x:Bind Message, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 </controls:StackPanel>
+
+                <!--  图片九宫格  -->
                 <GridView
-                    Grid.Row="5"
+                    Grid.Row="4"
                     MinHeight="0"
                     Margin="4"
                     Padding="0"
@@ -330,8 +326,9 @@
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
                 </GridView>
+
                 <StackPanel
-                    Grid.Row="6"
+                    Grid.Row="5"
                     Margin="0,4"
                     Padding="4"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -375,8 +372,9 @@
                         </TextBlock>
                     </Grid>
                 </StackPanel>
+
                 <Border
-                    Grid.Row="7"
+                    Grid.Row="6"
                     Margin="0,4"
                     HorizontalAlignment="Stretch"
                     Visibility="{x:Bind ShowSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
@@ -398,8 +396,9 @@
                         </Border>
                     </Grid>
                 </Border>
+
                 <Grid
-                    Grid.Row="8"
+                    Grid.Row="7"
                     Margin="0,4"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -416,7 +415,6 @@
                         Visibility="{x:Bind ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
                         <Grid.Background>
                             <AcrylicBrush
-                               
                                 FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintOpacity="1" />
@@ -471,9 +469,8 @@
                         </StackPanel>
                     </Grid>
                     <Grid CornerRadius="{ThemeResource OverlayCornerRadius}" Visibility="{x:Bind ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                            <Grid.Background>
+                        <Grid.Background>
                             <AcrylicBrush
-                               
                                 FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintOpacity="1" />
@@ -492,8 +489,9 @@
                         </Border>
                     </Grid>
                 </Grid>
+
                 <Grid
-                    Grid.Row="9"
+                    Grid.Row="8"
                     Margin="0,4"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
@@ -507,9 +505,8 @@
                         Padding="8"
                         Tag="{x:Bind MediaUrl, Mode=OneWay}"
                         Tapped="OnTopTapped">
-                            <Grid.Background>
+                        <Grid.Background>
                             <AcrylicBrush
-                               
                                 FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintColor="{ThemeResource SystemChromeMediumHighColor}"
                                 TintOpacity="1" />
@@ -562,8 +559,10 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
+
+                <!--  话题胶囊等关联行  -->
                 <muxc:ItemsRepeaterScrollHost
-                    Grid.Row="10"
+                    Grid.Row="9"
                     Margin="2,0"
                     Visibility="{x:Bind RelationRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
                     <ScrollViewer
@@ -581,36 +580,39 @@
                         </muxc:ItemsRepeater>
                     </ScrollViewer>
                 </muxc:ItemsRepeaterScrollHost>
+
+                <!--  热评：仅展示第一条评论  -->
                 <StackPanel
                     x:Name="ReplyRows"
-                    Grid.Row="11"
+                    Grid.Row="10"
                     Margin="0,4"
-                    Padding="4"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Padding="0"
+                    Background="{ThemeResource FeedReplyCardBackgroundBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
-                    Visibility="{x:Bind ReplyRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                    <muxc:ItemsRepeater
-                        HorizontalAlignment="Stretch"
-                        ItemTemplate="{StaticResource ReplyRowsItemTemplate}"
-                        ItemsSource="{x:Bind ReplyRows, Mode=OneWay}">
-                        <muxc:ItemsRepeater.Layout>
-                            <muxc:StackLayout />
-                        </muxc:ItemsRepeater.Layout>
-                    </muxc:ItemsRepeater>
-                    <TextBlock
-                        Margin="4"
+                    Visibility="{x:Bind HasHotReply, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                    <Border
+                        Margin="0,0,0,4"
+                        Padding="8,3"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                        <Run x:Uid="/Feed/SeeAll" />
-                        <Run Text="(" />
-                        <Run Text="{x:Bind ReplyNum, Mode=OneWay}" />
-                        <Run Text=")" />
-                    </TextBlock>
+                        Background="#0F9D58"
+                        CornerRadius="4"
+                        Visibility="{x:Bind HotReply.ShowLikeBadge, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="White">
+                            <Run Text="{x:Bind HotReply.LikeNum, Mode=OneWay}" />
+                            <Run Text="赞" />
+                        </TextBlock>
+                    </Border>
+                    <controls:TextBlockEx
+                        Margin="12,0,12,10"
+                        FontSize="13"
+                        Text="{x:Bind HotReply.Message, Mode=OneWay}" />
                 </StackPanel>
+
                 <StackPanel
-                    Grid.Row="12"
+                    Grid.Row="11"
                     Margin="4"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
@@ -647,6 +649,265 @@
                         <Run FontWeight="Bold" Text="{x:Bind IPLocation, Mode=OneWay}" />
                     </TextBlock>
                 </StackPanel>
+
+                <!--  底部操作栏：点赞 / 评论 / 分享  -->
+            </Grid>
+        </UserControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FeedCoverTemplate" x:DataType="feedmodels:FeedModel">
+        <UserControl
+            x:Name="Root"
+            Background="{StaticResource SystemControlTransparentBrush}"
+            Tag="{x:Bind Url, Mode=OneWay}"
+            Tapped="OnRootTapped">
+            <UserControl.Resources>
+                <Flyout x:Key="QRCodeFlyout" ShouldConstrainToRootBounds="False">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
+                            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                    <controls:ShowQRCodeControl QRCodeText="{x:Bind ShareUrl, Mode=OneWay}" />
+                </Flyout>
+                <MenuFlyout x:Key="MoreFlyout">
+                    <MenuFlyoutSubItem x:Uid="/Feed/Copy">
+                        <MenuFlyoutSubItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                        </MenuFlyoutSubItem.Icon>
+                        <ToggleMenuFlyoutItem
+                            x:Name="CopyButton"
+                            x:Uid="/Feed/CopyFree"
+                            IsChecked="{x:Bind IsCopyEnabled, Mode=TwoWay}" />
+                        <MenuFlyoutItem
+                            x:Uid="/Feed/CopyLink"
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind ShareUrl, Mode=OneWay}" />
+                        <MenuFlyoutItem
+                            x:Uid="/Feed/CopyAll"
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind Message, Converter={StaticResource HTMLToTextConverter}, Mode=OneWay}" />
+                        <MenuFlyoutItem
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='@{0}', Mode=OneWay}"
+                            Text="{x:Bind UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='复制 @{0}', Mode=OneWay}" />
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem
+                        x:Name="PinTileButton"
+                        x:Uid="/Feed/PinTile"
+                        Click="FeedButton_Click"
+                        Tag="{x:Bind}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+                        x:Name="ReportButton"
+                        x:Uid="/Feed/Report"
+                        Click="FeedButton_Click"
+                        Tag="{x:Bind ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                </MenuFlyout>
+            </UserControl.Resources>
+            <Grid
+                Padding="8,4"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="{ThemeResource SystemControlTransparentBrush}"
+                ContextFlyout="{StaticResource MoreFlyout}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  头部：头像 + 用户名 + 时间/设备，右侧下拉箭头  -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Margin="0,4"
+                        Padding="0"
+                        Background="{ThemeResource SystemControlTransparentBrush}"
+                        Click="Button_Click"
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
+                        <muxc:PersonPicture
+                            Width="36"
+                            Height="36"
+                            DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
+                            ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                    </Button>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        Spacing="2">
+                        <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                            Text="{x:Bind UserInfo.UserName, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Visibility="{x:Bind ShowDateline, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind Dateline, Mode=OneWay}" />
+                            <FontIcon
+                                Margin="6,0,0,0"
+                                FontSize="12"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Glyph="&#xE8EA;"
+                                VerticalAlignment="Center" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind DeviceTitle, Mode=OneWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <controls:StackPanel
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Spacing="2">
+                        <Button
+                            x:Name="LikeButton"
+                            x:Uid="/Feed/LikeButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                    Glyph="&#xE8E1;"
+                                    Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                <FontIcon
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    Glyph="&#xE8E1;"
+                                    Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind LikeNum, Mode=OneWay}" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="ReplyButton"
+                            x:Uid="/Feed/ReplyButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="ShareButton"
+                            x:Uid="/Feed/ShareButton"
+                            Height="32"
+                            Click="FeedButton_Click"
+                            Flyout="{StaticResource QRCodeFlyout}"
+                            Style="{StaticResource TransparentButtonStyle}"
+                            Tag="{x:Bind ShareUrl, Mode=OneWay}"
+                            Visibility="{x:Bind ShowLikes, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
+                        </Button>
+                        <Button
+                            x:Name="MoreButton"
+                            x:Uid="/Feed/MoreButton"
+                            Height="32"
+                            Flyout="{StaticResource MoreFlyout}"
+                            Style="{StaticResource TransparentButtonStyle}">
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE10C;" />
+                        </Button>
+                    </controls:StackPanel>
+                </Grid>
+
+                <!--  标题  -->
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="4,8,4,4"
+                    HorizontalAlignment="Left"
+                    FontSize="17"
+                    FontWeight="SemiBold"
+                    IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                    Text="{x:Bind MessageTitle, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind MessageTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+
+                <!--  Cover 大图：宽度全宽，高度按图片自身长宽比自适应  -->
+                <Grid
+                    Grid.Row="2"
+                    Margin="4"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}"
+                    Visibility="{x:Bind CoverPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                    <controls:ImageEx
+                        Model="{x:Bind CoverPic}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Stretch="Uniform" />
+                </Grid>
+
+                <!--  正文：灰色小字，最多三行  -->
+                <TextBlock
+                    Grid.Row="3"
+                    Margin="4,4,4,0"
+                    HorizontalAlignment="Left"
+                    FontSize="13"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                    MaxLines="3"
+                    Text="{x:Bind Message, Converter={StaticResource HTMLToTextConverter}, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap" />
+
+                <!--  话题胶囊等关联行  -->
+                <muxc:ItemsRepeaterScrollHost
+                    Grid.Row="4"
+                    Margin="2,4,2,0"
+                    Visibility="{x:Bind RelationRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                    <ScrollViewer
+                        Padding="0,4"
+                        HorizontalScrollBarVisibility="Hidden"
+                        HorizontalScrollMode="Auto"
+                        VerticalScrollMode="Disabled">
+                        <muxc:ItemsRepeater
+                            HorizontalAlignment="Stretch"
+                            ItemTemplate="{StaticResource RelationRowsItemTemplate}"
+                            ItemsSource="{x:Bind RelationRows, Mode=OneWay}">
+                            <muxc:ItemsRepeater.Layout>
+                                <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
+                            </muxc:ItemsRepeater.Layout>
+                        </muxc:ItemsRepeater>
+                    </ScrollViewer>
+                </muxc:ItemsRepeaterScrollHost>
             </Grid>
         </UserControl>
     </DataTemplate>

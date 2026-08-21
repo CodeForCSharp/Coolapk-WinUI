@@ -1211,6 +1211,7 @@
                 ArticleNewsSingle="{StaticResource ArticleNewsSingleTemplate}"
                 ArticleNewsMulti="{StaticResource ArticleNewsMultiTemplate}"
                 Feed="{StaticResource FeedDefaultTemplate}"
+                FeedCover="{StaticResource FeedCoverTemplate}"
                 FeedListCard="{StaticResource FeedListCardTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
                 GridScrollCard="{StaticResource GridScrollCardTemplate}"

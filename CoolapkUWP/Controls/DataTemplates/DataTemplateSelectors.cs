@@ -11,6 +11,7 @@ namespace CoolapkUWP.Controls.DataTemplates
     public sealed partial class CardTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Feed { get; set; }
+        public DataTemplate FeedCover { get; set; }
         public DataTemplate User { get; set; }
         public DataTemplate List { get; set; }
         public DataTemplate Images { get; set; }
@@ -49,7 +50,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         protected override DataTemplate SelectTemplateCore(object item)
         {
             if (item is ArticleNewsModel articleNews) { return articleNews.IsMultiPic ? ArticleNewsMulti : ArticleNewsSingle; }
-            else if (item is FeedModel feed) { return feed.IsRatingFeed ? Rating : Feed; }
+            else if (item is FeedModel feed) { return feed.IsFeedCover && FeedCover != null ? FeedCover : feed.IsRatingFeed ? Rating : Feed; }
             else if (item is UserModel) { return User; }
             else if (item is FeedReplyModel) { return FeedReply; }
             else if (item is LiveTopicModel) { return LiveTopic; }

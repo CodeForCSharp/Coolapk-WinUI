@@ -15,6 +15,7 @@
             <templates:CardTemplateSelector
                 x:Key="CardTemplateSelector"
                 Feed="{StaticResource FeedDefaultTemplate}"
+                FeedCover="{StaticResource FeedCoverTemplate}"
                 FeedReply="{StaticResource FeedReplyDefaultTemplate}"
                 Others="{StaticResource Empty}"
                 Rating="{StaticResource IconListFeedItemRatingTemplate}"

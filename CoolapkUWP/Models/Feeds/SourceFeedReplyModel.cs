@@ -24,6 +24,11 @@ namespace CoolapkUWP.Models.Feeds
         public string Message { get; protected set; }
         public string Rusername { get; private set; }
 
+        /// <summary>评论点赞数，用于展示"964赞"徽章。</summary>
+        public int LikeNum { get; private set; }
+
+        public bool ShowLikeBadge => LikeNum > 0;
+
         public UserModel UserInfo { get; private set; }
         public UserAction UserAction { get; private set; }
 
@@ -33,6 +38,7 @@ namespace CoolapkUWP.Models.Feeds
         {
 
             ID = dto.Id;
+            LikeNum = dto.Likenum;
 
             UserInfo = dto.UserInfo != null
                 ? new UserModel(dto.UserInfo)
