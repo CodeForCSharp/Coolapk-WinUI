@@ -36,6 +36,11 @@ namespace CoolapkUWP.Controls.DataTemplates
         public DataTemplate ListCard { get; set; }
         public DataTemplate ColorfulScrollCard { get; set; }
         public DataTemplate IconMiniGridCard { get; set; }
+        public DataTemplate IconMiniScrollCard { get; set; }
+        public DataTemplate ImageScaleCard { get; set; }
+        public DataTemplate SelectorLinkCard { get; set; }
+        public DataTemplate ArticleNewsSingle { get; set; }
+        public DataTemplate ArticleNewsMulti { get; set; }
         public DataTemplate ProductTimelineListCard { get; set; }
         public DataTemplate SortSelectCard { get; set; }
         public DataTemplate CapsuleListCard { get; set; }
@@ -43,7 +48,8 @@ namespace CoolapkUWP.Controls.DataTemplates
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is FeedModel feed) { return feed.IsRatingFeed ? Rating : Feed; }
+            if (item is ArticleNewsModel articleNews) { return articleNews.IsMultiPic ? ArticleNewsMulti : ArticleNewsSingle; }
+            else if (item is FeedModel feed) { return feed.IsRatingFeed ? Rating : Feed; }
             else if (item is UserModel) { return User; }
             else if (item is FeedReplyModel) { return FeedReply; }
             else if (item is LiveTopicModel) { return LiveTopic; }
@@ -55,6 +61,9 @@ namespace CoolapkUWP.Controls.DataTemplates
             else if (item is ListCardModel) { return ListCard; }
             else if (item is ColorfulScrollCardModel) { return ColorfulScrollCard; }
             else if (item is IconMiniGridCardModel) { return IconMiniGridCard; }
+            else if (item is IconMiniScrollCardModel) { return IconMiniScrollCard; }
+            else if (item is ImageScaleCardModel) { return ImageScaleCard; }
+            else if (item is SelectorLinkCardModel) { return SelectorLinkCard; }
             else if (item is ProductTimelineListCardModel) { return ProductTimelineListCard; }
             else if (item is SortSelectCardModel) { return SortSelectCard; }
             else if (item is CapsuleListCardModel) { return CapsuleListCard; }
@@ -295,6 +304,12 @@ namespace CoolapkUWP.Controls.DataTemplates
     {
         public static Entity GetEntity(JsonObject json, bool isHotFeedPage = false)
         {
+            if (json.TryGetPropertyValue("entityTemplate", out JsonNode templatePreCheck)
+                && templatePreCheck?.ToString() == "articleNews")
+            {
+                return ArticleNewsModel.FromJson(json);
+            }
+
             switch ((string)json["entityType"])
             {
                 case "feed":
@@ -325,6 +340,8 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "apkScrollCard":
                             case "gridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.Others);
                             case "iconLongTitleGridCard": return IconLongTitleGridCardModel.FromJson(json);
+                            case "iconMiniScrollCard": return IconMiniScrollCardModel.FromJson(json);
+                            case "imageScaleCard": return ImageScaleCardModel.FromJson(json);
                             case "iconGridCard": return IconGridCardModel.FromJson(json);
                             case "iconListCard": return IconListCardModel.FromJson(json);
                             case "iconMiniLinkGridCard":
@@ -353,7 +370,7 @@ namespace CoolapkUWP.Controls.DataTemplates
                             case "unLoginCard": return IndexPageOperationCardModel.FromJson(json, OperationType.Login);
                             case "titleCard": return IndexPageOperationCardModel.FromJson(json, OperationType.ShowTitle);
                             case "iconTabLinkGridCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.TabLink);
-                            case "selectorLinkCard": return IndexPageHasEntitiesModel.FromJson(json, EntityType.SelectorLink);
+                            case "selectorLinkCard": return SelectorLinkCardModel.FromJson(json);
                             default: return null;
                         }
                     }

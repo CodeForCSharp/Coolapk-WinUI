@@ -115,6 +115,18 @@ namespace CoolapkUWP.Controls.DataTemplates
             }
         }
 
+        private void SelectorLinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.Tag is SelectorLinkModel link)
+            {
+                if (link.Parent is SelectorLinkCardModel card)
+                {
+                    card.SelectedIndex = link.Index;
+                }
+                CardNavigationService.HandleCardTap(element, link);
+            }
+        }
+
         private async void ColorfulItem_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is not Border { Tag: string uri } border || string.IsNullOrEmpty(uri)) { return; }
