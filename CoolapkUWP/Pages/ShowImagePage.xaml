@@ -12,6 +12,16 @@
     mc:Ignorable="d">
     <Page.Resources>
         <converters:ZoomToolTipValueConverter x:Key="ZoomToolTipValueConverter" />
+        <Style x:Key="FloatingCircleButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+        </Style>
         <MenuFlyout x:Key="FlipViewContextFlyout">
             <MenuFlyoutItem
                 x:Uid="/ShowImagePage/RefreshMenuItem"
@@ -92,7 +102,7 @@
             </Grid.ChildrenTransitions>
             <Grid
                 x:Name="CustomTitleBar"
-                Height="32"
+                Height="44"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Background="{ThemeResource SystemControlTransparentBrush}"
@@ -104,18 +114,20 @@
                 </Grid.ColumnDefinitions>
                 <Border
                     Grid.Column="1"
-                    Margin="12,0"
-                    Padding="4,2"
+                    Height="32"
+                    Margin="52,8,0,0"
+                    Padding="10,0"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Top"
                     Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="{ThemeResource ControlCornerRadius}"
                     Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock
                         x:Name="AppTitle"
                         MaxLines="1"
+                        VerticalAlignment="Center"
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="{x:Bind Provider.Title, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
@@ -244,72 +256,82 @@
                 </Border>
             </Grid>
         </Grid>
-        <CommandBar
-            x:Name="CommandBar"
-            VerticalAlignment="Bottom"
-            DefaultLabelPosition="Right"
+        <Button
+            x:Name="BackButton"
+            Width="32"
+            Height="32"
+            Margin="12,8,0,0"
+            Padding="0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
             Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            Canvas.ZIndex="2"
+            Click="AppBarButton_Click"
+            CornerRadius="{ThemeResource ControlCornerRadius}"
+            Tag="Back"
+            ToolTipService.ToolTip="返回"
             Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-            <CommandBar.PrimaryCommands>
-                <AppBarButton
-                    x:Uid="/ShowImagePage/BackButton"
+            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="12" Glyph="&#xE72B;" />
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Left" Modifiers="Menu" />
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Border
+            Margin="0,0,0,24"
+            Padding="6"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            Canvas.ZIndex="2"
+            CornerRadius="21"
+            Visibility="{x:Bind Provider.IsShowHub, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button
                     Click="AppBarButton_Click"
-                    Tag="Back">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72B;" />
-                    </AppBarButton.Icon>
-                    <AppBarButton.KeyboardAccelerators>
-                        <KeyboardAccelerator Key="Left" Modifiers="Menu" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-                <AppBarButton
-                    x:Uid="/ShowImagePage/RefreshButton"
-                    Click="AppBarButton_Click"
-                    Tag="Refresh">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
-                    </AppBarButton.Icon>
-                    <AppBarButton.KeyboardAccelerators>
+                    Style="{StaticResource FloatingCircleButtonStyle}"
+                    Tag="Refresh"
+                    ToolTipService.ToolTip="刷新">
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xE72C;" />
+                    <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="F5" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-                <AppBarButton
-                    x:Uid="/ShowImagePage/ShareButton"
+                    </Button.KeyboardAccelerators>
+                </Button>
+                <Button
                     Click="AppBarButton_Click"
-                    Tag="Share">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
-                    </AppBarButton.Icon>
-                    <AppBarButton.KeyboardAccelerators>
+                    Style="{StaticResource FloatingCircleButtonStyle}"
+                    Tag="Share"
+                    ToolTipService.ToolTip="分享">
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xE72D;" />
+                    <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="S" Modifiers="Control,Shift" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-                <AppBarButton
-                    x:Uid="/ShowImagePage/SaveButton"
+                    </Button.KeyboardAccelerators>
+                </Button>
+                <Button
                     Click="AppBarButton_Click"
-                    Tag="Save">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
-                    </AppBarButton.Icon>
-                    <AppBarButton.KeyboardAccelerators>
+                    Style="{StaticResource FloatingCircleButtonStyle}"
+                    Tag="Save"
+                    ToolTipService.ToolTip="保存">
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xE74E;" />
+                    <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="S" Modifiers="Control" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-            </CommandBar.PrimaryCommands>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton
-                    x:Uid="/ShowImagePage/OriginButton"
+                    </Button.KeyboardAccelerators>
+                </Button>
+                <Button
                     Click="AppBarButton_Click"
+                    Style="{StaticResource FloatingCircleButtonStyle}"
                     Tag="Origin"
-                Visibility="{x:Bind Provider.ShowOrigin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <AppBarButton.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEB9F;" />
-                    </AppBarButton.Icon>
-                    <AppBarButton.KeyboardAccelerators>
+                    ToolTipService.ToolTip="查看原图"
+                    Visibility="{x:Bind Provider.ShowOrigin, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xEB9F;" />
+                    <Button.KeyboardAccelerators>
                         <KeyboardAccelerator Key="O" Modifiers="Control" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
+                    </Button.KeyboardAccelerators>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>
