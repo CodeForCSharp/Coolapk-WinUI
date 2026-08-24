@@ -114,15 +114,15 @@ namespace CoolapkUWP.Common
 
             if (_inflightDecodes.TryGetValue(key, out Task<BitmapImage> pending)) { return await pending; }
 
-            Task<BitmapImage> task = LoadAndCacheAsync(uri, fileName, decodePixelWidth, key);
-            _inflightDecodes[key] = task;
+            Task<BitmapImage> task = _inflightDecodes.GetOrAdd(key, _ => LoadAndCacheAsync(uri, fileName, decodePixelWidth, key));
             try
             {
                 return await task;
             }
             finally
             {
-                _inflightDecodes.TryRemove(key, out _);
+                // 用 TryRemove(KeyValuePair) 而非按 key 移除，避免误删并发加入的新任务。
+                _inflightDecodes.TryRemove(new KeyValuePair<string, Task<BitmapImage>>(key, task));
             }
         }
 
@@ -132,13 +132,75 @@ namespace CoolapkUWP.Common
             BitmapImage bitmap = await DecodeAndCacheAsync(file, fileName, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
 
+            // 解码失败：文件头校验通过说明文件完好（可能为瞬态解码失败），仅重试一次解码；
+            // 只有确认文件损坏才删除缓存并重新下载，避免破坏完好的缓存。
+            if (await TryValidateImageHeaderAsync(file))
+            {
+                return await DecodeAndCacheAsync(file, fileName, decodePixelWidth, key);
+            }
+
             await file.DeleteAsync();
             StorageFile fresh = await GetFileFromCacheAsync(uri);
             bitmap = await DecodeAndCacheAsync(fresh, fileName, decodePixelWidth, key);
             if (bitmap != null) { return bitmap; }
-
-            await fresh.DeleteAsync();
+            if (!await TryValidateImageHeaderAsync(fresh))
+            {
+                await fresh.DeleteAsync();
+            }
             return null;
+        }
+
+        private const int ImageHeaderLength = 16;
+
+        /// <summary>
+        /// 校验缓存文件的文件头是否为已知图片格式（PNG/JPEG/GIF/WebP/BMP），
+        /// 用于区分"下载不完整的损坏文件"与"完好的但解码失败的文件"。
+        /// </summary>
+        private static async Task<bool> TryValidateImageHeaderAsync(StorageFile file)
+        {
+            try
+            {
+                using (IRandomAccessStream stream = await file.OpenReadAsync())
+                using (DataReader reader = new DataReader(stream.GetInputStreamAt(0)))
+                {
+                    uint loaded = await reader.LoadAsync(ImageHeaderLength);
+                    if (loaded < 4) { return false; }
+                    byte[] bytes = new byte[loaded];
+                    reader.ReadBytes(bytes);
+                    return HasImageSignature(bytes);
+                }
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogWarning(ex, ex.ExceptionToMessage());
+                return false;
+            }
+        }
+
+        private static bool HasImageSignature(byte[] b)
+        {
+            if (b.Length >= 8 && b[0] == 0x89 && b[1] == 0x50 && b[2] == 0x4E && b[3] == 0x47 && b[4] == 0x0D)
+            {
+                return true; // PNG
+            }
+            if (b.Length >= 3 && b[0] == 0xFF && b[1] == 0xD8 && b[2] == 0xFF)
+            {
+                return true; // JPEG
+            }
+            if (b.Length >= 4 && b[0] == 'G' && b[1] == 'I' && b[2] == 'F' && b[3] == '8')
+            {
+                return true; // GIF
+            }
+            if (b.Length >= 12 && b[0] == 'R' && b[1] == 'I' && b[2] == 'F' && b[3] == 'F'
+                && b[8] == 'W' && b[9] == 'E' && b[10] == 'B' && b[11] == 'P')
+            {
+                return true; // WebP
+            }
+            if (b.Length >= 2 && b[0] == 'B' && b[1] == 'M')
+            {
+                return true; // BMP
+            }
+            return false;
         }
 
         private async Task<BitmapImage> DecodeAndCacheAsync(StorageFile file, string fileName, int decodePixelWidth, string key)
@@ -387,16 +449,31 @@ namespace CoolapkUWP.Common
 
             response.EnsureSuccessStatusCode();
 
-            StorageFile file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            using (var networkStream = await response.Content.ReadAsStreamAsync())
-            using (var fileStream = await file.OpenStreamForWriteAsync())
+            // 先写入临时文件，成功后再替换正式缓存文件，避免下载中断留下截断的坏文件。
+            StorageFile tempFile = await folder.CreateFileAsync(GetTempFileName(fileName), CreationCollisionOption.ReplaceExisting);
+            try
             {
-                await networkStream.CopyToAsync(fileStream);
-            }
+                using (var networkStream = await response.Content.ReadAsStreamAsync())
+                using (var fileStream = await tempFile.OpenStreamForWriteAsync())
+                {
+                    await networkStream.CopyToAsync(fileStream);
+                    await fileStream.FlushAsync();
+                }
 
-            await WriteMetaAsync(folder, fileName, response.Headers.ETag?.ToString(), response.Content.Headers.LastModified);
-            return file;
+                await tempFile.RenameAsync(fileName, NameCollisionOption.ReplaceExisting);
+                await WriteMetaAsync(folder, fileName, response.Headers.ETag?.ToString(), response.Content.Headers.LastModified);
+                return tempFile;
+            }
+            catch
+            {
+                try { await tempFile.DeleteAsync(); } catch { /* 清理临时文件失败可忽略 */ }
+                throw;
+            }
         }
+
+        private const string TempFileSuffix = ".download";
+
+        private static string GetTempFileName(string fileName) => fileName + TempFileSuffix;
 
         private static string GetMetaFileName(string fileName) => fileName + ".meta";
 
@@ -515,7 +592,7 @@ namespace CoolapkUWP.Common
             foreach (var uri in uris)
             {
                 string fileName = GetCacheFileName(uri);
-                foreach (string name in new[] { fileName, GetMetaFileName(fileName) })
+                foreach (string name in new[] { fileName, GetMetaFileName(fileName), GetTempFileName(fileName) })
                 {
                     var file = await folder.TryGetItemAsync(name) as StorageFile;
                     if (file != null)

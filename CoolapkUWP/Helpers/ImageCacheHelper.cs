@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Extensions.Logging;
 using ImageCache = CoolapkUWP.Common.ImageCache;
 
 namespace CoolapkUWP.Helpers
@@ -108,8 +109,11 @@ namespace CoolapkUWP.Helpers
                 {
                     bitmap = await ImageCache.Instance.GetBitmapAsync(uri, decodePixelWidth);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    // 网络/IO 等瞬态错误向上抛出，由调用方重试；解码失败时 GetBitmapAsync 返回 null，不算异常。
+                    SettingsHelper.LogManager.CreateLogger(nameof(ImageCache)).LogWarning(ex, ex.ExceptionToMessage());
+                    throw;
                 }
 
                 return bitmap ?? NoPic;

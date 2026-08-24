@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Extensions.Logging;
 
 namespace CoolapkUWP.Models.Images
 {
@@ -25,43 +26,26 @@ namespace CoolapkUWP.Models.Images
 
         public DispatcherQueue Dispatcher { get; }
 
-        protected WeakReference<BitmapImage> pic;
-        public BitmapImage CurrentPic
-        {
-            get
-            {
-                if (pic != null && pic.TryGetTarget(out BitmapImage image))
-                {
-                    return image;
-                }
-                return null;
-            }
-        }
+        // 强引用持有已解码图片，避免 UI 断开（如页面导航）后被 GC 回收导致返回时白屏。
+        // 内存总量由 ImageCache 的强缓存上限统一约束。
+        protected BitmapImage pic;
+        public BitmapImage CurrentPic => pic;
 
         public BitmapImage Pic
         {
             get
             {
-                if (pic != null && pic.TryGetTarget(out BitmapImage image))
-                {
-                    return image;
-                }
-                else
+                BitmapImage image = pic;
+                if (image == null)
                 {
                     _ = GetImage();
                     return ImageCacheHelper.NoPic;
                 }
+                return image;
             }
             protected set
             {
-                if (pic == null)
-                {
-                    pic = new WeakReference<BitmapImage>(value);
-                }
-                else
-                {
-                    pic.SetTarget(value);
-                }
+                pic = value;
                 OnPropertyChanged();
             }
         }
@@ -109,7 +93,7 @@ namespace CoolapkUWP.Models.Images
                 if (uri != value)
                 {
                     uri = value;
-                    if (pic != null && pic.TryGetTarget(out BitmapImage _))
+                    if (pic != null)
                     {
                         _ = GetImage();
                     }
@@ -126,7 +110,7 @@ namespace CoolapkUWP.Models.Images
                 if (type != value)
                 {
                     type = value;
-                    if (pic != null && pic.TryGetTarget(out BitmapImage _))
+                    if (pic != null)
                     {
                         _ = GetImage();
                     }
@@ -154,7 +138,7 @@ namespace CoolapkUWP.Models.Images
                     case UISettingChangedType.DarkMode:
                         if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode))
                         {
-                            if (pic != null && pic.TryGetTarget(out BitmapImage _))
+                            if (pic != null)
                             {
                                 _ = Dispatcher.EnqueueAsync(() => Pic = ImageCacheHelper.NoPic);
                             }
@@ -162,7 +146,7 @@ namespace CoolapkUWP.Models.Images
                         break;
 
                     case UISettingChangedType.NoPicChanged:
-                        if (pic != null && pic.TryGetTarget(out BitmapImage _))
+                        if (pic != null)
                         {
                             _ = GetImage();
                         }
@@ -182,9 +166,33 @@ namespace CoolapkUWP.Models.Images
 
         private long loadGeneration;
 
+        private const int MaxLoadRetries = 2;
+        private static readonly TimeSpan RetryInterval = TimeSpan.FromSeconds(1);
+
         private Task GetImage() => LoadCoreAsync(0);
 
         public async Task LoadAsync(int decodePixelWidth = 0) => await LoadCoreAsync(decodePixelWidth);
+
+        /// <summary>
+        /// 加载图片，瞬态失败时自动重试；重试耗尽后抛出异常交由上层记录并降级。
+        /// </summary>
+        private async Task<BitmapImage> LoadWithRetryAsync(int decodePixelWidth, long generation)
+        {
+            for (int attempt = 0; ; attempt++)
+            {
+                try
+                {
+                    return await ImageCacheHelper.GetImageAsync(Type, Uri, false, decodePixelWidth);
+                }
+                catch (Exception) when (attempt < MaxLoadRetries && generation == loadGeneration)
+                {
+                    // 瞬态失败，稍后重试；重试耗尽或已过期时异常直接向上传播
+                }
+
+                await Task.Delay(RetryInterval);
+                if (generation != loadGeneration) { return null; }
+            }
+        }
 
         private async Task LoadCoreAsync(int decodePixelWidth)
         {
@@ -201,11 +209,18 @@ namespace CoolapkUWP.Models.Images
                 {
                     if (generation != loadGeneration) { return; }
 
-                    if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode)) { Pic = ImageCacheHelper.NoPic; }
-                    BitmapImage bitmapImage = await ImageCacheHelper.GetImageAsync(Type, Uri, false, decodePixelWidth);
+                    if (SettingsHelper.Get<bool>(SettingsHelper.IsNoPicsMode))
+                    {
+                        Pic = ImageCacheHelper.NoPic;
+                        IsLongPic = false;
+                        IsWidePic = false;
+                        return;
+                    }
+
+                    BitmapImage bitmapImage = await LoadWithRetryAsync(decodePixelWidth, generation);
                     if (generation != loadGeneration) { return; }
 
-                    if (bitmapImage != null)
+                    if (bitmapImage != null && !ReferenceEquals(bitmapImage, ImageCacheHelper.NoPic))
                     {
                         Pic = bitmapImage;
                         double PixelWidth = bitmapImage.PixelWidth;
@@ -218,9 +233,8 @@ namespace CoolapkUWP.Models.Images
                     }
                     else
                     {
-                        Pic = ImageCacheHelper.NoPic;
-                        IsLongPic = false;
-                        IsWidePic = false;
+                        // 加载失败（解码失败或返回占位图）：已有可用图片时不覆盖，避免把好图顶成占位图。
+                        ShowNoPic();
                     }
                 }
                 finally
@@ -228,9 +242,13 @@ namespace CoolapkUWP.Models.Images
                     semaphoreSlim.Release();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (generation == loadGeneration) { Pic = ImageCacheHelper.NoPic; }
+                if (generation == loadGeneration)
+                {
+                    SettingsHelper.LogManager.CreateLogger(nameof(ImageModel)).LogWarning(ex, $"图片加载失败: {Uri}");
+                    ShowNoPic();
+                }
             }
             finally
             {
@@ -239,6 +257,16 @@ namespace CoolapkUWP.Models.Images
                     LoadCompleted?.Invoke(this, null);
                     IsLoading = false;
                 }
+            }
+        }
+
+        private void ShowNoPic()
+        {
+            if (CurrentPic == null)
+            {
+                Pic = ImageCacheHelper.NoPic;
+                IsLongPic = false;
+                IsWidePic = false;
             }
         }
 

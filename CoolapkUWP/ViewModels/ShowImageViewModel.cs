@@ -49,12 +49,20 @@ namespace CoolapkUWP.ViewModels
         [ObservableProperty]
         public partial bool ShowOrigin { get; set; }
 
+        // 浏览页会把共享模型的 Small 标志清掉以加载原图；这里记录原值，退出时恢复，
+        // 避免列表/详情页的缩略图在浏览过后被永久切成原图模式。
+        private readonly Dictionary<ImageModel, ImageType> originalTypes = new Dictionary<ImageModel, ImageType>();
+
         public ShowImageViewModel(ImageModel image)
         {
             Images = image.ContextArray.Any() ? image.ContextArray : new List<ImageModel> { image };
             foreach (ImageModel Image in Images)
             {
-                Image.Type &= (ImageType)0xFE;
+                if (Image.Type.HasFlag(ImageType.Small))
+                {
+                    originalTypes[Image] = Image.Type;
+                    Image.Type &= (ImageType)0xFE;
+                }
             }
             Index = image.ContextArray.Any() ? Images.IndexOf(image) : 0;
         }
@@ -65,6 +73,11 @@ namespace CoolapkUWP.ViewModels
             {
                 image.LoadStarted -= OnLoadStarted;
                 image.LoadCompleted -= OnLoadCompleted;
+                if (originalTypes.TryGetValue(image, out ImageType type))
+                {
+                    originalTypes.Remove(image);
+                    image.Type = type; // 触发回退到小图缓存
+                }
             }
         }
 
