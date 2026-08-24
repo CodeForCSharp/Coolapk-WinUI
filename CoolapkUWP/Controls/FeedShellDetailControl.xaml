@@ -277,11 +277,12 @@
                     Click="Button_Click"
                     Style="{StaticResource TransparentButtonStyle}"
                     Tag="{x:Bind FeedDetail.UserInfo.Url, Mode=OneWay}">
-                    <muxc:PersonPicture
-                        Width="36"
-                        Height="36"
-                        DisplayName="{x:Bind FeedDetail.UserInfo.UserName, Mode=OneWay}"
-                        ProfilePicture="{x:Bind FeedDetail.UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                    <Border Width="36" Height="36" CornerRadius="18">
+                        <local:ImageEx
+                            Model="{x:Bind FeedDetail.UserInfo.UserAvatar, Mode=OneWay}"
+                            CornerRadius="18"
+                            Stretch="Fill" />
+                    </Border>
                 </Button>
                 <Grid
                     Grid.Column="1"
