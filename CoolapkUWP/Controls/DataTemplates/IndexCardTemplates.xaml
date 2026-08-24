@@ -1836,13 +1836,17 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <muxc:PersonPicture
+                    <Border
                         Grid.Column="0"
                         Width="36"
                         Height="36"
                         VerticalAlignment="Center"
-                        DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
-                        ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                        CornerRadius="18">
+                        <control:ImageEx
+                            Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
+                            CornerRadius="18"
+                            Stretch="Fill" />
+                    </Border>
                     <StackPanel
                         Grid.Column="1"
                         Margin="8,0,0,0"

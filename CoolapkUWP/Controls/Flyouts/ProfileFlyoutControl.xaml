@@ -43,13 +43,17 @@
                     <ColumnDefinition Width="12" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <muxc:PersonPicture
+                <Border
                     Width="49"
                     Height="49"
-                    DisplayName="{x:Bind Provider.ProfileDetail.UserName, Mode=OneWay}"
+                    CornerRadius="24.5"
                     DoubleTapped="Grid_DoubleTapped"
-                    IsDoubleTapEnabled="True"
-                    ProfilePicture="{x:Bind Provider.ProfileDetail.UserAvatar.Pic, Mode=OneWay}" />
+                    IsDoubleTapEnabled="True">
+                    <controls:ImageEx
+                        Model="{x:Bind Provider.ProfileDetail.UserAvatar, Mode=OneWay}"
+                        CornerRadius="24.5"
+                        Stretch="Fill" />
+                </Border>
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

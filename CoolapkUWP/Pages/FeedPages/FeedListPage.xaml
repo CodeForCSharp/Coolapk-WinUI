@@ -124,13 +124,17 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <muxc:PersonPicture
+                                    <Border
                                         Width="56"
                                         Height="56"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
-                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
-                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                                        CornerRadius="28">
+                                        <control:ImageEx
+                                            Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                            CornerRadius="28"
+                                            Stretch="Fill" />
+                                    </Border>
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="8,0"
@@ -353,14 +357,18 @@
                                         </muxc:ItemsRepeater.Layout>
                                         <muxc:ItemsRepeater.ItemTemplate>
                                             <DataTemplate x:DataType="users:UserModel">
-                                                <muxc:PersonPicture
+                                                <Border
                                                     Width="16"
                                                     Height="16"
-                                                    DisplayName="{x:Bind UserName, Mode=OneWay}"
-                                                    ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                                                    CornerRadius="8"
                                                     Tag="{x:Bind Url, Mode=OneWay}"
                                                     Tapped="On_Tapped"
-                                                    ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}" />
+                                                    ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}">
+                                                    <control:ImageEx
+                                                        Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                                        CornerRadius="8"
+                                                        Stretch="Fill" />
+                                                </Border>
                                             </DataTemplate>
                                         </muxc:ItemsRepeater.ItemTemplate>
                                     </muxc:ItemsRepeater>
@@ -463,11 +471,12 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <muxc:PersonPicture
-                                        Width="16"
-                                        Height="16"
-                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
-                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                                    <Border Width="16" Height="16" CornerRadius="8">
+                                        <control:ImageEx
+                                            Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                            CornerRadius="8"
+                                            Stretch="Fill" />
+                                    </Border>
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="4,0"
@@ -637,14 +646,18 @@
                                             </muxc:ItemsRepeater.Layout>
                                             <muxc:ItemsRepeater.ItemTemplate>
                                                 <DataTemplate x:DataType="users:UserModel">
-                                                    <muxc:PersonPicture
+                                                    <Border
                                                         Width="16"
                                                         Height="16"
-                                                        DisplayName="{x:Bind UserName, Mode=OneWay}"
-                                                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                                                        CornerRadius="8"
                                                         Tag="{x:Bind Url, Mode=OneWay}"
                                                         Tapped="On_Tapped"
-                                                        ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}" />
+                                                        ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}">
+                                                        <control:ImageEx
+                                                            Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                                            CornerRadius="8"
+                                                            Stretch="Fill" />
+                                                    </Border>
                                                 </DataTemplate>
                                             </muxc:ItemsRepeater.ItemTemplate>
                                         </muxc:ItemsRepeater>

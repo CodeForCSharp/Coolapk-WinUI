@@ -133,11 +133,12 @@
                         Click="Button_Click"
                         Style="{StaticResource TransparentButtonStyle}"
                         Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
-                        <muxc:PersonPicture
-                            Width="36"
-                            Height="36"
-                            DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
-                            ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                        <Border Width="36" Height="36" CornerRadius="18">
+                            <controls:ImageEx
+                                Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
+                                CornerRadius="18"
+                                Stretch="Fill" />
+                        </Border>
                     </Button>
                     <StackPanel
                         Grid.Column="1"
@@ -744,11 +745,12 @@
                         Click="Button_Click"
                         Style="{StaticResource TransparentButtonStyle}"
                         Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
-                        <muxc:PersonPicture
-                            Width="36"
-                            Height="36"
-                            DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
-                            ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                        <Border Width="36" Height="36" CornerRadius="18">
+                            <controls:ImageEx
+                                Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
+                                CornerRadius="18"
+                                Stretch="Fill" />
+                        </Border>
                     </Button>
                     <StackPanel
                         Grid.Column="1"
@@ -1072,11 +1074,12 @@
                         Click="Button_Click"
                         Style="{StaticResource TransparentButtonStyle}"
                         Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
-                        <muxc:PersonPicture
-                            Width="36"
-                            Height="36"
-                            DisplayName="{x:Bind UserInfo.UserName, Mode=OneWay}"
-                            ProfilePicture="{x:Bind UserInfo.UserAvatar.Pic, Mode=OneWay}" />
+                        <Border Width="36" Height="36" CornerRadius="18">
+                            <controls:ImageEx
+                                Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
+                                CornerRadius="18"
+                                Stretch="Fill" />
+                        </Border>
                     </Button>
                     <StackPanel Margin="8,0" VerticalAlignment="Center">
                         <StackPanel

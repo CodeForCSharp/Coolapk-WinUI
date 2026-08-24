@@ -169,11 +169,12 @@
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="*" />
                                                         </Grid.ColumnDefinitions>
-                                                        <muxc:PersonPicture
-                                                            Width="24"
-                                                            Height="24"
-                                                            DisplayName="{x:Bind UserName, Mode=OneWay}"
-                                                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                                                        <Border Width="24" Height="24" CornerRadius="12">
+                                                            <local:ImageEx
+                                                                Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                                                CornerRadius="12"
+                                                                Stretch="Fill" />
+                                                        </Border>
                                                         <TextBlock
                                                             Grid.Column="1"
                                                             Margin="10,0,0,2"

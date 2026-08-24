@@ -28,16 +28,20 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <muxc:PersonPicture
+            <Border
                 Grid.RowSpan="2"
                 Width="40"
                 Height="40"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                DisplayName="{x:Bind UserName, Mode=OneWay}"
-                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                CornerRadius="20"
                 Tag="{x:Bind UserUrl, Mode=OneWay}"
-                Tapped="OnTapped" />
+                Tapped="OnTapped">
+                <control:ImageEx
+                    Model="{x:Bind UserAvatar, Mode=OneWay}"
+                    CornerRadius="20"
+                    Stretch="Fill" />
+            </Border>
             <TextBlock Grid.Row="0" Grid.Column="1">
                 <Run Text="{x:Bind UserName, Mode=OneWay}" />
                 <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />
@@ -73,11 +77,12 @@
                     Style="{StaticResource TransparentButtonStyle}"
                     Tag="{x:Bind UserUrl, Mode=OneWay}">
                     <StackPanel Orientation="Horizontal">
-                        <muxc:PersonPicture
-                            Width="20"
-                            Height="20"
-                            DisplayName="{x:Bind UserName, Mode=OneWay}"
-                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                        <Border Width="20" Height="20" CornerRadius="10">
+                            <control:ImageEx
+                                Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                CornerRadius="10"
+                                Stretch="Fill" />
+                        </Border>
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
@@ -116,11 +121,12 @@
                     Style="{StaticResource TransparentButtonStyle}"
                     Tag="{x:Bind UserUrl, Mode=OneWay}">
                     <StackPanel Orientation="Horizontal">
-                        <muxc:PersonPicture
-                            Width="20"
-                            Height="20"
-                            DisplayName="{x:Bind UserName, Mode=OneWay}"
-                            ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                        <Border Width="20" Height="20" CornerRadius="10">
+                            <control:ImageEx
+                                Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                CornerRadius="10"
+                                Stretch="Fill" />
+                        </Border>
                         <TextBlock
                             Margin="4,0,0,0"
                             VerticalAlignment="Center"
@@ -165,16 +171,20 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <muxc:PersonPicture
+            <Border
                 Grid.RowSpan="2"
                 Width="40"
                 Height="40"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                DisplayName="{x:Bind UserName, Mode=OneWay}"
-                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}"
+                CornerRadius="20"
                 Tag="{x:Bind UserUrl, Mode=OneWay}"
-                Tapped="OnTapped" />
+                Tapped="OnTapped">
+                <control:ImageEx
+                    Model="{x:Bind UserAvatar, Mode=OneWay}"
+                    CornerRadius="20"
+                    Stretch="Fill" />
+            </Border>
             <TextBlock Grid.Row="0" Grid.Column="1">
                 <Run Text="{x:Bind UserName, Mode=OneWay}" />
                 <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />

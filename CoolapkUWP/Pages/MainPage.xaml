@@ -172,11 +172,12 @@
                             <controls:ProfileFlyoutControl FlyoutBase="{x:Bind ProfileFlyout, Mode=OneWay}" XamlHost="{x:Bind ProfileButton, Mode=OneWay}" />
                         </Flyout>
                     </Button.Flyout>
-                    <muxc:PersonPicture
-                        Width="28"
-                        Height="28"
-                        DisplayName="{x:Bind UserName, Mode=OneWay}"
-                        ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                    <Border Width="28" Height="28" CornerRadius="14">
+                        <controls:ImageEx
+                            Model="{x:Bind UserAvatar, Mode=OneWay}"
+                            CornerRadius="14"
+                            Stretch="Fill" />
+                    </Border>
                 </Button>
             </Grid>
         </Grid>

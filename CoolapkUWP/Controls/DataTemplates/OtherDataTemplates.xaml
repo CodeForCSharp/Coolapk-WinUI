@@ -27,15 +27,19 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <muxc:PersonPicture
+            <Border
                 Grid.RowSpan="2"
                 Width="36"
                 Height="36"
                 Margin="0,0,8,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                DisplayName="{x:Bind UserName, Mode=OneWay}"
-                ProfilePicture="{x:Bind UserAvatar.Pic, Mode=OneWay}" />
+                CornerRadius="18">
+                <ctrl:ImageEx
+                    Model="{x:Bind UserAvatar, Mode=OneWay}"
+                    CornerRadius="18"
+                    Stretch="Fill" />
+            </Border>
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
