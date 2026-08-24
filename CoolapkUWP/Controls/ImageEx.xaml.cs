@@ -15,6 +15,7 @@ namespace CoolapkUWP.Controls
 
         private int currentDecodeWidth;
         private Storyboard _fadeInStoryboard;
+        private bool _fadeInRunning;
 
         public ImageEx()
         {
@@ -107,6 +108,7 @@ namespace CoolapkUWP.Controls
         {
             if (XamlRoot == null)
             {
+                StopFadeIn();
                 ImageElement.Opacity = 1;
                 return;
             }
@@ -121,11 +123,33 @@ namespace CoolapkUWP.Controls
                 };
                 Storyboard.SetTarget(animation, ImageElement);
                 Storyboard.SetTargetProperty(animation, "Opacity");
+                animation.Completed += (s, e) =>
+                {
+                    _fadeInRunning = false;
+                    // 动画结束后把本地值落定为 1，避免 Stop 后回退到 Begin 前的 0。
+                    ImageElement.Opacity = 1;
+                };
                 _fadeInStoryboard = new Storyboard();
                 _fadeInStoryboard.Children.Add(animation);
             }
+            // 先停掉可能仍在持有的旧动画，避免其覆盖后续设置的本地透明度。
+            StopFadeIn();
             ImageElement.Opacity = 0;
+            _fadeInRunning = true;
             _fadeInStoryboard.Begin();
+        }
+
+        private void StopFadeIn()
+        {
+            if (_fadeInRunning)
+            {
+                _fadeInRunning = false;
+                _fadeInStoryboard.Stop();
+            }
+
+            // Stop 会释放动画对属性的持有，把本地值归位到与当前内容一致的状态，
+            // 防止元素在断开/重连间丢失 Loaded 事件后停留在透明状态。
+            ImageElement.Opacity = Model?.CurrentPic != null ? 1 : 0;
         }
 
         private void ImageEx_Loaded(object sender, RoutedEventArgs e)
@@ -134,6 +158,8 @@ namespace CoolapkUWP.Controls
 
             Model.PropertyChanged -= Model_PropertyChanged;
             Model.PropertyChanged += Model_PropertyChanged;
+            // 释放断开期间可能冻结的动画，保证 UpdateSource 设置的透明度生效。
+            StopFadeIn();
             UpdateSource();
             currentDecodeWidth = 0;
             Reload();
@@ -146,10 +172,10 @@ namespace CoolapkUWP.Controls
                 Model.PropertyChanged -= Model_PropertyChanged;
             }
 
+            // 停掉动画但不清空 Source/占位符：控件可能因父容器 reparent 被断开，
+            // 且重连时 Loaded 事件可能丢失；保留当前视觉状态可保证重连后内容仍然正确。
+            StopFadeIn();
             currentDecodeWidth = 0;
-            ImageElement.Source = null;
-            ImageElement.Opacity = 0;
-            Placeholder.Visibility = Visibility.Visible;
         }
     }
 }
