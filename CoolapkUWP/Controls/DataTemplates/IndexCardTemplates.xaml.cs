@@ -56,6 +56,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (e != null && !UIHelper.IsOriginSource(sender, e.OriginalSource)) { return; }
+            if (e != null) { e.Handled = true; }
             FrameworkElement element = sender as FrameworkElement;
             CardNavigationService.HandleCardTap(element, element.Tag);
         }

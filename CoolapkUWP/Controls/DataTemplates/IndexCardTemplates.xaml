@@ -167,6 +167,7 @@
 
     <DataTemplate x:Key="ImageCardTemplate" x:DataType="models:IndexPageHasEntitiesModel">
         <Grid
+            Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="Grid_KeyDown"
             Tag="{x:Bind}"
             Tapped="Grid_Tapped">
@@ -255,6 +256,7 @@
             </Border>
             <Border
                 Grid.Row="2"
+                Background="{ThemeResource SystemControlTransparentBrush}"
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Tag="{x:Bind}"
                 Tapped="Grid_Tapped"
@@ -2291,6 +2293,7 @@
         <Border
             Width="86"
             Height="86"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
@@ -2332,6 +2335,7 @@
     <DataTemplate x:Key="IconLinkTemplate" x:DataType="models:IndexPageModel">
         <Border
             Width="86"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
@@ -2387,6 +2391,7 @@
 
     <DataTemplate x:Key="LinkTemplate" x:DataType="models:IndexPageModel">
         <Grid
+            Background="{ThemeResource SystemControlTransparentBrush}"
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"
@@ -2417,6 +2422,7 @@
         <Grid
             Width="260"
             Height="118"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             BorderBrush="{ThemeResource SystemControlTransparentRevealBorderBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource OverlayCornerRadius}"

@@ -124,16 +124,22 @@ namespace CoolapkUWP.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            AppTitleBar.SizeChanged -= AppTitleBar_SizeChanged;
             App.MainWindow.SetTitleBar(null);
             SettingsHelper.LoginChanged -= OnLoginChanged;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            App.MainWindow?.SetTitleBar(DragRegion);
+            if (App.MainWindow is not Window window) { return; }
+            window.SetTitleBar(DragRegion);
+
+            AppTitleBar.SizeChanged -= AppTitleBar_SizeChanged;
+            AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
+            UpdateAppTitle(window.AppWindow.TitleBar);
         }
 
-        private void TitleBar_LayoutMetricsChanged(Microsoft.UI.Windowing.AppWindowTitleBar sender, object args) => UpdateAppTitle(sender);
+        private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e) => UpdateAppTitle(App.MainWindow?.AppWindow.TitleBar);
 
         public string GetAppTitleFromSystem => Package.Current.DisplayName;
 
@@ -290,10 +296,15 @@ namespace CoolapkUWP.Pages
             }
         }
 
-        private void UpdateAppTitle(Microsoft.UI.Windowing.AppWindowTitleBar coreTitleBar)
+        private void UpdateAppTitle(Microsoft.UI.Windowing.AppWindowTitleBar titleBar)
         {
-            //ensure the custom title bar does not overlap window caption controls
-            RightPaddingColumn.Width = new GridLength(coreTitleBar.RightInset);
+            if (titleBar is null) { return; }
+
+            // 给系统的最小化/最大化/关闭按钮预留右上角空间。
+            // RightInset 是物理像素，需除以缩放比例换算成 XAML 的逻辑像素。
+            double scale = AppTitleBar.XamlRoot?.RasterizationScale ?? 1;
+            if (scale <= 0) { scale = 1; }
+            RightPaddingColumn.Width = new GridLength(titleBar.RightInset / scale);
         }
 
 

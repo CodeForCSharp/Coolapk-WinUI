@@ -15,6 +15,7 @@
     <DataTemplate x:Key="UserTemplate" x:DataType="users:UserModel">
         <Grid
             Padding="8"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
@@ -74,6 +75,7 @@
     <DataTemplate x:Key="LiveTopicTemplate" x:DataType="models:LiveTopicModel">
         <Grid
             Padding="12,10"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
@@ -115,6 +117,7 @@
     <DataTemplate x:Key="ListDefaultTemplate" x:DataType="models:IHasDescription">
         <Grid
             Padding="0,8"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">
@@ -161,6 +164,7 @@
     <DataTemplate x:Key="SubtitleListDefaultTemplate" x:DataType="models:IHasSubtitle">
         <Grid
             Padding="0,8"
+            Background="{ThemeResource SystemControlTransparentBrush}"
             KeyDown="OnKeyDown"
             Tag="{x:Bind Url, Mode=OneWay}"
             Tapped="OnTapped">

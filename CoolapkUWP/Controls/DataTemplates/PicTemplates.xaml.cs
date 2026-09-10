@@ -14,6 +14,8 @@ namespace CoolapkUWP.Controls.DataTemplates
 
         public void Image_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            // 图片点击只打开图片，阻止继续冒泡到外层卡片（否则会连带打开动态/主题）。
+            if (e != null) { e.Handled = true; }
             FrameworkElement element = sender as FrameworkElement;
             _ = element.ShowImageAsync(element.Tag as ImageModel);
         }
@@ -22,6 +24,7 @@ namespace CoolapkUWP.Controls.DataTemplates
         {
             if (e.Key == Windows.System.VirtualKey.Enter || e.Key == Windows.System.VirtualKey.Space)
             {
+                e.Handled = true;
                 Image_Tapped(sender, null);
             }
         }
