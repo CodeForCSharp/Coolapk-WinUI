@@ -47,6 +47,8 @@ namespace CoolapkUWP.Models.Feeds
 
         public List<SourceFeedReplyModel> ReplyRows { get; private set; } = new List<SourceFeedReplyModel>();
 
+        public bool ShowSeeAllReplies => ReplyRows.Count < ReplyNum;
+
         public FeedReplyModel(FeedReplyDto dto, bool ShowReplyRow = true) : base(dto)
         {
             if (dto.Dateline != null)

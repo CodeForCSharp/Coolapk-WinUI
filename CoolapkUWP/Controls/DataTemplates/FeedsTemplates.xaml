@@ -1234,7 +1234,8 @@
                         HorizontalContentAlignment="Left"
                         Click="Button_Click"
                         Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}">
+                        Tag="{x:Bind}"
+                        Visibility="{x:Bind ShowSeeAllReplies, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <TextBlock
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"

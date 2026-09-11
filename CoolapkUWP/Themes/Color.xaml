@@ -5,12 +5,24 @@
             <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FF34424d" />
             <StaticResource x:Key="CardPrimaryForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
             <SolidColorBrush x:Key="FeedReplyCardBackgroundBrush" Color="#FF2A2A2A" />
+            <SolidColorBrush x:Key="HyperlinkForeground" Color="#FF12B868" />
+            <SolidColorBrush x:Key="HyperlinkForegroundPointerOver" Color="#FF4ADE80" />
+            <SolidColorBrush x:Key="HyperlinkForegroundPressed" Color="#FF0F9D58" />
+            <SolidColorBrush x:Key="HyperlinkButtonForeground" Color="#FF12B868" />
+            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#FF4ADE80" />
+            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#FF0F9D58" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF0063b1</Color>
             <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FFd3e7f7" />
             <StaticResource x:Key="CardPrimaryForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
             <SolidColorBrush x:Key="FeedReplyCardBackgroundBrush" Color="#FFEBEBEB" />
+            <SolidColorBrush x:Key="HyperlinkForeground" Color="#FF0F9D58" />
+            <SolidColorBrush x:Key="HyperlinkForegroundPointerOver" Color="#FF0B7D46" />
+            <SolidColorBrush x:Key="HyperlinkForegroundPressed" Color="#FF086338" />
+            <SolidColorBrush x:Key="HyperlinkButtonForeground" Color="#FF0F9D58" />
+            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#FF0B7D46" />
+            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#FF086338" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>

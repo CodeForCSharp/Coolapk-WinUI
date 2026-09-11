@@ -192,15 +192,7 @@ namespace CoolapkUWP.Controls
                                 string href = element.GetAttribute("href") ?? string.Empty;
                                 string type = element.GetAttribute("type") ?? string.Empty;
                                 string cls = element.GetAttribute("class") ?? string.Empty;
-                                Hyperlink hyperlink = new Hyperlink { UnderlineStyle = UnderlineStyle.None };
-                                // 话题标签 / @提及 / 查看更多 使用酷安绿色，与官方客户端一致
-                                bool isTopicLink = cls.Contains("feed-link-tag") || content.StartsWith("#");
-                                bool isMentionLink = type == "user-detail" || content.StartsWith("@");
-                                bool isReadMoreLink = content == "查看更多" || content == _loader.GetString("ReadMore");
-                                if (isTopicLink || isMentionLink || isReadMoreLink)
-                                {
-                                    hyperlink.Foreground = TopicLinkBrush;
-                                }
+                                Hyperlink hyperlink = new Hyperlink { UnderlineStyle = UnderlineStyle.None, Foreground = TopicLinkBrush };
                                 if (!string.IsNullOrEmpty(href))
                                 {
                                     hyperlink.Click += (sender, e) => _ = this.OpenLinkAsync(href);
@@ -386,7 +378,7 @@ namespace CoolapkUWP.Controls
                                     CornerRadius = new CornerRadius(4),
                                     BorderThickness = new Thickness(1),
                                     VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
-                                    BorderBrush = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"],
+                                    BorderBrush = TopicLinkBrush,
                                 };
                                 TextBlock textBlock = new TextBlock
                                 {
@@ -394,7 +386,7 @@ namespace CoolapkUWP.Controls
                                     Margin = new Thickness(1),
                                     IsTextSelectionEnabled = true,
                                     Text = _loader.GetString("FeedAuthorText"),
-                                    Foreground = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"],
+                                    Foreground = TopicLinkBrush,
                                 };
 
                                 border.Child = textBlock;
