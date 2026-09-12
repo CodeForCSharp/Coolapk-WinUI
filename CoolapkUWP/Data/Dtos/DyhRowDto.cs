@@ -7,6 +7,8 @@ namespace CoolapkUWP.Data.Dtos
     /// </summary>
     public class DyhRowDto
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
         [JsonPropertyName("logo")]
         public string Logo { get; set; }
         [JsonPropertyName("title")]
@@ -21,5 +23,9 @@ namespace CoolapkUWP.Data.Dtos
         public int StarTotalCount { get; set; }
         [JsonPropertyName("targetType")]
         public string TargetType { get; set; }
+        [JsonPropertyName("hot_num_txt")]
+        public string HotNumTxt { get; set; }
+        [JsonPropertyName("feed_comment_num_txt")]
+        public string FeedCommentNumTxt { get; set; }
     }
 }

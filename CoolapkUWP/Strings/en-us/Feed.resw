@@ -159,6 +159,15 @@
   <data name="PinTile.Text" xml:space="preserve">
     <value>Pin to Start</value>
   </data>
+  <data name="DigitalTag" xml:space="preserve">
+    <value>Digital</value>
+  </data>
+  <data name="TopicTag" xml:space="preserve">
+    <value>Topic</value>
+  </data>
+  <data name="PostAlso.Content" xml:space="preserve">
+    <value>Post one too</value>
+  </data>
   <data name="PublishFrom.Text" xml:space="preserve">
     <value>Posted at</value>
   </data>

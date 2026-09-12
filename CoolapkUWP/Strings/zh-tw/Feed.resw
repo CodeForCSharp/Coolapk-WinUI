@@ -159,6 +159,15 @@
   <data name="PinTile.Text" xml:space="preserve">
     <value>固定到開始</value>
   </data>
+  <data name="DigitalTag" xml:space="preserve">
+    <value>數碼</value>
+  </data>
+  <data name="TopicTag" xml:space="preserve">
+    <value>話題</value>
+  </data>
+  <data name="PostAlso.Content" xml:space="preserve">
+    <value>我也發一條</value>
+  </data>
   <data name="PublishFrom.Text" xml:space="preserve">
     <value>發佈於</value>
   </data>

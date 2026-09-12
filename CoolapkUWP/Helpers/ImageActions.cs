@@ -25,26 +25,30 @@ namespace CoolapkUWP.Helpers
         public static void HandleAppBarButtonClick(FrameworkElement element)
         {
             ImageModel image = element.Tag as ImageModel;
-            switch (element.Name)
+            string name = element.Name ?? string.Empty;
+            if (name.EndsWith("CopyButton", StringComparison.Ordinal))
             {
-                case "CopyButton":
-                    _ = CopyPicAsync(image);
-                    break;
-                case "SaveButton":
-                    _ = SavePicAsync(image);
-                    break;
-                case "ShareButton":
-                    _ = SharePicAsync(image);
-                    break;
-                case "RefreshButton":
-                    _ = image.Refresh();
-                    break;
-                case "ShowImageButton":
-                    _ = element.ShowImageAsync(image);
-                    break;
-                case "OriginButton":
-                    image.Type = ImageType.OriginImage;
-                    break;
+                _ = CopyPicAsync(image);
+            }
+            else if (name.EndsWith("SaveButton", StringComparison.Ordinal))
+            {
+                _ = SavePicAsync(image);
+            }
+            else if (name.EndsWith("ShareButton", StringComparison.Ordinal))
+            {
+                _ = SharePicAsync(image);
+            }
+            else if (name.EndsWith("RefreshButton", StringComparison.Ordinal))
+            {
+                _ = image.Refresh();
+            }
+            else if (name.EndsWith("ShowImageButton", StringComparison.Ordinal))
+            {
+                _ = element.ShowImageAsync(image);
+            }
+            else if (name.EndsWith("OriginButton", StringComparison.Ordinal))
+            {
+                image.Type = ImageType.OriginImage;
             }
         }
 

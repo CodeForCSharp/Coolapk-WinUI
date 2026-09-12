@@ -11,6 +11,15 @@
             <SolidColorBrush x:Key="HyperlinkButtonForeground" Color="#FF12B868" />
             <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#FF4ADE80" />
             <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#FF0F9D58" />
+            <SolidColorBrush x:Key="CoolapkAccentBrush" Color="#FF12B868" />
+            <SolidColorBrush x:Key="CoolapkAccentBackgroundBrush" Color="#FF12B868" />
+            <SolidColorBrush x:Key="ProductCardBackgroundBrush" Color="#FF2A2A2A" />
+            <SolidColorBrush x:Key="CoolapkSubtleHoverOverlayBrush" Color="#14FFFFFF" />
+            <SolidColorBrush x:Key="CoolapkSubtlePressedOverlayBrush" Color="#22FFFFFF" />
+            <SolidColorBrush x:Key="CoolapkOutlineHoverOverlayBrush" Color="#3312B868" />
+            <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="#4D12B868" />
+            <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="#28FFFFFF" />
+            <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="#22000000" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF0063b1</Color>
@@ -23,12 +32,30 @@
             <SolidColorBrush x:Key="HyperlinkButtonForeground" Color="#FF0F9D58" />
             <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#FF0B7D46" />
             <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#FF086338" />
+            <SolidColorBrush x:Key="CoolapkAccentBrush" Color="#FF0F9D58" />
+            <SolidColorBrush x:Key="CoolapkAccentBackgroundBrush" Color="#FF12B868" />
+            <SolidColorBrush x:Key="ProductCardBackgroundBrush" Color="#FFF3F4F6" />
+            <SolidColorBrush x:Key="CoolapkSubtleHoverOverlayBrush" Color="#0F000000" />
+            <SolidColorBrush x:Key="CoolapkSubtlePressedOverlayBrush" Color="#18000000" />
+            <SolidColorBrush x:Key="CoolapkOutlineHoverOverlayBrush" Color="#1A12B868" />
+            <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="#3312B868" />
+            <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="#14000000" />
+            <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="#26000000" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
             <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FF34424d" />
             <StaticResource x:Key="CardPrimaryForegroundBrush" ResourceKey="SystemColorButtonTextColorBrush" />
             <SolidColorBrush x:Key="FeedReplyCardBackgroundBrush" Color="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+            <SolidColorBrush x:Key="CoolapkAccentBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="CoolapkAccentBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ProductCardBackgroundBrush" Color="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+            <SolidColorBrush x:Key="CoolapkSubtleHoverOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.2" />
+            <SolidColorBrush x:Key="CoolapkSubtlePressedOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.35" />
+            <SolidColorBrush x:Key="CoolapkOutlineHoverOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.2" />
+            <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.35" />
+            <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.2" />
+            <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.35" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <LinearGradientBrush x:Key="CoolapkLogoForeground" StartPoint="0,0" EndPoint="0,1">

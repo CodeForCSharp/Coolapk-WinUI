@@ -65,6 +65,37 @@ namespace CoolapkUWP.Controls
             }
         }
 
+        private void RelationFollowButton_Click(object sender, RoutedEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            _ = ToggleRelationFollowAsync(element?.Tag as FeedRelationCard ?? element?.DataContext as FeedRelationCard);
+        }
+
+        private void RelationPostButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateFeedControl.ShowCreateFeed(this);
+        }
+
+        private async Task ToggleRelationFollowAsync(FeedRelationCard card)
+        {
+            if (card == null) { return; }
+
+            bool isSucceed = card.IsTopic
+                ? await FeedActionsService.ChangeTopicFollowByTitleAsync(card.Title, card.Followed)
+                : card.ID > 0 && await FeedActionsService.ChangeProductFollowByIdAsync(card.ID, card.Followed);
+
+            if (!isSucceed)
+            {
+                if (!string.IsNullOrEmpty(card.Url))
+                {
+                    _ = this.OpenLinkAsync(card.Url);
+                }
+                return;
+            }
+
+            card.Followed = !card.Followed;
+        }
+
         private async void DeviceHyperlink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
         {
             await ProductService.NavigateToProductAsync(this, sender);

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="using:CoolapkUWP.Controls"
+    xmlns:converters="using:CoolapkUWP.Helpers.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:feedpages="using:CoolapkUWP.ViewModels.FeedPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,6 +12,7 @@
     NavigationCacheMode="Disabled"
     mc:Ignorable="d">
     <Page.Resources>
+        <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
         <Flyout x:Key="QRCodeFlyout" ShouldConstrainToRootBounds="False">
             <Flyout.FlyoutPresenterStyle>
                 <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
@@ -23,6 +25,43 @@
             </Flyout.FlyoutPresenterStyle>
             <controls:ShowQRCodeControl QRCodeText="{x:Bind Provider.FeedDetail.ShareUrl, Mode=OneWay}" />
         </Flyout>
+        <MenuFlyout x:Key="MoreFlyout">
+            <MenuFlyoutSubItem x:Uid="/Feed/Copy">
+                <MenuFlyoutSubItem.Icon>
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                </MenuFlyoutSubItem.Icon>
+                <MenuFlyoutItem
+                    x:Uid="/Feed/CopyLink"
+                    Click="CopyMenuItem_Click"
+                    Tag="{x:Bind Provider.FeedDetail.ShareUrl, Mode=OneWay}" />
+                <MenuFlyoutItem
+                    x:Uid="/Feed/CopyAll"
+                    Click="CopyMenuItem_Click"
+                    Tag="{x:Bind Provider.FeedDetail.Message, Converter={StaticResource HTMLToTextConverter}, Mode=OneWay}" />
+                <MenuFlyoutItem
+                    Click="CopyMenuItem_Click"
+                    Tag="{x:Bind Provider.FeedDetail.UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='@{0}', Mode=OneWay}"
+                    Text="{x:Bind Provider.FeedDetail.UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='复制 @{0}', Mode=OneWay}" />
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem
+                x:Name="PinTileButton"
+                x:Uid="/Feed/PinTile"
+                Click="FeedButton_Click"
+                Tag="{x:Bind Provider.FeedDetail, Mode=OneWay}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE840;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                x:Name="ReportButton"
+                x:Uid="/Feed/Report"
+                Click="FeedButton_Click"
+                Tag="{x:Bind Provider.FeedDetail.ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
     </Page.Resources>
     <Grid>
         <muxc:TwoPaneView
@@ -71,8 +110,10 @@
                     <Grid
                         x:Name="BtnsPanel"
                         Grid.Row="2"
-                        MinHeight="40"
-                        Padding="8,0"
+                        MinHeight="48"
+                        Padding="12,8"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="0,1,0,0"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Bottom">
                         <StackPanel HorizontalAlignment="Left" />
@@ -156,6 +197,16 @@
                                         VerticalAlignment="Center"
                                         Text="{x:Bind Provider.FeedDetail.ShareNum, Mode=OneWay, FallbackValue=0}" />
                                 </StackPanel>
+                            </Button>
+                            <Button
+                                x:Name="MoreButton"
+                                x:Uid="/Feed/MoreButton"
+                                MinWidth="36"
+                                Height="32"
+                                Padding="8,0"
+                                Flyout="{StaticResource MoreFlyout}"
+                                Style="{StaticResource TransparentButtonStyle}">
+                                <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE10C;" />
                             </Button>
                         </controls:StackPanel>
                     </Grid>

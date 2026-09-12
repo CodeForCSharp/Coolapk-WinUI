@@ -71,6 +71,11 @@ namespace CoolapkUWP.Pages.FeedPages
             FeedCommandService.HandleFeedButtonClick(sender as FrameworkElement, this);
         }
 
+        private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ClipboardHelper.SetText((sender as FrameworkElement).Tag.ToString());
+        }
+
         #region 界面模式切换
 
         public event PropertyChangedEventHandler PropertyChanged;

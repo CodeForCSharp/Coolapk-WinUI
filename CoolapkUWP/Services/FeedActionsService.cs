@@ -69,12 +69,19 @@ namespace CoolapkUWP.Services
 
         internal static async Task ChangeTopicFollowAsync(TopicDetail detail)
         {
-            UriType type = detail.Followed ? UriType.PostTopicUnfollow : UriType.PostTopicFollow;
+            if (await ChangeTopicFollowByTitleAsync(detail.Title, detail.Followed))
+            {
+                detail.Followed = !detail.Followed;
+            }
+        }
 
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, detail.Title), null, true);
-            if (!isSucceed) { return; }
+        internal static async Task<bool> ChangeTopicFollowByTitleAsync(string title, bool currentlyFollowed)
+        {
+            if (string.IsNullOrEmpty(title)) { return false; }
 
-            detail.Followed = !detail.Followed;
+            UriType type = currentlyFollowed ? UriType.PostTopicUnfollow : UriType.PostTopicFollow;
+            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, title), null, true);
+            return isSucceed;
         }
 
         internal static async Task ChangeDyhFollowAsync(DyhDetail detail)
@@ -139,16 +146,25 @@ namespace CoolapkUWP.Services
 
         internal static async Task ChangeProductFollowAsync(ProductDetail detail)
         {
+            if (await ChangeProductFollowByIdAsync(detail.ID, detail.Followed))
+            {
+                detail.Followed = !detail.Followed;
+            }
+        }
+
+        internal static async Task<bool> ChangeProductFollowByIdAsync(int id, bool currentlyFollowed)
+        {
+            if (id <= 0) { return false; }
+
             using (MultipartFormDataContent content = new MultipartFormDataContent())
             {
-                using (StringContent id = new StringContent(detail.ID.ToString()))
-                using (StringContent status = new StringContent(detail.Followed ? "0" : "1"))
+                using (StringContent idContent = new StringContent(id.ToString()))
+                using (StringContent status = new StringContent(currentlyFollowed ? "0" : "1"))
                 {
-                    content.Add(id, "id");
+                    content.Add(idContent, "id");
                     content.Add(status, "status");
                     (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(UriType.OperateProductFollow), content, true);
-                    if (!isSucceed) { return; }
-                    detail.Followed = !detail.Followed;
+                    return isSucceed;
                 }
             }
         }

@@ -36,6 +36,8 @@ namespace CoolapkUWP.Models.Users
 
         public string Url => $"/u/{UID}";
         public string Title => UserName;
+        public bool ShowLevel => Level > 0;
+        public string LevelText => $"Lv.{Level}";
 
         public ImageModel Pic => UserAvatar;
 

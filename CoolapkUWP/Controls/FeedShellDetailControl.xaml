@@ -2,12 +2,11 @@
     x:Class="CoolapkUWP.Controls.FeedShellDetailControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="using:CoolapkUWP.Helpers.Converters"
+    xmlns:converters="using:CoolapkUWP.Helpers.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:feeds="using:CoolapkUWP.Models.Feeds"
     xmlns:local="using:CoolapkUWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:templates="using:CoolapkUWP.Controls.DataTemplates"
     d:DataContext="{d:DesignInstance Type=feeds:FeedDetailModel}"
@@ -20,6 +19,143 @@
                 <templates:RelationRowsTemplates />
             </ResourceDictionary.MergedDictionaries>
             <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
+            <DataTemplate x:Key="ProductRatingStarTemplate" x:DataType="x:Boolean">
+                <Border
+                    Width="14"
+                    Height="14"
+                    Background="#FFB91C"
+                    CornerRadius="2">
+                    <FontIcon
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontSize="9"
+                        Foreground="White"
+                        Glyph="&#xE735;" />
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="FeedRelationCardTemplate" x:DataType="feeds:FeedRelationCard">
+                <Border
+                    Margin="0,0,0,8"
+                    Padding="12"
+                    Background="{ThemeResource ProductCardBackgroundBrush}"
+                    CornerRadius="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Tag="{x:Bind Url, Mode=OneWay}" Tapped="OnTapped">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="56"
+                                Height="56"
+                                CornerRadius="8">
+                                <local:ImageEx
+                                    Model="{x:Bind Logo, Mode=OneWay}"
+                                    CornerRadius="8"
+                                    Stretch="UniformToFill" />
+                            </Border>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="10,0,8,0"
+                                VerticalAlignment="Center"
+                                Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Border
+                                        Padding="5,1"
+                                        VerticalAlignment="Center"
+                                        BorderBrush="{ThemeResource CoolapkAccentBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="4">
+                                        <TextBlock
+                                            FontSize="11"
+                                            Foreground="{ThemeResource CoolapkAccentBrush}"
+                                            Text="{x:Bind KindLabel, Mode=OneWay}" />
+                                    </Border>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        Text="{x:Bind Title, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    Spacing="6"
+                                    Visibility="{x:Bind HasStats, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="12"
+                                        Foreground="#E53935"
+                                        Glyph="&#xE19F;" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind HotNum, Mode=OneWay}"
+                                        Visibility="{x:Bind HotNum, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind CommentNum, Mode=OneWay}"
+                                        Visibility="{x:Bind CommentNum, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel
+                                Grid.Column="2"
+                                MinWidth="48"
+                                VerticalAlignment="Center"
+                                Visibility="{x:Bind HasScore, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Text="{x:Bind Score, Mode=OneWay}" />
+                                <ItemsControl
+                                    HorizontalAlignment="Right"
+                                    ItemTemplate="{StaticResource ProductRatingStarTemplate}"
+                                    ItemsSource="{x:Bind Stars, Mode=OneWay}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="2" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Row="1" Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Height="36"
+                                Margin="0,0,6,0"
+                                HorizontalAlignment="Stretch"
+                                Click="RelationFollowButton_Click"
+                                Content="{x:Bind FollowStatus, Mode=OneWay}"
+                                CornerRadius="8"
+                                FontSize="14"
+                                Style="{StaticResource CoolapkOutlineButtonStyle}"
+                                Tag="{x:Bind}" />
+                            <Button
+                                x:Uid="/Feed/PostAlso"
+                                Grid.Column="1"
+                                Height="36"
+                                Margin="6,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                Click="RelationPostButton_Click"
+                                CornerRadius="8"
+                                Style="{StaticResource CoolapkAccentButtonStyle}" />
+                        </Grid>
+                    </Grid>
+                </Border>
+            </DataTemplate>
             <MenuFlyout x:Key="MoreFlyout">
                 <MenuFlyoutSubItem x:Uid="/Feed/Copy">
                     <MenuFlyoutSubItem.Icon>
@@ -65,8 +201,9 @@
         VerticalAlignment="Stretch"
         Background="{ThemeResource SystemControlTransparentBrush}"
         ContextFlyout="{StaticResource MoreFlyout}">
-        <Grid Padding="12,4">
+        <Grid Padding="16,8">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -84,8 +221,8 @@
             <Grid
                 x:Name="FeedArticleTitle"
                 Grid.Row="0"
-                Margin="0,0,0,4"
-                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Margin="0,0,0,8"
+                CornerRadius="12"
                 Visibility="{x:Bind FeedDetail.IsFeedArticle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <local:ImageEx
                     Model="{x:Bind FeedDetail.MessageCover, Mode=OneWay}"
@@ -96,9 +233,9 @@
                 <Border
                     VerticalAlignment="Bottom"
                     Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                    CornerRadius="0,0,8,8">
+                    CornerRadius="0,0,12,12">
                     <TextBlock
-                        Margin="8,4"
+                        Margin="12,8"
                         HorizontalAlignment="Left"
                         FontSize="20"
                         IsTextSelectionEnabled="True"
@@ -109,24 +246,20 @@
             <Button
                 Grid.Row="1"
                 Height="40"
-                Margin="0,0,0,4"
+                Margin="0,0,0,8"
                 Padding="4"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
                 Click="UrlButton_Click"
+                CornerRadius="8"
+                Style="{StaticResource CoolapkCardButtonStyle}"
                 Tag="{x:Bind FeedDetail.QuestionUrl, Mode=OneWay}"
                 Visibility="{x:Bind FeedDetail.IsAnswerFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
-                        Grid.Column="1"
                         Margin="8,0,0,2"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
@@ -137,9 +270,8 @@
                         <Run Text="个答案" />
                     </TextBlock>
                     <FontIcon
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Margin="8,0"
-                        HorizontalAlignment="Right"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         FontSize="16"
                         Glyph="&#xE72A;"
@@ -149,65 +281,12 @@
             <Button
                 Grid.Row="2"
                 Height="40"
-                Margin="0,0,0,4"
+                Margin="0,0,0,8"
                 Padding="4"
                 HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
                 Click="UrlButton_Click"
-                Tag="{x:Bind FeedDetail.TopicUrl, Mode=OneWay}"
-                Visibility="{x:Bind FeedDetail.ShowTopicTitle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        Grid.Column="0"
-                        Width="32"
-                        Height="32"
-                        Margin="0,0,8,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        CornerRadius="{ThemeResource ControlCornerRadius}">
-                        <local:ImageEx
-                            Model="{x:Bind FeedDetail.TopicLogo, Mode=OneWay}"
-                            CornerRadius="{ThemeResource ControlCornerRadius}"
-                            Stretch="UniformToFill" />
-                    </Border>
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="0,0,0,2"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        FontSize="16"
-                        Text="{x:Bind FeedDetail.TopicTitle, Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis"
-                        Visibility="{x:Bind FeedDetail.TopicTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                    <FontIcon
-                        Grid.Column="2"
-                        Margin="8,0"
-                        HorizontalAlignment="Right"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="16"
-                        Glyph="&#xE72A;"
-                        Visibility="{x:Bind FeedDetail.TopicUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                </Grid>
-            </Button>
-            <Button
-                Grid.Row="3"
-                Height="40"
-                Margin="0,0,0,4"
-                Padding="4"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                Click="UrlButton_Click"
+                CornerRadius="8"
+                Style="{StaticResource CoolapkCardButtonStyle}"
                 Tag="{x:Bind FeedDetail.DyhUrl, Mode=OneWay}"
                 Visibility="{x:Bind FeedDetail.ShowDyhName, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <Grid>
@@ -217,12 +296,9 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Border
-                        Grid.Column="0"
                         Width="32"
                         Height="32"
                         Margin="0,0,8,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
                         <local:ImageEx
                             Model="{x:Bind FeedDetail.DyhLogo, Mode=OneWay}"
@@ -235,8 +311,6 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
-                            Margin="0,0,0,2"
-                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             FontSize="16"
                             Text="{x:Bind FeedDetail.DyhName, Mode=OneWay}"
@@ -244,7 +318,6 @@
                             Visibility="{x:Bind FeedDetail.DyhName, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         <TextBlock
                             Grid.Column="1"
-                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -255,111 +328,154 @@
                     <FontIcon
                         Grid.Column="2"
                         Margin="8,0"
-                        HorizontalAlignment="Right"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         FontSize="16"
                         Glyph="&#xE72A;"
                         Visibility="{x:Bind FeedDetail.DyhUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                 </Grid>
             </Button>
-            <Grid x:Name="UserBar" Grid.Row="4">
+
+            <!--  用户栏：头像、昵称、时间/设备、关注  -->
+            <Grid
+                x:Name="UserBar"
+                Grid.Row="4"
+                Margin="0,4,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Button
-                    Grid.Column="0"
-                    Margin="0,4"
                     Padding="0"
-                    HorizontalAlignment="Left"
                     Background="{ThemeResource SystemControlTransparentBrush}"
                     Click="Button_Click"
                     Style="{StaticResource TransparentButtonStyle}"
                     Tag="{x:Bind FeedDetail.UserInfo.Url, Mode=OneWay}">
-                    <Border Width="36" Height="36" CornerRadius="18">
-                        <local:ImageEx
-                            Model="{x:Bind FeedDetail.UserInfo.UserAvatar, Mode=OneWay}"
-                            CornerRadius="18"
-                            Stretch="Fill" />
-                    </Border>
+                    <Grid Width="42" Height="42">
+                        <Border Width="42" Height="42" CornerRadius="21">
+                            <local:ImageEx
+                                Model="{x:Bind FeedDetail.UserInfo.UserAvatar, Mode=OneWay}"
+                                CornerRadius="21"
+                                Stretch="Fill" />
+                        </Border>
+                        <Border
+                            Padding="5,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Background="{ThemeResource CoolapkAccentBackgroundBrush}"
+                            CornerRadius="8"
+                            Visibility="{x:Bind FeedDetail.UserInfo.ShowLevel, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                            <TextBlock
+                                FontSize="9"
+                                Foreground="White"
+                                Text="{x:Bind FeedDetail.UserInfo.LevelText, Mode=OneWay}" />
+                        </Border>
+                    </Grid>
                 </Button>
-                <Grid
+                <StackPanel
                     Grid.Column="1"
-                    Margin="8,0"
-                    VerticalAlignment="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                    Margin="10,0,8,0"
+                    VerticalAlignment="Center"
+                    Spacing="2">
                     <TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
                         IsTextSelectionEnabled="True"
                         Text="{x:Bind FeedDetail.UserInfo.UserName, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
-                    <TextBlock
-                        Grid.Row="1"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        IsTextSelectionEnabled="True"
-                        TextTrimming="CharacterEllipsis">
-                        <Run Text="{x:Bind FeedDetail.Dateline, Mode=OneWay}" />
-                        <Run Text="{x:Bind FeedDetail.Info, Mode=OneWay}" />
-                        <Hyperlink
-                            Click="DeviceHyperlink_Click"
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock
+                            FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            UnderlineStyle="None">
-                            <Run Text="{x:Bind FeedDetail.DeviceTitle, Mode=OneWay}" />
-                        </Hyperlink>
-                    </TextBlock>
-                </Grid>
+                            IsTextSelectionEnabled="True"
+                            Text="{x:Bind FeedDetail.Dateline, Mode=OneWay}" />
+                        <FontIcon
+                            Margin="2,0,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Glyph="&#xE8EA;"
+                            Visibility="{x:Bind FeedDetail.DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Visibility="{x:Bind FeedDetail.DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                            <Hyperlink
+                                Click="DeviceHyperlink_Click"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                UnderlineStyle="None">
+                                <Run Text="{x:Bind FeedDetail.DeviceTitle, Mode=OneWay}" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
                 <Button
                     x:Name="FollowButton"
                     Grid.Column="2"
-                    Height="32"
+                    MinWidth="72"
+                    Height="30"
+                    Margin="0"
+                    Padding="14,0"
                     HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
                     Click="Button_Click"
-                    Style="{StaticResource TransparentButtonStyle}"
+                    Content="{x:Bind FeedDetail.UserAction.FollowStatus, Mode=OneWay}"
+                    CornerRadius="15"
+                    FontSize="13"
+                    Style="{StaticResource CoolapkOutlineButtonStyle}"
                     Tag="{x:Bind FeedDetail, Mode=OneWay}"
-                    ToolTipService.ToolTip="{x:Bind FollowStatus.Text, Mode=OneWay}">
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon
-                            VerticalAlignment="Center"
-                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                            FontSize="15"
-                            Glyph="{x:Bind FeedDetail.UserAction.FollowGlyph, Mode=OneWay}" />
-                        <TextBlock
-                            x:Name="FollowStatus"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind FeedDetail.UserAction.FollowStatus, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    ToolTipService.ToolTip="{x:Bind FeedDetail.UserAction.FollowStatus, Mode=OneWay}" />
             </Grid>
-            <local:StackPanel
-                Grid.Row="5"
-                Margin="4"
-                Spacing="4">
-                <Grid Margin="0,-4" Visibility="{x:Bind FeedDetail.IsRatingFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
+
+            <!--  图片在正文之前，单图大图 / 多图宫格  -->
+            <Grid Grid.Row="5" Margin="0,0,0,12">
+                <Border
+                    HorizontalAlignment="Stretch"
+                    CornerRadius="12"
+                    Tag="{x:Bind FeedDetail.FirstPic, Mode=OneWay}"
+                    Tapped="OnTapped"
+                    Visibility="{x:Bind FeedDetail.HasSinglePic, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                    <local:ImageEx
+                        MaxHeight="520"
+                        MinHeight="160"
+                        Model="{x:Bind FeedDetail.FirstPic, Mode=OneWay}"
+                        CornerRadius="12"
+                        Stretch="Uniform" />
+                </Border>
+                <GridView
+                    MinHeight="0"
+                    Padding="0"
+                    HorizontalContentAlignment="Left"
+                    ItemTemplate="{StaticResource PicDefaultTemplate}"
+                    ItemsSource="{x:Bind FeedDetail.PicArr, Mode=OneWay}"
+                    ScrollViewer.VerticalScrollMode="Disabled"
+                    SelectionChanged="GridView_SelectionChanged"
+                    Visibility="{x:Bind FeedDetail.HasMultiplePics, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                </GridView>
+            </Grid>
+
+            <local:StackPanel Grid.Row="6" Spacing="8">
+                <Grid Visibility="{x:Bind FeedDetail.IsRatingFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Border
-                        Padding="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        BorderBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                        Padding="4,1"
+                        BorderBrush="{ThemeResource CoolapkAccentBrush}"
                         BorderThickness="1"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
                         <TextBlock
                             x:Uid="/Feed/Rating"
-                            HorizontalAlignment="Left"
                             FontSize="12"
-                            Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            Foreground="{ThemeResource CoolapkAccentBrush}" />
                     </Border>
                     <muxc:RatingControl
                         x:Name="RatingStarControl"
@@ -369,7 +485,6 @@
                         Value="{x:Bind FeedDetail.RatingStar, Mode=OneWay}" />
                     <TextBlock
                         Grid.Column="2"
-                        HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}">
@@ -377,73 +492,37 @@
                         <Run Text="分" />
                     </TextBlock>
                 </Grid>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Border
-                        Grid.Row="0"
-                        Margin="0,4"
-                        Visibility="{x:Bind FeedDetail.IsFeedArticle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, ConverterParameter='true', FallbackValue='Collapsed'}">
-                        <local:TextBlockEx
-                            x:Name="MessageTitle"
-                            HorizontalAlignment="Left"
-                            FontSize="16"
-                            FontWeight="Black"
-                            IsTextSelectionEnabled="True"
-                            Text="{x:Bind FeedDetail.MessageTitle, Mode=OneWay}"
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind FeedDetail.MessageTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                    </Border>
-                    <local:TextBlockEx
-                        x:Name="Message"
-                        Grid.Row="1"
-                        HorizontalAlignment="Left"
-                        IsTextSelectionEnabled="True"
-                        Text="{x:Bind FeedDetail.Message, Mode=OneWay}"
-                        Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}" />
-                    <local:TextBlockEx
-                        x:Name="ArticleMessage"
-                        Grid.Row="1"
-                        HorizontalAlignment="Left"
-                        IsTextSelectionEnabled="True"
-                        Text="{x:Bind FeedDetail.MessageRawOutput, Mode=OneWay}"
-                        Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}" />
-                </Grid>
+                <local:TextBlockEx
+                    x:Name="MessageTitle"
+                    FontSize="18"
+                    IsTextSelectionEnabled="True"
+                    Text="{x:Bind FeedDetail.MessageTitle, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind FeedDetail.ShowMessageTitle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}" />
+                <local:TextBlockEx
+                    x:Name="Message"
+                    FontSize="15"
+                    IsTextSelectionEnabled="True"
+                    Text="{x:Bind FeedDetail.Message, Mode=OneWay}"
+                    Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}" />
+                <local:TextBlockEx
+                    x:Name="ArticleMessage"
+                    FontSize="15"
+                    IsTextSelectionEnabled="True"
+                    Text="{x:Bind FeedDetail.MessageRawOutput, Mode=OneWay}"
+                    Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}" />
             </local:StackPanel>
-            <Grid
-                Grid.Row="6"
-                MinHeight="0"
-                Margin="4"
-                Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true', FallbackValue='Collapsed'}">
-                <GridView
-                    MinHeight="0"
-                    Padding="0"
-                    HorizontalContentAlignment="Left"
-                    ItemTemplate="{StaticResource PicDefaultTemplate}"
-                    ItemsSource="{x:Bind FeedDetail.PicArr, Mode=OneWay}"
-                    ScrollViewer.VerticalScrollMode="Disabled"
-                    SelectionChanged="GridView_SelectionChanged"
-                    Visibility="{x:Bind FeedDetail.PicArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                </GridView>
-            </Grid>
+
             <StackPanel
                 Grid.Row="7"
-                Margin="0,4"
-                Padding="4"
+                Margin="0,8"
+                Padding="8"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="1"
-                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                CornerRadius="12"
                 Visibility="{x:Bind FeedDetail.VoteRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <muxc:ItemsRepeater
-                    HorizontalAlignment="Stretch"
                     ItemTemplate="{StaticResource VoteItemTemplate}"
                     ItemsSource="{x:Bind FeedDetail.VoteRows, Mode=OneWay}">
                     <muxc:ItemsRepeater.Layout>
@@ -456,7 +535,6 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
-                        HorizontalAlignment="Left"
                         FontSize="12"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         IsTextSelectionEnabled="{x:Bind FeedDetail.IsCopyEnabled, Mode=OneWay}">
@@ -480,22 +558,18 @@
             </StackPanel>
             <Border
                 Grid.Row="8"
-                Margin="0,4"
-                HorizontalAlignment="Stretch"
+                Margin="0,8"
                 Visibility="{x:Bind FeedDetail.ShowSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <Grid
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    Background="{ThemeResource ProductCardBackgroundBrush}"
+                    CornerRadius="12">
                     <TextBlock
                         x:Uid="/Feed/SourceFeedNotFound"
                         Margin="12,8"
-                        HorizontalAlignment="Left"
                         Visibility="{x:Bind FeedDetail.EmptySourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                     <Border Visibility="{x:Bind FeedDetail.EmptySourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
                         <local:WebViewContentControl
-                            ContentCornerRadius="{ThemeResource OverlayCornerRadius}"
+                            ContentCornerRadius="12"
                             ContentTemplate="{StaticResource SourceFeedDefaultTemplate}"
                             DataContext="{x:Bind FeedDetail.SourceFeed, Mode=OneWay}" />
                     </Border>
@@ -503,27 +577,15 @@
             </Border>
             <Grid
                 Grid.Row="9"
-                Margin="0,4"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Margin="0,8"
+                Padding="10"
+                Background="{ThemeResource ProductCardBackgroundBrush}"
+                CornerRadius="12"
                 Visibility="{x:Bind FeedDetail.ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <local:ImageEx
-                    Model="{x:Bind FeedDetail.ExtraPic, Mode=OneWay}"
-                    CornerRadius="{ThemeResource OverlayCornerRadius}"
-                    Stretch="UniformToFill" />
                 <Grid
-                    Padding="8"
                     Tag="{x:Bind FeedDetail.ExtraUrl, Mode=OneWay}"
                     Tapped="OnTapped"
                     Visibility="{x:Bind FeedDetail.ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
-                        <Grid.Background>
-                        <AcrylicBrush
-                           
-                            FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintOpacity="1" />
-                    </Grid.Background>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -531,20 +593,18 @@
                     <Border
                         Width="56"
                         Height="56"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        CornerRadius="8"
                         Visibility="{x:Bind FeedDetail.ExtraPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                         <local:ImageEx
                             Model="{x:Bind FeedDetail.ExtraPic, Mode=OneWay}"
-                            CornerRadius="{ThemeResource OverlayCornerRadius}"
+                            CornerRadius="8"
                             Stretch="UniformToFill" />
                     </Border>
                     <Border
                         Width="56"
                         Height="56"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        CornerRadius="8"
                         Visibility="{x:Bind FeedDetail.ExtraPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
                         <FontIcon
                             HorizontalAlignment="Center"
@@ -554,38 +614,28 @@
                     </Border>
                     <StackPanel
                         Grid.Column="1"
-                        Margin="8,0"
-                        HorizontalAlignment="Stretch"
+                        Margin="10,0,0,0"
                         VerticalAlignment="Center">
                         <TextBlock
-                            HorizontalAlignment="Left"
                             MaxLines="2"
                             Text="{x:Bind FeedDetail.ExtraTitle, Mode=OneWay}"
                             TextTrimming="WordEllipsis"
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind FeedDetail.ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                            TextWrapping="Wrap" />
                         <TextBlock
-                            HorizontalAlignment="Left"
+                            FontSize="12"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                             Text="{x:Bind FeedDetail.ExtraSubtitle, Mode=OneWay}"
                             TextWrapping="Wrap"
                             Visibility="{x:Bind FeedDetail.ExtraSubtitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                     </StackPanel>
                 </Grid>
-                <Grid CornerRadius="{ThemeResource OverlayCornerRadius}" Visibility="{x:Bind FeedDetail.ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <Grid.Background>
-                        <AcrylicBrush
-                           
-                            FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintOpacity="1" />
-                    </Grid.Background>
+                <Grid Visibility="{x:Bind FeedDetail.ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <local:WebViewContentControl
-                        ContentCornerRadius="{ThemeResource OverlayCornerRadius}"
+                        ContentCornerRadius="12"
                         ContentTemplate="{StaticResource SourceFeedDefaultTemplate}"
                         DataContext="{x:Bind FeedDetail.LinkSourceFeed, Mode=OneWay}" />
                     <Border Visibility="{x:Bind FeedDetail.LinkSourceFeed.Succeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
-                            <Border.Child>
+                        <Border.Child>
                             <muxc:ProgressRing
                                 Width="24"
                                 Height="24"
@@ -596,88 +646,81 @@
             </Grid>
             <Grid
                 Grid.Row="10"
-                Margin="0,4"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Margin="0,8"
+                Padding="10"
+                Background="{ThemeResource ProductCardBackgroundBrush}"
+                CornerRadius="12"
+                Tag="{x:Bind FeedDetail.MediaUrl, Mode=OneWay}"
+                Tapped="OnTapped"
                 Visibility="{x:Bind FeedDetail.MediaUrl, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                <local:ImageEx
-                    Model="{x:Bind FeedDetail.MediaPic, Mode=OneWay}"
-                    CornerRadius="{ThemeResource OverlayCornerRadius}"
-                    Stretch="UniformToFill" />
-                <Grid
-                    Padding="8"
-                    Tag="{x:Bind FeedDetail.MediaUrl, Mode=OneWay}"
-                    Tapped="OnTapped"
-                    Visibility="{x:Bind FeedDetail.ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
-                        <Grid.Background>
-                        <AcrylicBrush
-                           
-                            FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                            TintOpacity="1" />
-                    </Grid.Background>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        Width="56"
-                        Height="56"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}"
-                        Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                        <local:ImageEx
-                            Model="{x:Bind FeedDetail.MediaPic, Mode=OneWay}"
-                            CornerRadius="{ThemeResource OverlayCornerRadius}"
-                            Stretch="UniformToFill" />
-                    </Border>
-                    <Border
-                        Width="56"
-                        Height="56"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}"
-                        Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
-                        <FontIcon
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                            Glyph="&#xE786;" />
-                    </Border>
-                    <StackPanel
-                        Grid.Column="1"
-                        Margin="8,0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
-                        <TextBlock
-                            x:Uid="/Feed/MediaShare"
-                            HorizontalAlignment="Left"
-                            MaxLines="2"
-                            TextTrimming="WordEllipsis"
-                            TextWrapping="Wrap" />
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                            Text="{x:Bind FeedDetail.MediaSubtitle, Mode=OneWay}"
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind FeedDetail.MediaSubtitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                    </StackPanel>
-                </Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Width="56"
+                    Height="56"
+                    CornerRadius="8"
+                    Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                    <local:ImageEx
+                        Model="{x:Bind FeedDetail.MediaPic, Mode=OneWay}"
+                        CornerRadius="8"
+                        Stretch="UniformToFill" />
+                </Border>
+                <Border
+                    Width="56"
+                    Height="56"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="8"
+                    Visibility="{x:Bind FeedDetail.MediaPic.Uri, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}">
+                    <FontIcon
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        Glyph="&#xE786;" />
+                </Border>
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        x:Uid="/Feed/MediaShare"
+                        MaxLines="2"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind FeedDetail.MediaSubtitle, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind FeedDetail.MediaSubtitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                </StackPanel>
             </Grid>
-            <muxc:ItemsRepeaterScrollHost
+
+            <!--  数码 / 话题关联卡  -->
+            <muxc:ItemsRepeater
                 Grid.Row="11"
-                Margin="2,0"
-                Visibility="{x:Bind FeedDetail.RelationRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
+                Margin="0,8,0,0"
+                ItemTemplate="{StaticResource FeedRelationCardTemplate}"
+                ItemsSource="{x:Bind FeedDetail.RelationCards, Mode=OneWay}"
+                Visibility="{x:Bind FeedDetail.ShowRelationCards, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
+                <muxc:ItemsRepeater.Layout>
+                    <muxc:StackLayout Spacing="0" />
+                </muxc:ItemsRepeater.Layout>
+            </muxc:ItemsRepeater>
+
+            <muxc:ItemsRepeaterScrollHost
+                Grid.Row="12"
+                Margin="0,4"
+                Visibility="{x:Bind FeedDetail.ShowChipRelationRows, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                 <ScrollViewer
                     Padding="0,4"
                     HorizontalScrollBarVisibility="Hidden"
                     HorizontalScrollMode="Auto"
                     VerticalScrollMode="Disabled">
                     <muxc:ItemsRepeater
-                        HorizontalAlignment="Stretch"
                         ItemTemplate="{StaticResource RelationRowsItemTemplate}"
-                        ItemsSource="{x:Bind FeedDetail.RelationRows, Mode=OneWay}">
+                        ItemsSource="{x:Bind FeedDetail.ChipRelationRows, Mode=OneWay}">
                         <muxc:ItemsRepeater.Layout>
                             <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
                         </muxc:ItemsRepeater.Layout>
@@ -685,12 +728,11 @@
                 </ScrollViewer>
             </muxc:ItemsRepeaterScrollHost>
             <StackPanel
-                Grid.Row="12"
-                Margin="4"
+                Grid.Row="13"
+                Margin="0,8,0,4"
                 HorizontalAlignment="Left"
                 Orientation="Horizontal">
                 <TextBlock
-                    HorizontalAlignment="Left"
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     IsTextSelectionEnabled="True"
@@ -701,44 +743,27 @@
                     <Run FontWeight="Bold" Text="{x:Bind FeedDetail.QuestionFollowNum, Mode=OneWay}" />
                     <Run Text="人关注" />
                 </TextBlock>
-                <Border
-                    Margin="2,0"
-                    HorizontalAlignment="Left"
-                    Visibility="{x:Bind FeedDetail.IsQuestionFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="•"
-                        Visibility="{x:Bind FeedDetail.IPLocation, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}" />
-                </Border>
                 <TextBlock
-                    HorizontalAlignment="Left"
+                    Margin="0,0,8,0"
+                    FontSize="12"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="•"
+                    Visibility="{x:Bind FeedDetail.IsQuestionFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}" />
+                <TextBlock
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     IsTextSelectionEnabled="True"
                     Visibility="{x:Bind FeedDetail.IPLocation, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
                     <Run x:Uid="/Feed/PublishFrom" />
-                    <Run FontWeight="Bold" Text="{x:Bind FeedDetail.IPLocation, Mode=OneWay}" />
+                    <Run Text="{x:Bind FeedDetail.IPLocation, Mode=OneWay}" />
                 </TextBlock>
-                <Border
-                    Margin="2,0"
-                    HorizontalAlignment="Left"
-                    Visibility="{x:Bind FeedDetail.IPLocation, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="•"
-                        Visibility="{x:Bind FeedDetail.ReadNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}" />
-                </Border>
                 <TextBlock
-                    HorizontalAlignment="Left"
+                    Margin="8,0,0,0"
                     FontSize="12"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                     IsTextSelectionEnabled="True"
                     Visibility="{x:Bind FeedDetail.ReadNum, Converter={StaticResource DoubleToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                    <Run FontWeight="Bold" Text="{x:Bind FeedDetail.ReadNum, Mode=OneWay}" />
+                    <Run Text="{x:Bind FeedDetail.ReadNum, Mode=OneWay}" />
                     <Run x:Uid="/Feed/ReadNum" />
                 </TextBlock>
             </StackPanel>

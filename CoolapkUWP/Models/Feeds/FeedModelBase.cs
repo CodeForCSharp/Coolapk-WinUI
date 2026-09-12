@@ -265,7 +265,8 @@ namespace CoolapkUWP.Models.Feeds
                         new RelationRowsItem(
                             url: dto.Turl,
                             title: ttitle,
-                            logo: dto.Tpic));
+                            logo: dto.Tpic,
+                            isTopic: true));
                 }
 
                 if (EntityType != "article" && !string.IsNullOrEmpty(dyhName))
@@ -281,11 +282,21 @@ namespace CoolapkUWP.Models.Feeds
                     foreach (JsonNode i in relationRows2)
                     {
                         JsonObject item = i.AsObject();
+                        string url = (string)item["url"];
+                        string entityType = item["entityType"]?.ToString();
+                        int.TryParse(item["id"]?.ToString(), out int relationId);
+                        bool isProduct = FeedRelationCard.IsProductLink(url, entityType);
                         builder.Add(
                             new RelationRowsItem(
-                                url: (string)item["url"],
+                                url: url,
                                 title: (string)item["title"],
-                                logo: (string)item["logo"]));
+                                logo: (string)item["logo"],
+                                id: relationId,
+                                isProduct: isProduct,
+                                isTopic: FeedRelationCard.IsTopicLink(url, entityType),
+                                starAverageScore: item["star_average_score"]?.ToString() ?? item["rating_average_score"]?.ToString(),
+                                hotNum: item["hot_num_txt"]?.ToString(),
+                                commentNum: item["feed_comment_num_txt"]?.ToString()));
                     }
                 }
 
@@ -445,20 +456,43 @@ namespace CoolapkUWP.Models.Feeds
 
     public class RelationRowsItem
     {
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Title { get; set; }
 
         public string Icon { get; set; }
         public ImageModel Logo { get; set; }
 
+        public bool IsProduct { get; set; }
+        public bool IsTopic { get; set; }
+        public string StarAverageScore { get; set; }
+        public string HotNum { get; set; }
+        public string CommentNum { get; set; }
+
         public bool IsShowLogo => Logo != null;
         public bool IsShowIcon => Logo != null || !string.IsNullOrWhiteSpace(Icon);
 
-        public RelationRowsItem(string url = null, string title = null, string icon = null, string logo = null)
+        public RelationRowsItem(
+            string url = null,
+            string title = null,
+            string icon = null,
+            string logo = null,
+            int id = 0,
+            bool isProduct = false,
+            bool isTopic = false,
+            string starAverageScore = null,
+            string hotNum = null,
+            string commentNum = null)
         {
+            Id = id;
             Url = url;
             Title = title;
             Icon = icon;
+            IsProduct = isProduct;
+            IsTopic = isTopic && !isProduct;
+            StarAverageScore = starAverageScore;
+            HotNum = hotNum;
+            CommentNum = commentNum;
             if (logo != null)
             {
                 Logo = new ImageModel(logo, ImageType.Icon);
