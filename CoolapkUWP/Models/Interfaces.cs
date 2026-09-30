@@ -2,7 +2,6 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace CoolapkUWP.Models
 {
@@ -10,7 +9,6 @@ namespace CoolapkUWP.Models
     {
         string Uri { get; }
         ImageType Type { get; }
-        BitmapImage Pic { get; }
     }
 
     /// <summary>

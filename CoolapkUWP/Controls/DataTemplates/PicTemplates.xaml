@@ -55,6 +55,7 @@
             </Border.ContextFlyout>
             <Grid>
                 <controls:ImageEx
+                    x:Name="PicImage"
                     Model="{x:Bind}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Stretch="UniformToFill" />
@@ -77,7 +78,7 @@
                         Padding="4,2"
                         Background="#0F9D58"
                         CornerRadius="8,0,8,0"
-                        Visibility="{x:Bind IsLongPic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        Visibility="{x:Bind PicImage.IsLongPic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
                             x:Uid="/Feed/LongPic"
                             FontSize="12"
@@ -88,7 +89,7 @@
                         Padding="4,2"
                         Background="#0F9D58"
                         CornerRadius="8,0,8,0"
-                        Visibility="{x:Bind IsWidePic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        Visibility="{x:Bind PicImage.IsWidePic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
                             x:Uid="/Feed/WidePic"
                             FontSize="12"

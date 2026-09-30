@@ -40,7 +40,7 @@ namespace CoolapkUWP.Helpers
             }
             else if (name.EndsWith("RefreshButton", StringComparison.Ordinal))
             {
-                _ = image.Refresh();
+                image.Refresh();
             }
             else if (name.EndsWith("ShowImageButton", StringComparison.Ordinal))
             {

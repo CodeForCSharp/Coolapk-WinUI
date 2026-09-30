@@ -1,3 +1,4 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Converters;
 using CoolapkUWP.Models.Images;
@@ -220,17 +221,15 @@ namespace CoolapkUWP.Controls
                                 int width = Convert.ToInt32((element.GetAttribute("width") ?? "-1").Replace("\"", string.Empty));
                                 int height = Convert.ToInt32((element.GetAttribute("height") ?? "-1").Replace("\"", string.Empty));
 
-                                ImageModel imageModel;
-                                Image image = new Image();
+                                ImageModel imageModel = new ImageModel(src, SettingsHelper.Get<bool>(SettingsHelper.IsDisplayOriginPicture) ? ImageType.OriginImage : ImageType.SmallImage);
+                                ImageEx image = new ImageEx
+                                {
+                                    DecodePixelWidth = src.Contains("emoticons") ? 0 : GetInlineImageDecodeWidth(width),
+                                    Stretch = Stretch.Uniform,
+                                    Model = imageModel
+                                };
                                 InlineUIContainer container = new InlineUIContainer();
 
-                                imageModel = new ImageModel(src, SettingsHelper.Get<bool>(SettingsHelper.IsDisplayOriginPicture) ? ImageType.OriginImage : ImageType.SmallImage);
-                                image.SetBinding(Image.SourceProperty, new Binding
-                                {
-                                    Source = imageModel,
-                                    Mode = BindingMode.OneWay,
-                                    Path = new PropertyPath(nameof(imageModel.Pic))
-                                });
                                 if (!string.IsNullOrEmpty(alt))
                                 {
                                     ToolTipService.SetToolTip(image, new ToolTip { Content = alt });
@@ -309,10 +308,10 @@ namespace CoolapkUWP.Controls
                                     };
                                     WidePicBorder.SetBinding(VisibilityProperty, new Binding
                                     {
-                                        Source = imageModel,
+                                        Source = image,
                                         Mode = BindingMode.OneWay,
                                         Converter = SharedBoolToVisibilityConverter,
-                                        Path = new PropertyPath(nameof(imageModel.IsWidePic))
+                                        Path = new PropertyPath(nameof(ImageEx.IsWidePic))
                                     });
 
                                     Border LongPicTextBorder = new Border
@@ -327,10 +326,10 @@ namespace CoolapkUWP.Controls
                                     };
                                     LongPicTextBorder.SetBinding(VisibilityProperty, new Binding
                                     {
-                                        Source = imageModel,
+                                        Source = image,
                                         Mode = BindingMode.OneWay,
                                         Converter = SharedBoolToVisibilityConverter,
-                                        Path = new PropertyPath(nameof(imageModel.IsLongPic))
+                                        Path = new PropertyPath(nameof(ImageEx.IsLongPic))
                                     });
 
                                     PicSizePanel.Children.Add(WidePicBorder);
@@ -407,6 +406,19 @@ namespace CoolapkUWP.Controls
             }
 
             RichTextBlock.Blocks.Add(paragraph);
+        }
+
+        /// <summary>
+        /// 图文内嵌图片按可用宽度解码，避免默认按原图尺寸解码占用大量内存。
+        /// </summary>
+        private int GetInlineImageDecodeWidth(int width)
+        {
+            double available = ActualWidth > 0 ? ActualWidth : WindowContext.Bounds.Width;
+            if (width > 0) { available = Math.Min(available, width); }
+            if (!double.IsFinite(available) || available <= 0) { return 0; }
+
+            double scale = (XamlRoot ?? App.MainWindow?.Content?.XamlRoot)?.RasterizationScale ?? 1.0;
+            return (int)Math.Ceiling(available * scale);
         }
     }
 }

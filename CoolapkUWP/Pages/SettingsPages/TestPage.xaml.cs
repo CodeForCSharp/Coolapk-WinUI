@@ -2,7 +2,6 @@ using CoolapkUWP.Common;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Controls.Dialogs;
 using CoolapkUWP.Helpers;
-using CoolapkUWP.Models.Images;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using System;
@@ -100,7 +99,7 @@ namespace CoolapkUWP.Pages.SettingsPages
                     int result = (int)Math.Floor(value);
                     SettingsHelper.Set(SettingsHelper.SemaphoreSlimCount, result);
                     NetworkHelper.SetSemaphoreSlim(result);
-                    ImageModel.SetSemaphoreSlim(result);
+                    ImageEx.SetSemaphoreSlim(result);
                     ImageCache.SetDecodeSemaphore(result);
                 }
             }

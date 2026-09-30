@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:converters="using:CoolapkUWP.Helpers.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CoolapkUWP.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:viewmodels="using:CoolapkUWP.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:ShowImageViewModel}"
@@ -162,19 +163,28 @@
                                     VerticalScrollMode="Auto"
                                     ViewChanged="ScrollViewer_ViewChanged"
                                     ZoomMode="Enabled">
-                                    <Image
+                                    <controls:ImageEx
                                         x:Name="Image"
                                         MaxWidth="{Binding Path=ViewportWidth, ElementName=ImageScrollViewer}"
                                         MaxHeight="{Binding Path=ViewportHeight, ElementName=ImageScrollViewer}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         CanDrag="True"
+                                        DecodePixelWidth="0"
                                         DragStarting="Image_DragStarting"
+                                        Model="{Binding}"
                                         PointerMoved="Image_PointerMoved"
                                         PointerPressed="Image_PointerPressed"
                                         RenderTransformOrigin="0.5,0.5"
-                                        Source="{Binding Pic, Mode=OneWay}" />
+                                        Stretch="Uniform" />
                                 </ScrollViewer>
+                                <muxc:ProgressRing
+                                    Width="60"
+                                    Height="60"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsActive="{Binding IsLoading, ElementName=Image}"
+                                    IsHitTestVisible="False" />
                                 <Grid
                                     Height="200"
                                     Margin="0,0,28,0"
@@ -242,17 +252,6 @@
                             NumberOfPages="{x:Bind Provider.Images, Mode=OneWay, Converter={StaticResource CollectionCountConverter}}"
                             SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
                     </Border>
-                </Border>
-                <Border
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Visibility="{x:Bind Provider.IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Border.Child>
-                        <muxc:ProgressRing
-                            Width="60"
-                            Height="60"
-                            IsActive="{x:Bind Provider.IsLoading, Mode=OneWay}" />
-                    </Border.Child>
                 </Border>
             </Grid>
         </Grid>

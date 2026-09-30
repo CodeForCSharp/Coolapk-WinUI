@@ -340,8 +340,26 @@ namespace CoolapkUWP.Common
                 }
                 byWidth[decodePixelWidth] = key;
 
+                if (decodePixelWidth > 0)
+                {
+                    // 更小的尺寸会被 GetBestFromStrongCache 命中到这张新图，继续缓存只会占用额度。
+                    List<string> smallerKeys = byWidth.Where(entry => entry.Key > 0 && entry.Key < decodePixelWidth).Select(entry => entry.Value).ToList();
+                    foreach (string smallerKey in smallerKeys)
+                    {
+                        RemoveFromStrongCache(smallerKey);
+                    }
+                }
+
                 EvictStrongCacheIfNeeded();
             }
+        }
+
+        private void RemoveFromStrongCache(string key)
+        {
+            if (!_strongCache.Remove(key, out BitmapImage bitmap)) { return; }
+            if (_lruNodes.Remove(key, out LinkedListNode<string> node)) { _lru.Remove(node); }
+            _strongCacheBytes -= EstimateBytes(bitmap);
+            RemoveFromFileIndex(key);
         }
 
         private void TouchLru(string key)
@@ -357,14 +375,7 @@ namespace CoolapkUWP.Common
         {
             while (_strongCacheBytes > MemoryCacheMaxBytes && _lru.Count > 0)
             {
-                LinkedListNode<string> node = _lru.Last;
-                string key = node.Value;
-                BitmapImage victim = _strongCache[key];
-                _strongCache.Remove(key);
-                _lruNodes.Remove(key);
-                _lru.RemoveLast();
-                _strongCacheBytes -= EstimateBytes(victim);
-                RemoveFromFileIndex(key);
+                RemoveFromStrongCache(_lru.Last.Value);
             }
         }
 

@@ -532,15 +532,14 @@
                             SizeChanged="FlipView_SizeChanged">
                             <FlipView.ItemTemplate>
                                 <DataTemplate x:DataType="images:ImageModel">
-                                    <Image
+                                    <control:ImageEx
                                         x:Name="Picture"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
                                         CanDrag="True"
                                         DragStarting="Image_DragStarting"
-                                        Source="{x:Bind Pic, Mode=OneWay}"
-                                        Stretch="UniformToFill">
-                                        <Image.ContextFlyout>
+                                        Model="{x:Bind}"
+                                        Stretch="UniformToFill"
+                                        Tag="{x:Bind}">
+                                        <control:ImageEx.ContextFlyout>
                                             <MenuFlyout>
                                                 <MenuFlyoutItem
                                                     x:Name="RefreshButton"
@@ -579,8 +578,8 @@
                                                     </MenuFlyoutItem.Icon>
                                                 </MenuFlyoutItem>
                                             </MenuFlyout>
-                                        </Image.ContextFlyout>
-                                    </Image>
+                                        </control:ImageEx.ContextFlyout>
+                                    </control:ImageEx>
                                 </DataTemplate>
                             </FlipView.ItemTemplate>
                         </FlipView>
