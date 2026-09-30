@@ -58,15 +58,15 @@ namespace CoolapkUWP.ViewModels.DataSource
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
         {
-            if (_busy)
+            // 加载进行中时交回同一次加载：若立即返回 0 条，ListView 在滚动位置再次变化前不会重新请求，停在底部就再也不加载。
+            if (_busy && _loading != null)
             {
-                return Task.FromResult(new LoadMoreItemsResult { Count = 0 }).AsAsyncOperation();
+                return _loading.AsAsyncOperation();
             }
 
             _busy = true;
-
-            // ISupportIncrementalLoading 要求返回 IAsyncOperation，故用 AsyncInfo.Run 包装。
-            return AsyncInfo.Run((c) => LoadMoreItemsAsync(c, count));
+            _loading = LoadMoreItemsAsync(CancellationToken.None, count);
+            return _loading.AsAsyncOperation();
         }
 
         private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(CancellationToken c, uint count)
@@ -150,6 +150,12 @@ namespace CoolapkUWP.ViewModels.DataSource
         /// </summary>
         public virtual async Task Reset()
         {
+            // 先等进行中的加载结束，否则它的结果会在清空之后写进来，页码也会接着旧的走。
+            if (_busy && _loading != null)
+            {
+                _ = await _loading;
+            }
+
             _currentPage = 1;
             _hasMoreItems = true;
 
@@ -160,5 +166,6 @@ namespace CoolapkUWP.ViewModels.DataSource
         protected int _currentPage = 1;
         protected bool _hasMoreItems = true;
         protected bool _busy = false;
+        private Task<LoadMoreItemsResult> _loading;
     }
 }

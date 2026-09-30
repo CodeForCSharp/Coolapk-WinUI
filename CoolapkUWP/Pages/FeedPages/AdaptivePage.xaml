@@ -111,6 +111,7 @@
                     Visibility="{x:Bind Provider.HasTabs, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <controls:ShyHeaderListView.TopHeader>
                         <ListView
+                            IncrementalLoadingTrigger="None"
                             ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
                             ItemTemplateSelector="{StaticResource CardTemplateSelector}"
                             ItemsSource="{x:Bind Provider, Mode=OneWay}"

@@ -78,7 +78,6 @@
                 ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
                 ItemTemplate="{StaticResource ProductItemTemplate}"
                 ItemsSource="{x:Bind Provider.SelectedSource, Mode=OneWay}"
-                Loaded="ProductListView_Loaded"
                 ShowsScrollingPlaceholders="False"
                 Style="{StaticResource DefaultCardListViewStyle}" />
         </muxc:RefreshContainer>

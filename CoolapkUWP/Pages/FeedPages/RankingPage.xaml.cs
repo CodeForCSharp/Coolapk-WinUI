@@ -1,13 +1,9 @@
-using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.ViewModels.FeedPages;
-using System;
 using System.ComponentModel;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -20,7 +16,6 @@ namespace CoolapkUWP.Pages.FeedPages
     public sealed partial class RankingPage : Page, INotifyPropertyChanged
     {
         private RankingViewModel _provider;
-        private ScrollViewer _scrollViewer;
         public RankingViewModel Provider
         {
             get => _provider;
@@ -58,46 +53,6 @@ namespace CoolapkUWP.Pages.FeedPages
             if (reset)
             {
                 TabListView.SelectedIndex = Provider.SelectedIndex;
-            }
-        }
-
-        private void ProductListView_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (_scrollViewer != null) { return; }
-            _scrollViewer = FindScrollViewer(ProductListView);
-            if (_scrollViewer != null)
-            {
-                _scrollViewer.ViewChanged += OnListViewViewChanged;
-            }
-        }
-
-        private static ScrollViewer FindScrollViewer(DependencyObject root)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(root, i);
-                if (child is ScrollViewer scrollViewer) { return scrollViewer; }
-                ScrollViewer result = FindScrollViewer(child);
-                if (result != null) { return result; }
-            }
-            return null;
-        }
-
-        private void OnListViewViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            if (_scrollViewer == null || _scrollViewer.ScrollableHeight <= 0) { return; }
-            if (_scrollViewer.VerticalOffset >= _scrollViewer.ScrollableHeight - 200)
-            {
-                _ = LoadMoreAsync();
-            }
-        }
-
-        private async Task LoadMoreAsync()
-        {
-            FeedListItemSource source = Provider.SelectedSource;
-            if (source != null && source.HasMoreItems)
-            {
-                await source.LoadMoreItemsAsync(20);
             }
         }
 
