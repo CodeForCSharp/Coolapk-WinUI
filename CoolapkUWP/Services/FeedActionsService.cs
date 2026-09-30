@@ -3,6 +3,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Models.Pages;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace CoolapkUWP.Services
         internal static async Task ChangeFeedLikeAsync(FeedModelBase detail)
         {
             UriType type = detail.Liked ? UriType.PostFeedUnlike : UriType.PostFeedLike;
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, string.Empty, detail.ID), null, true);
+            (bool isSucceed, JsonNode result) = await PostLikeAsync(type, detail.ID);
             if (!isSucceed) { return; }
             detail.Liked = !detail.Liked;
             if (result.AsObject().TryGetPropertyValue("count", out JsonNode count))
@@ -45,11 +46,19 @@ namespace CoolapkUWP.Services
             }
         }
 
+        private static async Task<(bool isSucceed, JsonNode result)> PostLikeAsync(UriType type, object id)
+        {
+            using (FormUrlEncodedContent content = new FormUrlEncodedContent(new Dictionary<string, string> { ["trace"] = string.Empty }))
+            {
+                return await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, id), content, true);
+            }
+        }
+
         internal static async Task ChangeFeedFollowAsync(FeedModelBase detail)
         {
             UriType type = detail.Followed ? UriType.PostUserUnfollow : UriType.PostUserFollow;
 
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, detail.UID), null, true);
+            (bool isSucceed, _) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, detail.UID), true);
             if (!isSucceed) { return; }
 
             detail.Followed = !detail.Followed;
@@ -57,8 +66,8 @@ namespace CoolapkUWP.Services
 
         internal static async Task ChangeReplyLikeAsync(FeedReplyModel reply)
         {
-            UriType type = reply.Liked ? UriType.PostFeedUnlike : UriType.PostFeedLike;
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetOldUri(type, "Reply", reply.ID), null, true);
+            UriType type = reply.Liked ? UriType.PostReplyUnlike : UriType.PostReplyLike;
+            (bool isSucceed, JsonNode result) = await PostLikeAsync(type, reply.ID);
             if (!isSucceed) { return; }
             reply.Liked = !reply.Liked;
             if (result.ToInt32Safe() is int likenum && likenum >= 0)
@@ -80,7 +89,7 @@ namespace CoolapkUWP.Services
             if (string.IsNullOrEmpty(title)) { return false; }
 
             UriType type = currentlyFollowed ? UriType.PostTopicUnfollow : UriType.PostTopicFollow;
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, title), null, true);
+            (bool isSucceed, _) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, title), true);
             return isSucceed;
         }
 
@@ -88,7 +97,7 @@ namespace CoolapkUWP.Services
         {
             UriType type = detail.Followed ? UriType.PostDyhUnfollow : UriType.PostDyhFollow;
 
-            (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, detail.ID), null, true);
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, detail.ID), true);
             if (!isSucceed) { return; }
 
             detail.Followed = !detail.Followed;
@@ -102,7 +111,7 @@ namespace CoolapkUWP.Services
         {
             UriType type = detail.Followed ? UriType.PostUserUnfollow : UriType.PostUserFollow;
 
-            (bool isSucceed, _) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type, detail.UID), null, true);
+            (bool isSucceed, _) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, detail.UID), true);
             if (!isSucceed) { return; }
 
             detail.Followed = !detail.Followed;
@@ -112,17 +121,12 @@ namespace CoolapkUWP.Services
         {
             UriType type = detail.Liked ? UriType.PostCollectionUnlike : UriType.PostCollectionLike;
 
-            using (MultipartFormDataContent content = new MultipartFormDataContent())
-            using (StringContent id = new StringContent(detail.ID.ToString()))
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, detail.ID), true);
+            if (!isSucceed) { return; }
+            detail.Liked = !detail.Liked;
+            if (result.ToInt32Safe() is int likenum && likenum >= 0)
             {
-                content.Add(id, "id");
-                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
-                if (!isSucceed) { return; }
-                detail.Liked = !detail.Liked;
-                if (result.ToInt32Safe() is int likenum && likenum >= 0)
-                {
-                    detail.LikeNum = likenum;
-                }
+                detail.LikeNum = likenum;
             }
         }
 
@@ -130,17 +134,12 @@ namespace CoolapkUWP.Services
         {
             UriType type = detail.Followed ? UriType.PostCollectionUnfollow : UriType.PostCollectionFollow;
 
-            using (MultipartFormDataContent content = new MultipartFormDataContent())
-            using (StringContent id = new StringContent(detail.ID.ToString()))
+            (bool isSucceed, JsonNode result) = await RequestHelper.GetDataAsync(UriHelper.GetUri(type, detail.ID), true);
+            if (!isSucceed) { return; }
+            detail.Followed = !detail.Followed;
+            if (result.ToInt32Safe() is int follownum && follownum >= 0)
             {
-                content.Add(id, "id");
-                (bool isSucceed, JsonNode result) = await RequestHelper.PostDataAsync(UriHelper.GetUri(type), content, true);
-                if (!isSucceed) { return; }
-                detail.Followed = !detail.Followed;
-                if (result.ToInt32Safe() is int follownum && follownum >= 0)
-                {
-                    detail.SetFollowNum(follownum);
-                }
+                detail.SetFollowNum(follownum);
             }
         }
 

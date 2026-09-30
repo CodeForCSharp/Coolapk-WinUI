@@ -60,12 +60,14 @@ namespace CoolapkUWP.Helpers
         PostDyhFollow,
         PostCollectionFollow,
         PostFeedLike,
+        PostReplyLike,
         PostCollectionLike,
         PostUserUnfollow,
         PostTopicUnfollow,
         PostDyhUnfollow,
         PostCollectionUnfollow,
         PostFeedUnlike,
+        PostReplyUnlike,
         PostCollectionUnlike,
         OperateProductFollow,
         OSSUploadPrepare,
@@ -170,7 +172,7 @@ namespace CoolapkUWP.Helpers
             switch (type)
             {
                 case UriType.DataList: return "/v6/page/dataList?url={0}{1}";
-                case UriType.CheckLoginInfo: return "/v6/account/checkLoginInfo";
+                case UriType.CheckLoginInfo: return "/v6/account/checkLoginInfo?checkInit=1";
                 case UriType.CreateFeed: return "/v6/feed/createFeed";
                 case UriType.CreateFeedReply: return "/v6/feed/reply?id={0}&type=feed";
                 case UriType.CreateReplyReply: return "/v6/feed/reply?id={0}&type=reply";
@@ -184,7 +186,7 @@ namespace CoolapkUWP.Helpers
                 case UriType.GetDyhFeeds: return "/v6/dyhArticle/list?dyhId={0}&type={1}&page={2}{3}{4}";
                 case UriType.GetProductDetail: return "/v6/product/detail?id={0}";
                 case UriType.GetProductDetailByName: return "/v6/product/detail?name={0}";
-                case UriType.GetProductFeeds: return "/v6/page/dataList?url=/page?url=/product/feedList?type={4}&id={0}&page={1}{2}{3}";
+                case UriType.GetProductFeeds: return "/v6/page/dataList?url=%2Fpage%3Furl%3D%2Fproduct%2FfeedList&id={0}&type={4}&page={1}{2}{3}";
                 case UriType.GetFeedDetail: return "/v6/feed/detail?id={0}";
                 case UriType.GetFeedReplies: return "/v6/feed/replyList?id={0}&listType={1}&page={2}{3}&discussMode=1&feedType=feed&blockStatus=0&fromFeedAuthor={4}";
                 case UriType.GetFeedInfos: return "/v6/feed/{4}List?id={0}&page={1}{2}{3}";
@@ -215,15 +217,17 @@ namespace CoolapkUWP.Helpers
                 case UriType.PostUserFollow: return "/v6/user/follow?uid={0}";
                 case UriType.PostTopicFollow: return "/v6/feed/followTag?tag={0}";
                 case UriType.PostDyhFollow: return "/v6/dyh/follow?dyhId={0}";
-                case UriType.PostCollectionFollow: return "/v6/collection/follow";
-                case UriType.PostFeedLike: return "/v6/feed/like{0}?id={1}";
-                case UriType.PostCollectionLike: return "/v6/collection/like";
+                case UriType.PostCollectionFollow: return "/v6/collection/follow?id={0}";
+                case UriType.PostFeedLike: return "/v6/feed/like?id={0}&detail=0";
+                case UriType.PostReplyLike: return "/v6/feed/likeReply?id={0}&detail=0";
+                case UriType.PostCollectionLike: return "/v6/collection/like?id={0}";
                 case UriType.PostUserUnfollow: return "/v6/user/unfollow?uid={0}";
                 case UriType.PostDyhUnfollow: return "/v6/dyh/unFollow?dyhId={0}";
                 case UriType.PostTopicUnfollow: return "/v6/feed/unFollowTag?tag={0}";
-                case UriType.PostCollectionUnfollow: return "/v6/collection/unFollow";
-                case UriType.PostFeedUnlike: return "/v6/feed/unlike{0}?id={1}";
-                case UriType.PostCollectionUnlike: return "/v6/collection/unLike";
+                case UriType.PostCollectionUnfollow: return "/v6/collection/unFollow?id={0}";
+                case UriType.PostFeedUnlike: return "/v6/feed/unlike?id={0}&detail=0";
+                case UriType.PostReplyUnlike: return "/v6/feed/unLikeReply?id={0}&detail=0";
+                case UriType.PostCollectionUnlike: return "/v6/collection/unLike?id={0}";
                 case UriType.OperateProductFollow: return "/v6/product/changeFollowStatus";
                 case UriType.OSSUploadPrepare: return "/v6/upload/ossUploadPrepare";
                 case UriType.RequestValidate: return "/v6/account/requestValidate";

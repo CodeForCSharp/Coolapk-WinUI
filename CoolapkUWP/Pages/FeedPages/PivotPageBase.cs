@@ -26,12 +26,19 @@ namespace CoolapkUWP.Pages.FeedPages
         }
 
         private bool isLoaded;
+        private bool isInitializing;
         protected Func<bool, Task> refresh;
 
         protected abstract Pivot PivotControl { get; }
 
         /// <summary>返回各标签页；返回 null 表示标签页已在 XAML 中声明。</summary>
         protected abstract ObservableCollection<PivotItem> GetMainItems();
+
+        /// <summary>异步获取标签页，默认直接返回 <see cref="GetMainItems"/>。</summary>
+        protected virtual Task<ObservableCollection<PivotItem>> GetMainItemsAsync() => Task.FromResult(GetMainItems());
+
+        /// <summary>没有记住过选中索引时使用的默认索引。</summary>
+        protected virtual int GetDefaultIndex(ObservableCollection<PivotItem> items) => 0;
 
         /// <summary>选中标签页且其 Frame 内容为空时，导航到目标页。</summary>
         protected virtual void NavigateToPage(PivotItem item, Frame frame) { }
@@ -48,20 +55,28 @@ namespace CoolapkUWP.Pages.FeedPages
             PivotIndex = PivotControl.SelectedIndex;
         }
 
-        protected void Pivot_Loaded(object sender, RoutedEventArgs e)
+        protected async void Pivot_Loaded(object sender, RoutedEventArgs e)
         {
             if (!isLoaded)
             {
-                ObservableCollection<PivotItem> items = GetMainItems();
-                if (items != null) { PivotControl.ItemsSource = items; }
-                PivotControl.SelectedIndex = PivotIndex;
                 isLoaded = true;
+                isInitializing = true;
+                ObservableCollection<PivotItem> items = await GetMainItemsAsync();
+                if (items != null) { PivotControl.ItemsSource = items; }
+                PivotControl.SelectedIndex = pivotIndices.TryGetValue(GetType(), out int saved) && saved >= 0 && saved < PivotControl.Items.Count
+                    ? saved
+                    : GetDefaultIndex(items);
+                isInitializing = false;
             }
             OnPivotLoaded();
             UpdateCurrentTab();
         }
 
-        protected void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateCurrentTab();
+        // 初始化期间设置 ItemsSource 会先选中第一个标签页，跳过它，避免加载一个马上要切走的页面。
+        protected void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!isInitializing) { UpdateCurrentTab(); }
+        }
 
         private void UpdateCurrentTab()
         {

@@ -25,7 +25,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 {
                     List<ShyHeaderItem> ItemSource = new List<ShyHeaderItem>();
                     AddTab(ItemSource, "精选", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetDyhFeeds, ID, "all", p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
-                    AddTab(ItemSource, "广场", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetTagFeeds, ID, "square", p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
+                    AddTab(ItemSource, "广场", (p, firstItem, lastItem) => UriHelper.GetUri(UriType.GetDyhFeeds, ID, "square", p, UriHelper.GetOptionalArg("firstItem", firstItem), UriHelper.GetOptionalArg("lastItem", lastItem)));
                     base.ItemSource = ItemSource;
                 }
             }
