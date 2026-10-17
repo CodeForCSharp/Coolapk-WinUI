@@ -51,10 +51,6 @@ namespace CoolapkUWP.Helpers
     [JsonSerializable(typeof(UploadFileFragment))]
     [JsonSerializable(typeof(System.Collections.Generic.List<UploadFileFragment>))]
     [JsonSerializable(typeof(UploadFileFragment[]))]
-    [JsonSerializable(typeof(APIVersion))]
-    [JsonSerializable(typeof(UserAgent))]
-    [JsonSerializable(typeof(APIVersions))]
-    [JsonSerializable(typeof(TokenVersions))]
     [JsonSerializable(typeof(Microsoft.UI.Xaml.ElementTheme))]
     internal partial class JsonContext : JsonSerializerContext
     {

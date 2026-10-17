@@ -123,12 +123,6 @@
   <data name="AccentColorSettings.Header" xml:space="preserve">
     <value>颜色</value>
   </data>
-  <data name="APIVersionSettings.Description" xml:space="preserve">
-    <value>设置使用的酷安版本</value>
-  </data>
-  <data name="APIVersionSettings.Header" xml:space="preserve">
-    <value>API 版本</value>
-  </data>
   <data name="CompactOverlaySettings.Description" xml:space="preserve">
     <value>进入或退出画中画模式</value>
   </data>
@@ -189,12 +183,6 @@
   <data name="TitleBarSettings.Header" xml:space="preserve">
     <value>标题栏</value>
   </data>
-  <data name="TokenVersionSettings.Description" xml:space="preserve">
-    <value>设置使用的 Token 获取方法</value>
-  </data>
-  <data name="TokenVersionSettings.Header" xml:space="preserve">
-    <value>Token 版本</value>
-  </data>
   <data name="UITestSettingsHeader.Header" xml:space="preserve">
     <value>界面测试</value>
   </data>
@@ -225,23 +213,8 @@
   <data name="APISettings.Header" xml:space="preserve">
     <value>API 设置</value>
   </data>
-  <data name="CustomUASettings.Header" xml:space="preserve">
-    <value>修改 UserAgent</value>
-  </data>
-  <data name="IsCustomUASettings.Description" xml:space="preserve">
-    <value>使用自定义的 UserAgent</value>
-  </data>
-  <data name="IsCustomUASettings.Header" xml:space="preserve">
-    <value>是否修改 UserAgent</value>
-  </data>
   <data name="WindowSettingsHeader.Header" xml:space="preserve">
     <value>窗口测试</value>
-  </data>
-  <data name="CustomAPISettings.Description" xml:space="preserve">
-    <value>设置自定义的兼容版本</value>
-  </data>
-  <data name="CustomAPISettings.Header" xml:space="preserve">
-    <value>自定义版本号</value>
   </data>
   <data name="ExtensionSettings.Description" xml:space="preserve">
     <value>前往插件管理页面</value>

@@ -149,52 +149,9 @@
                                 Glyph="&#xEB77;"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}" />
                         </controls:SettingExpander.Icon>
-                        <controls:Setting x:Uid="/TestPage/APIVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
-                            <ComboBox SelectedIndex="{x:Bind APIVersion, Mode=TwoWay}">
-                                <ComboBoxItem>Custom</ComboBoxItem>
-                                <ComboBoxItem>小程序</ComboBoxItem>
-                                <ComboBoxItem>V6</ComboBoxItem>
-                                <ComboBoxItem>V7</ComboBoxItem>
-                                <ComboBoxItem>V8</ComboBoxItem>
-                                <ComboBoxItem>V9</ComboBoxItem>
-                                <ComboBoxItem>V10</ComboBoxItem>
-                                <ComboBoxItem>V11</ComboBoxItem>
-                                <ComboBoxItem>V12</ComboBoxItem>
-                                <ComboBoxItem>V13</ComboBoxItem>
-                            </ComboBox>
-                        </controls:Setting>
-                        <controls:Setting
-                            x:Uid="/TestPage/CustomAPISettings"
-                            ActionIcon="&#xE8A7;"
-                            Click="Button_Click"
-                            IsClickEnabled="True"
-                            Style="{StaticResource ClickableSettingExpanderItemStyle}"
-                            Tag="CustomAPI" />
-                        <controls:Setting x:Uid="/TestPage/TokenVersionSettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
-                            <ComboBox SelectedIndex="{x:Bind TokenVersion, Mode=TwoWay}">
-                                <ComboBoxItem>Token V1</ComboBoxItem>
-                                <ComboBoxItem>Token V2</ComboBoxItem>
-                            </ComboBox>
-                        </controls:Setting>
                         <controls:Setting x:Uid="/TestPage/UseAPI2Settings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
                             <ToggleSwitch IsOn="{x:Bind IsUseAPI2, Mode=TwoWay}" Style="{StaticResource ToggleSwitchSettingStyle}" />
                         </controls:Setting>
-                        <controls:Setting x:Uid="/TestPage/IsCustomUASettings" Style="{StaticResource DefaultSettingExpanderItemStyle}">
-                            <ToggleSwitch
-                                x:Name="IsCustomUAToggle"
-                                IsOn="{x:Bind IsCustomUA, Mode=TwoWay}"
-                                Style="{StaticResource ToggleSwitchSettingStyle}" />
-                        </controls:Setting>
-                        <controls:Setting
-                            x:Uid="/TestPage/CustomUASettings"
-                            ActionIcon="&#xE8A7;"
-                            Click="Button_Click"
-                            ContentCornerRadius="{x:Bind BottomCornerRadius}"
-                            Description="{x:Bind UserAgent, Mode=OneWay}"
-                            IsClickEnabled="True"
-                            Style="{StaticResource ClickableSettingExpanderItemStyle}"
-                            Tag="CustomUA"
-                            Visibility="{x:Bind IsCustomUAToggle.IsOn, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                     </controls:SettingExpander>
                     <controls:Setting x:Uid="/TestPage/SlimCountSettings" Icon="&#xEA79;">
                         <Slider

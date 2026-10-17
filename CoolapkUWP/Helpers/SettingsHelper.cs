@@ -1,4 +1,3 @@
-using CoolapkUWP.Models.Update;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,14 +14,9 @@ namespace CoolapkUWP.Helpers
         public const string Uid = nameof(Uid);
         public const string Token = nameof(Token);
         public const string UserName = nameof(UserName);
-        public const string CustomUA = nameof(CustomUA);
         public const string IsUseAPI2 = nameof(IsUseAPI2);
-        public const string CustomAPI = nameof(CustomAPI);
-        public const string IsCustomUA = nameof(IsCustomUA);
-        public const string APIVersion = nameof(APIVersion);
         public const string UpdateDate = nameof(UpdateDate);
         public const string IsNoPicsMode = nameof(IsNoPicsMode);
-        public const string TokenVersion = nameof(TokenVersion);
         public const string IsUseCompositor = nameof(IsUseCompositor);
         public const string CurrentLanguage = nameof(CurrentLanguage);
         public const string SelectedAppTheme = nameof(SelectedAppTheme);
@@ -37,14 +31,9 @@ namespace CoolapkUWP.Helpers
             SetDefault(Uid, string.Empty);
             SetDefault(Token, string.Empty);
             SetDefault(UserName, string.Empty);
-            SetDefault(CustomUA, UserAgent.Parse(NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString()));
             SetDefault(IsUseAPI2, true);
-            SetDefault(CustomAPI, new APIVersion("9.2.2", "1905301"));
-            SetDefault(IsCustomUA, false);
-            SetDefault(APIVersion, Common.APIVersions.V13);
             SetDefault(UpdateDate, new DateTime());
             SetDefault(IsNoPicsMode, false);
-            SetDefault(TokenVersion, Common.TokenVersions.TokenV2);
             SetDefault(IsUseCompositor, true);
             SetDefault(CurrentLanguage, LanguageHelper.AutoLanguageCode);
             SetDefault(SelectedAppTheme, ElementTheme.Default);

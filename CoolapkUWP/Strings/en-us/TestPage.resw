@@ -123,12 +123,6 @@
   <data name="AccentColorSettings.Header" xml:space="preserve">
     <value>Colors</value>
   </data>
-  <data name="APIVersionSettings.Description" xml:space="preserve">
-    <value>Set the version of Coolapk to use</value>
-  </data>
-  <data name="APIVersionSettings.Header" xml:space="preserve">
-    <value>API Version</value>
-  </data>
   <data name="CompactOverlaySettings.Description" xml:space="preserve">
     <value>Enter or Exit Compact Overlay</value>
   </data>
@@ -189,12 +183,6 @@
   <data name="TitleBarSettings.Header" xml:space="preserve">
     <value>Title Bar</value>
   </data>
-  <data name="TokenVersionSettings.Description" xml:space="preserve">
-    <value>Set the Token acquisition method to be used</value>
-  </data>
-  <data name="TokenVersionSettings.Header" xml:space="preserve">
-    <value>Token Version</value>
-  </data>
   <data name="UITestSettingsHeader.Header" xml:space="preserve">
     <value>UI Test</value>
   </data>
@@ -225,23 +213,8 @@
   <data name="APISettings.Header" xml:space="preserve">
     <value>API Settings</value>
   </data>
-  <data name="CustomUASettings.Header" xml:space="preserve">
-    <value>Change UserAgent</value>
-  </data>
-  <data name="IsCustomUASettings.Description" xml:space="preserve">
-    <value>Using custom UserAgent</value>
-  </data>
-  <data name="IsCustomUASettings.Header" xml:space="preserve">
-    <value>Change UserAgent</value>
-  </data>
   <data name="WindowSettingsHeader.Header" xml:space="preserve">
     <value>Window Tests</value>
-  </data>
-  <data name="CustomAPISettings.Description" xml:space="preserve">
-    <value>Set custom compatible version</value>
-  </data>
-  <data name="CustomAPISettings.Header" xml:space="preserve">
-    <value>Custom API version</value>
   </data>
   <data name="ExtensionSettings.Description" xml:space="preserve">
     <value>Go to extension management page</value>

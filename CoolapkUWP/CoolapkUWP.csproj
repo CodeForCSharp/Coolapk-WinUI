@@ -76,4 +76,9 @@
     <Manifest Include="$(ApplicationManifest)" Condition="'$(ApplicationManifest)' != ''" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Token V3 的签名数据表，见 Common/TokenCreator.cs。 -->
+    <EmbeddedResource Include="Common\auth_blob.b64" LogicalName="CoolapkUWP.Common.auth_blob.b64" />
+  </ItemGroup>
+
 </Project>

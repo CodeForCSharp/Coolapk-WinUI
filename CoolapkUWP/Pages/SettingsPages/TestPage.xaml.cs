@@ -1,11 +1,9 @@
 using CoolapkUWP.Common;
 using CoolapkUWP.Controls;
-using CoolapkUWP.Controls.Dialogs;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Pages.BrowserPages;
 using CoolapkUWP.ViewModels.BrowserPages;
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using Windows.Globalization;
 using Microsoft.UI.Xaml;
@@ -14,7 +12,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace CoolapkUWP.Pages.SettingsPages
 {
-    public sealed partial class TestPage : Page, INotifyPropertyChanged
+    public sealed partial class TestPage : Page
     {
         internal bool IsExtendsTitleBar
         {
@@ -42,47 +40,6 @@ namespace CoolapkUWP.Pages.SettingsPages
             }
         }
 
-        internal bool IsCustomUA
-        {
-            get => SettingsHelper.Get<bool>(SettingsHelper.IsCustomUA);
-            set
-            {
-                if (IsCustomUA != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.IsCustomUA, value);
-                    NetworkHelper.SetRequestHeaders();
-                    UserAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
-                }
-            }
-        }
-
-        internal int APIVersion
-        {
-            get => (int)SettingsHelper.Get<APIVersions>(SettingsHelper.APIVersion) - 4;
-            set
-            {
-                if (APIVersion != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.APIVersion, value + 4);
-                    NetworkHelper.SetRequestHeaders();
-                    UserAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
-                }
-            }
-        }
-
-        internal int TokenVersion
-        {
-            get => (int)SettingsHelper.Get<TokenVersions>(SettingsHelper.TokenVersion);
-            set
-            {
-                if (TokenVersion != value)
-                {
-                    SettingsHelper.Set(SettingsHelper.TokenVersion, value);
-                    NetworkHelper.SetRequestHeaders();
-                }
-            }
-        }
-
         internal bool IsUseCompositor
         {
             get => SettingsHelper.Get<bool>(SettingsHelper.IsUseCompositor);
@@ -101,20 +58,6 @@ namespace CoolapkUWP.Pages.SettingsPages
                     NetworkHelper.SetSemaphoreSlim(result);
                     ImageEx.SetSemaphoreSlim(result);
                     ImageCache.SetDecodeSemaphore(result);
-                }
-            }
-        }
-
-        private string userAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
-        internal string UserAgent
-        {
-            get => userAgent;
-            set
-            {
-                if (userAgent != value)
-                {
-                    userAgent = value;
-                    RaisePropertyChangedEvent();
                 }
             }
         }
@@ -159,14 +102,6 @@ namespace CoolapkUWP.Pages.SettingsPages
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
-        {
-            if (name != null)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public TestPage() => InitializeComponent();
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -175,16 +110,6 @@ namespace CoolapkUWP.Pages.SettingsPages
             {
                 case "OpenURL":
                     _ = this.OpenLinkAsync(URLTextBox.Text);
-                    break;
-                case "CustomUA":
-                    var userAgentDialog = new UserAgentDialog(UserAgent);
-                    await userAgentDialog.ShowAsync();
-                    UserAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
-                    break;
-                case "CustomAPI":
-                    var apiVersionDialog = new APIVersionDialog(UserAgent);
-                    await apiVersionDialog.ShowAsync();
-                    UserAgent = NetworkHelper.Client.DefaultRequestHeaders.UserAgent.ToString();
                     break;
                 case "OpenBrowser":
                     _ = Frame.Navigate(typeof(BrowserPage), new BrowserViewModel(URLTextBox.Text));
