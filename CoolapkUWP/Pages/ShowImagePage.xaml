@@ -302,6 +302,13 @@
                 <Button
                     Click="AppBarButton_Click"
                     Style="{StaticResource FloatingCircleButtonStyle}"
+                    Tag="Copy"
+                    ToolTipService.ToolTip="复制">
+                    <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xE8C8;" />
+                </Button>
+                <Button
+                    Click="AppBarButton_Click"
+                    Style="{StaticResource FloatingCircleButtonStyle}"
                     Tag="Share"
                     ToolTipService.ToolTip="分享">
                     <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="14" Glyph="&#xE72D;" />

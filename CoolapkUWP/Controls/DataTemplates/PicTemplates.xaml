@@ -63,12 +63,12 @@
                     <Border
                         x:Name="GIF"
                         Padding="4,2"
-                        Background="#0F9D58"
+                        Background="{ThemeResource CoolapkAccentBackgroundBrush}"
                         CornerRadius="0,8,0,8"
                         Visibility="{x:Bind IsGif, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
                             FontSize="12"
-                            Foreground="White"
+                            Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}"
                             Text="GIF" />
                     </Border>
                 </Grid>
@@ -76,24 +76,24 @@
                     <Border
                         x:Name="LongPic"
                         Padding="4,2"
-                        Background="#0F9D58"
+                        Background="{ThemeResource CoolapkAccentBackgroundBrush}"
                         CornerRadius="8,0,8,0"
                         Visibility="{x:Bind PicImage.IsLongPic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
                             x:Uid="/Feed/LongPic"
                             FontSize="12"
-                            Foreground="White" />
+                            Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}" />
                     </Border>
                     <Border
                         x:Name="WidePic"
                         Padding="4,2"
-                        Background="#0F9D58"
+                        Background="{ThemeResource CoolapkAccentBackgroundBrush}"
                         CornerRadius="8,0,8,0"
                         Visibility="{x:Bind PicImage.IsWidePic, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock
                             x:Uid="/Feed/WidePic"
                             FontSize="12"
-                            Foreground="White" />
+                            Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}" />
                     </Border>
                 </Grid>
             </Grid>

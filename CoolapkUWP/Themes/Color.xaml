@@ -20,6 +20,12 @@
             <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="#4D12B868" />
             <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="#28FFFFFF" />
             <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="#22000000" />
+            <SolidColorBrush x:Key="CoolapkOnAccentForegroundBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="CoolapkPinForegroundBrush" Color="#FFF87171" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeBackgroundBrush" Color="#33A866E5" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeForegroundBrush" Color="#FFC792EA" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorBackgroundBrush" Color="#33E48720" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorForegroundBrush" Color="#FFFBBF24" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF0063b1</Color>
@@ -41,6 +47,12 @@
             <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="#3312B868" />
             <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="#14000000" />
             <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="#26000000" />
+            <SolidColorBrush x:Key="CoolapkOnAccentForegroundBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="CoolapkPinForegroundBrush" Color="#FFD32F2F" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeBackgroundBrush" Color="#FFFFF1FF" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeForegroundBrush" Color="#FFA866E5" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorBackgroundBrush" Color="#FFFFF1DF" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorForegroundBrush" Color="#FFE48720" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
@@ -56,6 +68,12 @@
             <SolidColorBrush x:Key="CoolapkOutlinePressedOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.35" />
             <SolidColorBrush x:Key="CoolapkAccentHoverOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.2" />
             <SolidColorBrush x:Key="CoolapkAccentPressedOverlayBrush" Color="{ThemeResource SystemColorHighlightColor}" Opacity="0.35" />
+            <SolidColorBrush x:Key="CoolapkOnAccentForegroundBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="CoolapkPinForegroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="CoolapkRatingBadgeForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="CoolapkRatingDescriptorForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <LinearGradientBrush x:Key="CoolapkLogoForeground" StartPoint="0,0" EndPoint="0,1">

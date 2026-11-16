@@ -109,13 +109,13 @@
                         Margin="4,0,0,0"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         FontSize="16"
-                        Foreground="Red"
+                        Foreground="{ThemeResource CoolapkPinForegroundBrush}"
                         Glyph="&#xE840;" />
                     <TextBlock
                         x:Uid="/Feed/StickUp"
                         Margin="5,4,5,5"
                         HorizontalAlignment="Left"
-                        Foreground="Red"
+                        Foreground="{ThemeResource CoolapkPinForegroundBrush}"
                         IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}" />
                 </StackPanel>
 
@@ -164,23 +164,29 @@
                                 FontSize="12"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="{x:Bind FromText, Mode=OneWay}" />
+                                Text="{x:Bind FromText, Mode=OneWay}"
+                                Visibility="{x:Bind FromText, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                             <FontIcon
                                 Margin="6,0,0,0"
-                                FontSize="12"
+                                VerticalAlignment="Center"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Glyph="&#xE8EA;"
-                                VerticalAlignment="Center" />
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                            <TextBlock
+                                Margin="2,0,0,0"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                                Text="{x:Bind DeviceTitle, Mode=OneWay}"
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                             <TextBlock
                                 FontSize="12"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="{x:Bind DeviceTitle, Mode=OneWay}" />
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="{x:Bind EditedText, Mode=OneWay}" />
+                                Text="{x:Bind EditedText, Mode=OneWay}"
+                                Visibility="{x:Bind EditedText, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
                     <controls:StackPanel
@@ -411,15 +417,10 @@
                         Stretch="UniformToFill" />
                     <Grid
                         Padding="8"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                         Tag="{x:Bind ExtraUrl, Mode=OneWay}"
                         Tapped="OnTopTapped"
                         Visibility="{x:Bind ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}">
-                        <Grid.Background>
-                            <AcrylicBrush
-                                FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintOpacity="1" />
-                        </Grid.Background>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -455,7 +456,7 @@
                             VerticalAlignment="Center">
                             <TextBlock
                                 HorizontalAlignment="Left"
-                                Foreground="White"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                                 MaxLines="2"
                                 Text="{x:Bind ExtraTitle, Mode=OneWay}"
                                 TextTrimming="WordEllipsis"
@@ -463,19 +464,17 @@
                                 Visibility="{x:Bind ExtraTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                             <TextBlock
                                 HorizontalAlignment="Left"
-                                Foreground="LightGray"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Text="{x:Bind ExtraSubtitle, Mode=OneWay}"
                                 TextWrapping="Wrap"
                                 Visibility="{x:Bind ExtraSubtitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </StackPanel>
                     </Grid>
-                    <Grid CornerRadius="{ThemeResource OverlayCornerRadius}" Visibility="{x:Bind ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <Grid.Background>
-                            <AcrylicBrush
-                                FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintOpacity="1" />
-                        </Grid.Background>
+                    <Grid
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                        CornerRadius="{ThemeResource OverlayCornerRadius}"
+                        Visibility="{x:Bind ShowLinkSourceFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <controls:WebViewContentControl
                             ContentCornerRadius="{ThemeResource OverlayCornerRadius}"
                             ContentTemplate="{StaticResource SourceFeedDefaultTemplate}"
@@ -504,14 +503,9 @@
                         Stretch="UniformToFill" />
                     <Grid
                         Padding="8"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                         Tag="{x:Bind MediaUrl, Mode=OneWay}"
                         Tapped="OnTopTapped">
-                        <Grid.Background>
-                            <AcrylicBrush
-                                FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintOpacity="1" />
-                        </Grid.Background>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -587,27 +581,28 @@
                     x:Name="ReplyRows"
                     Grid.Row="10"
                     Margin="0,4"
-                    Padding="0"
+                    Padding="12,10"
                     Background="{ThemeResource FeedReplyCardBackgroundBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Visibility="{x:Bind HasHotReply, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <Border
-                        Margin="0,0,0,4"
-                        Padding="8,3"
+                        Margin="0,0,0,6"
+                        Padding="8,2"
                         HorizontalAlignment="Left"
-                        Background="#0F9D58"
+                        Background="{ThemeResource CoolapkAccentBackgroundBrush}"
                         CornerRadius="4"
                         Visibility="{x:Bind HotReply.ShowLikeBadge, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <TextBlock
                             FontSize="12"
-                            Foreground="White">
+                            Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}">
                             <Run Text="{x:Bind HotReply.LikeNum, Mode=OneWay}" />
                             <Run Text="赞" />
                         </TextBlock>
                     </Border>
                     <controls:TextBlockEx
-                        Margin="12,0,12,10"
+                        Margin="0"
                         FontSize="13"
                         Text="{x:Bind HotReply.Message, Mode=OneWay}" />
                 </StackPanel>
@@ -775,15 +770,19 @@
                                 Text="{x:Bind Dateline, Mode=OneWay}" />
                             <FontIcon
                                 Margin="6,0,0,0"
-                                FontSize="12"
+                                VerticalAlignment="Center"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Glyph="&#xE8EA;"
-                                VerticalAlignment="Center" />
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                             <TextBlock
+                                Margin="2,0,0,0"
                                 FontSize="12"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="{x:Bind DeviceTitle, Mode=OneWay}" />
+                                Text="{x:Bind DeviceTitle, Mode=OneWay}"
+                                Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
                     <controls:StackPanel
@@ -1215,6 +1214,7 @@
                     Padding="4"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Visibility="{x:Bind ReplyRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
                     <ItemsControl

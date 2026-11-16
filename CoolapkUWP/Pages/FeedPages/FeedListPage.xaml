@@ -114,7 +114,7 @@
                         </Border>
                         <Grid
                             Padding="10"
-                            Background="{ThemeResource TextOnAccentFillColorSecondaryBrush}"
+                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                             ContextFlyout="{StaticResource MoreFlyout}"
                             CornerRadius="{ThemeResource OverlayCornerRadius}">
                             <control:StackPanel Spacing="8">
@@ -205,7 +205,7 @@
                                     Visibility="{x:Bind VerifyTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                                     <Run
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                        Foreground="LightGreen"
+                                        Foreground="{ThemeResource CoolapkAccentBrush}"
                                         Text="&#xE10B;" />
                                     <Run Text="{x:Bind VerifyTitle, Mode=OneWay}" />
                                 </TextBlock>
@@ -587,14 +587,8 @@
                             Margin="4"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
+                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                             CornerRadius="6">
-                                <Border.Background>
-                                <AcrylicBrush
-                                   
-                                    FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                                    TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                                    TintOpacity="0" />
-                            </Border.Background>
                             <muxc:PipsPager
                                 Margin="2,0"
                                 NumberOfPages="{x:Bind CoverArr, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
@@ -1147,7 +1141,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <FontIcon
                                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                                                 Glyph="&#xE8E1;"
                                                 Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                                             <FontIcon
@@ -1211,7 +1205,7 @@
                             <TextBlock
                                 Text="{x:Bind Description, Mode=OneWay}"
                                 TextWrapping="Wrap"
-                                Visibility="{x:Bind Description, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </control:StackPanel>
                     </Grid>
                 </Grid>

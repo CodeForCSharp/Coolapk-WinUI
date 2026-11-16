@@ -238,15 +238,9 @@
                         Margin="4"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                         CornerRadius="6"
                         Visibility="{x:Bind Entities, Converter={StaticResource PipsPagerVisibilityConverter}, Mode=OneWay}">
-                            <Border.Background>
-                            <AcrylicBrush
-                               
-                                FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                                TintOpacity="0" />
-                        </Border.Background>
                         <muxc:PipsPager
                             Margin="2,0"
                             NumberOfPages="{x:Bind Entities, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
@@ -1887,19 +1881,19 @@
                     <Border
                         Padding="3,1"
                         VerticalAlignment="Center"
-                        Background="#FFF1FF"
-                        BorderBrush="#A866E5"
+                        Background="{ThemeResource CoolapkRatingBadgeBackgroundBrush}"
+                        BorderBrush="{ThemeResource CoolapkRatingBadgeForegroundBrush}"
                         BorderThickness="1"
                         CornerRadius="3">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <FontIcon
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
                                 FontSize="10"
-                                Foreground="#A866E5"
+                                Foreground="{ThemeResource CoolapkRatingBadgeForegroundBrush}"
                                 Glyph="&#xE8EA;" />
                             <TextBlock
                                 FontSize="11"
-                                Foreground="#A866E5"
+                                Foreground="{ThemeResource CoolapkRatingBadgeForegroundBrush}"
                                 Text="机主评分" />
                         </StackPanel>
                     </Border>
@@ -1916,7 +1910,7 @@
                     <Border
                         Padding="1,0"
                         VerticalAlignment="Center"
-                        Background="#FFF1DF"
+                        Background="{ThemeResource CoolapkRatingDescriptorBackgroundBrush}"
                         CornerRadius="8"
                         Visibility="{x:Bind OverallRatingDescriptor, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                         <StackPanel Orientation="Horizontal" Spacing="1">
@@ -1926,7 +1920,7 @@
                             <TextBlock
                                 Margin="0,0,4,0"
                                 FontSize="11"
-                                Foreground="#E48720"
+                                Foreground="{ThemeResource CoolapkRatingDescriptorForegroundBrush}"
                                 Text="{x:Bind OverallRatingDescriptor, Mode=OneWay}" />
                         </StackPanel>
                     </Border>
@@ -1947,12 +1941,12 @@
                     Margin="0,0,0,6"
                     Padding="4,2"
                     HorizontalAlignment="Left"
-                    Background="#159B55"
+                    Background="{ThemeResource CoolapkAccentBackgroundBrush}"
                     CornerRadius="4"
                     Visibility="{x:Bind FeedTypeName, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
                     <TextBlock
                         FontSize="12"
-                        Foreground="White"
+                        Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}"
                         Text="{x:Bind FeedTypeName, Mode=OneWay}" />
                 </Border>
 
@@ -2308,25 +2302,19 @@
                 <Grid
                     Padding="4"
                     VerticalAlignment="Bottom"
-                CornerRadius="0,0,8,8"
-                Tag="{x:Bind}"
-                Tapped="Grid_Tapped">
-                    <Grid.Background>
-                    <AcrylicBrush
-                       
-                        FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                        TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                        TintOpacity="1" />
-                </Grid.Background>
-                <TextBlock
-                    Margin="2"
-                    HorizontalAlignment="Center"
-                    Foreground="White"
-                    MaxLines="1"
-                    Text="{x:Bind Title, Mode=OneWay}"
-                    TextAlignment="Center"
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="Wrap" />
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    CornerRadius="0,0,8,8"
+                    Tag="{x:Bind}"
+                    Tapped="Grid_Tapped">
+                    <TextBlock
+                        Margin="2"
+                        HorizontalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                        MaxLines="1"
+                        Text="{x:Bind Title, Mode=OneWay}"
+                        TextAlignment="Center"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
                 </Grid>
             </Grid>
         </Border>
@@ -2347,14 +2335,10 @@
                     Model="{x:Bind Pic}"
                     CornerRadius="{ThemeResource OverlayCornerRadius}"
                     Stretch="UniformToFill" />
-                <StackPanel Padding="4" CornerRadius="{ThemeResource OverlayCornerRadius}">
-                    <StackPanel.Background>
-                    <AcrylicBrush
-                       
-                        FallbackColor="{ThemeResource SystemChromeMediumHighColor}"
-                        TintColor="{ThemeResource SystemChromeMediumHighColor}"
-                        TintOpacity="1" />
-                </StackPanel.Background>
+                <StackPanel
+                    Padding="4"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <Border
                     Width="36"
                     Height="36"

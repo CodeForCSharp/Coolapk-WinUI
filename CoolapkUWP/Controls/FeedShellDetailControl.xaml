@@ -367,7 +367,7 @@
                             Visibility="{x:Bind FeedDetail.UserInfo.ShowLevel, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}">
                             <TextBlock
                                 FontSize="9"
-                                Foreground="White"
+                                Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}"
                                 Text="{x:Bind FeedDetail.UserInfo.LevelText, Mode=OneWay}" />
                         </Border>
                     </Grid>

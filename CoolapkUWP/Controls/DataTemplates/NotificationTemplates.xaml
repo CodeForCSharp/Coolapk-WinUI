@@ -47,7 +47,7 @@
                 <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />
             </TextBlock>
             <TextBlock
-                Grid.Row="2"
+                Grid.Row="1"
                 Grid.Column="1"
                 Padding="0,0,0,4"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -190,7 +190,7 @@
                 <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind Dateline, Mode=OneWay}" />
             </TextBlock>
             <control:TextBlockEx
-                Grid.Row="2"
+                Grid.Row="1"
                 Grid.Column="1"
                 Padding="0,0,0,4"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"

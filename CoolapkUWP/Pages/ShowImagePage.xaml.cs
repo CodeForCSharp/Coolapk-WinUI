@@ -93,8 +93,11 @@ namespace CoolapkUWP.Pages
 
         private void UpdateTitleBarLayout(Microsoft.UI.Windowing.AppWindowTitleBar TitleBar)
         {
-            LeftPaddingColumn.Width = new GridLength(TitleBar.LeftInset);
-            RightPaddingColumn.Width = new GridLength(TitleBar.RightInset);
+            if (TitleBar is null) { return; }
+            double scale = CustomTitleBar.XamlRoot?.RasterizationScale ?? 1;
+            if (scale <= 0) { scale = 1; }
+            LeftPaddingColumn.Width = new GridLength(TitleBar.LeftInset / scale);
+            RightPaddingColumn.Width = new GridLength(TitleBar.RightInset / scale);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

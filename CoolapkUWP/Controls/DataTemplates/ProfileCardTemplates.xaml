@@ -68,7 +68,7 @@
                 VerticalAlignment="Center"
                 FontSize="14"
                 Text="{x:Bind Description, Mode=OneWay}"
-                Visibility="{x:Bind Description, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
         </controls:StackPanel>
     </DataTemplate>
 

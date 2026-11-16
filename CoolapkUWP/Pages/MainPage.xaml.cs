@@ -320,7 +320,7 @@ namespace CoolapkUWP.Pages
                     SettingsHelper.Logout();
                     break;
                 case "Settings":
-                    NavigationView.SelectedItem = NavigationView.FooterMenuItems.LastOrDefault();
+                    NavigationView_Navigate("Settings", new EntranceNavigationTransitionInfo());
                     break;
                 case "CreateFeed":
                     CreateFeedControl.ShowCreateFeed(this);
