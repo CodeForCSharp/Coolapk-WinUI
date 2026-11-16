@@ -1,3 +1,4 @@
+using CoolapkUWP.Common;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Exceptions;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Microsoft.UI.Xaml;
@@ -60,12 +62,20 @@ namespace CoolapkUWP
 
             ThemeHelper.Initialize();
 
+            EnsureDeviceIdentity();
+
             if (rootFrame.Content == null)
             {
                 rootFrame.Navigate(typeof(MainPage), args);
             }
 
             MainWindow.Activate();
+        }
+
+        private static async void EnsureDeviceIdentity()
+        {
+            await SzlmDuidClient.EnsureIdentityAsync();
+            CoolapkUWP.Helpers.NetworkHelper.SetRequestHeaders();
         }
 
         private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)

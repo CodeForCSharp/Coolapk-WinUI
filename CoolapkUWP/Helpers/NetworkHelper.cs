@@ -80,15 +80,15 @@ namespace CoolapkUWP.Helpers
 
             token = new TokenCreator();
             Client.DefaultRequestHeaders.Clear();
-            Client.DefaultRequestHeaders.Add("X-Sdk-Int", "36");
+            Client.DefaultRequestHeaders.Add("X-Sdk-Int", TokenCreator.DeviceSdkInt);
             Client.DefaultRequestHeaders.Add("X-Sdk-Locale", Culture);
             Client.DefaultRequestHeaders.Add("X-App-Mode", "universal");
             Client.DefaultRequestHeaders.Add("X-App-Channel", "coolapk");
             Client.DefaultRequestHeaders.Add("X-App-Id", "com.coolapk.market");
             Client.DefaultRequestHeaders.Add("X-App-Device", TokenCreator.DeviceCode);
             Client.DefaultRequestHeaders.Add("X-Dark-Mode", ThemeHelper.IsDarkTheme() ? "1" : "0");
-            // v16 服务端会同时校验 UA 和版本头，官方 Android 16.2.0 的 UA 才与 Token V3 配套。
-            Client.DefaultRequestHeaders.UserAgent.ParseAdd($"Dalvik/2.1.0 (Linux; U; Android 16; 23113RKC6C Build/AQ3A.250226.002) (#Build; Redmi; 23113RKC6C; AQ3A.250226.002; HyperOS_3.0; 3.0.1.0) +CoolMarket/{TokenCreator.AppVersion}-{TokenCreator.AppCode}-universal");
+            // v16 服务端会同时校验 UA 和版本头，UA 要和设备码里的机型/构建号一致。
+            Client.DefaultRequestHeaders.UserAgent.ParseAdd(TokenCreator.UserAgent);
             Client.DefaultRequestHeaders.Add("X-App-Version", TokenCreator.AppVersion);
             Client.DefaultRequestHeaders.Add("X-App-Supported", TokenCreator.AppCode.ToString());
             Client.DefaultRequestHeaders.Add("X-App-Code", TokenCreator.AppCode.ToString());
@@ -129,6 +129,7 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
+                await SzlmDuidClient.EnsureIdentityAsync().ConfigureAwait(false);
                 using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri) { Content = content })
                 {
                     request.AddRequestHeaders("XMLHttpRequest");
@@ -161,6 +162,7 @@ namespace CoolapkUWP.Helpers
         {
             try
             {
+                await SzlmDuidClient.EnsureIdentityAsync().ConfigureAwait(false);
                 using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, uri))
                 {
                     httpRequest.AddRequestHeaders(request);

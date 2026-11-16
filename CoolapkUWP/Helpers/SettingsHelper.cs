@@ -22,6 +22,9 @@ namespace CoolapkUWP.Helpers
         public const string SelectedAppTheme = nameof(SelectedAppTheme);
         public const string SemaphoreSlimCount = nameof(SemaphoreSlimCount);
         public const string IsDisplayOriginPicture = nameof(IsDisplayOriginPicture);
+        public const string SzlmId = nameof(SzlmId);
+        public const string SzlmReportSeed = nameof(SzlmReportSeed);
+        public const string XAppDevice = nameof(XAppDevice);
 
         public static Type Get<Type>(string key) => LocalObject.Read<Type>(key);
         public static void Set<Type>(string key, Type value) => LocalObject.Save(key, value);

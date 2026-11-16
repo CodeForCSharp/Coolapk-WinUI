@@ -1,23 +1,14 @@
 using CoolapkUWP.Helpers;
-using CommunityToolkit.WinUI.Helpers;
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using Windows.ApplicationModel;
 
 namespace CoolapkUWP.Common
 {
     public class TokenCreator
     {
-        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
-        private static readonly string aid = RandHexString(16);
-        private static readonly string mac = RandMacAddress();
-        private static readonly string SystemManufacturer = string.Empty;
-        private static readonly string SystemProductName = string.Empty;
-
         // Token V3 参数。AppCode 与 auth blob 是一一对应的，换版本时两者要一起更新。
         // auth_blob.b64 中的签名数据表来自酷安 v16.2.0 的 libauth.so（参考公开的
         // coolapk-desktop / coolapk-mcp 实现提取），仅用于请求签名。
@@ -26,12 +17,27 @@ namespace CoolapkUWP.Common
         private const string AppId = "com.coolapk.market";
         private const int BcryptCost = 4;
 
+        // 桌面端使用固定兼容画像，必须和 User-Agent / X-Sdk-Int 一致。
+        // 协议不读 IMEI、AndroidID、OAID；第 1 段是数盟 DUID，没有时用 ca_ 占位，第 9 段固定 null。
+        public const string DeviceManufacturer = "Google";
+        public const string DeviceBrand = "google";
+        public const string DeviceModel = "Pixel 7";
+        public const string DeviceBuild = "TQ3A.230805.001";
+        public const string DeviceAndroidVersion = "13";
+        public const string DeviceSdkInt = "33";
+        public const int DeviceSdkIntValue = 33;
+
         private const string StdBase64Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         private const string BcryptBase64Alphabet = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         private static readonly byte[] AuthBlob = LoadAuthBlob();
 
-        public static string DeviceCode;
+        public static string DeviceCode { get; private set; }
+
+        public static string SzlmId { get; private set; }
+
+        public static string UserAgent { get; } =
+            $"Dalvik/2.1.0 (Linux; U; Android {DeviceAndroidVersion}; {DeviceModel} {DeviceBuild}) (#Build; {DeviceBrand}; {DeviceModel}; {DeviceBuild}; {DeviceAndroidVersion}) +CoolMarket/{AppVersion}-{AppCode}-universal";
 
         // token 依赖的时戳为整数秒（ConvertDateTimeToUnixTimeStamp 会四舍五入到秒），
         // 故同一秒内结果完全一致，可按秒缓存以避开每请求一次的 BCrypt。
@@ -41,11 +47,46 @@ namespace CoolapkUWP.Common
 
         static TokenCreator()
         {
-            DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"CoolapkUWP {Package.Current.Id.Version.ToFormattedString()}");
+            SzlmId = SzlmDuidClient.Validate(SettingsHelper.Get<string>(SettingsHelper.SzlmId)) ?? string.Empty;
+            string first = !string.IsNullOrEmpty(SzlmId)
+                ? SzlmId
+                : ResolvePlaceholderId(SettingsHelper.Get<string>(SettingsHelper.XAppDevice));
+            DeviceCode = CreateDeviceCode(first);
+            SettingsHelper.Set(SettingsHelper.XAppDevice, DeviceCode);
         }
 
         /// <summary>
-        /// GetToken Generate a token with random device info
+        /// 只替换设备码第 1 段为数盟 DUID，后 8 段保持当前画像。
+        /// </summary>
+        public static void ApplySzlmId(string value)
+        {
+            string id = SzlmDuidClient.Validate(value);
+            if (id == null)
+            {
+                throw new FormatException("设备标识为空或格式不正确，未修改设备标识");
+            }
+
+            SzlmId = id;
+            DeviceCode = CreateDeviceCode(id);
+            SettingsHelper.Set(SettingsHelper.SzlmId, id);
+            SettingsHelper.Set(SettingsHelper.XAppDevice, DeviceCode);
+        }
+
+        public static string GetHexMd5(byte[] input) => GetMD5(input);
+
+        internal static string RandHexChars(int length)
+        {
+            const string chars = "0123456789abcdef";
+            char[] buffer = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                buffer[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];
+            }
+            return new string(buffer);
+        }
+
+        /// <summary>
+        /// 用当前设备码生成 Token V3。同一秒内会复用缓存。
         /// </summary>
         public string GetToken()
         {
@@ -203,25 +244,63 @@ namespace CoolapkUWP.Common
         }
 
         /// <summary>
-        /// CreateDeviceCode Generace your custom device code
+        /// 官方 9 段设备码：szlmId; ; ; ; manufacturer; brand; model; build; null
         /// </summary>
-        private static string CreateDeviceCode(string aid, string mac, string manufacturer, string brand, string model, string buildNumber)
+        private static string CreateDeviceCode(string deviceId)
         {
-            return $"{aid}; ; ; {mac}; {manufacturer}; {brand}; {model}; {buildNumber}".GetBase64(true).Reverse();
+            return $"{deviceId}; ; ; ; {DeviceManufacturer}; {DeviceBrand}; {DeviceModel}; {DeviceBuild}; null".GetBase64(true).Reverse();
         }
 
-        private static string RandMacAddress()
+        private static string CreatePlaceholderId()
         {
-            byte[] bytes = new byte[6];
-            Rng.GetBytes(bytes);
-            return string.Join(":", bytes.Select(b => b.ToString("x2")));
+            return "ca_" + RandHexChars(32);
         }
 
-        private static string RandHexString(int n)
+        private static string ResolvePlaceholderId(string encoded)
         {
-            byte[] bytes = new byte[n];
-            Rng.GetBytes(bytes);
-            return Convert.ToHexString(bytes);
+            string first = TryReadFirstField(encoded);
+            if (!string.IsNullOrEmpty(first) && first.StartsWith("ca_", StringComparison.Ordinal))
+            {
+                return first;
+            }
+
+            return CreatePlaceholderId();
+        }
+
+        private static string TryReadFirstField(string encoded)
+        {
+            if (string.IsNullOrEmpty(encoded))
+            {
+                return null;
+            }
+
+            try
+            {
+                char[] chars = encoded.ToCharArray();
+                Array.Reverse(chars);
+                string base64 = new string(chars);
+                switch (base64.Length % 4)
+                {
+                    case 2:
+                        base64 += "==";
+                        break;
+                    case 3:
+                        base64 += "=";
+                        break;
+                }
+
+                string plain = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+                string[] fields = plain.Split(';');
+                if (fields.Length == 9 && !string.IsNullOrWhiteSpace(fields[0]))
+                {
+                    return fields[0];
+                }
+            }
+            catch (FormatException)
+            {
+            }
+
+            return null;
         }
     }
 }
