@@ -1,4 +1,6 @@
 using CoolapkUWP.Controls;
+using CoolapkUWP.Data;
+using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
@@ -80,8 +82,20 @@ namespace CoolapkUWP.ViewModels.FeedPages
                         p,
                         UriHelper.GetPagingArgs(p, firstItem, lastItem),
                         toggleIsOn ? 1 : 0),
-                a => a.Select(o => (string)o["entityType"] == "feed_reply" ? FeedReplyModel.FromJson(o.AsObject()) : (Entity)new NullEntity()),
+                GetReplies,
                 "id");
+        }
+
+        /// <summary>整页一次反序列化。逐条 FromJson 会把每个节点再序列化一遍。</summary>
+        private static IEnumerable<Entity> GetReplies(JsonArray array)
+        {
+            foreach (FeedReplyDto dto in DtoJson.DeserializeList<FeedReplyDto>(array))
+            {
+                if (dto == null) { continue; }
+                yield return dto.EntityType == "feed_reply"
+                    ? new FeedReplyModel(dto)
+                    : new NullEntity();
+            }
         }
 
         public void SetComboBoxSelectedIndex(int value)

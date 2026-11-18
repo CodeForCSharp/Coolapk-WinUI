@@ -34,14 +34,9 @@ namespace CoolapkUWP.ViewModels.DataSource
 
         protected override async Task<IList<Entity>> LoadItemsAsync(uint count)
         {
+            // 一页回来就交给列表显示。凑满 count 再返回会把第二页的网络等待算进首屏。
             List<Entity> Models = new List<Entity>();
-            while (Models.Count < count)
-            {
-                int temp = Models.Count;
-                if (Models.Count > 0) { _currentPage++; }
-                await Provider?.GetEntity(Models, _currentPage);
-                if (Models.Count <= 0 || Models.Count <= temp) { break; }
-            }
+            await Provider?.GetEntity(Models, _currentPage);
             return Models;
         }
 

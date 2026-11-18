@@ -9,9 +9,11 @@ namespace CoolapkUWP.ViewModels.FeedPages
     {
         internal FeedDetailViewModel(string id) : base(id) { }
 
+        protected override EntityItemSource CreateEarlyTab() => new ReplyItemSource(ID);
+
         protected override EntityItemSource BuildTabs(List<ShyHeaderItem> tabs)
         {
-            EntityItemSource first = AddTab(tabs, "回复", new ReplyItemSource(ID));
+            EntityItemSource first = AddTab(tabs, "回复", TakeEarlyTab() ?? new ReplyItemSource(ID));
             AddTab(tabs, "点赞", new LikeItemSource(ID));
             AddTab(tabs, "转发", new ShareItemSource(ID, FeedDetail.FeedType));
             return first;

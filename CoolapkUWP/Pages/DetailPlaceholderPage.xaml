@@ -1,0 +1,22 @@
+<Page
+    x:Class="CoolapkUWP.Pages.DetailPlaceholderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Spacing="16">
+        <Viewbox Width="72" Height="72">
+            <PathIcon
+                Data="{StaticResource CoolapkLogoGeometry}"
+                Foreground="{StaticResource CoolapkLogoForeground}" />
+        </Viewbox>
+        <TextBlock
+            x:Uid="/MainPage/DetailPlaceholder"
+            HorizontalAlignment="Center"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Style="{StaticResource BodyTextBlockStyle}"
+            Text="从左侧选择一条动态"
+            TextAlignment="Center" />
+    </StackPanel>
+</Page>

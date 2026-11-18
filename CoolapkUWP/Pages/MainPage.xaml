@@ -231,10 +231,61 @@
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
             </muxc:NavigationView.FooterMenuItems>
-            <Frame
-                x:Name="NavigationViewFrame"
-                x:FieldModifier="public"
-                Navigated="On_Navigated" />
+            <Grid x:Name="Workspace">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="PrimaryColumn" Width="*" MinWidth="360" />
+                    <ColumnDefinition x:Name="SplitterColumn" Width="0" />
+                    <ColumnDefinition x:Name="DetailColumn" Width="0" />
+                </Grid.ColumnDefinitions>
+                <Frame
+                    x:Name="NavigationViewFrame"
+                    x:FieldModifier="public"
+                    Navigated="On_Navigated" />
+                <Grid
+                    x:Name="Splitter"
+                    Grid.Column="1"
+                    Width="8"
+                    Background="Transparent"
+                    Visibility="Collapsed">
+                    <Rectangle
+                        Width="1"
+                        HorizontalAlignment="Center"
+                        Fill="{ThemeResource DividerStrokeColorDefaultBrush}" />
+                </Grid>
+                <Border
+                    x:Name="DetailPane"
+                    Grid.Column="2"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="1,0,0,0"
+                    Visibility="Collapsed">
+                    <Grid>
+                        <Frame x:Name="DetailFrame" Navigated="On_DetailNavigated" />
+                        <StackPanel
+                            x:Name="DetailCommands"
+                            Margin="4,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Canvas.ZIndex="1"
+                            Orientation="Horizontal"
+                            Spacing="2"
+                            Visibility="Collapsed">
+                            <Button
+                                x:Name="DetailBackButton"
+                                Click="DetailBackButton_Click"
+                                Content="&#xE72B;"
+                                Style="{StaticResource NavigationIconButtonNormalStyle}"
+                                ToolTipService.ToolTip="返回" />
+                            <Button
+                                x:Name="DetailCloseButton"
+                                Click="DetailCloseButton_Click"
+                                Content="&#xE711;"
+                                Style="{StaticResource NavigationIconButtonNormalStyle}"
+                                ToolTipService.ToolTip="关闭" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
         </muxc:NavigationView>
         <muxc:ProgressBar
             x:Name="ProgressBar"

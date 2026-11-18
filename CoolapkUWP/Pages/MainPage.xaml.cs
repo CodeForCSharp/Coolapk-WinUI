@@ -24,7 +24,9 @@ using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -83,6 +85,16 @@ namespace CoolapkUWP.Pages
             }
         }
 
+        private const double DetailMinWidth = 420;
+        private const double PrimaryMinWidth = 360;
+        private const double SplitterWidth = 8;
+        /// <summary>侧栏占工作区的比例。窗口缩放时按这个比例重算，不把多出来的宽度全部给左边。</summary>
+        private const double DetailRatio = 0.6;
+        private bool isDraggingSplitter;
+        private double detailRatio = DetailRatio;
+        private PointerEventHandler splitterMoved;
+        private PointerEventHandler splitterReleased;
+
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
         {
             ("Find", typeof(FindPage)),
@@ -106,6 +118,100 @@ namespace CoolapkUWP.Pages
             NotificationsModel = NotificationsModel.Instance;
             SearchBoxHolder.RegisterPropertyChangedCallback(Slot.IsStretchProperty, new DependencyPropertyChangedCallback(OnIsStretchProperty));
             NavigationView.RegisterPropertyChangedCallback(NavigationView.IsBackButtonVisibleProperty, new DependencyPropertyChangedCallback(OnIsBackButtonVisibleChanged));
+            PaneNavigation.Attach(DetailFrame);
+            PaneNavigation.StateChanged += OnPaneStateChanged;
+            splitterMoved = Splitter_PointerMoved;
+            splitterReleased = Splitter_PointerReleased;
+            Splitter.PointerPressed += Splitter_PointerPressed;
+            Workspace.SizeChanged += Workspace_SizeChanged;
+        }
+
+        /// <summary>按目标选择主栏或侧栏。侧栏打开时主栏保持不动。</summary>
+        public Frame ResolveFrame(NavigationTarget target, Type pageType)
+        {
+            if (PaneNavigation.ShouldOpenInDetail(target, pageType))
+            {
+                OpenDetailPane();
+                return DetailFrame;
+            }
+            return NavigationViewFrame;
+        }
+
+        private void OpenDetailPane()
+        {
+            if (PaneNavigation.IsDetailOpen) { return; }
+            PaneNavigation.SetOpen(true);
+        }
+
+        private void OnPaneStateChanged()
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                _ = DispatcherQueue.EnqueueAsync(ApplyPaneState);
+                return;
+            }
+            ApplyPaneState();
+        }
+
+        private void ApplyPaneState()
+        {
+            bool open = PaneNavigation.IsDetailOpen && Workspace.ActualWidth >= PaneNavigation.DetailThreshold;
+            Splitter.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+            DetailPane.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+            SplitterColumn.Width = open ? new GridLength(SplitterWidth) : new GridLength(0);
+            DetailColumn.MinWidth = open ? DetailMinWidth : 0;
+            DetailColumn.Width = open ? new GridLength(WidthForRatio(detailRatio)) : new GridLength(0);
+            UpdateBackButton();
+        }
+
+        /// <summary>按比例算侧栏宽度，同时给主栏留出最小宽度。</summary>
+        private double WidthForRatio(double ratio)
+        {
+            double available = Math.Max(0, Workspace.ActualWidth - SplitterWidth);
+            double max = Math.Max(DetailMinWidth, available - PrimaryMinWidth);
+            return Math.Clamp(available * ratio, Math.Min(DetailMinWidth, available), max);
+        }
+
+        private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (PaneNavigation.IsDetailOpen && !isDraggingSplitter)
+            {
+                ApplyPaneState();
+            }
+        }
+
+        private void Splitter_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            isDraggingSplitter = true;
+            Splitter.CapturePointer(e.Pointer);
+            ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.SizeWestEast);
+            Workspace.PointerMoved -= splitterMoved;
+            Workspace.PointerReleased -= splitterReleased;
+            Workspace.PointerCanceled -= splitterReleased;
+            Workspace.PointerMoved += splitterMoved;
+            Workspace.PointerReleased += splitterReleased;
+            Workspace.PointerCanceled += splitterReleased;
+        }
+
+        private void Splitter_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!isDraggingSplitter) { return; }
+            double available = Workspace.ActualWidth - SplitterWidth;
+            double x = e.GetCurrentPoint(Workspace).Position.X;
+            double width = Math.Clamp(available - x, DetailMinWidth, Math.Max(DetailMinWidth, available - PrimaryMinWidth));
+            if (available > 0) { detailRatio = width / available; }
+            DetailColumn.Width = new GridLength(width);
+        }
+
+        private void Splitter_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!isDraggingSplitter) { return; }
+            isDraggingSplitter = false;
+            Splitter.ReleasePointerCapture(e.Pointer);
+            ProtectedCursor = null;
+            Workspace.PointerMoved -= splitterMoved;
+            Workspace.PointerReleased -= splitterReleased;
+            Workspace.PointerCanceled -= splitterReleased;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -131,6 +237,12 @@ namespace CoolapkUWP.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            // 窗口够宽时启动即双栏，右边先放占位页。
+            if (!PaneNavigation.IsDetailOpen && Workspace.ActualWidth >= PaneNavigation.DetailThreshold)
+            {
+                PaneNavigation.ShowPlaceholder();
+                PaneNavigation.SetOpen(true);
+            }
             if (App.MainWindow is not Window window) { return; }
             window.SetTitleBar(DragRegion);
 
@@ -190,6 +302,13 @@ namespace CoolapkUWP.Pages
             if (!DispatcherQueue.HasThreadAccess)
             { return false; }
 
+            // 侧栏有自己的返回栈。退到占位页就停，占位页不算可以返回的内容。
+            if (PaneNavigation.IsDetailOpen && DetailFrame.CanGoBack && DetailFrame.Content is not DetailPlaceholderPage)
+            {
+                DetailFrame.GoBack();
+                return true;
+            }
+
             if (!NavigationViewFrame.CanGoBack)
             { return false; }
 
@@ -203,12 +322,55 @@ namespace CoolapkUWP.Pages
             return true;
         }
 
-        private void On_Navigated(object _, NavigationEventArgs e)
+        private void UpdateBackButton()
         {
-            NavigationView.IsBackEnabled = NavigationViewFrame.CanGoBack;
-            NavigationView.IsBackButtonVisible = NavigationViewFrame.CanGoBack
+            bool detailHasContent = PaneNavigation.IsDetailOpen && DetailFrame.Content is not null and not DetailPlaceholderPage;
+            bool canGoBack = NavigationViewFrame.CanGoBack || detailHasContent;
+            NavigationView.IsBackEnabled = canGoBack;
+            NavigationView.IsBackButtonVisible = canGoBack
                 ? NavigationViewBackButtonVisible.Visible
                 : NavigationViewBackButtonVisible.Collapsed;
+            DetailBackButton.IsEnabled = DetailFrame.CanGoBack && DetailFrame.Content is not DetailPlaceholderPage;
+            // 占位页没有标题栏，不能因此把浮动的返回和关闭显出来。
+            DetailCommands.Visibility = detailHasContent && !PaneNavigation.HasPageHeader(DetailFrame.Content as DependencyObject)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+        private void On_DetailNavigated(object _, NavigationEventArgs e)
+        {
+            if (e.Content == null && !DetailFrame.CanGoBack)
+            {
+                PaneNavigation.SetOpen(false);
+            }
+            else if (e.Content is Page page)
+            {
+                page.Loaded += OnDetailPageLoaded;
+            }
+            UpdateBackButton();
+        }
+
+        private void OnDetailPageLoaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Page page) { page.Loaded -= OnDetailPageLoaded; }
+            UpdateBackButton();
+        }
+
+        private void DetailBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DetailFrame.CanGoBack) { DetailFrame.GoBack(); }
+        }
+
+        private void DetailCloseButton_Click(object sender, RoutedEventArgs e) => PaneNavigation.Close();
+
+        private void On_Navigated(object _, NavigationEventArgs e)
+        {
+            // 切到首页、发现这类栏目时，侧栏里的上一条动态不再对应新列表，回到占位页。
+            if (PaneNavigation.IsSection(e.SourcePageType) && PaneNavigation.IsDetailOpen)
+            {
+                PaneNavigation.ShowPlaceholder();
+            }
+            UpdateBackButton();
             if (NavigationViewFrame.SourcePageType != null)
             {
                 (string Tag, Type Page) item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
@@ -314,7 +476,7 @@ namespace CoolapkUWP.Pages
             switch ((sender as FrameworkElement).Tag.ToString())
             {
                 case "Login":
-                    NavigationViewFrame.Navigate(typeof(BrowserPage), new BrowserViewModel(UriHelper.LoginUri));
+                    _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(UriHelper.LoginUri));
                     break;
                 case "Logout":
                     SettingsHelper.Logout();
@@ -380,15 +542,15 @@ namespace CoolapkUWP.Pages
         {
             if (args.ChosenSuggestion is AppModel app)
             {
-                _ = NavigationViewFrame.Navigate(typeof(BrowserPage), new BrowserViewModel($"https://www.coolapk.com{app.Url}"));
+                _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel($"https://www.coolapk.com{app.Url}"));
             }
             else if (args.ChosenSuggestion is SearchWord word)
             {
-                _ = NavigationViewFrame.Navigate(typeof(SearchingPage), new SearchingViewModel(word.ToString(), word.Glyph == "\uE77B" ? 1 : -1));
+                _ = this.NavigateAsync(typeof(SearchingPage), new SearchingViewModel(word.ToString(), word.Glyph == "\uE77B" ? 1 : -1));
             }
             else if (args.ChosenSuggestion is null && !string.IsNullOrEmpty(sender.Text))
             {
-                _ = NavigationViewFrame.Navigate(typeof(SearchingPage), new SearchingViewModel(sender.Text));
+                _ = this.NavigateAsync(typeof(SearchingPage), new SearchingViewModel(sender.Text));
             }
         }
 

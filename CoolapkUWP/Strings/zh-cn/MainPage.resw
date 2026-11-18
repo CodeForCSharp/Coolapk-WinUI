@@ -141,4 +141,7 @@
   <data name="Settings.Content" xml:space="preserve">
     <value>设置</value>
   </data>
+  <data name="DetailPlaceholder.Text" xml:space="preserve">
+    <value>从左侧选择一条动态</value>
+  </data>
 </root>

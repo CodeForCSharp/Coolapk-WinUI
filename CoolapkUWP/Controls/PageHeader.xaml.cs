@@ -25,6 +25,19 @@ namespace CoolapkUWP.Controls
                 typeof(PageHeader),
                 new PropertyMetadata(null));
 
+        /// <summary>标题左侧的操作区，侧栏用来放返回和关闭。</summary>
+        public object LeftContent
+        {
+            get => GetValue(LeftContentProperty);
+            set => SetValue(LeftContentProperty, value);
+        }
+
+        public static readonly DependencyProperty LeftContentProperty = DependencyProperty.Register(
+            "LeftContent",
+            typeof(object),
+            typeof(PageHeader),
+            null);
+
         public object CustomContent
         {
             get => GetValue(CustomContentProperty);

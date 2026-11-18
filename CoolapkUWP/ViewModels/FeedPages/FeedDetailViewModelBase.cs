@@ -21,23 +21,53 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected EntityItemSource AddTab(List<ShyHeaderItem> tabs, string header, EntityItemSource source)
         {
+            source.LoadMoreStarted -= ProgressBarHelper.ShowProgressBar;
+            source.LoadMoreCompleted -= ProgressBarHelper.HideProgressBar;
             source.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
             source.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
             tabs.Add(new ShyHeaderItem { Header = header, ItemSource = source });
             return source;
         }
 
+        /// <summary>
+        /// 首个 Tab 只依赖帖子 id 时覆盖。详情还在请求时就能开始加载。
+        /// </summary>
+        protected virtual EntityItemSource CreateEarlyTab() => null;
+
+        /// <summary>取走并清掉提前创建的首个 Tab，避免再 new 一份。</summary>
+        protected EntityItemSource TakeEarlyTab()
+        {
+            EntityItemSource tab = _earlyTab;
+            _earlyTab = null;
+            return tab;
+        }
+
+        private EntityItemSource _earlyTab;
+
         public override async Task Refresh(bool reset = false)
         {
             if (FeedDetail == null || reset)
             {
+                EntityItemSource early = CreateEarlyTab();
+                Task earlyTask = Task.CompletedTask;
+                if (early != null)
+                {
+                    early.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+                    early.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
+                    earlyTask = early.Refresh(true);
+                }
+                _earlyTab = early;
+
                 FeedDetail = await GetFeedDetailAsync(ID);
                 if (FeedDetail == null) { return; }
                 Title = FeedDetail.Title;
                 List<ShyHeaderItem> tabs = new List<ShyHeaderItem>();
                 EntityItemSource firstTab = BuildTabs(tabs);
-                base.ItemSource = tabs;
-                if (firstTab != null) { await firstTab.Refresh(reset); }
+                // 先绑定列表，回复到了就能上屏，不用等整次 Refresh 返回。
+                ItemSource = tabs;
+                if (firstTab == null) { return; }
+                if (firstTab == early) { await earlyTask; }
+                else { await firstTab.Refresh(reset); }
             }
             else
             {

@@ -30,6 +30,7 @@ namespace CoolapkUWP.Controls
     {
         public const string AuthorBorder = "<div class=\"author-border\"></div>";
         private static readonly Regex EmojisRegex = new Regex(@"(\[\S*?\]|#\(\S*?\))");
+        private static readonly HtmlParser SharedParser = new HtmlParser();
         private static readonly FontSizeToHeightConverter SharedFontSizeToHeightConverter = new FontSizeToHeightConverter();
         private static readonly BoolToVisibilityConverter SharedBoolToVisibilityConverter = new BoolToVisibilityConverter();
         private static readonly SolidColorBrush TopicLinkBrush = new SolidColorBrush(Color.FromArgb(255, 15, 157, 88));
@@ -110,8 +111,17 @@ namespace CoolapkUWP.Controls
         private void GetTextBlock()
         {
             RichTextBlock.Blocks.Clear();
-            HtmlParser parser = new HtmlParser();
-            var doc = parser.ParseDocument(Text.Replace("<!--break-->", string.Empty));
+            if (string.IsNullOrEmpty(Text)) { return; }
+
+            // 回复基本是文字、链接和表情。这种不建 DOM，避免每条回复都在 UI 线程跑一遍 AngleSharp。
+            string html = Text.Replace("<!--break-->", string.Empty);
+            if (CanRenderLight(html))
+            {
+                RenderLight(html);
+                return;
+            }
+
+            var doc = SharedParser.ParseDocument(html);
             Paragraph paragraph = new Paragraph { LineHeight = FontSize + 10 };
             List<ImageModel> imageArrayBuider = new List<ImageModel>();
             void NewLine()
@@ -406,6 +416,226 @@ namespace CoolapkUWP.Controls
             }
 
             RichTextBlock.Blocks.Add(paragraph);
+        }
+
+        /// <summary>
+        /// 只有 a、换行和作者标记时返回 true。出现图片或其他标签就交给 AngleSharp。
+        /// </summary>
+        private static bool CanRenderLight(string html)
+        {
+            int i = 0;
+            while (i < html.Length)
+            {
+                int lt = html.IndexOf('<', i);
+                if (lt < 0) { return true; }
+                if (lt + 1 >= html.Length || html[lt + 1] == '!' || html[lt + 1] == '?') { return false; }
+
+                int gt = html.IndexOf('>', lt);
+                if (gt < 0) { return false; }
+
+                string raw = html.Substring(lt + 1, gt - lt - 1).Trim();
+                if (raw.EndsWith("/")) { raw = raw.Substring(0, raw.Length - 1).Trim(); }
+                bool closing = raw.StartsWith("/");
+                if (closing) { raw = raw.Substring(1).Trim(); }
+
+                int nameLength = 0;
+                while (nameLength < raw.Length && !char.IsWhiteSpace(raw[nameLength])) { nameLength++; }
+                if (nameLength == 0) { return false; }
+                string name = raw.Substring(0, nameLength).ToLowerInvariant();
+
+                if (name == "a" && !closing)
+                {
+                    int close = html.IndexOf("</a>", gt + 1, StringComparison.OrdinalIgnoreCase);
+                    if (close < 0 || html.IndexOf('<', gt + 1, close - gt - 1) >= 0) { return false; }
+                    i = close + 4;
+                    continue;
+                }
+                if (name == "div" && !closing)
+                {
+                    int close = html.IndexOf("</div>", gt + 1, StringComparison.OrdinalIgnoreCase);
+                    if (close < 0 || raw.IndexOf("author-border", StringComparison.Ordinal) < 0) { return false; }
+                    string inner = html.Substring(gt + 1, close - gt - 1);
+                    if (inner.IndexOf('<') >= 0 || inner.Trim().Length > 0) { return false; }
+                    i = close + 6;
+                    continue;
+                }
+                if (name != "br" && name != "a" && name != "div") { return false; }
+                i = gt + 1;
+            }
+            return true;
+        }
+
+        private void RenderLight(string html)
+        {
+            Paragraph paragraph = new Paragraph { LineHeight = FontSize + 10 };
+            int i = 0;
+            while (i < html.Length)
+            {
+                int lt = html.IndexOf('<', i);
+                if (lt < 0)
+                {
+                    AppendEmojiText(paragraph, html.Substring(i));
+                    break;
+                }
+                if (lt > i) { AppendEmojiText(paragraph, html.Substring(i, lt - i)); }
+
+                int gt = html.IndexOf('>', lt);
+                string raw = html.Substring(lt + 1, gt - lt - 1).Trim();
+                if (raw.EndsWith("/")) { raw = raw.Substring(0, raw.Length - 1).Trim(); }
+                bool closing = raw.StartsWith("/");
+                string body = closing ? raw.Substring(1).Trim() : raw;
+                int nameLength = 0;
+                while (nameLength < body.Length && !char.IsWhiteSpace(body[nameLength])) { nameLength++; }
+                string name = body.Substring(0, nameLength).ToLowerInvariant();
+
+                if (name == "br")
+                {
+                    RichTextBlock.Blocks.Add(paragraph);
+                    paragraph = new Paragraph { LineHeight = FontSize + 10 };
+                }
+                else if (name == "div" && !closing)
+                {
+                    AddAuthorBadge(paragraph);
+                    i = html.IndexOf("</div>", gt + 1, StringComparison.OrdinalIgnoreCase) + 6;
+                    continue;
+                }
+                else if (name == "a" && !closing)
+                {
+                    int close = html.IndexOf("</a>", gt + 1, StringComparison.OrdinalIgnoreCase);
+                    string content = html.Substring(gt + 1, close - gt - 1);
+                    AddHyperlink(paragraph, ReadAttr(body, "href"), ReadAttr(body, "type"), content);
+                    i = close + 4;
+                    continue;
+                }
+                i = gt + 1;
+            }
+            RichTextBlock.Blocks.Add(paragraph);
+        }
+
+        private void AppendEmojiText(Paragraph paragraph, string text)
+        {
+            if (string.IsNullOrEmpty(text)) { return; }
+            foreach (string item in EmojisRegex.Split(text))
+            {
+                if (string.IsNullOrEmpty(item)) { continue; }
+                switch (item[0])
+                {
+                    case '#':
+                        string key = item.Substring(1);
+                        if (EmojiHelper.Emojis.Contains(key)) { AddEmojiInline(paragraph, key, item); }
+                        else { paragraph.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(item) }); }
+                        break;
+                    case '[':
+                        if (SettingsHelper.Get<bool>("IsUseOldEmojiMode") && EmojiHelper.OldEmojis.Contains(item)) { AddEmojiInline(paragraph, item, item); }
+                        else if (EmojiHelper.Emojis.Contains(item)) { AddEmojiInline(paragraph, item, item); }
+                        else { paragraph.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(item) }); }
+                        break;
+                    default:
+                        paragraph.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(item) });
+                        break;
+                }
+            }
+        }
+
+        private void AddEmojiInline(Paragraph paragraph, string key, string tooltip)
+        {
+            Image image = new Image { Source = EmojiHelper.GetBitmap(key) };
+            ToolTipService.SetToolTip(image, new ToolTip { Content = tooltip });
+            Viewbox viewbox = new Viewbox
+            {
+                Child = image,
+                Margin = new Thickness(0, 0, 0, -4),
+                VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center
+            };
+            viewbox.SetBinding(WidthProperty, new Binding
+            {
+                Source = this,
+                Mode = BindingMode.OneWay,
+                Converter = SharedFontSizeToHeightConverter,
+                Path = new PropertyPath(nameof(FontSize))
+            });
+            paragraph.Inlines.Add(new InlineUIContainer { Child = viewbox });
+        }
+
+        private void AddHyperlink(Paragraph paragraph, string href, string type, string content)
+        {
+            content ??= string.Empty;
+            Hyperlink hyperlink = new Hyperlink { UnderlineStyle = UnderlineStyle.None, Foreground = TopicLinkBrush };
+            if (!string.IsNullOrEmpty(href))
+            {
+                string target = href;
+                hyperlink.Click += (sender, e) => _ = this.OpenLinkAsync(target);
+                ToolTipService.SetToolTip(hyperlink, new ToolTip { Content = target });
+            }
+            if (!content.StartsWith("@") && !content.StartsWith("#") && type != "user-detail")
+            {
+                hyperlink.Inlines.Add(new Run { Text = "\uE167", FontFamily = (FontFamily)Application.Current.Resources["SymbolThemeFontFamily"] });
+            }
+            else if (content == "\u67E5\u770B\u56FE\u7247" && (href.IndexOf("http://image.coolapk.com", StringComparison.Ordinal) == 0 || href.IndexOf("https://image.coolapk.com", StringComparison.Ordinal) == 0))
+            {
+                hyperlink.Inlines.Add(new Run { Text = "\uE158", FontFamily = (FontFamily)Application.Current.Resources["SymbolThemeFontFamily"] });
+            }
+            hyperlink.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(content) });
+            paragraph.Inlines.Add(hyperlink);
+        }
+
+        private void AddAuthorBadge(Paragraph paragraph)
+        {
+            Border border = new Border
+            {
+                Margin = new Thickness(4, 0, 4, -4),
+                CornerRadius = new CornerRadius(4),
+                BorderThickness = new Thickness(1),
+                VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+                BorderBrush = TopicLinkBrush,
+                Child = new TextBlock
+                {
+                    FontSize = 12,
+                    Margin = new Thickness(1),
+                    IsTextSelectionEnabled = true,
+                    Text = _loader.GetString("FeedAuthorText"),
+                    Foreground = TopicLinkBrush,
+                }
+            };
+            paragraph.Inlines.Add(new InlineUIContainer { Child = border });
+        }
+
+        private static string ReadAttr(string tag, string name)
+        {
+            int i = 0;
+            while (i < tag.Length && !char.IsWhiteSpace(tag[i])) { i++; }
+            while (i < tag.Length)
+            {
+                while (i < tag.Length && char.IsWhiteSpace(tag[i])) { i++; }
+                int start = i;
+                while (i < tag.Length && tag[i] != '=' && !char.IsWhiteSpace(tag[i])) { i++; }
+                if (i == start) { break; }
+                string key = tag.Substring(start, i - start);
+                while (i < tag.Length && char.IsWhiteSpace(tag[i])) { i++; }
+                if (i >= tag.Length || tag[i] != '=') { continue; }
+                i++;
+                while (i < tag.Length && char.IsWhiteSpace(tag[i])) { i++; }
+                if (i >= tag.Length) { break; }
+
+                string value;
+                if (tag[i] == '"' || tag[i] == '\'')
+                {
+                    char quote = tag[i++];
+                    int end = tag.IndexOf(quote, i);
+                    if (end < 0) { return string.Empty; }
+                    value = tag.Substring(i, end - i);
+                    i = end + 1;
+                }
+                else
+                {
+                    int end = i;
+                    while (end < tag.Length && !char.IsWhiteSpace(tag[end])) { end++; }
+                    value = tag.Substring(i, end - i);
+                    i = end;
+                }
+                if (key.Equals(name, StringComparison.OrdinalIgnoreCase)) { return WebUtility.HtmlDecode(value); }
+            }
+            return string.Empty;
         }
 
         /// <summary>
