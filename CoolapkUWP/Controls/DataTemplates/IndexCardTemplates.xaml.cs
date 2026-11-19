@@ -86,11 +86,22 @@ namespace CoolapkUWP.Controls.DataTemplates
                 e.Handled = true;
                 return;
             }
+            if (!UIHelper.IsOriginSource(sender, e.OriginalSource)) { return; }
             if (sender is FrameworkElement element)
             {
                 CardNavigationService.HandleCardTap(element, element.Tag);
             }
             e.Handled = true;
+        }
+
+        private void FeedButton_Click(object sender, RoutedEventArgs e)
+        {
+            FeedCommandService.HandleFeedButtonClick(sender as FrameworkElement, sender as FrameworkElement);
+        }
+
+        private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ClipboardHelper.SetText((sender as FrameworkElement).Tag?.ToString());
         }
 
         private void RatingTargetRow_Tapped(object sender, TappedRoutedEventArgs e)

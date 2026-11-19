@@ -13,7 +13,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Xaml;

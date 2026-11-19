@@ -125,7 +125,7 @@ namespace CoolapkUWP.Models.Feeds
                 if (double.TryParse(dto.TargetRow.StarAverageScore, out double ts))
                 {
                     int tstars = System.Math.Max(0, System.Math.Min(5, (int)System.Math.Round(ts / 2.0)));
-                    for (int i = 0; i < tstars; i++) { TargetStars.Add(true); }
+                    for (int i = 0; i < 5; i++) { TargetStars.Add(i < tstars); }
                 }
             }
 
@@ -162,7 +162,7 @@ namespace CoolapkUWP.Models.Feeds
             int overallStars = dto.Star > 0
                 ? System.Math.Max(0, System.Math.Min(5, dto.Star))
                 : System.Math.Max(0, System.Math.Min(5, (int)System.Math.Round(RatingScore / 2.0)));
-            for (int i = 0; i < overallStars; i++) { OverallStars.Add(true); }
+            for (int i = 0; i < 5; i++) { OverallStars.Add(i < overallStars); }
             OverallRatingDescriptor = overallStars switch
             {
                 1 => "很差",

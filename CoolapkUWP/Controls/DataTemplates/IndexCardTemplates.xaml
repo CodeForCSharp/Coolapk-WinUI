@@ -1817,6 +1817,42 @@
             Padding="0"
             Tag="{x:Bind}"
             Tapped="RatingCard_Tapped">
+            <UserControl.Resources>
+                <Flyout x:Key="QRCodeFlyout" ShouldConstrainToRootBounds="False">
+                    <control:ShowQRCodeControl QRCodeText="{x:Bind ShareUrl, Mode=OneWay}" />
+                </Flyout>
+                <MenuFlyout x:Key="MoreFlyout">
+                    <MenuFlyoutSubItem x:Uid="/Feed/Copy">
+                        <MenuFlyoutSubItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
+                        </MenuFlyoutSubItem.Icon>
+                        <ToggleMenuFlyoutItem
+                            x:Uid="/Feed/CopyFree"
+                            IsChecked="{x:Bind IsCopyEnabled, Mode=TwoWay}" />
+                        <MenuFlyoutItem
+                            x:Uid="/Feed/CopyLink"
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind ShareUrl, Mode=OneWay}" />
+                        <MenuFlyoutItem
+                            x:Uid="/Feed/CopyAll"
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind Message, Converter={StaticResource HTMLToTextConverter}, Mode=OneWay}" />
+                        <MenuFlyoutItem
+                            Click="CopyMenuItem_Click"
+                            Tag="{x:Bind UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='@{0}', Mode=OneWay}"
+                            Text="{x:Bind UserInfo.UserName, Converter={StaticResource StringFormatConverter}, ConverterParameter='复制 @{0}', Mode=OneWay}" />
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem
+                        x:Name="ReportButton"
+                        x:Uid="/Feed/Report"
+                        Click="FeedButton_Click"
+                        Tag="{x:Bind ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                </MenuFlyout>
+            </UserControl.Resources>
             <Grid Padding="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -1831,6 +1867,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Border
                         Grid.Column="0"
@@ -1871,6 +1908,21 @@
                                 Visibility="{x:Bind DeviceTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
+                    <Button
+                        x:Uid="/Feed/MoreButton"
+                        Grid.Column="2"
+                        Width="32"
+                        Height="32"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Flyout="{StaticResource MoreFlyout}"
+                        Style="{StaticResource TransparentButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            FontSize="16"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Glyph="&#xE712;" />
+                    </Button>
                 </Grid>
 
                 <StackPanel
@@ -2026,68 +2078,146 @@
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="6" Margin="0,2,0,0">
+                <Grid Grid.Row="6" Height="32" Margin="0,2,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <FontIcon
-                        Grid.Column="0"
-                        HorizontalAlignment="Center"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Glyph="&#xE8E1;" />
-                    <FontIcon
+                    <Button
+                        x:Name="LikeButton"
+                        x:Uid="/Feed/LikeButton"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="FeedButton_Click"
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Tag="{x:Bind}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource CoolapkAccentBrush}"
+                                Glyph="&#xE8E1;"
+                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE8E1;"
+                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind LikeNum, Mode=OneWay}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        x:Name="ReplyButton"
+                        x:Uid="/Feed/ReplyButton"
                         Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Glyph="&#xE90A;" />
-                    <FontIcon
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="FeedButton_Click"
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Tag="{x:Bind}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE90A;" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        x:Name="ShareButton"
+                        x:Uid="/Feed/ShareButton"
                         Grid.Column="2"
-                        HorizontalAlignment="Center"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Glyph="&#xE72D;" />
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="FeedButton_Click"
+                        Flyout="{StaticResource QRCodeFlyout}"
+                        Style="{StaticResource TransparentButtonStyle}"
+                        Tag="{x:Bind ShareUrl, Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE72D;" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{x:Bind ShareNum, Mode=OneWay}" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </Grid>
         </UserControl>
     </DataTemplate>
 
     <DataTemplate x:Key="RatingStarTemplate" x:DataType="x:Boolean">
-        <Border
-            Width="16"
-            Height="16"
-            Background="#FFB91C"
-            CornerRadius="3">
-            <FontIcon
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                FontSize="10"
-                Foreground="White"
-                Glyph="&#xE735;" />
-        </Border>
+        <Grid Width="16" Height="16">
+            <Border
+                Background="#FFB91C"
+                CornerRadius="3"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, Mode=OneTime}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="10"
+                    Foreground="White"
+                    Glyph="&#xE735;" />
+            </Border>
+            <Border
+                Background="#FFC5C8CE"
+                CornerRadius="3"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneTime}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="10"
+                    Foreground="White"
+                    Glyph="&#xE735;" />
+            </Border>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="RatingStarSmallTemplate" x:DataType="x:Boolean">
-        <Border
-            Width="16"
-            Height="16"
-            Background="#FFB91C"
-            CornerRadius="3">
-            <FontIcon
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                FontSize="10"
-                Foreground="White"
-                Glyph="&#xE735;" />
-        </Border>
+        <Grid Width="16" Height="16">
+            <Border
+                Background="#FFB91C"
+                CornerRadius="3"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, Mode=OneTime}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="10"
+                    Foreground="White"
+                    Glyph="&#xE735;" />
+            </Border>
+            <Border
+                Background="#FFC5C8CE"
+                CornerRadius="3"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneTime}">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    FontSize="10"
+                    Foreground="White"
+                    Glyph="&#xE735;" />
+            </Border>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="FeedListCardTemplate" x:DataType="models:FeedListCardModel">
