@@ -58,15 +58,11 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ReplyRowsItemTemplate" x:DataType="feeds:SourceFeedReplyModel">
-        <Grid
-            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,0,0,1"
-            Visibility="{x:Bind Message, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-            <controls:TextBlockEx
-                Margin="4"
-                VerticalAlignment="Center"
-                Text="{x:Bind Message, Mode=OneWay}" />
-        </Grid>
+        <controls:TextBlockEx
+            Margin="0,3"
+            FontSize="15"
+            Text="{x:Bind Message, Mode=OneWay}"
+            Visibility="{x:Bind Message, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
     </DataTemplate>
 
     <DataTemplate x:Key="VoteItemTemplate" x:DataType="feeds:VoteItem">

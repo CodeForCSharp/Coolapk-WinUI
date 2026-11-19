@@ -65,7 +65,7 @@
                                     <Grid x:Name="ListViewHeader">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="{TemplateBinding HeaderRowHeight}" />
                                         </Grid.RowDefinitions>
                                         <Grid x:Name="TopHeader">
                                             <ContentPresenter Content="{TemplateBinding TopHeader}" />
@@ -77,7 +77,8 @@
                                             Margin="1,0"
                                             Background="{TemplateBinding HeaderBackground}"
                                             BorderThickness="1"
-                                            CornerRadius="{ThemeResource ControlCornerRadius}">
+                                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                                            Visibility="{TemplateBinding HeaderVisibility}">
                                             <Grid.BackgroundTransition>
                                                 <BrushTransition Duration="0:0:0.083" />
                                             </Grid.BackgroundTransition>

@@ -13,6 +13,62 @@
     mc:Ignorable="d">
     <Page.Resources>
         <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
+        <Style x:Key="ReplyFilterRadioStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="MinWidth" Value="52" />
+            <Setter Property="MinHeight" Value="28" />
+            <Setter Property="Padding" Value="12,4" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+                            <Border
+                                x:Name="Pill"
+                                Background="Transparent"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                FontSize="{TemplateBinding FontSize}"
+                                Foreground="{TemplateBinding Foreground}" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Opacity" Value="0.4" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <VisualState.Setters>
+                                            <Setter Target="Pill.Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked" />
+                                    <VisualState x:Name="Indeterminate" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Flyout x:Key="QRCodeFlyout" ShouldConstrainToRootBounds="False">
             <Flyout.FlyoutPresenterStyle>
                 <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
@@ -219,14 +275,73 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid
+                        x:Name="ReplyFilterBar"
+                        Grid.Row="0"
+                        Height="48"
+                        Padding="16,0,8,0"
+                        VerticalAlignment="Top"
+                        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="17"
+                            FontWeight="SemiBold"
+                            Text="{x:Bind Provider.FeedDetail.ReplyNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='共 {0} 回复', Mode=OneWay}" />
+                        <Border
+                            Grid.Column="1"
+                            Padding="3"
+                            VerticalAlignment="Center"
+                            Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                            CornerRadius="16">
+                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                <RadioButton
+                                    Click="ReplyFilter_Click"
+                                    Content="默认"
+                                    CornerRadius="14"
+                                    GroupName="ReplyFilter"
+                                    IsChecked="True"
+                                    Style="{StaticResource ReplyFilterRadioStyle}"
+                                    Tag="default" />
+                                <RadioButton
+                                    Click="ReplyFilter_Click"
+                                    Content="最新"
+                                    CornerRadius="14"
+                                    GroupName="ReplyFilter"
+                                    Style="{StaticResource ReplyFilterRadioStyle}"
+                                    Tag="latest" />
+                                <RadioButton
+                                    Click="ReplyFilter_Click"
+                                    Content="热门"
+                                    CornerRadius="14"
+                                    GroupName="ReplyFilter"
+                                    Style="{StaticResource ReplyFilterRadioStyle}"
+                                    Tag="hot" />
+                                <RadioButton
+                                    Click="ReplyFilter_Click"
+                                    Content="楼主"
+                                    CornerRadius="14"
+                                    GroupName="ReplyFilter"
+                                    Style="{StaticResource ReplyFilterRadioStyle}"
+                                    Tag="author" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                     <controls:FeedShellListControl
                         x:Name="ListControl"
                         Grid.Row="1"
                         Padding="7,3,7,4"
-                        HeaderHeight="42"
                         ItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
                         <controls:FeedShellListControl.Header>
-                            <Grid x:Name="Pane2Grid" />
+                            <Grid x:Name="Pane2Grid">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                            </Grid>
                         </controls:FeedShellListControl.Header>
                     </controls:FeedShellListControl>
                 </Grid>

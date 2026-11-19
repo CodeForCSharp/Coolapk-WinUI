@@ -1,12 +1,6 @@
-using CoolapkUWP.ViewModels;
-using CoolapkUWP.ViewModels.DataSource;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using System;
 
 //https://go.microsoft.com/fwlink/?LinkId=234236 上介绍了“用户控件”项模板
 
@@ -32,17 +26,17 @@ namespace CoolapkUWP.Controls
            typeof(FeedShellListControl),
            null);
 
+        public static readonly DependencyProperty StickyHeaderHeightProperty = DependencyProperty.Register(
+           nameof(StickyHeaderHeight),
+           typeof(double),
+           typeof(FeedShellListControl),
+           null);
+
         public static readonly DependencyProperty HeaderHeightProperty = DependencyProperty.Register(
            nameof(HeaderHeight),
            typeof(double),
            typeof(FeedShellListControl),
            null);
-
-        public static readonly DependencyProperty RefreshButtonVisibilityProperty = DependencyProperty.Register(
-           nameof(RefreshButtonVisibility),
-           typeof(Visibility),
-           typeof(FeedShellListControl),
-           new PropertyMetadata(Visibility.Visible));
 
         public object Header
         {
@@ -54,6 +48,12 @@ namespace CoolapkUWP.Controls
         {
             get => (double)GetValue(HeaderMarginProperty);
             set => SetValue(HeaderMarginProperty, value);
+        }
+
+        public double StickyHeaderHeight
+        {
+            get => (double)GetValue(StickyHeaderHeightProperty);
+            set => SetValue(StickyHeaderHeightProperty, value);
         }
 
         public double HeaderHeight
@@ -68,77 +68,6 @@ namespace CoolapkUWP.Controls
             set => SetValue(ItemSourceProperty, value);
         }
 
-        public Visibility RefreshButtonVisibility
-        {
-            get => (Visibility)GetValue(RefreshButtonVisibilityProperty);
-            set => SetValue(RefreshButtonVisibilityProperty, value);
-        }
-
         public FeedShellListControl() => InitializeComponent();
-
-        private void ShyHeaderListView_ShyHeaderSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            object source = (e.AddedItems.FirstOrDefault() as ShyHeaderItem)?.ItemSource;
-
-            if (source is ICanToggleChangeSelectedIndex ToggleItemsSource)
-            {
-                CheckBox.Visibility = Visibility.Visible;
-                CheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding()
-                {
-                    Mode = BindingMode.TwoWay,
-                    Source = ToggleItemsSource,
-                    Path = new PropertyPath("ToggleIsOn")
-                });
-                ToggleSwitch.Visibility = Visibility.Visible;
-                ToggleSwitch.SetBinding(ToggleSwitch.IsOnProperty, new Binding()
-                {
-                    Mode = BindingMode.TwoWay,
-                    Source = ToggleItemsSource,
-                    Path = new PropertyPath("ToggleIsOn")
-                });
-            }
-            else
-            {
-                ToggleSwitch.Visibility = CheckBox.Visibility = Visibility.Collapsed;
-            }
-
-            if (source is ICanComboBoxChangeSelectedIndex ComboBoxItemsSource)
-            {
-                ComboBox.Visibility = Visibility.Visible;
-                ComboBox.ItemsSource = ComboBoxItemsSource.ItemSource;
-                ComboBox.SetBinding(Selector.SelectedIndexProperty, new Binding()
-                {
-                    Mode = BindingMode.TwoWay,
-                    Source = ComboBoxItemsSource,
-                    Path = new PropertyPath("ComboBoxSelectedIndex")
-                });
-            }
-            else
-            {
-                ComboBox.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void ShyHeaderListView_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if ((sender as ShyHeaderListView).ActualWidth < 424 + RefreshButton.ActualWidth)
-            {
-                ToggleSwitchBorder.Visibility = Visibility.Collapsed;
-                CheckBoxBorder.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ToggleSwitchBorder.Visibility = Visibility.Visible;
-                CheckBoxBorder.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ShyHeaderListView.ItemsSource is EntityItemSource entities)
-            {
-                _ = entities.Refresh(true);
-            }
-        }
     }
 }

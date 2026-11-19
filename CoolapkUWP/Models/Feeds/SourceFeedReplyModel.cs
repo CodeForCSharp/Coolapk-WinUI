@@ -61,10 +61,10 @@ namespace CoolapkUWP.Models.Feeds
 
             if (dto.Message != null)
             {
-                Message =
-                string.IsNullOrEmpty(Rusername)
-                ? $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}: {dto.Message}"
-                : $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}@{GetUserLink(Rurl, Rusername)}: {dto.Message}";
+                string replyTo = string.IsNullOrEmpty(Rusername)
+                    ? string.Empty
+                    : $"回复{GetUserLink(Rurl, Rusername)}";
+                Message = $"{GetUserLink(UserInfo.Url, UserInfo.UserName) + GetAuthorString(IsFeedAuthor)}{replyTo}: {dto.Message}";
             }
 
             if (!string.IsNullOrEmpty(dto.Pic))

@@ -61,12 +61,33 @@ namespace CoolapkUWP.Controls
                 typeof(ShyHeaderListView),
                 new PropertyMetadata(0d));
 
+        public static readonly DependencyProperty StickyHeaderHeightProperty =
+            DependencyProperty.Register(
+                nameof(StickyHeaderHeight),
+                typeof(double),
+                typeof(ShyHeaderListView),
+                new PropertyMetadata(0d));
+
         public static readonly DependencyProperty HeaderHeightProperty =
             DependencyProperty.Register(
                 nameof(HeaderHeight),
                 typeof(double),
                 typeof(ShyHeaderListView),
                 new PropertyMetadata(double.NaN));
+
+        public static readonly DependencyProperty HeaderVisibilityProperty =
+            DependencyProperty.Register(
+                nameof(HeaderVisibility),
+                typeof(Visibility),
+                typeof(ShyHeaderListView),
+                new PropertyMetadata(Visibility.Visible));
+
+        public static readonly DependencyProperty HeaderRowHeightProperty =
+            DependencyProperty.Register(
+                nameof(HeaderRowHeight),
+                typeof(GridLength),
+                typeof(ShyHeaderListView),
+                new PropertyMetadata(GridLength.Auto));
 
         public static readonly DependencyProperty HeaderBackgroundProperty =
             DependencyProperty.Register(
@@ -129,10 +150,28 @@ namespace CoolapkUWP.Controls
             set => SetValue(HeaderMarginProperty, value);
         }
 
+        public double StickyHeaderHeight
+        {
+            get => (double)GetValue(StickyHeaderHeightProperty);
+            set => SetValue(StickyHeaderHeightProperty, value);
+        }
+
         public double HeaderHeight
         {
             get => (double)GetValue(HeaderHeightProperty);
             set => SetValue(HeaderHeightProperty, value);
+        }
+
+        public Visibility HeaderVisibility
+        {
+            get => (Visibility)GetValue(HeaderVisibilityProperty);
+            set => SetValue(HeaderVisibilityProperty, value);
+        }
+
+        public GridLength HeaderRowHeight
+        {
+            get => (GridLength)GetValue(HeaderRowHeightProperty);
+            set => SetValue(HeaderRowHeightProperty, value);
         }
 
         public Brush HeaderBackground
@@ -298,6 +337,9 @@ namespace CoolapkUWP.Controls
                 _pivotHeader.ItemsSource = (from item in items
                                             select item?.Header ?? string.Empty).ToArray();
             }
+            bool showHeader = items.Count > 1;
+            HeaderVisibility = showHeader ? Visibility.Visible : Visibility.Collapsed;
+            HeaderRowHeight = showHeader ? GridLength.Auto : new GridLength(0);
             if (_pivotHeader?.SelectedIndex == -1)
             {
                 _pivotHeader.SelectedIndex = 0;
@@ -328,10 +370,12 @@ namespace CoolapkUWP.Controls
             }
         }
 
+        private double GetCollapsingHeight()
+            => Math.Max(0, _topHeader.ActualHeight - HeaderMargin - StickyHeaderHeight);
+
         private void TopHeader_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Grid TopHeader = sender as Grid;
-            _topheight = Math.Max(0, TopHeader.ActualHeight - HeaderMargin);
+            _topheight = GetCollapsingHeight();
             if (HasGetElementVisual)
             {
                 if (_progressProvider == null)
@@ -362,13 +406,13 @@ namespace CoolapkUWP.Controls
                 }
 
                 _propSet = _propSet ?? Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread().CreatePropertySet();
-                _propSet.InsertScalar("height", (float)Math.Max(0, _topHeader.ActualHeight - HeaderMargin));
+                _propSet.InsertScalar("height", (float)GetCollapsingHeight());
 
-                _topheight = Math.Max(0, _topHeader.ActualHeight - HeaderMargin);
+                _topheight = GetCollapsingHeight();
             }
             else
             {
-                _topheight = Math.Max(0, _topHeader.ActualHeight - HeaderMargin);
+                _topheight = GetCollapsingHeight();
             }
         }
 

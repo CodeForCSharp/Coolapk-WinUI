@@ -1,7 +1,6 @@
 using CoolapkUWP.Controls;
 using CoolapkUWP.ViewModels.DataSource;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
@@ -13,10 +12,7 @@ namespace CoolapkUWP.ViewModels.FeedPages
 
         protected override EntityItemSource BuildTabs(List<ShyHeaderItem> tabs)
         {
-            EntityItemSource first = AddTab(tabs, "回复", TakeEarlyTab() ?? new ReplyItemSource(ID));
-            AddTab(tabs, "点赞", new LikeItemSource(ID));
-            AddTab(tabs, "转发", new ShareItemSource(ID, FeedDetail.FeedType));
-            return first;
+            return AddTab(tabs, "回复", TakeEarlyTab() ?? new ReplyItemSource(ID));
         }
     }
 }

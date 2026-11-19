@@ -76,6 +76,15 @@ namespace CoolapkUWP.Pages.FeedPages
             ClipboardHelper.SetText((sender as FrameworkElement).Tag.ToString());
         }
 
+        private void ReplyFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (Provider.ItemSource?.FirstOrDefault()?.ItemSource is ReplyItemSource replies
+                && sender is FrameworkElement element)
+            {
+                replies.SelectFilter(element.Tag as string);
+            }
+        }
+
         #region 界面模式切换
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -89,17 +98,28 @@ namespace CoolapkUWP.Pages.FeedPages
         {
             TwoPaneViewHelper.UpdateHeaderPane(HeaderControl, LeftGrid, RightGrid, sender.Mode);
             TwoPaneViewHelper.UpdateHeaderPane(BtnsPanel, LeftGrid, RightGrid, sender.Mode);
+            Grid.SetRow(DetailControl, 0);
             TwoPaneViewHelper.UpdateDetailPane(DetailControl, Pane1Grid, Pane2Grid, sender.Mode);
 
-            // Single pane
+            // Single pane: detail first, reply filter directly under it.
             if (sender.Mode == TwoPaneViewMode.SinglePane)
             {
-                ListControl.RefreshButtonVisibility = Visibility.Collapsed;
+                RightGrid.RowDefinitions[0].Height = new GridLength(0);
+                Grid.SetRow(ReplyFilterBar, 1);
+                TwoPaneViewHelper.UpdateDetailPane(ReplyFilterBar, Pane1Grid, Pane2Grid, sender.Mode);
+                ListControl.StickyHeaderHeight = ReplyFilterBar.Height;
             }
             // Dual pane.
             else
             {
-                ListControl.RefreshButtonVisibility = Visibility.Visible;
+                RightGrid.RowDefinitions[0].Height = GridLength.Auto;
+                ListControl.StickyHeaderHeight = 0;
+                if (!ReferenceEquals(ReplyFilterBar.Parent, RightGrid))
+                {
+                    (ReplyFilterBar.Parent as Panel)?.Children.Remove(ReplyFilterBar);
+                    Grid.SetRow(ReplyFilterBar, 0);
+                    RightGrid.Children.Insert(0, ReplyFilterBar);
+                }
             }
         }
 

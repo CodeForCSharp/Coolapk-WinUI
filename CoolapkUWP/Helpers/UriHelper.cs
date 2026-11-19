@@ -36,14 +36,12 @@ namespace CoolapkUWP.Helpers
         GetHotReplies,
         GetIndexPage,
         GetIndexPageNames,
-        GetLikeList,
         GetMyPageCard,
         GetChats,
         GetNotifications,
         GetNotificationNumbers,
         GetReplyReplies,
         GetSearchWords,
-        GetShareList,
         GetTagDetail,
         GetTagFeeds,
         GetTopicDetail,
@@ -195,14 +193,12 @@ namespace CoolapkUWP.Helpers
                 case UriType.GetHotReplies: return "/v6/feed/hotReplyList?id={0}&page={1}{2}&discussMode=1";
                 case UriType.GetIndexPage: return "/v6{0}{1}page={2}";
                 case UriType.GetIndexPageNames: return "/v6/main/init";
-                case UriType.GetLikeList: return "/v6/feed/likeList?id={0}&listType=lastupdate_desc&page={1}{2}";
                 case UriType.GetMyPageCard: return "/v6/account/loadConfig?key=my_page_card_config";
                 case UriType.GetChats: return "/v6/message/list?page={0}{1}{2}";
                 case UriType.GetNotifications: return "/v6/notification/{0}?page={1}{2}{3}";
                 case UriType.GetNotificationNumbers: return "/v6/notification/checkCount";
                 case UriType.GetReplyReplies: return "/v6/feed/replyList?id={0}&listType=&page={1}{2}&discussMode=0&feedType=feed_reply&blockStatus=0&fromFeedAuthor=0";
                 case UriType.GetSearchWords: return "/v6/search/suggestSearchWordsNew?searchValue={0}&type=app";
-                case UriType.GetShareList: return "/v6/feed/forwardList?id={0}&type={1}&page={2}";
                 case UriType.GetTagDetail: return "/v6/topic/newTagDetail?tag={0}";
                 case UriType.GetTagFeeds: return "/v6/topic/tagFeedList?tag={0}&page={1}{2}{3}&listType={4}&blockStatus=0";
                 case UriType.GetTopicDetail: return "/v6/topic/tagDetail?tag={0}";

@@ -469,6 +469,7 @@
                     </Grid.ColumnDefinitions>
                     <Border
                         Padding="4,1"
+                        VerticalAlignment="Center"
                         BorderBrush="{ThemeResource CoolapkAccentBrush}"
                         BorderThickness="1"
                         CornerRadius="{ThemeResource ControlCornerRadius}">
@@ -477,12 +478,18 @@
                             FontSize="12"
                             Foreground="{ThemeResource CoolapkAccentBrush}" />
                     </Border>
-                    <muxc:RatingControl
-                        x:Name="RatingStarControl"
+                    <ItemsControl
                         Grid.Column="1"
-                        Margin="8,7,8,0"
-                        IsReadOnly="True"
-                        Value="{x:Bind FeedDetail.RatingStar, Mode=OneWay}" />
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        ItemTemplate="{StaticResource FeedRatingStarTemplate}"
+                        ItemsSource="{x:Bind FeedDetail.OverallStars, Mode=OneWay}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                     <TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"

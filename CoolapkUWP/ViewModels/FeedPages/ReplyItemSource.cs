@@ -1,4 +1,3 @@
-using CoolapkUWP.Controls;
 using CoolapkUWP.Data;
 using CoolapkUWP.Data.Dtos;
 using CoolapkUWP.Helpers;
@@ -8,82 +7,44 @@ using CoolapkUWP.ViewModels.DataSource;
 using CoolapkUWP.ViewModels.Providers;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using Windows.ApplicationModel.Resources;
 
 namespace CoolapkUWP.ViewModels.FeedPages
 {
     [WinRT.GeneratedBindableCustomProperty]
-    public partial class ReplyItemSource : EntityItemSource, INotifyPropertyChanged, ICanComboBoxChangeSelectedIndex, ICanToggleChangeSelectedIndex
+    public partial class ReplyItemSource : EntityItemSource
     {
-        public List<string> ItemSource { get; private set; }
-        private readonly ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("FeedShellPage");
-
-        private bool toggleIsOn;
-        public bool ToggleIsOn
-        {
-            get => toggleIsOn;
-            set
-            {
-                if (toggleIsOn != value)
-                {
-                    toggleIsOn = value;
-                    _ = Refresh(true);
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ToggleIsOn)));
-                }
-            }
-        }
-
+        private bool authorOnly;
         private string replyListType = "lastupdate_desc";
-        public string ReplyListType
-        {
-            get => replyListType;
-            set
-            {
-                if (replyListType != value)
-                {
-                    replyListType = value;
-                    _ = Refresh(true);
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ReplyListType)));
-                }
-            }
-        }
-
-        public int comboBoxSelectedIndex;
-        public int ComboBoxSelectedIndex
-        {
-            get => comboBoxSelectedIndex;
-            set
-            {
-                if (comboBoxSelectedIndex != value)
-                {
-                    comboBoxSelectedIndex = value;
-                    SetComboBoxSelectedIndex(value);
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ComboBoxSelectedIndex)));
-                }
-            }
-        }
 
         public ReplyItemSource(string id) : base(id)
         {
-            ItemSource = new List<string>()
-            {
-                loader.GetString("lastupdate_desc"),
-                loader.GetString("dateline_desc"),
-                loader.GetString("popular")
-            };
             Provider = new CoolapkListProvider(
                 (p, firstItem, lastItem) =>
                     UriHelper.GetUri(
                         UriType.GetFeedReplies,
                         id,
-                        ReplyListType,
+                        replyListType,
                         p,
                         UriHelper.GetPagingArgs(p, firstItem, lastItem),
-                        toggleIsOn ? 1 : 0),
+                        authorOnly ? 1 : 0),
                 GetReplies,
                 "id");
+        }
+
+        public void SelectFilter(string filter)
+        {
+            bool nextAuthorOnly = filter == "author";
+            string nextListType = filter switch
+            {
+                "latest" => "dateline_desc",
+                "hot" => "popular",
+                _ => "lastupdate_desc"
+            };
+            if (authorOnly == nextAuthorOnly && replyListType == nextListType) { return; }
+
+            authorOnly = nextAuthorOnly;
+            replyListType = nextListType;
+            _ = Refresh(true);
         }
 
         /// <summary>整页一次反序列化。逐条 FromJson 会把每个节点再序列化一遍。</summary>
@@ -95,25 +56,6 @@ namespace CoolapkUWP.ViewModels.FeedPages
                 yield return dto.EntityType == "feed_reply"
                     ? new FeedReplyModel(dto)
                     : new NullEntity();
-            }
-        }
-
-        public void SetComboBoxSelectedIndex(int value)
-        {
-            switch (value)
-            {
-                case -1: return;
-                case 0:
-                    ReplyListType = "lastupdate_desc";
-                    break;
-
-                case 1:
-                    ReplyListType = "dateline_desc";
-                    break;
-
-                case 2:
-                    ReplyListType = "popular";
-                    break;
             }
         }
     }

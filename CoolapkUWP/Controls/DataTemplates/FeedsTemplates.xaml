@@ -18,6 +18,27 @@
 
     <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
 
+    <DataTemplate x:Key="FeedRatingStarTemplate" x:DataType="x:Boolean">
+        <Grid Width="16" Height="16">
+            <FontIcon
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="15"
+                Foreground="#FFFFB400"
+                Glyph="&#xE735;"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, Mode=OneTime}" />
+            <FontIcon
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                FontSize="15"
+                Foreground="#FFD5D8DE"
+                Glyph="&#xE735;"
+                Visibility="{x:Bind Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneTime}" />
+        </Grid>
+    </DataTemplate>
+
     <DataTemplate x:Key="FeedDefaultTemplate" x:DataType="feedmodels:FeedModel">
         <UserControl
             x:Name="Root"
@@ -229,24 +250,30 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Border
-                            Padding="1"
+                            Padding="4,1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            BorderBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                            BorderBrush="{ThemeResource CoolapkAccentBrush}"
                             BorderThickness="1"
                             CornerRadius="{ThemeResource ControlCornerRadius}">
                             <TextBlock
                                 x:Uid="/Feed/Rating"
                                 HorizontalAlignment="Left"
                                 FontSize="12"
-                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                Foreground="{ThemeResource CoolapkAccentBrush}" />
                         </Border>
-                        <muxc:RatingControl
-                            x:Name="RatingStarControl"
+                        <ItemsControl
                             Grid.Column="1"
-                            Margin="8,7,8,0"
-                            IsReadOnly="True"
-                            Value="{x:Bind RatingStar, Mode=OneWay}" />
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            ItemTemplate="{StaticResource FeedRatingStarTemplate}"
+                            ItemsSource="{x:Bind OverallStars, Mode=OneWay}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
                         <TextBlock
                             Grid.Column="2"
                             HorizontalAlignment="Left"
@@ -1084,10 +1111,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="FeedReplyDefaultTemplate" x:DataType="feedmodels:FeedReplyModel">
-        <UserControl
-            x:Name="Root"
-            Loaded="UserControl_Loaded"
-            SizeChanged="UserControl_SizeChanged">
+        <UserControl x:Name="Root">
             <UserControl.Resources>
                 <MenuFlyout x:Key="MoreFlyout">
                     <MenuFlyoutSubItem x:Uid="/Feed/Copy">
@@ -1119,205 +1143,185 @@
                 </MenuFlyout>
             </UserControl.Resources>
             <Grid
-                Padding="8,4"
+                Padding="12,10"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Background="{ThemeResource SystemControlTransparentBrush}"
                 ContextFlyout="{StaticResource MoreFlyout}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Margin="0,2,0,0"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Background="{ThemeResource SystemControlTransparentBrush}"
+                    Click="Button_Click"
+                    Style="{StaticResource TransparentButtonStyle}"
+                    Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
+                    <Border Width="36" Height="36" CornerRadius="18">
+                        <controls:ImageEx
+                            Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
+                            CornerRadius="18"
+                            Stretch="Fill" />
+                    </Border>
+                </Button>
                 <StackPanel
-                    x:Name="UserBar"
-                    Grid.Row="1"
-                    Orientation="Horizontal">
-                    <Button
-                        Margin="0,4"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Spacing="8">
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="15"
+                        Foreground="{ThemeResource CoolapkAccentBrush}"
+                        IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                        Text="{x:Bind UserInfo.UserName, Mode=OneWay}" />
+                    <controls:TextBlockEx
+                        x:Name="Message"
+                        HorizontalAlignment="Left"
+                        FontSize="15"
+                        IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
+                        Text="{x:Bind Message, Mode=OneWay}" />
+                    <GridView
+                        MinHeight="0"
                         Padding="0"
-                        Background="{ThemeResource SystemControlTransparentBrush}"
-                        Click="Button_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind UserInfo.Url, Mode=OneWay}">
-                        <Border Width="36" Height="36" CornerRadius="18">
-                            <controls:ImageEx
-                                Model="{x:Bind UserInfo.UserAvatar, Mode=OneWay}"
-                                CornerRadius="18"
-                                Stretch="Fill" />
-                        </Border>
-                    </Button>
-                    <StackPanel Margin="8,0" VerticalAlignment="Center">
+                        HorizontalContentAlignment="Left"
+                        ItemTemplate="{StaticResource PicDefaultTemplate}"
+                        ItemsSource="{x:Bind PicArr, Mode=OneWay}"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionChanged="GridView_SelectionChanged"
+                        Visibility="{x:Bind PicArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+                    </GridView>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
                         <StackPanel
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                HorizontalAlignment="Left"
-                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="{x:Bind UserInfo.UserName, Mode=OneWay}" />
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8">
                             <Border
-                                Margin="6,0"
-                                HorizontalAlignment="Left"
+                                Padding="6,2"
                                 VerticalAlignment="Center"
-                                BorderBrush="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                BorderThickness="1"
-                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                CornerRadius="4"
                                 Visibility="{x:Bind IsFeedAuthor, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                 <TextBlock
                                     x:Uid="/Feed/FeedAuthor"
-                                    Margin="1"
-                                    HorizontalAlignment="Left"
                                     FontSize="12"
-                                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                    IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}" />
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             </Border>
-                        </StackPanel>
-                        <StackPanel Margin="-1,0" Orientation="Horizontal">
                             <TextBlock
-                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
+                                FontSize="12"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
                                 Text="{x:Bind Dateline, Mode=OneWay}" />
-                            <TextBlock
-                                Margin="2,0,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                                Text="@"
-                                Visibility="{x:Bind Rusername, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                            <HyperlinkButton
-                                x:Name="Ruser"
-                                Margin="0,-5"
-                                Click="Button_Click"
-                                Content="{x:Bind Rusername, Mode=OneWay}"
-                                FontWeight="Normal"
-                                Style="{StaticResource TextButtonStyle}"
-                                Tag="{x:Bind Rurl, Mode=OneWay}"
-                                Visibility="{x:Bind Rusername, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                         </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <controls:StackPanel
-                    x:Name="BtnsPanel"
-                    Grid.Row="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal"
-                    Spacing="2">
-                    <Button
-                        x:Name="LikeButton"
-                        x:Uid="/Feed/LikeButton"
-                        Height="32"
-                        Click="FeedButton_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                                Glyph="&#xE8E1;"
-                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-                            <FontIcon
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Glyph="&#xE8E1;"
-                                Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
-                            <TextBlock Margin="8,0,0,0" Text="{x:Bind LikeNum, Mode=OneWay}" />
-                        </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="ReplyButton"
-                        x:Uid="/Feed/ReplyButton"
-                        Height="32"
-                        Click="FeedButton_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
-                            <TextBlock
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind ReplyNum, Mode=OneWay}" />
-                        </StackPanel>
-                    </Button>
-                    <Button
-                        x:Name="MoreButton"
-                        x:Uid="/Feed/MoreButton"
-                        Height="32"
-                        Flyout="{StaticResource MoreFlyout}"
-                        Style="{StaticResource TransparentButtonStyle}">
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE10C;" />
-                    </Button>
-                </controls:StackPanel>
-                <controls:TextBlockEx
-                    x:Name="Message"
-                    Grid.Row="3"
-                    Margin="4"
-                    HorizontalAlignment="Left"
-                    IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
-                    Text="{x:Bind Message, Mode=OneWay}" />
-                <GridView
-                    Grid.Row="4"
-                    MinHeight="0"
-                    Margin="4"
-                    Padding="0"
-                    HorizontalContentAlignment="Left"
-                    ItemTemplate="{StaticResource PicDefaultTemplate}"
-                    ItemsSource="{x:Bind PicArr, Mode=OneWay}"
-                    ScrollViewer.VerticalScrollMode="Disabled"
-                    SelectionChanged="GridView_SelectionChanged"
-                    Visibility="{x:Bind PicArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                </GridView>
-                <StackPanel
-                    x:Name="ReplyRows"
-                    Grid.Row="5"
-                    Margin="0,4"
-                    Padding="4"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{ThemeResource OverlayCornerRadius}"
-                    Visibility="{x:Bind ReplyRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                    <ItemsControl
-                        HorizontalAlignment="Stretch"
-                        ItemTemplate="{StaticResource ReplyRowsItemTemplate}"
-                        ItemsSource="{x:Bind ReplyRows, Mode=OneWay}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                    <Button
-                        x:Name="SeeAllButton"
-                        Padding="4"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Click="Button_Click"
-                        Style="{StaticResource TransparentButtonStyle}"
-                        Tag="{x:Bind}"
-                        Visibility="{x:Bind ShowSeeAllReplies, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                        <TextBlock
-                            HorizontalAlignment="Left"
+                        <StackPanel
+                            x:Name="BtnsPanel"
+                            Grid.Column="1"
+                            Margin="12,0,0,0"
+                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            FontSize="12"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                            <Run x:Uid="/Feed/SeeAll" />
-                            <Run Text="(" />
-                            <Run Text="{x:Bind ReplyNum, Mode=OneWay}" />
-                            <Run Text=")" />
-                        </TextBlock>
-                    </Button>
+                            Orientation="Horizontal"
+                            Spacing="4">
+                            <Button
+                                x:Name="LikeButton"
+                                x:Uid="/Feed/LikeButton"
+                                MinWidth="0"
+                                Height="28"
+                                Padding="6,0"
+                                Click="FeedButton_Click"
+                                Style="{StaticResource TransparentButtonStyle}"
+                                Tag="{x:Bind}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource CoolapkAccentBrush}"
+                                        Glyph="&#xE8E1;"
+                                        Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Glyph="&#xE8E1;"
+                                        Visibility="{x:Bind Liked, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='true', Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind LikeNum, Mode=OneWay}" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                x:Name="ReplyButton"
+                                x:Uid="/Feed/ReplyButton"
+                                MinWidth="0"
+                                Height="28"
+                                Padding="6,0"
+                                Click="FeedButton_Click"
+                                Style="{StaticResource TransparentButtonStyle}"
+                                Tag="{x:Bind}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Glyph="&#xE90A;" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Border
+                        Padding="14,10"
+                        Background="{ThemeResource FeedReplyCardBackgroundBrush}"
+                        CornerRadius="12"
+                        Visibility="{x:Bind ReplyRows, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                        <StackPanel Spacing="2">
+                            <ItemsControl
+                                HorizontalAlignment="Stretch"
+                                ItemTemplate="{StaticResource ReplyRowsItemTemplate}"
+                                ItemsSource="{x:Bind ReplyRows, Mode=OneWay}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <Button
+                                x:Name="SeeAllButton"
+                                MinHeight="0"
+                                Margin="0,4,0,0"
+                                Padding="0"
+                                HorizontalAlignment="Left"
+                                HorizontalContentAlignment="Left"
+                                Click="Button_Click"
+                                Style="{StaticResource TransparentButtonStyle}"
+                                Tag="{x:Bind}"
+                                Visibility="{x:Bind ShowSeeAllReplies, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <TextBlock FontSize="15" Foreground="{ThemeResource CoolapkAccentBrush}">
+                                    <Run Text="查看更多回复" />
+                                    <Run Text="(" />
+                                    <Run Text="{x:Bind ReplyNum, Mode=OneWay}" />
+                                    <Run Text=")" />
+                                </TextBlock>
+                            </Button>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </UserControl>
