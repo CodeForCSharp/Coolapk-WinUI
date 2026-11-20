@@ -24,6 +24,35 @@
                 <templates:IndexCardTemplates />
                 <templates:OtherDataTemplates />
             </ResourceDictionary.MergedDictionaries>
+            <Style
+                x:Key="ProductCardItemStyle"
+                BasedOn="{StaticResource DefaultCardItemStyle}"
+                TargetType="SelectorItem">
+                <Setter Property="Margin" Value="12,1.5,12,1.5" />
+            </Style>
+            <Style x:Key="FlatRowItemStyle" TargetType="SelectorItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="SelectorItem">
+                            <ContentPresenter
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <local:FeedItemStyleSelector
+                x:Key="FeedItemStyleSelector"
+                Card="{StaticResource DefaultCardItemStyle}"
+                Flat="{StaticResource FlatRowItemStyle}"
+                ProductCard="{StaticResource ProductCardItemStyle}" />
             <DataTemplate x:Key="UserDetailCard" x:DataType="pages:UserDetail">
                 <Border>
                     <Border.Resources>
@@ -504,517 +533,217 @@
                 </Border>
             </DataTemplate>
             <DataTemplate x:Key="ProductDetailCard" x:DataType="pages:ProductDetail">
-                <control:StackPanel Spacing="6">
-                    <Grid
-                        HorizontalAlignment="Stretch"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}"
-                        Visibility="{x:Bind CoverArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                        <FlipView
-                            x:Name="FlipView"
-                            CornerRadius="{ThemeResource OverlayCornerRadius}"
-                            Background="{ThemeResource SystemControlTransparentBrush}"
-                            ItemsSource="{x:Bind CoverArr, Mode=OneWay}"
-                            Loaded="FlipView_Loaded"
-                            SizeChanged="FlipView_SizeChanged">
-                            <FlipView.ItemTemplate>
-                                <DataTemplate x:DataType="images:ImageModel">
-                                    <control:ImageEx
-                                        x:Name="Picture"
-                                        CanDrag="True"
-                                        DragStarting="Image_DragStarting"
-                                        Model="{x:Bind}"
-                                        Stretch="UniformToFill"
-                                        Tag="{x:Bind}">
-                                        <control:ImageEx.ContextFlyout>
-                                            <MenuFlyout>
-                                                <MenuFlyoutItem
-                                                    x:Name="RefreshButton"
-                                                    x:Uid="/FeedListPage/RefreshMenuItem"
-                                                    Click="AppBarButton_Click"
-                                                    Tag="{x:Bind}">
-                                                    <MenuFlyoutItem.Icon>
-                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72C;" />
-                                                    </MenuFlyoutItem.Icon>
-                                                </MenuFlyoutItem>
-                                                <MenuFlyoutItem
-                                                    x:Name="CopyButton"
-                                                    x:Uid="/FeedListPage/CopyMenuItem"
-                                                    Click="AppBarButton_Click"
-                                                    Tag="{x:Bind}">
-                                                    <MenuFlyoutItem.Icon>
-                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8C8;" />
-                                                    </MenuFlyoutItem.Icon>
-                                                </MenuFlyoutItem>
-                                                <MenuFlyoutItem
-                                                    x:Name="ShareButton"
-                                                    x:Uid="/FeedListPage/ShareMenuItem"
-                                                    Click="AppBarButton_Click"
-                                                    Tag="{x:Bind}">
-                                                    <MenuFlyoutItem.Icon>
-                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE72D;" />
-                                                    </MenuFlyoutItem.Icon>
-                                                </MenuFlyoutItem>
-                                                <MenuFlyoutItem
-                                                    x:Name="SaveButton"
-                                                    x:Uid="/FeedListPage/SaveMenuItem"
-                                                    Click="AppBarButton_Click"
-                                                    Tag="{x:Bind}">
-                                                    <MenuFlyoutItem.Icon>
-                                                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE74E;" />
-                                                    </MenuFlyoutItem.Icon>
-                                                </MenuFlyoutItem>
-                                            </MenuFlyout>
-                                        </control:ImageEx.ContextFlyout>
-                                    </control:ImageEx>
-                                </DataTemplate>
-                            </FlipView.ItemTemplate>
-                        </FlipView>
-                        <Border
-                            Margin="4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                            CornerRadius="6">
-                            <muxc:PipsPager
-                                Margin="2,0"
-                                NumberOfPages="{x:Bind CoverArr, Converter={StaticResource CollectionCountConverter}, Mode=OneWay}"
-                                SelectedPageIndex="{x:Bind FlipView.SelectedIndex, Mode=TwoWay}" />
-                        </Border>
-                    </Grid>
-                    <Grid
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}">
-                        <control:StackPanel Spacing="8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Border
-                                    Width="56"
-                                    Height="56"
-                                    HorizontalAlignment="Left"
-                                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                <Border Background="#FF26292E">
+                    <control:StackPanel Padding="16,12,16,16" Spacing="10">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="56"
+                                Height="56"
+                                VerticalAlignment="Center"
+                                Background="#FFFFFFFF"
+                                CornerRadius="8">
                                 <control:ImageEx
+                                    CornerRadius="8"
                                     Model="{x:Bind Logo}"
-                                    CornerRadius="{ThemeResource OverlayCornerRadius}"
                                     Stretch="UniformToFill" />
                             </Border>
-                                <control:StackPanel Grid.Column="1" Margin="8,0">
+                            <control:StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Spacing="4">
+                                <TextBlock
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="{x:Bind Title, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#FFB7BDC8"
+                                    Text="{x:Bind StatLine, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="{x:Bind ShowStatLine, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <muxc:ItemsRepeater ItemsSource="{x:Bind RecentFollowers, Mode=OneWay}" Visibility="{x:Bind ShowFollowers, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                        <muxc:ItemsRepeater.Layout>
+                                            <muxc:StackLayout Orientation="Horizontal" Spacing="-8" />
+                                        </muxc:ItemsRepeater.Layout>
+                                        <muxc:ItemsRepeater.ItemTemplate>
+                                            <DataTemplate x:DataType="users:UserModel">
+                                                <Border
+                                                    Width="22"
+                                                    Height="22"
+                                                    Background="#FF2C3038"
+                                                    BorderBrush="#FF2C3038"
+                                                    BorderThickness="2"
+                                                    CornerRadius="11"
+                                                    Tag="{x:Bind UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='/u/{0}', Mode=OneWay}"
+                                                    Tapped="On_Tapped"
+                                                    ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}">
+                                                    <control:ImageEx
+                                                        CornerRadius="9"
+                                                        Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                                        Stretch="UniformToFill" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </muxc:ItemsRepeater.ItemTemplate>
+                                    </muxc:ItemsRepeater>
                                     <TextBlock
-                                        FontSize="16"
-                                        FontWeight="SemiBold"
-                                        Text="{x:Bind Title, Mode=OneWay}" />
-                                    <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                        <Run Text="{x:Bind HotNum, Mode=OneWay}" />
-                                        <Run Text="{x:Bind CommentNum, Mode=OneWay}" />
-                                    </TextBlock>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <muxc:ItemsRepeater ItemsSource="{x:Bind FollowUsers, Mode=OneWay}">
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="#FFB7BDC8"
+                                        Text="{x:Bind FollowNum, Mode=OneWay}" />
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="10"
+                                        Foreground="#FFB7BDC8"
+                                        Glyph="&#xE76C;" />
+                                </StackPanel>
+                            </control:StackPanel>
+                            <Button
+                                x:Name="FollowButton"
+                                Grid.Column="2"
+                                MinWidth="72"
+                                Height="32"
+                                Padding="12,0"
+                                VerticalAlignment="Center"
+                                Click="Button_Click"
+                                Content="{x:Bind FollowStatus, Mode=OneWay}"
+                                CornerRadius="8"
+                                FontSize="15"
+                                Style="{StaticResource CoolapkAccentButtonStyle}"
+                                Tag="{x:Bind}" />
+                        </Grid>
+                        <Border
+                            Padding="14,12,14,12"
+                            Background="#FF1C1F24"
+                            CornerRadius="12"
+                            Visibility="{x:Bind ShowRatingCard, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <control:StackPanel Spacing="10">
+                                <Grid ColumnSpacing="16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel
+                                        VerticalAlignment="Center"
+                                        Spacing="2"
+                                        Visibility="{x:Bind ShowScore, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="40"
+                                            FontWeight="SemiBold"
+                                            Foreground="White"
+                                            Text="{x:Bind ScoreText, Mode=OneWay}" />
+                                        <muxc:ItemsRepeater HorizontalAlignment="Center" ItemsSource="{x:Bind StarGlyphs, Mode=OneWay}">
                                             <muxc:ItemsRepeater.Layout>
-                                                <muxc:StackLayout Orientation="Horizontal" Spacing="-6" />
+                                                <muxc:StackLayout Orientation="Horizontal" Spacing="2" />
                                             </muxc:ItemsRepeater.Layout>
                                             <muxc:ItemsRepeater.ItemTemplate>
-                                                <DataTemplate x:DataType="users:UserModel">
-                                                    <Border
-                                                        Width="16"
-                                                        Height="16"
-                                                        CornerRadius="8"
-                                                        Tag="{x:Bind Url, Mode=OneWay}"
-                                                        Tapped="On_Tapped"
-                                                        ToolTipService.ToolTip="{x:Bind UserName, Mode=OneWay}">
-                                                        <control:ImageEx
-                                                            Model="{x:Bind UserAvatar, Mode=OneWay}"
-                                                            CornerRadius="8"
-                                                            Stretch="Fill" />
-                                                    </Border>
+                                                <DataTemplate x:DataType="x:String">
+                                                    <FontIcon
+                                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                        FontSize="12"
+                                                        Foreground="#FFFFB400"
+                                                        Glyph="{x:Bind}" />
                                                 </DataTemplate>
                                             </muxc:ItemsRepeater.ItemTemplate>
                                         </muxc:ItemsRepeater>
                                         <TextBlock
-                                            Grid.Column="1"
-                                            Margin="4,0"
+                                            HorizontalAlignment="Center"
                                             FontSize="12"
-                                            Text="{x:Bind FollowNum, Mode=OneWay}" />
-                                    </Grid>
-                                </control:StackPanel>
-                                <Button
-                                    x:Name="FollowButton"
-                                    Grid.Column="2"
-                                    Height="32"
-                                    HorizontalAlignment="Right"
-                                    Click="Button_Click"
-                                    Style="{StaticResource TransparentButtonStyle}"
-                                    Tag="{x:Bind}"
-                                    ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <FontIcon
-                                            VerticalAlignment="Center"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            FontSize="15"
-                                            Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
-                                        <TextBlock
-                                            x:Name="FollowStatus"
-                                            Margin="8,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="{x:Bind FollowStatus, Mode=OneWay}" />
+                                            Foreground="#FF8E95A1"
+                                            Text="机主评分" />
                                     </StackPanel>
-                                </Button>
-                            </Grid>
-                            <TextBlock
-                                Text="{x:Bind Description, Mode=OneWay}"
-                                TextWrapping="WrapWholeWords"
-                                Visibility="{x:Bind Description, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                        </control:StackPanel>
-                    </Grid>
-                    <muxc:ItemsRepeaterScrollHost Visibility="{x:Bind TagArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
-                        <ScrollViewer
-                            Margin="0,-2"
-                            Padding="0,2"
-                            HorizontalScrollBarVisibility="Hidden"
-                            HorizontalScrollMode="Auto"
-                            VerticalScrollMode="Disabled">
-                            <muxc:ItemsRepeater HorizontalAlignment="Stretch" ItemsSource="{x:Bind TagArr, Mode=OneWay}">
-                                <muxc:ItemsRepeater.Layout>
-                                    <muxc:StackLayout Orientation="Horizontal" Spacing="6" />
-                                </muxc:ItemsRepeater.Layout>
-                                <muxc:ItemsRepeater.ItemTemplate>
-                                    <DataTemplate x:DataType="x:String">
-                                        <Grid
-                                            VerticalAlignment="Center"
-                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="{ThemeResource ControlCornerRadius}">
-                                            <TextBlock
-                                                Margin="4,2"
-                                                FontSize="12"
-                                                Text="{x:Bind}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </muxc:ItemsRepeater.ItemTemplate>
-                            </muxc:ItemsRepeater>
-                        </ScrollViewer>
-                    </muxc:ItemsRepeaterScrollHost>
-                    <Grid
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}">
-                        <control:StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    x:Uid="/FeedListPage/OwnerStar"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                <TextBlock
-                                    x:Uid="/FeedListPage/AllStar"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                <Grid Grid.Column="1" HorizontalAlignment="Right">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <ToggleButton
-                                        x:Name="SeeAllButton"
-                                        x:Uid="/FeedListPage/SeeAllButton"
+                                    <muxc:ItemsRepeater
                                         Grid.Column="1"
-                                        Padding="4,2"
-
-                                        CornerRadius="{x:Bind local:FeedListPage.RightControlCornerRadius}"
-                                        BorderThickness="0,1,1,1"
-                                        FontSize="12"
-                                        IsChecked="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
-                                    <ToggleButton
-                                        x:Name="OnlyOwnerButton"
-                                        x:Uid="/FeedListPage/OnlyOwnerButton"
-                                        Grid.Column="0"
-                                        Padding="4,2"
-
-                                        CornerRadius="{x:Bind local:FeedListPage.LeftControlCornerRadius}"
-                                        BorderThickness="1,1,0,1"
-                                        FontSize="12"
-                                        IsChecked="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolNegationConverter}, Mode=TwoWay}" />
+                                        VerticalAlignment="Center"
+                                        ItemsSource="{x:Bind RatingBars, Mode=OneWay}"
+                                        Visibility="{x:Bind ShowRatingBars, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                        <muxc:ItemsRepeater.ItemTemplate>
+                                            <DataTemplate x:DataType="pages:ProductRatingBar">
+                                                <Grid Height="22" ColumnSpacing="8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="72" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="28" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        Foreground="#FFD5DAE2"
+                                                        Text="{x:Bind Name}"
+                                                        TextAlignment="Right"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                    <Grid Grid.Column="1" Height="4" VerticalAlignment="Center">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="{x:Bind ScoreLength}" />
+                                                            <ColumnDefinition Width="{x:Bind RestLength}" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Border Background="#FFFFC107" CornerRadius="2" />
+                                                        <Border
+                                                            Grid.Column="1"
+                                                            Background="#FF3A404A"
+                                                            CornerRadius="2" />
+                                                    </Grid>
+                                                    <TextBlock
+                                                        Grid.Column="2"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        Foreground="White"
+                                                        Text="{x:Bind ScoreText}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </muxc:ItemsRepeater.ItemTemplate>
+                                    </muxc:ItemsRepeater>
                                 </Grid>
-                            </Grid>
-                            <Grid Height="100">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="1.5*" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel HorizontalAlignment="Center" Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    Spacing="10"
+                                    Visibility="{x:Bind ShowReviews, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="35"
-                                        FontWeight="Bold"
-                                        Text="{x:Bind OwnerScore, Mode=OneWay}" />
-                                    <muxc:RatingControl
-                                        HorizontalAlignment="Center"
-                                        IsReadOnly="True"
-                                        Value="{x:Bind OwnerScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5', Mode=OneWay}" />
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
                                         FontSize="12"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind RatingCount, Mode=OneWay}" />
+                                        Foreground="#FF8E95A1"
+                                        Text="{x:Bind OwnerReviewText, Mode=OneWay}"
+                                        Visibility="{x:Bind ShowOwnerReview, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="#FF8E95A1"
+                                        Text="{x:Bind DetailReviewText, Mode=OneWay}"
+                                        Visibility="{x:Bind ShowDetailReview, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
                                 </StackPanel>
-                                <StackPanel HorizontalAlignment="Center" Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="35"
-                                        FontWeight="Bold"
-                                        Text="{x:Bind RatingScore, Mode=OneWay}" />
-                                    <muxc:RatingControl
-                                        HorizontalAlignment="Center"
-                                        IsReadOnly="True"
-                                        Value="{x:Bind RatingScore, Converter={StaticResource NumMultConverter}, ConverterParameter='0.5', Mode=OneWay}" />
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind StarCount, Mode=OneWay}" />
-                                </StackPanel>
-                                <Grid
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Visibility="{x:Bind OnlyOwnerButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="5星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="0"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind OwnerStar5Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind OwnerStar5Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="4星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind OwnerStar4Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind OwnerStar4Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="3星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind OwnerStar3Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind OwnerStar3Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="2星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="3"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind OwnerStar2Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind OwnerStar2Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="1星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="4"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind OwnerStar1Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind OwnerStar1Count, Mode=OneWay}" />
-                                </Grid>
-                                <Grid
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Visibility="{x:Bind SeeAllButton.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="5星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="0"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind Star5Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind Star5Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="4星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind Star4Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind Star4Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="3星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind Star3Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind Star3Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="2星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="3"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind Star2Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind Star2Count, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontSize="10"
-                                        Text="1星" />
-                                    <muxc:ProgressBar
-                                        Grid.Row="4"
-                                        Grid.Column="1"
-                                        Margin="4,0"
-                                        VerticalAlignment="Center"
-                                        Value="{x:Bind Star1Percent, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="2"
-                                        FontSize="10"
-                                        FontWeight="Thin"
-                                        Text="{x:Bind Star1Count, Mode=OneWay}" />
-                                </Grid>
-                            </Grid>
-                        </control:StackPanel>
-                    </Grid>
-                </control:StackPanel>
+                            </control:StackPanel>
+                        </Border>
+                        <muxc:ItemsRepeaterScrollHost Visibility="{x:Bind TagArr, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                            <ScrollViewer HorizontalScrollBarVisibility="Hidden" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled">
+                                <muxc:ItemsRepeater ItemsSource="{x:Bind TagArr, Mode=OneWay}">
+                                    <muxc:ItemsRepeater.Layout>
+                                        <muxc:StackLayout Orientation="Horizontal" Spacing="8" />
+                                    </muxc:ItemsRepeater.Layout>
+                                    <muxc:ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border
+                                                Padding="10,5"
+                                                Background="#FF3A404A"
+                                                CornerRadius="8">
+                                                <TextBlock
+                                                    FontSize="13"
+                                                    Foreground="#FFE6E9EE"
+                                                    Text="{x:Bind}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </muxc:ItemsRepeater.ItemTemplate>
+                                </muxc:ItemsRepeater>
+                            </ScrollViewer>
+                        </muxc:ItemsRepeaterScrollHost>
+                    </control:StackPanel>
+                </Border>
             </DataTemplate>
             <DataTemplate x:Key="CollectionDetailCard" x:DataType="pages:CollectionDetail">
                 <Grid
@@ -1263,10 +992,11 @@
         <control:ShyHeaderListView
             x:Name="ListView"
             Grid.Row="1"
-            Padding="7,3,7,4"
+            Padding="{x:Bind ListPadding, Mode=OneWay}"
+            FlatTabs="{x:Bind IsProduct, Mode=OneWay}"
             ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
-            HeaderHeight="42"
-            ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+            HeaderHeight="{x:Bind TabHeight, Mode=OneWay}"
+            ItemContainerStyleSelector="{StaticResource FeedItemStyleSelector}"
             ItemTemplateSelector="{StaticResource CardTemplateSelector}"
             ShowsScrollingPlaceholders="False"
             ShyHeaderItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}"
@@ -1274,7 +1004,7 @@
             <control:ShyHeaderListView.TopHeader>
                 <ContentControl
                     x:Name="DetailControl"
-                    Margin="5,1,5,0"
+                    Margin="0"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
                     Content="{x:Bind Provider.Detail, Mode=OneWay}" />

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -98,6 +99,13 @@ namespace CoolapkUWP.Controls
                 typeof(ShyHeaderListView),
                 null);
 
+        public static readonly DependencyProperty FlatTabsProperty =
+            DependencyProperty.Register(
+                nameof(FlatTabs),
+                typeof(bool),
+                typeof(ShyHeaderListView),
+                new PropertyMetadata(false, OnFlatTabsPropertyChanged));
+
         public static readonly DependencyProperty TopHeaderBackgroundProperty =
             DependencyProperty.Register(
                 nameof(TopHeaderBackground),
@@ -182,6 +190,13 @@ namespace CoolapkUWP.Controls
             set => SetValue(HeaderBackgroundProperty, value);
         }
 
+        /// <summary>产品页用的平铺标签：白底、通栏、绿色短下划线。其他页面保持原来的胶囊标签。</summary>
+        public bool FlatTabs
+        {
+            get => (bool)GetValue(FlatTabsProperty);
+            set => SetValue(FlatTabsProperty, value);
+        }
+
         public Brush TopHeaderBackground
         {
             get => (Brush)GetValue(TopHeaderBackgroundProperty);
@@ -238,6 +253,14 @@ namespace CoolapkUWP.Controls
             }
         }
 
+        private static void OnFlatTabsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (d as ShyHeaderListView).ApplyFlatTabs();
+            }
+        }
+
         public ShyHeaderListView()
         {
             DefaultStyleKey = typeof(ShyHeaderListView);
@@ -278,6 +301,7 @@ namespace CoolapkUWP.Controls
             {
                 _pivotHeader.SelectedIndex = 0;
                 _pivotHeader.SelectionChanged += PivotHeader_SelectionChanged;
+                ApplyFlatTabs();
                 if (ShyHeaderItemSource != null)
                 {
                     UpdateShyHeaderItem();
@@ -346,6 +370,33 @@ namespace CoolapkUWP.Controls
                                           where item != null && e.RemovedItems.Contains(item.Header)
                                           select (object)item).ToList();
             ShyHeaderSelectionChanged?.Invoke(this, new SelectionChangedEventArgs(RemovedItems, AddedItems));
+        }
+
+        private void ApplyFlatTabs()
+        {
+            if (_pivotHeader != null)
+            {
+                // 主题字典里的样式不在 Application.Resources 里，用索引器取不到会直接抛。
+                _pivotHeader.Style = FlatTabs ? FindProductTabStyle() : null;
+            }
+            VisualStateManager.GoToState(this, FlatTabs ? "FlatTabs" : "CapsuleTabs", false);
+        }
+
+        private static Style FindProductTabStyle()
+        {
+            try
+            {
+                if (Application.Current.Resources.TryGetValue("ProductPivotHeaderStyle", out object resource))
+                {
+                    return resource as Style;
+                }
+            }
+            catch (Exception ex)
+            {
+                SettingsHelper.LogManager.CreateLogger(nameof(ShyHeaderListView)).LogWarning(ex, ex.ExceptionToMessage());
+            }
+
+            return null;
         }
 
         private void UpdateShyHeaderItem(IList<ShyHeaderItem> items = null)

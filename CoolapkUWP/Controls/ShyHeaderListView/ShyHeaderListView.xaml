@@ -83,7 +83,15 @@
                                             <Grid.BackgroundTransition>
                                                 <BrushTransition Duration="0:0:0.083" />
                                             </Grid.BackgroundTransition>
-                                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                            <Border
+                                                x:Name="FlatTabChrome"
+                                                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                BorderThickness="0,0,0,1"
+                                                Visibility="Collapsed" />
+                                            <Grid
+                                                x:Name="TabGrid"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Bottom">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="*" />
@@ -116,6 +124,21 @@
                             </ItemsPresenter>
                         </ScrollViewer>
                         <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="TabStates">
+                                <VisualState x:Name="CapsuleTabs" />
+                                <VisualState x:Name="FlatTabs">
+                                    <VisualState.Setters>
+                                        <Setter Target="FlatTabChrome.Visibility" Value="Visible" />
+                                        <Setter Target="FlatTabChrome.Background" Value="{ThemeResource SolidBackgroundFillColorBaseBrush}" />
+                                        <Setter Target="HeaderGrid.Margin" Value="0" />
+                                        <Setter Target="HeaderGrid.Background" Value="Transparent" />
+                                        <Setter Target="HeaderGrid.BorderThickness" Value="0" />
+                                        <Setter Target="HeaderGrid.CornerRadius" Value="0" />
+                                        <Setter Target="TabGrid.VerticalAlignment" Value="Stretch" />
+                                        <Setter Target="PivotHeader.VerticalAlignment" Value="Stretch" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                             <VisualStateGroup>
                                 <VisualState x:Name="OnThreshold">
                                     <Storyboard>

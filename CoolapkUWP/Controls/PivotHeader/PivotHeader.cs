@@ -97,6 +97,14 @@ namespace CoolapkUWP.Controls
                 return;
             }
 
+            // 产品页的下划线是固定短线。这条缩放动画会把线留在隔壁标签上，清掉偏移后不再播。
+            if (Style != null)
+            {
+                ResetIndicator(GetIndicator(e.RemovedItems.FirstOrDefault()));
+                ResetIndicator(GetIndicator(e.AddedItems.FirstOrDefault()));
+                return;
+            }
+
             Rectangle oldIndicator = GetIndicator(e.RemovedItems.FirstOrDefault());
             if (oldIndicator == null)
             {
@@ -111,6 +119,15 @@ namespace CoolapkUWP.Controls
 
             try { TryStartAnimationWithScale(newIndicator, oldIndicator); }
             catch (Exception ex) { SettingsHelper.LogManager.CreateLogger(nameof(PivotHeader)).LogDebug(ex, ex.ExceptionToMessage()); }
+        }
+
+        private static void ResetIndicator(Rectangle indicator)
+        {
+            if (indicator == null) { return; }
+            Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
+            visual.Offset = Vector3.Zero;
+            visual.Scale = Vector3.One;
+            visual.CenterPoint = Vector3.Zero;
         }
 
         private Rectangle GetIndicator(object item)

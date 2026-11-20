@@ -45,9 +45,18 @@ namespace CoolapkUWP.Pages.FeedPages
                 {
                     _provider = value;
                     RaisePropertyChangedEvent();
+                    RaisePropertyChangedEvent(nameof(IsProduct));
+                    RaisePropertyChangedEvent(nameof(TabHeight));
+                    RaisePropertyChangedEvent(nameof(ListPadding));
                 }
             }
         }
+
+        public bool IsProduct => Provider is FeedListViewModel.ProductViewModel;
+
+        public double TabHeight => IsProduct ? 48 : 42;
+
+        public Thickness ListPadding => IsProduct ? new Thickness(0, 0, 0, 4) : new Thickness(12, 0, 12, 4);
 
         public static CornerRadius LeftControlCornerRadius
         {
@@ -76,6 +85,10 @@ namespace CoolapkUWP.Pages.FeedPages
                 && Provider?.IsEqual(ViewModel) != true)
             {
                 Provider = ViewModel;
+                if (Resources["FeedItemStyleSelector"] is FeedItemStyleSelector itemStyle)
+                {
+                    itemStyle.Product = IsProduct;
+                }
                 await Refresh(true);
                 DataTemplateSelector selector = Resources["DetailTemplateSelector"] as DataTemplateSelector;
                 DetailControl.ContentTemplate = selector?.SelectTemplate(DetailControl.Content);
@@ -198,6 +211,23 @@ namespace CoolapkUWP.Pages.FeedPages
         private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
         {
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
+        }
+    }
+
+    public class FeedItemStyleSelector : StyleSelector
+    {
+        public Style Card { get; set; }
+
+        public Style ProductCard { get; set; }
+
+        public Style Flat { get; set; }
+
+        public bool Product { get; set; }
+
+        protected override Style SelectStyleCore(object item, DependencyObject container)
+        {
+            if (Product && item is SortSelectCardModel) { return Flat ?? Card; }
+            return Product ? ProductCard ?? Card : Card;
         }
     }
 }

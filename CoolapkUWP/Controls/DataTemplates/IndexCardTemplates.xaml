@@ -1525,7 +1525,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SortSelectCardTemplate" x:DataType="models:SortSelectCardModel">
-        <Grid Padding="32,0,20,0" HorizontalAlignment="Stretch">
+        <Grid Padding="16,2,12,2" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -1533,6 +1533,7 @@
             <TextBlock
                 Grid.Column="0"
                 VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 Text="{x:Bind Title, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
@@ -1564,9 +1565,9 @@
             Style="{ThemeResource TransparentButtonStyle}"
             Tag="{x:Bind}">
             <Border
-                Padding="24,11"
+                Padding="14,6"
                 Background="{x:Bind PillBackground, Mode=OneWay}"
-                CornerRadius="28">
+                CornerRadius="16">
                 <TextBlock
                     Foreground="{x:Bind PillForeground, Mode=OneWay}"
                     Text="{x:Bind Title, Mode=OneWay}" />

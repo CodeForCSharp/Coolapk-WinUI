@@ -77,7 +77,8 @@ namespace CoolapkUWP.ViewModels.FeedPages
         /// <summary>
         /// 打开页面时要停在的标签。没有指定时是第一项。
         /// </summary>
-        public int SelectedTabIndex { get; protected set; }
+        [ObservableProperty]
+        public partial int SelectedTabIndex { get; protected set; }
 
         public abstract Task<FeedListDetailBase> GetDetail();
 
