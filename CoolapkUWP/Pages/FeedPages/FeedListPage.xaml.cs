@@ -16,8 +16,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
-using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
-using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -187,36 +185,6 @@ namespace CoolapkUWP.Pages.FeedPages
         private void RefreshButton_Click(object sender, RoutedEventArgs e) => _ = Refresh(true);
 
         private async void ListView_RefreshRequested(object sender, EventArgs e) => await Refresh(true);
-
-        #region 界面模式切换
-
-        private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
-        {
-            TwoPaneViewHelper.UpdateHeaderPane(HeaderControl, LeftGrid, RightGrid, sender.Mode);
-            TwoPaneViewHelper.UpdateDetailPane(DetailControl, Pane1Grid, Pane2Grid, sender.Mode);
-
-            // Single pane
-            if (sender.Mode == TwoPaneViewMode.SinglePane)
-            {
-                HeaderControl.Visibility = Visibility.Visible;
-                ListRefreshButton.Visibility = Visibility.Collapsed;
-                HeaderRefreshButton.Visibility = Visibility.Visible;
-            }
-            // Dual pane.
-            else
-            {
-                HeaderControl.Visibility = Visibility.Collapsed;
-                ListRefreshButton.Visibility = Visibility.Visible;
-                HeaderRefreshButton.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void TwoPaneView_Loaded(object sender, RoutedEventArgs e)
-        {
-            TwoPaneView_ModeChanged(sender as TwoPaneView, null);
-        }
-
-        #endregion 界面模式切换
 
         public event PropertyChangedEventHandler PropertyChanged;
 

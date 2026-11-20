@@ -1,7 +1,6 @@
 using CoolapkUWP.Services;
 using CoolapkUWP.Controls;
 using CoolapkUWP.Helpers;
-using CoolapkUWP.Helpers.Controls;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
 using CoolapkUWP.Pages.BrowserPages;
@@ -14,10 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
-using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
-using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -52,18 +48,8 @@ namespace CoolapkUWP.Pages.FeedPages
             {
                 Provider = ViewModel;
                 await Provider.Refresh(true);
-                if (Provider.FeedDetail != null)
-                {
-                    SetLayout();
-                }
             }
             await Task.Delay(30);
-        }
-
-        private void SetLayout()
-        {
-            TwoPaneView.MinWideModeWidth = Provider.FeedDetail?.IsFeedArticle ?? false ? 876 : 804;
-            TwoPaneView.Pane1Length = new GridLength(Provider.FeedDetail?.IsFeedArticle ?? false ? 520 : 420);
         }
 
         private void FeedButton_Click(object sender, RoutedEventArgs e)
@@ -85,49 +71,11 @@ namespace CoolapkUWP.Pages.FeedPages
             }
         }
 
-        #region 界面模式切换
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RaisePropertyChangedEvent([System.Runtime.CompilerServices.CallerMemberName] string name = null)
         {
             if (name != null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name)); }
         }
-
-        private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
-        {
-            TwoPaneViewHelper.UpdateHeaderPane(HeaderControl, LeftGrid, RightGrid, sender.Mode);
-            TwoPaneViewHelper.UpdateHeaderPane(BtnsPanel, LeftGrid, RightGrid, sender.Mode);
-            Grid.SetRow(DetailControl, 0);
-            TwoPaneViewHelper.UpdateDetailPane(DetailControl, Pane1Grid, Pane2Grid, sender.Mode);
-
-            // Single pane: detail first, reply filter directly under it.
-            if (sender.Mode == TwoPaneViewMode.SinglePane)
-            {
-                RightGrid.RowDefinitions[0].Height = new GridLength(0);
-                Grid.SetRow(ReplyFilterBar, 1);
-                TwoPaneViewHelper.UpdateDetailPane(ReplyFilterBar, Pane1Grid, Pane2Grid, sender.Mode);
-                ListControl.StickyHeaderHeight = ReplyFilterBar.Height;
-            }
-            // Dual pane.
-            else
-            {
-                RightGrid.RowDefinitions[0].Height = GridLength.Auto;
-                ListControl.StickyHeaderHeight = 0;
-                if (!ReferenceEquals(ReplyFilterBar.Parent, RightGrid))
-                {
-                    (ReplyFilterBar.Parent as Panel)?.Children.Remove(ReplyFilterBar);
-                    Grid.SetRow(ReplyFilterBar, 0);
-                    RightGrid.Children.Insert(0, ReplyFilterBar);
-                }
-            }
-        }
-
-        private void TwoPaneView_Loaded(object sender, RoutedEventArgs e)
-        {
-            TwoPaneView_ModeChanged(sender as TwoPaneView, null);
-        }
-
-        #endregion 界面模式切换
     }
 }

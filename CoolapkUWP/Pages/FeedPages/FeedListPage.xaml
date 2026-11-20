@@ -1249,98 +1249,46 @@
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
-        <muxc:TwoPaneView
-            x:Name="TwoPaneView"
-            Loaded="TwoPaneView_Loaded"
-            MinWideModeWidth="804"
-            ModeChanged="TwoPaneView_ModeChanged"
-            Pane1Length="420"
-            PanePriority="Pane2"
-            TallModeConfiguration="SinglePane">
-            <muxc:TwoPaneView.Pane1>
-                <Grid x:Name="LeftGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <control:PageHeader
-                        x:Name="HeaderControl"
-                        Title="{x:Bind Provider.Title, Mode=OneWay}"
-                        Grid.Row="0"
-                        Margin="18,0,0,0"
-                        FontSize="{StaticResource ContentControlFontSize}"
-                        FontWeight="Normal">
-                        <Button
-                            x:Name="HeaderRefreshButton"
-                            x:Uid="/FeedListPage/RefreshButton"
-                            VerticalAlignment="Center"
-                            Click="RefreshButton_Click"
-                            Content="&#xE72C;"
-                            Style="{StaticResource NavigationIconButtonNormalStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="F5" />
-                            </Button.KeyboardAccelerators>
-                        </Button>
-                    </control:PageHeader>
-                    <ScrollViewer
-                        x:Name="DetailScrollViewer"
-                        Grid.Row="1"
-                        Padding="12,4,0,0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
-                        HorizontalContentAlignment="Stretch"
-                        HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Auto">
-                        <Grid x:Name="Pane1Grid">
-                            <ContentControl
-                                x:Name="DetailControl"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch"
-                                Content="{x:Bind Provider.Detail, Mode=OneWay}" />
-                        </Grid>
-                    </ScrollViewer>
-                </Grid>
-            </muxc:TwoPaneView.Pane1>
-            <muxc:TwoPaneView.Pane2>
-                <Grid x:Name="RightGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <control:ShyHeaderListView
-                        x:Name="ListView"
-                        Grid.Row="1"
-                        Padding="7,3,7,4"
-                        ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
-                        HeaderHeight="42"
-                        ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
-                        ItemTemplateSelector="{StaticResource CardTemplateSelector}"
-                        ShowsScrollingPlaceholders="False"
-                        ShyHeaderItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
-                        <control:ShyHeaderListView.TopHeader>
-                            <Grid x:Name="Pane2Grid" />
-                        </control:ShyHeaderListView.TopHeader>
-                        <control:ShyHeaderListView.RightHeader>
-                            <Button
-                                x:Name="ListRefreshButton"
-                                x:Uid="/FeedListPage/RefreshButton"
-                                Width="32"
-                                Height="32"
-                                Margin="4"
-                                Padding="0"
-                                VerticalAlignment="Center"
-                                Click="RefreshButton_Click"
-                                Content="&#xE72C;"
-                                Style="{StaticResource NavigationIconButtonNormalStyle}">
-                                <Button.KeyboardAccelerators>
-                                    <KeyboardAccelerator Key="F5" />
-                                </Button.KeyboardAccelerators>
-                            </Button>
-                        </control:ShyHeaderListView.RightHeader>
-                    </control:ShyHeaderListView>
-                </Grid>
-            </muxc:TwoPaneView.Pane2>
-        </muxc:TwoPaneView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <control:PageHeader
+            x:Name="HeaderControl"
+            Title="{x:Bind Provider.Title, Mode=OneWay}"
+            Margin="18,0,0,0"
+            FontSize="{StaticResource ContentControlFontSize}"
+            FontWeight="Normal">
+            <Button
+                x:Name="HeaderRefreshButton"
+                x:Uid="/FeedListPage/RefreshButton"
+                VerticalAlignment="Center"
+                Click="RefreshButton_Click"
+                Content="&#xE72C;"
+                Style="{StaticResource NavigationIconButtonNormalStyle}">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="F5" />
+                </Button.KeyboardAccelerators>
+            </Button>
+        </control:PageHeader>
+        <control:ShyHeaderListView
+            x:Name="ListView"
+            Grid.Row="1"
+            Padding="7,3,7,4"
+            ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
+            HeaderHeight="42"
+            ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
+            ItemTemplateSelector="{StaticResource CardTemplateSelector}"
+            ShowsScrollingPlaceholders="False"
+            ShyHeaderItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
+            <control:ShyHeaderListView.TopHeader>
+                <ContentControl
+                    x:Name="DetailControl"
+                    Margin="5,1,5,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Content="{x:Bind Provider.Detail, Mode=OneWay}" />
+            </control:ShyHeaderListView.TopHeader>
+        </control:ShyHeaderListView>
     </Grid>
 </Page>

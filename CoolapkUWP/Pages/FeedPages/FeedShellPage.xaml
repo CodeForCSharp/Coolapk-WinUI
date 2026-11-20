@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:feedpages="using:CoolapkUWP.ViewModels.FeedPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:DataContext="{d:DesignInstance Type=feedpages:FeedShellViewModel}"
     NavigationCacheMode="Disabled"
     mc:Ignorable="d">
@@ -120,59 +119,44 @@
         </MenuFlyout>
     </Page.Resources>
     <Grid>
-        <muxc:TwoPaneView
-            x:Name="TwoPaneView"
-            Loaded="TwoPaneView_Loaded"
-            MinWideModeWidth="804"
-            ModeChanged="TwoPaneView_ModeChanged"
-            Pane1Length="420"
-            PanePriority="Pane2"
-            TallModeConfiguration="SinglePane">
-            <muxc:TwoPaneView.Pane1>
-                <Grid x:Name="LeftGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <controls:PageHeader
-                        x:Name="HeaderControl"
-                        Title="{x:Bind Provider.Title, Mode=OneWay}"
-                        Grid.Row="0"
-                        Margin="18,0,0,0"
-                        FontSize="{StaticResource ContentControlFontSize}"
-                        FontWeight="Normal">
-                        <Button
-                            x:Name="RefreshButton"
-                            x:Uid="/FeedShellPage/RefreshButton"
-                            VerticalAlignment="Center"
-                            Content="&#xE72C;"
-                            Style="{StaticResource NavigationIconButtonNormalStyle}">
-                            <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="F5" />
-                            </Button.KeyboardAccelerators>
-                        </Button>
-                    </controls:PageHeader>
-                    <ScrollViewer
-                        x:Name="DetailScrollViewer"
-                        Grid.Row="1"
-                        VerticalAlignment="Top"
-                        HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Auto">
-                        <Grid x:Name="Pane1Grid">
-                            <controls:FeedShellDetailControl x:Name="DetailControl" DataContext="{x:Bind Provider.FeedDetail, Mode=OneWay}" />
-                        </Grid>
-                    </ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <controls:PageHeader
+            x:Name="HeaderControl"
+            Title="{x:Bind Provider.Title, Mode=OneWay}"
+            Margin="18,0,0,0"
+            FontSize="{StaticResource ContentControlFontSize}"
+            FontWeight="Normal">
+            <Button
+                x:Name="RefreshButton"
+                x:Uid="/FeedShellPage/RefreshButton"
+                VerticalAlignment="Center"
+                Content="&#xE72C;"
+                Style="{StaticResource NavigationIconButtonNormalStyle}">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="F5" />
+                </Button.KeyboardAccelerators>
+            </Button>
+        </controls:PageHeader>
+        <controls:FeedShellListControl
+            x:Name="ListControl"
+            Grid.Row="1"
+            Padding="7,3,7,4"
+            HeaderHeight="48"
+            HeaderMargin="48"
+            ItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
+            <controls:FeedShellListControl.Header>
+                <StackPanel>
+                    <controls:FeedShellDetailControl x:Name="DetailControl" DataContext="{x:Bind Provider.FeedDetail, Mode=OneWay}" />
                     <Grid
                         x:Name="BtnsPanel"
-                        Grid.Row="2"
                         MinHeight="48"
                         Padding="12,8"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="0,1,0,0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Bottom">
-                        <StackPanel HorizontalAlignment="Left" />
+                        HorizontalAlignment="Stretch">
                         <controls:StackPanel
                             HorizontalAlignment="Right"
                             Orientation="Horizontal"
@@ -266,21 +250,10 @@
                             </Button>
                         </controls:StackPanel>
                     </Grid>
-                </Grid>
-            </muxc:TwoPaneView.Pane1>
-            <muxc:TwoPaneView.Pane2>
-                <Grid x:Name="RightGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
                     <Grid
                         x:Name="ReplyFilterBar"
-                        Grid.Row="0"
                         Height="48"
                         Padding="16,0,8,0"
-                        VerticalAlignment="Top"
                         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -330,22 +303,8 @@
                             </StackPanel>
                         </Border>
                     </Grid>
-                    <controls:FeedShellListControl
-                        x:Name="ListControl"
-                        Grid.Row="1"
-                        Padding="7,3,7,4"
-                        ItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
-                        <controls:FeedShellListControl.Header>
-                            <Grid x:Name="Pane2Grid">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                            </Grid>
-                        </controls:FeedShellListControl.Header>
-                    </controls:FeedShellListControl>
-                </Grid>
-            </muxc:TwoPaneView.Pane2>
-        </muxc:TwoPaneView>
+                </StackPanel>
+            </controls:FeedShellListControl.Header>
+        </controls:FeedShellListControl>
     </Grid>
 </Page>
