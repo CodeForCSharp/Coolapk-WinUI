@@ -39,45 +39,73 @@ namespace CoolapkUWP.ViewModels.FeedPages
             PivotIndex = index;
         }
 
-        public async Task Refresh(bool reset = false)
+        /// <summary>
+        /// 建好指定标签的数据源，并把关键词同步过去。返回 true 表示关键词变了，需要重新从第一页加载。
+        /// </summary>
+        public bool PrepareTab(int index, out EntityItemSource source)
         {
-            if (reset)
+            switch (index)
             {
-                List<PivotItem> ItemSource = new List<PivotItem>();
-                if (SearchFeedItemSource == null)
-                {
-                    SearchFeedItemSource = new SearchFeedItemSource(Title);
-                    SearchFeedItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
-                    SearchFeedItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
-                }
-                else if (SearchFeedItemSource.Keyword != Title)
-                {
-                    SearchFeedItemSource.Keyword = Title;
-                }
-                if (SearchUserItemSource == null)
-                {
-                    SearchUserItemSource = new SearchUserItemSource(Title);
-                    SearchUserItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
-                    SearchUserItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
-                }
-                else if (SearchUserItemSource.Keyword != Title)
-                {
-                    SearchUserItemSource.Keyword = Title;
-                }
-                if (SearchTopicItemSource == null)
-                {
-                    SearchTopicItemSource = new SearchTopicItemSource(Title);
-                    SearchTopicItemSource.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
-                    SearchTopicItemSource.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
-                }
-                else if (SearchTopicItemSource.Keyword != Title)
-                {
-                    SearchTopicItemSource.Keyword = Title;
-                }
+                case 1:
+                    source = EnsureUser();
+                    return SyncKeyword(SearchUserItemSource.Keyword, value => SearchUserItemSource.Keyword = value);
+                case 2:
+                    source = EnsureTopic();
+                    return SyncKeyword(SearchTopicItemSource.Keyword, value => SearchTopicItemSource.Keyword = value);
+                default:
+                    source = EnsureFeed();
+                    return SyncKeyword(SearchFeedItemSource.Keyword, value => SearchFeedItemSource.Keyword = value);
             }
-            await SearchFeedItemSource?.Refresh(reset);
-            await SearchUserItemSource?.Refresh(reset);
-            await SearchTopicItemSource?.Refresh(reset);
+        }
+
+        public Task Refresh(bool reset = false)
+        {
+            int index = PivotIndex >= 0 ? PivotIndex : 0;
+            bool keywordChanged = PrepareTab(index, out EntityItemSource source);
+            return source.Refresh(reset || keywordChanged);
+        }
+
+        private EntityItemSource EnsureFeed()
+        {
+            if (SearchFeedItemSource == null)
+            {
+                SearchFeedItemSource = new SearchFeedItemSource(Title);
+                Hook(SearchFeedItemSource);
+            }
+            return SearchFeedItemSource;
+        }
+
+        private EntityItemSource EnsureUser()
+        {
+            if (SearchUserItemSource == null)
+            {
+                SearchUserItemSource = new SearchUserItemSource(Title);
+                Hook(SearchUserItemSource);
+            }
+            return SearchUserItemSource;
+        }
+
+        private EntityItemSource EnsureTopic()
+        {
+            if (SearchTopicItemSource == null)
+            {
+                SearchTopicItemSource = new SearchTopicItemSource(Title);
+                Hook(SearchTopicItemSource);
+            }
+            return SearchTopicItemSource;
+        }
+
+        private static void Hook(EntityItemSource source)
+        {
+            source.LoadMoreStarted += ProgressBarHelper.ShowProgressBar;
+            source.LoadMoreCompleted += ProgressBarHelper.HideProgressBar;
+        }
+
+        private bool SyncKeyword(string current, Action<string> assign)
+        {
+            if (current == Title) { return false; }
+            assign(Title);
+            return true;
         }
 
         bool IViewModel.IsEqual(IViewModel other) => other is SearchingViewModel model && IsEqual(model);

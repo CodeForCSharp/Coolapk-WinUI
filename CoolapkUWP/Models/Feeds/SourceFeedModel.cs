@@ -4,6 +4,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Models.Images;
 using CoolapkUWP.Models.Users;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -116,7 +117,17 @@ namespace CoolapkUWP.Models.Feeds
             if (dto.Message != null)
             {
                 ResourceLoader loader = ResourceLoader.GetForViewIndependentUse("Feed");
-                Message = dto.Message.Replace("<a href=\"\">查看更多</a>", $"<a href=\"{Url}\">{loader.GetString("ReadMore")}</a>");
+                string message = dto.Message.Replace("<a href=\"\">查看更多</a>", $"<a href=\"{Url}\">{loader.GetString("ReadMore")}</a>");
+                // 转发正文是「自己的评论//原文」。原文已经在下面的转发卡片里，这里只留评论。
+                if (!string.IsNullOrEmpty(dto.SourceId))
+                {
+                    int split = message.IndexOf("//", StringComparison.Ordinal);
+                    if (split >= 0)
+                    {
+                        message = message.Substring(0, split).TrimEnd();
+                    }
+                }
+                Message = message;
             }
 
             MessageTitle = dto.MessageTitle;
@@ -175,7 +186,15 @@ namespace CoolapkUWP.Models.Feeds
                     .Where(x => !string.IsNullOrEmpty(x))
                     .Select(x => new ImageModel(x, ImageType.SmallImage))
                     .ToList();
+            }
+            else if (!string.IsNullOrEmpty(dto.Pic))
+            {
+                // 部分转发只带 pic，没有 picArr。没有这一步时，转发卡片的图片区会是空的。
+                PicArr = new List<ImageModel> { new ImageModel(dto.Pic, ImageType.SmallImage) };
+            }
 
+            if (PicArr.Count > 0)
+            {
                 foreach (ImageModel item in PicArr)
                 {
                     item.ContextArray = PicArr;

@@ -2,7 +2,8 @@
     x:Class="CoolapkUWP.Pages.FeedPages.SearchingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:controls="using:CoolapkUWP.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:feedpages="using:CoolapkUWP.Pages.FeedPages"
     xmlns:feedviewmodels="using:CoolapkUWP.ViewModels.FeedPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -55,10 +56,21 @@
                 User="{StaticResource UserTemplate}" />
         </ResourceDictionary>
     </Page.Resources>
-    <Pivot
-        x:Name="Pivot"
-        Loaded="Pivot_Loaded"
-        SelectionChanged="Pivot_SelectionChanged">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <controls:PageHeader
+            Title="{x:Bind Provider.Title, Mode=OneWay}"
+            Margin="18,0,0,0"
+            FontSize="{StaticResource ContentControlFontSize}"
+            FontWeight="Normal" />
+        <Pivot
+            x:Name="Pivot"
+            Grid.Row="1"
+            Loaded="Pivot_Loaded"
+            SelectionChanged="Pivot_SelectionChanged">
         <Pivot.RightHeader>
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <StackPanel
@@ -121,7 +133,7 @@
                     ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
                     ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
                     ItemTemplateSelector="{StaticResource CardTemplateSelector}"
-                    ItemsSource="{x:Bind Provider.SearchFeedItemSource, Mode=OneWay}"
+                    ItemsSource="{x:Bind Provider.SearchUserItemSource, Mode=OneWay}"
                     ShowsScrollingPlaceholders="False"
                     Style="{StaticResource DefaultCardListViewStyle}" />
             </muxc:RefreshContainer>
@@ -132,10 +144,11 @@
                     ui:ListViewExtensions.ItemContainerStretchDirection="Horizontal"
                     ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
                     ItemTemplateSelector="{StaticResource CardTemplateSelector}"
-                    ItemsSource="{x:Bind Provider.SearchFeedItemSource, Mode=OneWay}"
+                    ItemsSource="{x:Bind Provider.SearchTopicItemSource, Mode=OneWay}"
                     ShowsScrollingPlaceholders="False"
                     Style="{StaticResource DefaultCardListViewStyle}" />
             </muxc:RefreshContainer>
         </PivotItem>
-    </Pivot>
+        </Pivot>
+    </Grid>
 </feedpages:PivotPageBase>

@@ -1011,7 +1011,7 @@
         </UserControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="SourceFeedDefaultTemplate" x:DataType="feedmodels:FeedModelBase">
+    <DataTemplate x:Key="SourceFeedDefaultTemplate" x:DataType="feedmodels:SourceFeedModel">
         <UserControl
             x:Name="Root"
             Loaded="UserControl_Loaded"
@@ -1045,7 +1045,7 @@
                         x:Name="ReportButton"
                         x:Uid="/Feed/Report"
                         Click="FeedButton_Click"
-                        Tag="{x:Bind ID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
+                        Tag="{x:Bind EntityID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/do?c=feed&amp;m=report&amp;type=feed&amp;id={0}', Mode=OneWay}">
                         <MenuFlyoutItem.Icon>
                             <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8F8;" />
                         </MenuFlyoutItem.Icon>

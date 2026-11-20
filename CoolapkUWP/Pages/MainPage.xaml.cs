@@ -302,10 +302,10 @@ namespace CoolapkUWP.Pages
             if (!DispatcherQueue.HasThreadAccess)
             { return false; }
 
-            // 侧栏有自己的返回栈。退到占位页就停，占位页不算可以返回的内容。
-            if (PaneNavigation.IsDetailOpen && DetailFrame.CanGoBack && DetailFrame.Content is not DetailPlaceholderPage)
+            // 侧栏有自己的返回栈，先退出当前这篇，再退主栏。
+            if (PaneNavigation.CanGoBack())
             {
-                DetailFrame.GoBack();
+                PaneNavigation.GoBack();
                 return true;
             }
 
@@ -330,7 +330,9 @@ namespace CoolapkUWP.Pages
             NavigationView.IsBackButtonVisible = canGoBack
                 ? NavigationViewBackButtonVisible.Visible
                 : NavigationViewBackButtonVisible.Collapsed;
-            DetailBackButton.IsEnabled = DetailFrame.CanGoBack && DetailFrame.Content is not DetailPlaceholderPage;
+            bool detailCanGoBack = PaneNavigation.CanGoBack();
+            DetailBackButton.IsEnabled = detailCanGoBack;
+            DetailBackButton.Visibility = detailCanGoBack ? Visibility.Visible : Visibility.Collapsed;
             // 占位页没有标题栏，不能因此把浮动的返回和关闭显出来。
             DetailCommands.Visibility = detailHasContent && !PaneNavigation.HasPageHeader(DetailFrame.Content as DependencyObject)
                 ? Visibility.Visible
@@ -358,7 +360,7 @@ namespace CoolapkUWP.Pages
 
         private void DetailBackButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DetailFrame.CanGoBack) { DetailFrame.GoBack(); }
+            PaneNavigation.GoBack();
         }
 
         private void DetailCloseButton_Click(object sender, RoutedEventArgs e) => PaneNavigation.Close();

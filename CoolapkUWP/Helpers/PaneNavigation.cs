@@ -56,6 +56,15 @@ namespace CoolapkUWP.Helpers
 
         public static bool IsSection(Type pageType) => pageType != null && SectionPages.Contains(pageType);
 
+        /// <summary>
+        /// 侧栏当前页还能不能退。占位页本身没有上一页；从搜索退回占位页是正常返回。
+        /// </summary>
+        public static bool CanGoBack()
+        {
+            if (!IsDetailOpen || DetailFrame == null || !DetailFrame.CanGoBack) { return false; }
+            return DetailFrame.Content is not Pages.DetailPlaceholderPage;
+        }
+
         /// <summary>宽屏下的文档页走侧栏，栏目页和窄窗口仍走主栏。</summary>
         public static bool ShouldOpenInDetail(NavigationTarget target, Type pageType)
         {
@@ -106,10 +115,12 @@ namespace CoolapkUWP.Helpers
             if (page == null || !Hosts(page)) { return; }
             foreach (PageHeader header in FindHeaders(page))
             {
-                if (header.LeftContent == null)
+                if (header.LeftContent is not Panel commands)
                 {
-                    header.LeftContent = CreateCommands();
+                    commands = CreateCommands();
+                    header.LeftContent = commands;
                 }
+                UpdateBackButton(commands);
             }
         }
 
@@ -130,7 +141,7 @@ namespace CoolapkUWP.Helpers
             }
         }
 
-        private static UIElement CreateCommands()
+        private static Panel CreateCommands()
         {
             Microsoft.UI.Xaml.Controls.StackPanel panel = new Microsoft.UI.Xaml.Controls.StackPanel { Orientation = Orientation.Horizontal, Spacing = 2 };
 
@@ -138,10 +149,10 @@ namespace CoolapkUWP.Helpers
             {
                 Content = "\uE72B",
                 Style = GetStyle("NavigationIconButtonNormalStyle"),
-                IsEnabled = DetailFrame?.CanGoBack == true,
+                IsEnabled = CanGoBack(),
             };
             ToolTipService.SetToolTip(back, "返回");
-            back.Click += (_, __) => { if (DetailFrame?.CanGoBack == true) { DetailFrame.GoBack(); } };
+            back.Click += (_, __) => GoBack();
 
             Button close = new Button
             {
@@ -154,6 +165,24 @@ namespace CoolapkUWP.Helpers
             panel.Children.Add(back);
             panel.Children.Add(close);
             return panel;
+        }
+
+        /// <summary>缓存页面会反复显示，返回按钮的可用状态要按当前返回栈重算。</summary>
+        private static void UpdateBackButton(Panel panel)
+        {
+            foreach (UIElement child in panel.Children)
+            {
+                if (child is Button button && "\uE72B".Equals(button.Content))
+                {
+                    button.IsEnabled = CanGoBack();
+                    return;
+                }
+            }
+        }
+
+        public static void GoBack()
+        {
+            if (CanGoBack()) { DetailFrame.GoBack(); }
         }
 
         private static Style GetStyle(string key) =>
