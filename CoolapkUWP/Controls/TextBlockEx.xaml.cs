@@ -380,27 +380,36 @@ namespace CoolapkUWP.Controls
                                 break;
 
                             case "div":
-                                container = new InlineUIContainer();
-                                Border border = new Border
+                                string divClass = element.GetAttribute("class") ?? string.Empty;
+                                if (divClass.IndexOf("rating-tag", StringComparison.Ordinal) >= 0)
                                 {
-                                    Margin = new Thickness(4, 0, 4, -4),
-                                    CornerRadius = new CornerRadius(4),
-                                    BorderThickness = new Thickness(1),
-                                    VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
-                                    BorderBrush = TopicLinkBrush,
-                                };
-                                TextBlock textBlock = new TextBlock
+                                    if (paragraph.Inlines.Count > 0) { NewLine(); }
+                                    AddRatingTag(paragraph, content);
+                                }
+                                else
                                 {
-                                    FontSize = 12,
-                                    Margin = new Thickness(1),
-                                    IsTextSelectionEnabled = true,
-                                    Text = _loader.GetString("FeedAuthorText"),
-                                    Foreground = TopicLinkBrush,
-                                };
+                                    container = new InlineUIContainer();
+                                    Border border = new Border
+                                    {
+                                        Margin = new Thickness(4, 0, 4, -4),
+                                        CornerRadius = new CornerRadius(4),
+                                        BorderThickness = new Thickness(1),
+                                        VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+                                        BorderBrush = TopicLinkBrush,
+                                    };
+                                    TextBlock textBlock = new TextBlock
+                                    {
+                                        FontSize = 12,
+                                        Margin = new Thickness(1),
+                                        IsTextSelectionEnabled = true,
+                                        Text = _loader.GetString("FeedAuthorText"),
+                                        Foreground = TopicLinkBrush,
+                                    };
 
-                                border.Child = textBlock;
-                                container.Child = border;
-                                paragraph.Inlines.Add(container);
+                                    border.Child = textBlock;
+                                    container.Child = border;
+                                    paragraph.Inlines.Add(container);
+                                }
                                 break;
 
                             default: break;
@@ -453,9 +462,13 @@ namespace CoolapkUWP.Controls
                 if (name == "div" && !closing)
                 {
                     int close = html.IndexOf("</div>", gt + 1, StringComparison.OrdinalIgnoreCase);
-                    if (close < 0 || raw.IndexOf("author-border", StringComparison.Ordinal) < 0) { return false; }
+                    if (close < 0) { return false; }
+                    bool ratingTag = raw.IndexOf("rating-tag", StringComparison.Ordinal) >= 0;
+                    bool authorTag = raw.IndexOf("author-border", StringComparison.Ordinal) >= 0;
+                    if (!ratingTag && !authorTag) { return false; }
                     string inner = html.Substring(gt + 1, close - gt - 1);
-                    if (inner.IndexOf('<') >= 0 || inner.Trim().Length > 0) { return false; }
+                    if (inner.IndexOf('<') >= 0) { return false; }
+                    if (authorTag && inner.Trim().Length > 0) { return false; }
                     i = close + 6;
                     continue;
                 }
@@ -495,8 +508,21 @@ namespace CoolapkUWP.Controls
                 }
                 else if (name == "div" && !closing)
                 {
-                    AddAuthorBadge(paragraph);
-                    i = html.IndexOf("</div>", gt + 1, StringComparison.OrdinalIgnoreCase) + 6;
+                    int close = html.IndexOf("</div>", gt + 1, StringComparison.OrdinalIgnoreCase);
+                    if (body.IndexOf("rating-tag", StringComparison.Ordinal) >= 0)
+                    {
+                        if (paragraph.Inlines.Count > 0)
+                        {
+                            RichTextBlock.Blocks.Add(paragraph);
+                            paragraph = new Paragraph { LineHeight = FontSize + 10 };
+                        }
+                        AddRatingTag(paragraph, html.Substring(gt + 1, close - gt - 1));
+                    }
+                    else
+                    {
+                        AddAuthorBadge(paragraph);
+                    }
+                    i = close + 6;
                     continue;
                 }
                 else if (name == "a" && !closing)
@@ -577,6 +603,26 @@ namespace CoolapkUWP.Controls
             }
             hyperlink.Inlines.Add(new Run { Text = WebUtility.HtmlDecode(content) });
             paragraph.Inlines.Add(hyperlink);
+        }
+
+        private static void AddRatingTag(Paragraph paragraph, string title)
+        {
+            if (string.IsNullOrWhiteSpace(title)) { return; }
+            Border border = new Border
+            {
+                Margin = new Thickness(0, 8, 8, -2),
+                Padding = new Thickness(6, 1, 6, 1),
+                CornerRadius = new CornerRadius(4),
+                VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+                Background = TopicLinkBrush,
+                Child = new TextBlock
+                {
+                    FontSize = 12,
+                    Text = WebUtility.HtmlDecode(title),
+                    Foreground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255)),
+                }
+            };
+            paragraph.Inlines.Add(new InlineUIContainer { Child = border });
         }
 
         private void AddAuthorBadge(Paragraph paragraph)

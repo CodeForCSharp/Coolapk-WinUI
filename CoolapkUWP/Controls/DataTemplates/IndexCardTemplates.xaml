@@ -1862,6 +1862,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0,0,0,8">
                     <Grid.ColumnDefinitions>
@@ -1946,7 +1947,7 @@
                             <TextBlock
                                 FontSize="11"
                                 Foreground="{ThemeResource CoolapkRatingBadgeForegroundBrush}"
-                                Text="机主评分" />
+                                Text="{x:Bind RatingLabel, Mode=OneWay}" />
                         </StackPanel>
                     </Border>
                     <ItemsControl
@@ -1978,44 +1979,154 @@
                     </Border>
                 </StackPanel>
 
-                <TextBlock
+                <ItemsControl
                     Grid.Row="2"
                     Margin="0,0,0,8"
-                    FontSize="11"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    LineHeight="16"
-                    Text="{x:Bind RatingItemsText, Mode=OneWay}"
-                    TextWrapping="WrapWholeWords"
-                    Visibility="{x:Bind RatingItemsText, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                    ItemTemplate="{StaticResource RatingItemChipTemplate}"
+                    ItemsSource="{x:Bind RatingItemInfos, Mode=OneWay}"
+                    Visibility="{x:Bind RatingItemInfos, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <control:WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-                <Border
+                <ItemsControl
                     Grid.Row="3"
-                    Margin="0,0,0,6"
-                    Padding="4,2"
-                    HorizontalAlignment="Left"
-                    Background="{ThemeResource CoolapkAccentBackgroundBrush}"
-                    CornerRadius="4"
-                    Visibility="{x:Bind FeedTypeName, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                    <TextBlock
-                        FontSize="12"
-                        Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}"
-                        Text="{x:Bind FeedTypeName, Mode=OneWay}" />
-                </Border>
+                    Margin="0,0,0,8"
+                    ItemTemplate="{StaticResource RatingSectionTemplate}"
+                    ItemsSource="{x:Bind RatingSections, Mode=OneWay}"
+                    Visibility="{x:Bind RatingSections, Converter={StaticResource CollectionVisibilityConverter}, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
                 <control:TextBlockEx
                     Grid.Row="4"
                     Margin="0,0,0,8"
+                    MaxLines="6"
                     HorizontalAlignment="Left"
+                    FontSize="15"
                     Text="{x:Bind Message, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
-                    Visibility="{x:Bind Message, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                    Visibility="{x:Bind ShowPlainMessage, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
 
-                <Border
+                <Grid
                     Grid.Row="5"
                     Margin="0,0,0,8"
-                    Padding="10"
+                    Visibility="{x:Bind HasRatingPreviewPics, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                    <Border
+                        Width="280"
+                        Height="210"
+                        HorizontalAlignment="Left"
+                        CornerRadius="8"
+                        Tag="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                        Tapped="RatingPic_Tapped"
+                        Visibility="{x:Bind HasOneRatingPic, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        <control:ImageEx
+                            CornerRadius="8"
+                            Model="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                            Stretch="UniformToFill" />
+                    </Border>
+                    <Grid
+                        Height="180"
+                        ColumnSpacing="6"
+                        Visibility="{x:Bind HasTwoRatingPics, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            CornerRadius="8"
+                            Tag="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                            Tapped="RatingPic_Tapped">
+                            <control:ImageEx
+                                CornerRadius="8"
+                                Model="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                                Stretch="UniformToFill" />
+                        </Border>
+                        <Border
+                            Grid.Column="1"
+                            CornerRadius="8"
+                            Tag="{x:Bind RatingPreviewPic1, Mode=OneWay}"
+                            Tapped="RatingPic_Tapped">
+                            <control:ImageEx
+                                CornerRadius="8"
+                                Model="{x:Bind RatingPreviewPic1, Mode=OneWay}"
+                                Stretch="UniformToFill" />
+                        </Border>
+                    </Grid>
+                    <Grid
+                        Height="168"
+                        ColumnSpacing="6"
+                        Visibility="{x:Bind HasManyRatingPics, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            CornerRadius="8"
+                            Tag="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                            Tapped="RatingPic_Tapped">
+                            <control:ImageEx
+                                CornerRadius="8"
+                                Model="{x:Bind RatingPreviewPic0, Mode=OneWay}"
+                                Stretch="UniformToFill" />
+                        </Border>
+                        <Border
+                            Grid.Column="1"
+                            CornerRadius="8"
+                            Tag="{x:Bind RatingPreviewPic1, Mode=OneWay}"
+                            Tapped="RatingPic_Tapped">
+                            <control:ImageEx
+                                CornerRadius="8"
+                                Model="{x:Bind RatingPreviewPic1, Mode=OneWay}"
+                                Stretch="UniformToFill" />
+                        </Border>
+                        <Grid Grid.Column="2">
+                            <Border
+                                CornerRadius="8"
+                                Tag="{x:Bind RatingPreviewPic2, Mode=OneWay}"
+                                Tapped="RatingPic_Tapped">
+                                <control:ImageEx
+                                    CornerRadius="8"
+                                    Model="{x:Bind RatingPreviewPic2, Mode=OneWay}"
+                                    Stretch="UniformToFill" />
+                            </Border>
+                            <Border
+                                Height="22"
+                                MinWidth="28"
+                                Margin="0,6,6,0"
+                                Padding="6,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="#99000000"
+                                CornerRadius="4"
+                                IsHitTestVisible="False"
+                                Visibility="{x:Bind RatingPicMoreText, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="White"
+                                    Text="{x:Bind RatingPicMoreText, Mode=OneWay}" />
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Border
+                    Grid.Row="6"
+                    Margin="0,0,0,8"
+                    Padding="12,10"
                     Background="{ThemeResource SubtleFillColorSecondaryBrush}"
-                    CornerRadius="8"
+                    CornerRadius="12"
                     Tag="{x:Bind}"
                     Tapped="RatingTargetRow_Tapped"
                     Visibility="{x:Bind TargetRowTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
@@ -2030,9 +2141,9 @@
                             Width="48"
                             Height="48"
                             VerticalAlignment="Center"
-                            CornerRadius="{ThemeResource ControlCornerRadius}">
+                            CornerRadius="8">
                             <control:ImageEx
-                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                CornerRadius="8"
                                 Model="{x:Bind TargetRowLogo, Mode=OneWay}"
                                 Stretch="UniformToFill" />
                         </Border>
@@ -2040,11 +2151,14 @@
                             Grid.Column="1"
                             Margin="12,0,8,0"
                             VerticalAlignment="Center">
-                            <TextBlock Text="{x:Bind TargetRowTitle, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="15"
+                                Text="{x:Bind TargetRowTitle, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
                             <StackPanel
                                 Margin="0,2,0,0"
                                 Orientation="Horizontal"
-                                Spacing="2">
+                                Spacing="0">
                                 <TextBlock
                                     FontSize="12"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -2052,7 +2166,7 @@
                                 <TextBlock
                                     FontSize="12"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Text="人 点评" />
+                                    Text="人点评" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel
@@ -2078,7 +2192,7 @@
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="6" Height="32" Margin="0,2,0,0">
+                <Grid Grid.Row="7" Height="32" Margin="0,2,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -2160,6 +2274,52 @@
                 </Grid>
             </Grid>
         </UserControl>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RatingItemChipTemplate" x:DataType="feedmodels:RatingItemInfo">
+        <StackPanel
+            Margin="0,0,14,4"
+            Orientation="Horizontal"
+            Spacing="3">
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="{x:Bind Name, Mode=OneTime}" />
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="#FFB91C"
+                Text="{x:Bind StarText, Mode=OneTime}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RatingSectionTemplate" x:DataType="feedmodels:RatingSection">
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Padding="6,1"
+                VerticalAlignment="Center"
+                Background="{ThemeResource CoolapkAccentBackgroundBrush}"
+                CornerRadius="4"
+                Visibility="{x:Bind Title, Converter={StaticResource StringVisibilityConverter}, Mode=OneTime}">
+                <TextBlock
+                    FontSize="12"
+                    Foreground="{ThemeResource CoolapkOnAccentForegroundBrush}"
+                    Text="{x:Bind Title, Mode=OneTime}" />
+            </Border>
+            <TextBlock
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                FontSize="15"
+                MaxLines="1"
+                Text="{x:Bind Body, Mode=OneTime}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap" />
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="RatingStarTemplate" x:DataType="x:Boolean">

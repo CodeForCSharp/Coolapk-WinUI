@@ -2,6 +2,7 @@ using CoolapkUWP.Helpers;
 using CoolapkUWP.Helpers.Controls;
 using CoolapkUWP.Models;
 using CoolapkUWP.Models.Feeds;
+using CoolapkUWP.Models.Images;
 using CoolapkUWP.Services;
 using System;
 using Microsoft.UI.Xaml;
@@ -59,6 +60,15 @@ namespace CoolapkUWP.Controls.DataTemplates
             if (e != null) { e.Handled = true; }
             FrameworkElement element = sender as FrameworkElement;
             CardNavigationService.HandleCardTap(element, element.Tag);
+        }
+
+        private void RatingPic_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (e != null) { e.Handled = true; }
+            if (sender is FrameworkElement element && element.Tag is ImageModel image)
+            {
+                _ = element.ShowImageAsync(image);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

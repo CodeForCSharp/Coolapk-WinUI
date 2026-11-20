@@ -19,20 +19,30 @@
                 <templates:RelationRowsTemplates />
             </ResourceDictionary.MergedDictionaries>
             <converters:HTMLToTextConverter x:Key="HTMLToTextConverter" />
-            <DataTemplate x:Key="ProductRatingStarTemplate" x:DataType="x:Boolean">
-                <Border
-                    Width="14"
-                    Height="14"
-                    Background="#FFB91C"
-                    CornerRadius="2">
-                    <FontIcon
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        FontSize="9"
-                        Foreground="White"
-                        Glyph="&#xE735;" />
-                </Border>
+            <DataTemplate x:Key="FeedRatingItemTemplate" x:DataType="feeds:RatingItemInfo">
+                <StackPanel Margin="0,0,18,6" Spacing="2">
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind Name, Mode=OneTime}" />
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <ItemsControl
+                            VerticalAlignment="Center"
+                            ItemTemplate="{StaticResource FeedRatingStarTemplate}"
+                            ItemsSource="{x:Bind Stars, Mode=OneTime}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind Descriptor, Mode=OneTime}" />
+                    </StackPanel>
+                </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="FeedRelationCardTemplate" x:DataType="feeds:FeedRelationCard">
                 <Border
@@ -115,14 +125,15 @@
                                     HorizontalAlignment="Right"
                                     FontSize="28"
                                     FontWeight="Bold"
+                                    Foreground="#FFFFB400"
                                     Text="{x:Bind Score, Mode=OneWay}" />
                                 <ItemsControl
                                     HorizontalAlignment="Right"
-                                    ItemTemplate="{StaticResource ProductRatingStarTemplate}"
+                                    ItemTemplate="{StaticResource FeedRatingStarTemplate}"
                                     ItemsSource="{x:Bind Stars, Mode=OneWay}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal" Spacing="2" />
+                                            <StackPanel Orientation="Horizontal" Spacing="1" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
@@ -461,44 +472,22 @@
             </Grid>
 
             <local:StackPanel Grid.Row="6" Spacing="8">
-                <Grid Visibility="{x:Bind FeedDetail.IsRatingFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        Padding="4,1"
-                        VerticalAlignment="Center"
-                        BorderBrush="{ThemeResource CoolapkAccentBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{ThemeResource ControlCornerRadius}">
-                        <TextBlock
-                            x:Uid="/Feed/Rating"
-                            FontSize="12"
-                            Foreground="{ThemeResource CoolapkAccentBrush}" />
-                    </Border>
-                    <ItemsControl
-                        Grid.Column="1"
-                        Margin="8,0"
-                        VerticalAlignment="Center"
-                        ItemTemplate="{StaticResource FeedRatingStarTemplate}"
-                        ItemsSource="{x:Bind FeedDetail.OverallStars, Mode=OneWay}">
+                <StackPanel
+                    Margin="0,0,0,4"
+                    Spacing="8"
+                    Visibility="{x:Bind FeedDetail.IsRatingFeed, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue='Collapsed'}">
+                    <TextBlock
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{x:Bind FeedDetail.RatingLabel, Mode=OneWay}" />
+                    <ItemsControl ItemTemplate="{StaticResource FeedRatingItemTemplate}" ItemsSource="{x:Bind FeedDetail.RatingItemInfos, Mode=OneWay}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="1" />
+                                <ItemsWrapGrid ItemWidth="176" Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                    <TextBlock
-                        Grid.Column="2"
-                        VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                        <Run Text="{x:Bind FeedDetail.RatingStar, Converter={StaticResource NumMultConverter}, ConverterParameter='2', Mode=OneWay}" />
-                        <Run Text="分" />
-                    </TextBlock>
-                </Grid>
+                </StackPanel>
                 <local:TextBlockEx
                     x:Name="MessageTitle"
                     FontSize="18"
@@ -507,11 +496,17 @@
                     TextWrapping="Wrap"
                     Visibility="{x:Bind FeedDetail.ShowMessageTitle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}" />
                 <local:TextBlockEx
+                    x:Name="RatingMessage"
+                    FontSize="15"
+                    IsTextSelectionEnabled="True"
+                    Text="{x:Bind FeedDetail.RatingMessage, Mode=OneWay}"
+                    Visibility="{x:Bind FeedDetail.ShowRatingMessage, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}" />
+                <local:TextBlockEx
                     x:Name="Message"
                     FontSize="15"
                     IsTextSelectionEnabled="True"
                     Text="{x:Bind FeedDetail.Message, Mode=OneWay}"
-                    Visibility="{x:Bind FeedDetail.MessageRawOutput, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay, ConverterParameter='true'}" />
+                    Visibility="{x:Bind FeedDetail.ShowPlainMessage, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, FallbackValue=Collapsed}" />
                 <local:TextBlockEx
                     x:Name="ArticleMessage"
                     FontSize="15"
