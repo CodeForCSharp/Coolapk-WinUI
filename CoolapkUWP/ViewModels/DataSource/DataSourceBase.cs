@@ -48,9 +48,15 @@ namespace CoolapkUWP.ViewModels.DataSource
                 {
                     isLoading = value;
                     OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsLoading)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(ShowEmpty)));
                 }
             }
         }
+
+        /// <summary>
+        /// 这一页已经加载完，而且一条内容都没有。
+        /// </summary>
+        public bool ShowEmpty => !IsLoading && !Any;
 
         public DataSourceBase() : this(App.MainWindow.DispatcherQueue) { }
 
@@ -109,6 +115,7 @@ namespace CoolapkUWP.ViewModels.DataSource
         {
             base.OnCollectionChanged(e);
             Any = Count > 0;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(ShowEmpty)));
         }
 
         public delegate void EventHandler();

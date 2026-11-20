@@ -90,6 +90,10 @@ namespace CoolapkUWP.Pages.FeedPages
         private async Task Refresh(bool reset = false)
         {
             await Provider.Refresh(reset);
+            if (reset && Provider.ItemSource != null && Provider.ItemSource.Count > 0)
+            {
+                ListView.ShyHeaderSelectedIndex = Provider.SelectedTabIndex;
+            }
             if (ListView.ItemsSource is EntityItemSource entities)
             {
                 _ = entities.Refresh(true);
@@ -151,6 +155,9 @@ namespace CoolapkUWP.Pages.FeedPages
                     break;
                 case "FollowsButton":
                     _ = this.NavigateAsync(typeof(AdaptivePage), AdaptiveViewModel.GetUserListProvider(Provider.ID, true, Provider.Title));
+                    break;
+                case "MessageButton":
+                    _ = this.NavigateAsync(typeof(BrowserPage), new BrowserViewModel(element.Tag.ToString()));
                     break;
                 default:
                     break;

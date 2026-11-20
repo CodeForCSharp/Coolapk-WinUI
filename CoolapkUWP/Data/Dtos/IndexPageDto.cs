@@ -45,6 +45,8 @@ namespace CoolapkUWP.Data.Dtos
         public string ReleaseTime { get; set; }
         [JsonPropertyName("cover_pic")]
         public string CoverPic { get; set; }
+        [JsonPropertyName("cover")]
+        public string Cover { get; set; }
         [JsonPropertyName("pic")]
         public string Pic { get; set; }
         [JsonPropertyName("logo")]

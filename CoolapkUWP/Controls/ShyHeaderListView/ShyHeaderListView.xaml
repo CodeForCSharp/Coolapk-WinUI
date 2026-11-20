@@ -66,6 +66,7 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="{TemplateBinding HeaderRowHeight}" />
+                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Grid x:Name="TopHeader">
                                             <ContentPresenter Content="{TemplateBinding TopHeader}" />
@@ -102,6 +103,14 @@
                                                     Content="{TemplateBinding RightHeader}" />
                                             </Grid>
                                         </Grid>
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Margin="0,96,0,48"
+                                            HorizontalAlignment="Center"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            IsHitTestVisible="False"
+                                            Text="噫，什么都没找到_(:3」∠* )_"
+                                            Visibility="{TemplateBinding ShowEmpty}" />
                                     </Grid>
                                 </ItemsPresenter.Header>
                             </ItemsPresenter>

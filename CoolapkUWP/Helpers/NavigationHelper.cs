@@ -211,6 +211,14 @@ namespace CoolapkUWP.Helpers
                     }
                 }
             }
+            else if (link.StartsWith("/goods/", StringComparison.OrdinalIgnoreCase))
+            {
+                return await frame.NavigateResolvedAsync(host, target, typeof(BrowserPage), new BrowserViewModel("https://www.coolapk.com" + link));
+            }
+            else if (link.StartsWith("/album/", StringComparison.OrdinalIgnoreCase))
+            {
+                return await frame.NavigateResolvedAsync(host, target, typeof(BrowserPage), new BrowserViewModel("https://www.coolapk.com" + link));
+            }
             else if (link.StartsWith("/collection/", StringComparison.OrdinalIgnoreCase))
             {
                 string id = link.Substring(12, "?");

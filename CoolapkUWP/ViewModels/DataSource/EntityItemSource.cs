@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 
 namespace CoolapkUWP.ViewModels.DataSource
 {
@@ -29,7 +28,8 @@ namespace CoolapkUWP.ViewModels.DataSource
             : this(App.MainWindow.DispatcherQueue)
         {
             ID = id;
-            Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            // 没有列表地址的标签传 null，加载时直接返回空。
+            Provider = provider;
         }
 
         protected override async Task<IList<Entity>> LoadItemsAsync(uint count)

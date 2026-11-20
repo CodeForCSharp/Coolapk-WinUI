@@ -43,6 +43,18 @@ namespace CoolapkUWP.Models.Pages
 
         public string Url => $"/u/{UID}";
 
+        public string LevelText => $"Lv.{LevelNum}";
+
+        public bool ShowBio => !string.IsNullOrEmpty(Bio);
+
+        public bool ShowVerify => !string.IsNullOrEmpty(VerifyTitle);
+
+        public bool ShowGender => !string.IsNullOrEmpty(Gender);
+
+        public bool ShowLoginTime => !string.IsNullOrEmpty(LoginTime);
+
+        public bool ShowFollowButton => !string.IsNullOrEmpty(FollowStatus);
+
         internal UserDetail(UserDetailDto dto) : base(dto)
         {
 

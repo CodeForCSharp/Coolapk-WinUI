@@ -47,6 +47,8 @@ namespace CoolapkUWP.Helpers
         GetTopicDetail,
         GetDeviceFeeds,
         GetUserFeeds,
+        GetUserPageList,
+        GetUserGoodsList,
         GetUserHistory,
         GetUserList,
         GetUserRecentHistory,
@@ -145,6 +147,20 @@ namespace CoolapkUWP.Helpers
             => string.IsNullOrEmpty(value) ? string.Empty : $"&{name}={value}";
 
         /// <summary>
+        /// 把接口下发的 tab 地址编进 dataList 的 url 参数。
+        /// 地址里已有的 # / ? = & 要先转掉，否则会被当成外层请求的参数。
+        /// </summary>
+        public static string EncodeDataListUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url)) { return string.Empty; }
+            if (url.StartsWith("/page?url=", StringComparison.Ordinal))
+            {
+                url = url.Substring("/page?url=".Length);
+            }
+            return Uri.EscapeDataString(url);
+        }
+
+        /// <summary>
         /// 将首页卡片 URL 规范化为可请求的 dataList 页面地址。
         /// </summary>
         public static string NormalizePageUri(string uri)
@@ -203,7 +219,9 @@ namespace CoolapkUWP.Helpers
                 case UriType.GetTagFeeds: return "/v6/topic/tagFeedList?tag={0}&page={1}{2}{3}&listType={4}&blockStatus=0";
                 case UriType.GetTopicDetail: return "/v6/topic/tagDetail?tag={0}";
                 case UriType.GetDeviceFeeds: return "/v6/topic/deviceFeedList?tag={0}&page={1}{2}{3}&listType={4}&blockStatus=0";
-                case UriType.GetUserFeeds: return "/v6/user/{4}List?uid={0}&page={1}{2}{3}&isIncludeTop=1";
+                case UriType.GetUserFeeds: return "/v6/user/{4}List?uid={0}&page={1}{2}{3}&showAnonymous=0&isIncludeTop=1&showDoing=0";
+                case UriType.GetUserPageList: return "/v6/page/dataList?url={0}&title={1}&subTitle=&page={2}{3}{4}&pageContext=user_space";
+                case UriType.GetUserGoodsList: return "/v6/goodsList/list?uid={0}&page={1}{2}{3}";
                 case UriType.GetUserHistory: return "/v6/user/hitHistoryList?page={0}{1}{2}";
                 case UriType.GetUserList: return "/v6/user/{0}?uid={1}&page={2}{3}{4}&isIncludeTop=1";
                 case UriType.GetUserRecentHistory: return "/v6/user/recentHistoryList?page={0}{1}{2}";

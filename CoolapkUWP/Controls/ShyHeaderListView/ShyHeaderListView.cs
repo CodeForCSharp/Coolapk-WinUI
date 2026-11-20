@@ -4,6 +4,7 @@ using CoolapkUWP.Helpers.Converters;
 using CoolapkUWP.ViewModels.DataSource;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -25,6 +26,7 @@ namespace CoolapkUWP.Controls
         private Grid _listViewHeader;
         private PivotHeader _pivotHeader;
         private ScrollViewer _scrollViewer;
+        private EntityItemSource _watchedSource;
 
         private double _topheight;
         private CompositionPropertySet _propSet;
@@ -204,6 +206,22 @@ namespace CoolapkUWP.Controls
             set => SetValue(ShyHeaderSelectedItemProperty, value);
         }
 
+        /// <summary>
+        /// 当前标签已经加载完，而且一条内容都没有。
+        /// </summary>
+        public Visibility ShowEmpty
+        {
+            get => (Visibility)GetValue(ShowEmptyProperty);
+            private set => SetValue(ShowEmptyProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowEmptyProperty =
+            DependencyProperty.Register(
+                nameof(ShowEmpty),
+                typeof(Visibility),
+                typeof(ShyHeaderListView),
+                new PropertyMetadata(Visibility.Collapsed));
+
         private static void OnShyHeaderItemSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue != e.OldValue)
@@ -318,12 +336,14 @@ namespace CoolapkUWP.Controls
 
         private void PivotHeader_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ShyHeaderSelectedIndex = (sender as ListBox).SelectedIndex;
+            if (sender is not ListBox list || ShyHeaderItemSource == null) { return; }
+
+            ShyHeaderSelectedIndex = list.SelectedIndex;
             IList<object> AddedItems = (from item in ShyHeaderItemSource
-                                        where e.AddedItems.Contains(item.Header)
+                                        where item != null && e.AddedItems.Contains(item.Header)
                                         select (object)item).ToList();
             IList<object> RemovedItems = (from item in ShyHeaderItemSource
-                                          where e.RemovedItems.Contains(item.Header)
+                                          where item != null && e.RemovedItems.Contains(item.Header)
                                           select (object)item).ToList();
             ShyHeaderSelectionChanged?.Invoke(this, new SelectionChangedEventArgs(RemovedItems, AddedItems));
         }
@@ -340,18 +360,34 @@ namespace CoolapkUWP.Controls
             bool showHeader = items.Count > 1;
             HeaderVisibility = showHeader ? Visibility.Visible : Visibility.Collapsed;
             HeaderRowHeight = showHeader ? GridLength.Auto : new GridLength(0);
-            if (_pivotHeader?.SelectedIndex == -1)
+            if (items.Count == 0) { return; }
+
+            // 选中下标可能在标签到达之前就被设过，而且数字没变时不会再通知。这里直接按当前下标绑一次列表。
+            int index = ShyHeaderSelectedIndex;
+            if (index < 0 || index >= items.Count) { index = 0; }
+            if (_pivotHeader != null && _pivotHeader.SelectedIndex != index)
             {
-                _pivotHeader.SelectedIndex = 0;
+                _pivotHeader.SelectedIndex = index;
+            }
+            else
+            {
+                // 标签栏的选中项没变时不会再发通知，但列表还停在上一份数据源上。
+                UpdateShyHeaderSelectedIndex(index);
             }
         }
 
         private void UpdateShyHeaderSelectedIndex(int? index = null)
         {
-            index = index ?? SelectedIndex;
-            if (index == -1) { return; }
-            ShyHeaderSelectedItem = ShyHeaderItemSource[(int)index];
-            object newSource = ShyHeaderItemSource[(int)index].ItemSource;
+            if (index == null) { index = ShyHeaderSelectedIndex; }
+            IList<ShyHeaderItem> items = ShyHeaderItemSource;
+            if (items == null || index < 0 || index >= items.Count) { return; }
+
+            ShyHeaderItem item = items[index.Value];
+            if (item == null) { return; }
+
+            ShyHeaderSelectedItem = item;
+            object newSource = item.ItemSource;
+            WatchSource(newSource);
             if (ItemsSource == newSource)
             {
                 RefreshIfEmpty(newSource);
@@ -360,6 +396,36 @@ namespace CoolapkUWP.Controls
 
             ItemsSource = newSource;
             RefreshIfEmpty(newSource);
+        }
+
+        private void WatchSource(object source)
+        {
+            if (_watchedSource != null)
+            {
+                ((INotifyPropertyChanged)_watchedSource).PropertyChanged -= Source_PropertyChanged;
+                _watchedSource = null;
+            }
+            if (source is EntityItemSource entitySource)
+            {
+                _watchedSource = entitySource;
+                ((INotifyPropertyChanged)entitySource).PropertyChanged += Source_PropertyChanged;
+            }
+            UpdateEmpty();
+        }
+
+        private void Source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(EntityItemSource.IsLoading)
+                || e.PropertyName == nameof(EntityItemSource.Any)
+                || e.PropertyName == nameof(EntityItemSource.ShowEmpty))
+            {
+                UpdateEmpty();
+            }
+        }
+
+        private void UpdateEmpty()
+        {
+            ShowEmpty = _watchedSource != null && _watchedSource.ShowEmpty ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void RefreshIfEmpty(object source)

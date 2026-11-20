@@ -100,109 +100,91 @@
                     </Border.Resources>
                     <Grid
                         HorizontalAlignment="Stretch"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1"
                         CanDrag="True"
                         ContextFlyout="{StaticResource MoreFlyout}"
                         CornerRadius="{ThemeResource OverlayCornerRadius}"
                         DragStarting="Image_DragStarting">
-                        <Border CornerRadius="{ThemeResource OverlayCornerRadius}">
-                            <control:ImageEx
-                                Model="{x:Bind Cover}"
-                                CornerRadius="{ThemeResource OverlayCornerRadius}"
-                                Stretch="UniformToFill" />
-                        </Border>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="174" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <control:ImageEx
+                            Height="132"
+                            VerticalAlignment="Top"
+                            Model="{x:Bind Cover}"
+                            Stretch="UniformToFill" />
                         <Grid
-                            Padding="10"
-                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                            ContextFlyout="{StaticResource MoreFlyout}"
-                            CornerRadius="{ThemeResource OverlayCornerRadius}">
-                            <control:StackPanel Spacing="8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Border
-                                        Width="56"
-                                        Height="56"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        CornerRadius="28">
-                                        <control:ImageEx
-                                            Model="{x:Bind UserAvatar, Mode=OneWay}"
-                                            CornerRadius="28"
-                                            Stretch="Fill" />
-                                    </Border>
+                            Margin="16,8,12,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                x:Name="FollowButton"
+                                Height="36"
+                                MinWidth="88"
+                                Padding="16,0"
+                                Click="Button_Click"
+                                Content="{x:Bind FollowStatus, Mode=OneWay}"
+                                CornerRadius="18"
+                                FontSize="15"
+                                Style="{StaticResource CoolapkAccentButtonStyle}"
+                                Tag="{x:Bind}"
+                                Visibility="{x:Bind ShowFollowButton, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                            <Button
+                                x:Name="MessageButton"
+                                Grid.Column="1"
+                                Width="36"
+                                Height="36"
+                                Padding="0"
+                                Click="Button_Click"
+                                CornerRadius="18"
+                                Style="{StaticResource CoolapkAccentButtonStyle}"
+                                Tag="{x:Bind UID, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://m.coolapk.com/mp/message/chat?uid={0}', Mode=OneWay}"
+                                ToolTipService.ToolTip="私信"
+                                Visibility="{x:Bind ShowFollowButton, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <FontIcon
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    FontSize="16"
+                                    Foreground="White"
+                                    Glyph="&#xE715;" />
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,-42,0,0"
+                            Padding="16,48,16,16"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}">
+                            <control:StackPanel Spacing="10">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
                                     <TextBlock
-                                        Grid.Column="1"
-                                        Margin="8,0"
-                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        FontSize="16"
+                                        FontSize="22"
                                         FontWeight="SemiBold"
                                         IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
                                         Text="{x:Bind UserName, Mode=OneWay}"
                                         TextTrimming="CharacterEllipsis" />
-                                    <Button
-                                        x:Name="FollowButton"
-                                        Grid.Column="2"
-                                        Height="32"
-                                        HorizontalAlignment="Right"
-                                        Click="Button_Click"
-                                        Style="{StaticResource TransparentButtonStyle}"
-                                        Tag="{x:Bind}"
-                                        ToolTipService.ToolTip="{x:Bind FollowStatus, Mode=OneWay}"
-                                        Visibility="{x:Bind FollowStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <FontIcon
-                                                VerticalAlignment="Center"
-                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                FontSize="15"
-                                                Glyph="{x:Bind FollowGlyph, Mode=OneWay}" />
-                                            <TextBlock
-                                                x:Name="FollowStatus"
-                                                Margin="8,0,0,0"
-                                                VerticalAlignment="Center"
-                                                Text="{x:Bind FollowStatus, Mode=OneWay}" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-                                <Grid HorizontalAlignment="Left">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                                    <Border
+                                        Padding="8,2"
+                                        VerticalAlignment="Center"
+                                        Background="#FFFF8A3D"
+                                        CornerRadius="10">
                                         <TextBlock
-                                            Grid.Column="0"
-                                            HorizontalAlignment="Left"
                                             FontSize="12"
-                                            FontStyle="Italic"
-                                            Foreground="{x:Bind NextLevelProgressBar.Foreground, Mode=OneWay}"
-                                            Text="{x:Bind LevelNum, Converter={StaticResource StringFormatConverter}, ConverterParameter='Lv.{0}', Mode=OneWay}" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            HorizontalAlignment="Right"
-                                            FontSize="12"
-                                            Text="{x:Bind NextLevelNowExperience, Mode=OneWay}" />
-                                    </Grid>
-                                    <muxc:ProgressBar
-                                        x:Name="NextLevelProgressBar"
-                                        Grid.Row="1"
-                                        Width="160"
-                                        Margin="0,4"
-                                        Value="{x:Bind NextLevelPercentage, Mode=OneWay}" />
-                                </Grid>
+                                            FontWeight="SemiBold"
+                                            Foreground="White"
+                                            Text="{x:Bind LevelText, Mode=OneWay}" />
+                                    </Border>
+                                </StackPanel>
                                 <TextBlock
+                                    FontSize="14"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     IsTextSelectionEnabled="{x:Bind IsCopyEnabled, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
-                                    Visibility="{x:Bind VerifyTitle, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind ShowVerify, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                     <Run
                                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                                         Foreground="{ThemeResource CoolapkAccentBrush}"
@@ -210,89 +192,96 @@
                                     <Run Text="{x:Bind VerifyTitle, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock
+                                    FontSize="14"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Text="{x:Bind Bio, Mode=OneWay}"
-                                    TextWrapping="WrapWholeWords"
-                                    Visibility="{x:Bind Bio, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
-                                <control:StackPanel Orientation="Horizontal" Spacing="12">
-                                    <TextBlock FontSize="16">
-                                        <Run FontWeight="Bold" Text="{x:Bind LikeNum, Mode=OneWay}" />
-                                        <Run x:Uid="/FeedListPage/LikeNum" FontWeight="Thin" />
+                                    TextWrapping="Wrap"
+                                    Visibility="{x:Bind ShowBio, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                <control:StackPanel Orientation="Horizontal" Spacing="14">
+                                    <TextBlock FontSize="15">
+                                        <Run FontWeight="SemiBold" Text="{x:Bind LikeNum, Mode=OneWay}" />
+                                        <Run x:Uid="/FeedListPage/LikeNum" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                     </TextBlock>
                                     <Button
                                         x:Name="FollowsButton"
                                         Padding="0"
                                         Click="Button_Click"
-                                        FontSize="16"
+                                        FontSize="15"
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
-                                            <Run FontWeight="Bold" Text="{x:Bind FollowNum, Mode=OneWay}" />
-                                            <Run x:Uid="/FeedListPage/FollowNum" FontWeight="Thin" />
+                                            <Run FontWeight="SemiBold" Text="{x:Bind FollowNum, Mode=OneWay}" />
+                                            <Run x:Uid="/FeedListPage/FollowNum" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                         </TextBlock>
                                     </Button>
                                     <Button
                                         x:Name="FansButton"
                                         Padding="0"
                                         Click="Button_Click"
-                                        FontSize="16"
+                                        FontSize="15"
                                         Style="{StaticResource TransparentButtonStyle}">
                                         <TextBlock>
-                                            <Run FontWeight="Bold" Text="{x:Bind FansNum, Mode=OneWay}" />
-                                            <Run x:Uid="/FeedListPage/FansNum" FontWeight="Thin" />
+                                            <Run FontWeight="SemiBold" Text="{x:Bind FansNum, Mode=OneWay}" />
+                                            <Run x:Uid="/FeedListPage/FansNum" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                         </TextBlock>
                                     </Button>
-                                    <TextBlock FontSize="16">
-                                        <Run FontWeight="Bold" Text="{x:Bind FeedNum, Mode=OneWay}" />
-                                        <Run x:Uid="/FeedListPage/FeedsNum" FontWeight="Thin" />
-                                    </TextBlock>
                                 </control:StackPanel>
-                                <control:StackPanel Orientation="Horizontal" Spacing="4">
-                                    <Border
-                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{x:Bind Gender, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                                        <TextBlock
-                                            Margin="4,2"
-                                            FontSize="12"
-                                            Text="{x:Bind Gender, Mode=OneWay}" />
-                                    </Border>
-                                    <Border
-                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{x:Bind City, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                                        <TextBlock
-                                            Margin="4,2"
-                                            FontSize="12"
-                                            Text="{x:Bind City, Mode=OneWay}" />
-                                    </Border>
-                                    <Border
-                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{x:Bind Astro, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                                        <TextBlock
-                                            Margin="4,2"
-                                            FontSize="12"
-                                            Text="{x:Bind Astro, Mode=OneWay}" />
-                                    </Border>
-                                    <Border
-                                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                                        Visibility="{x:Bind BlockStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}">
-                                        <TextBlock
-                                            Margin="4,2"
-                                            FontSize="12"
-                                            Text="{x:Bind BlockStatus, Mode=OneWay}" />
-                                    </Border>
+                                <control:StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                        FontSize="14"
+                                        Foreground="{ThemeResource CoolapkAccentBrush}"
+                                        Glyph="&#xE13D;"
+                                        Visibility="{x:Bind ShowGender, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind Gender, Mode=OneWay}"
+                                        Visibility="{x:Bind ShowGender, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind LoginTime, Mode=OneWay}"
+                                        Visibility="{x:Bind ShowLoginTime, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind City, Mode=OneWay}"
+                                        Visibility="{x:Bind City, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind Astro, Mode=OneWay}"
+                                        Visibility="{x:Bind Astro, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{x:Bind BlockStatus, Mode=OneWay}"
+                                        Visibility="{x:Bind BlockStatus, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}" />
                                 </control:StackPanel>
                             </control:StackPanel>
-                        </Grid>
+                        </Border>
+                        <Border
+                            Width="84"
+                            Height="84"
+                            Margin="16,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource LayerFillColorDefaultBrush}"
+                            BorderThickness="3"
+                            Canvas.ZIndex="1"
+                            CornerRadius="42">
+                            <control:ImageEx
+                                Model="{x:Bind UserAvatar, Mode=OneWay}"
+                                CornerRadius="39"
+                                Stretch="UniformToFill" />
+                        </Border>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -1280,7 +1269,8 @@
             ItemContainerStyle="{StaticResource DefaultCardItemStyle}"
             ItemTemplateSelector="{StaticResource CardTemplateSelector}"
             ShowsScrollingPlaceholders="False"
-            ShyHeaderItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}">
+            ShyHeaderItemSource="{x:Bind Provider.ItemSource, Mode=OneWay}"
+            ShyHeaderSelectedIndex="{x:Bind Provider.SelectedTabIndex, Mode=OneWay}">
             <control:ShyHeaderListView.TopHeader>
                 <ContentControl
                     x:Name="DetailControl"

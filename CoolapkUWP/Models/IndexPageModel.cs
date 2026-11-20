@@ -59,6 +59,10 @@ namespace CoolapkUWP.Models
             {
                 Pic = new ImageModel(dto.CoverPic, ImageType.OriginImage);
             }
+            else if (!string.IsNullOrEmpty(dto.Cover))
+            {
+                Pic = new ImageModel(dto.Cover, ImageType.OriginImage);
+            }
             else if (!string.IsNullOrEmpty(dto.Pic))
             {
                 Pic = new ImageModel(dto.Pic, ImageType.OriginImage);

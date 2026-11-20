@@ -143,6 +143,7 @@ namespace CoolapkUWP.Models.Feeds
                         Url = Url?.Replace("/feed/", "/vote/");
                         break;
                     case "rating":
+                    case "score":
                         IsRatingFeed = true;
                         RatingStar = dto.Star;
                         ParseRatingFields(dto);
@@ -152,6 +153,14 @@ namespace CoolapkUWP.Models.Feeds
                         Url = Url?.Replace("/feed/", "/question/");
                         break;
                 }
+            }
+
+            // 有的点评列表不带 feedType=rating，但正文和分数还是点评贴。
+            if (!IsRatingFeed && (dto.RatingScore > 0 || !string.IsNullOrEmpty(dto.V4RatingMessage)))
+            {
+                IsRatingFeed = true;
+                RatingStar = dto.Star;
+                ParseRatingFields(dto);
             }
 
             if (dto.TargetRow != null)

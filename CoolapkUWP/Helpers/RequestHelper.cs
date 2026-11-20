@@ -29,7 +29,7 @@ namespace CoolapkUWP.Helpers
             }
             if (!token.TryGetPropertyValue("data", out JsonNode data) && token.TryGetPropertyValue("message", out JsonNode message))
             {
-                MessageHelper.ShowMessage(message.ToString());
+                if (!isBackground) { MessageHelper.ShowMessage(message.ToString()); }
                 return (false, null);
             }
             else { return (data != null && !string.IsNullOrWhiteSpace(data.ToString()), data); }
